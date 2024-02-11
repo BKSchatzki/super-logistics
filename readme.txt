@@ -1,11 +1,11 @@
-=== WP Project Manager - Task, team, and project management plugin featuring kanban board and gantt charts ===
+=== WP PM Upholstery Plus - Task, team, and project management for Upholstery businesses featuring kanban board and gantt charts ===
 Contributors: tareq1988, nizamuddinbabu, wedevs, asaquzzaman
 Donate Link: https://tareq.co/donate/
 Tags: project, project manager, project management, kanban board, gantt charts,  task manager, team collaboration tool
 Requires at least: 4.4 or higher
 Tested up to: 6.3.1
 Requires PHP: 5.6
-Stable tag: 2.6.7
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

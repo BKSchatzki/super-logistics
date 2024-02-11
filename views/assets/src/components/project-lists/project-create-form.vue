@@ -10,7 +10,7 @@
             <div class="pm-form-item item project-category">
                 <!-- v-model="project_cat" -->
                 <select v-model="project_category"  id='project_cat' class='chosen-select'>
-                    <option value="0">{{ __( '- Project Category -', 'wedevs-project-manager') }}</option>
+                    <option value="0">Category</option>
                     <option v-for="category in categories" :value="category.id" :key="category.id" >{{ category.title }}</option>
                 </select>
             </div>
@@ -122,8 +122,8 @@
                 project_notify: false,
                 assignees: [],
                 show_spinner: false,
-                name_of_the_project: __('Name of the project', 'wedevs-project-manager'),
-                details_of_project: __( 'Some details about the project (optional)', 'wedevs-project-manager'),
+                name_of_the_project: 'Client Name',
+                details_of_project: 'Some details about the client (optional)',
                 search_user: __( 'Search users...', 'wedevs-project-manager'),
                 create_new_user: __( 'Create a new user', 'wedevs-project-manager'),
                 add_new_project: __( 'Add New Project', 'wedevs-project-manager'),

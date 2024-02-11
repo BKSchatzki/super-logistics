@@ -106,16 +106,17 @@ var Project = {
 }
 
 
-// Register a global custom directive called v-pm-popup-box
+// Register a global custom directive called v-pm-users
 pm.Vue.directive('pm-users', {
     inserted: function (el, binding, vnode) { 
         Project.coWorkerSearch(el, binding, vnode);
     }
 });
 var dilogbox = false;
+
 // Register a global custom directive called v-pm-popup-box
 pm.Vue.directive('pm-popup-box', {
-    inserted: function (el, buinding, vnode) {
+    inserted: function (el, binding, vnode) {
 
         if (
             dilogbox !== false

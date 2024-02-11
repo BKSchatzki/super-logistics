@@ -32,7 +32,9 @@ weDevs_PM_Routers.push({
 	path: '/',
     component:  Empty,
     name: 'project_root',
-
+    // Not all of the files which contain routes are listed in this file,
+    // so you have to find the files our there that contribute to this parent route.
+    // good luck
 	children: wedevsPMGetRegisterChildrenRoute('project_root')
 });
 

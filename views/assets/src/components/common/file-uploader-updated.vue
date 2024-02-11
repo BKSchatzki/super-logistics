@@ -37,7 +37,6 @@
 
 
 <script>
-    // Register a global custom directive called v-pm-popup-box
     Vue.directive('pm-uploader', {
         inserted: function (el, binding, vnode) { 
             new PM_Uploader(el, 'pm-upload-container', vnode.context );
@@ -46,7 +45,6 @@
 
     Vue.directive('pm-upload-container', {
         inserted: function (el, binding, vnode) { 
-            //console.log(jQuery('#pm-upload-container').find('.moxie-shim'));
         },
     });
 

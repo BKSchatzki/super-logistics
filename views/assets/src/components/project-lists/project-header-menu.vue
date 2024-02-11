@@ -1,5 +1,5 @@
 <template>
-    <!-- panel header left column -->
+    <!-- panel header left column ---------------"Active", "Completed", "Favourite", "All" ---------------------------->
     <div :class="headerMenuToggler">
         <div class="pm-tabs-collapse pm-visible-sm">
             <span class="menu-toggle dashicons dashicons-arrow-down-alt2" @click.prevent="headerMenuToggle()"></span>

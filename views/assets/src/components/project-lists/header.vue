@@ -10,6 +10,7 @@
                         <h2 class="pm-d-inline"> {{ __('Project Manager', 'wedevs-project-manager') }}</h2>
                         <project-new-project-btn v-if="userCanAccess( PM_Vars.manager_cap_slug )"></project-new-project-btn>
 
+
                     </div> <!-- end header-left -->
 
                     <!-- header-right -->
@@ -22,7 +23,11 @@
             <!-- project popup dialog -->
             <div id="pm-project-dialog" v-pm-popup-box style="z-index:999;" :title="start_new_project" v-show="has_create_capability()">
                 <project-create-form :project="{}"></project-create-form>
-            </div> 
+            </div>
+            <!--  Add task popup -->
+            <div id="pm-global-task-dialog" v-pm-popup-box style="z-index:999;" :title="start_new_task" v-show="has_create_capability()">
+                <globally-task-create-form></globally-task-create-form>
+            </div>
         </div>
 
         
@@ -36,6 +41,10 @@
     import project_header_menu from './project-header-menu.vue';
     import project_view from './project-view.vue';
     import project_create_form from './project-create-form.vue';
+
+    // custom imports
+    import globally_task_create_form from '../common/globally-task-create-form.vue';
+    import globally_task_create_btn from './globally-task-create-btn.vue';
     // import project home page's styles
     import '@helpers/less/project/pm-project.less';
 
@@ -50,10 +59,13 @@
             'project-header-menu': project_header_menu,
             'project-view': project_view,
             'project-create-form': project_create_form,
+            'globally-task-create-form': globally_task_create_form,
+            'globally-task-create-btn': globally_task_create_btn
         },
         data () {
             return {
-                start_new_project: __( 'Start a new project', 'wedevs-project-manager'),
+                start_new_project: "Add a New Customer",
+                start_new_task: "Add a New Task"
             }
         },
 

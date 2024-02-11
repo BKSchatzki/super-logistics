@@ -1,4 +1,5 @@
 'use strict';
+// Commands optimized for running on windows!
 
 module.exports = function(grunt) {
     var pkg = grunt.file.readJSON('package.json');
@@ -82,7 +83,7 @@ module.exports = function(grunt) {
             main: {
                 options: {
                     mode: 'zip',
-                    archive: './build/wedevs-project-manager-v' + pkg.version + '.zip'
+                    archive: './build/pm-upholstery-v' + pkg.version + '.zip'
                 },
                 expand: true,
                 cwd: 'build/',
@@ -109,27 +110,27 @@ module.exports = function(grunt) {
             options: {},
 
             reset:{
-                cmd: 'npm',
+                cmd: 'npm.cmd',
                 args: ['run', 'build']
             },
 
             makepot:{
-                cmd: 'npm',
+                cmd: 'npm.cmd',
                 args: ['run', 'makepot']
             },
 
             removeDev:{
-                cmd: 'composer',
+                cmd: 'composer.bat',
                 args: ['install', '--no-dev']
             },
 
             dumpautoload:{
-                cmd: 'composer',
+                cmd: 'composer.bat',
                 args: ['dumpautoload', '-o']
             },
 
             composerInstall:{
-                cmd: 'composer',
+                cmd: 'composer.bat',
                 args: ['install']
             },
 

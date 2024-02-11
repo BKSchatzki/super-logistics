@@ -21,14 +21,9 @@ import empty from './empty.vue'
 //     });
 // }
 
+// These are Vue Components
 import project_lists from './active-projects.vue'
-
-
-
 import all_projects from './all-projects.vue'
-
-
-
 import completed_projects from './completed-projects.vue'
 import favourite_projects from './favourite-projects.vue'
 
@@ -78,6 +73,7 @@ weDevsPMRegisterChildrenRoute('projects',
                 },
             ]
         },
+
         {
             path: 'favourite', 
             component: favourite_projects,

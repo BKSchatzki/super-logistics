@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: WP Project Manager
+ * Plugin Name: WP PM Upholstery Plus
  * Plugin URI: https://wedevs.com/wp-project-manager-pro/
- * Description: WordPress Project Management plugin. Manage your projects and tasks, get things done.
- * Author: weDevs
- * Author URI: https://wedevs.com
- * Version: 2.6.7
+ * Description: Project Management Plugin for Upholstery Businesses using Wordpress. Requires WP Project Manager Pro.
+ * Author: BigTB, weDevs
+ * Author URI: https://bigtb.com
+ * Version: 1.0.0
  * Text Domain: wedevs-project-manager
  * Domain Path: /languages
  * License: GPL2

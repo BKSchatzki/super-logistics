@@ -2,7 +2,7 @@
     <div id="all-projects">
         <project-list-header></project-list-header>
         <div class="all-projects">
-
+<!------------------------------------------ Projects Loading Screen ------------->
             <div v-if="loading" class="pm-row pm-data-load-before" >
                 <div class="pm-col-4">
                     <project-loading ></project-loading>
@@ -23,6 +23,7 @@
                     <project-loading ></project-loading>
                 </div>
             </div>
+<!------------------------------------------ Show Loaded Projects ------------->
             <div v-else>
                 <projects-panel></projects-panel>
             </div>

@@ -5,8 +5,6 @@ const outputPath = path.resolve( __dirname, 'views/assets/js')
 const plugins = [];
 const isProduction = (process.env.NODE_ENV == 'production');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
-const DependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extraction-webpack-plugin' );
 
 //Remove all webpack build file
 shell.rm('-rf', outputPath)
@@ -102,7 +100,7 @@ module.exports =[
                         use: [
                             {
                                 loader: "css-loader"
-                            }, 
+                            },
                             {
                                 loader: "less-loader"
                             }

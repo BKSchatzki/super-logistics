@@ -3,6 +3,7 @@
         <project-list-header></project-list-header>
         
         <div class="active-projects">
+<!--------------------------------------------------------------------------- Show the loading animation -------------->
             <div v-if="loading" class="pm-row pm-data-load-before" >
                 <div class="pm-col-4">
                     <project-loading></project-loading>
@@ -23,22 +24,22 @@
                     <project-loading ></project-loading>
                 </div>
             </div>
-            
+<!--------------------------------------------------------------------------- Show Projects when loaded --------------->
             <div v-else>
                 <div class="pm-projects pm-row pm-no-padding pm-no-margin" :class="[projects_view_class()]">
                     <div class="pm-overview-container">
                         <div class="pm-panel pm-overview-panel">
-                            <!-- pm panel header -->
+                            <!-- pm panel header --------White box with viewing options ------------------->
                             <div class="pm-panel-header">
                                 <div class="pm-grid-row">
-                                    <!-- project page header menu -->
+                                    <!-- project page header menu ---"Active", "Completed"... -------->
                                     <project-header-menu></project-header-menu>
 
                                     <!-- pm header right column -->
                                     <div class="pm-col-6-sm">
-                                        <!-- pm view stayle container -->
+                                        <!-- pm view style container -->
                                         <div class="pm-view-style-container pm-text-right">
-                                            <!-- project view component -->
+                                            <!-- project view component ---- Grid View, List View ---->
                                             <project-view></project-view>
                                             <!-- filter by category component -->
                                             <project-filter-by-category></project-filter-by-category>
@@ -47,7 +48,7 @@
                                 </div>
                             </div>
 
-                            <!-- start panel body -->
+                            <!-- start panel body --------------Where the projects are -------------------->
                             <div class="pm-panel-body">
                                 <div class="pm-grid-row">
                                     <project-summary></project-summary>
