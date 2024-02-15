@@ -21,8 +21,19 @@ export default {
             if ( view == this.projects_view ) {
                 return view;
             }
-            
-            //return this.$store.state.projects_view === view;
+        },
+        getStages() {
+            const self = this;
+            const request_data = {
+                url: self.base_url + 'pm/v2/stages',
+                success: function (res) {
+                    self.$store.commit('setStages', res);
+                },
+                error: function (res) {
+                    console.error('Failed to fetch stages:', res);
+                }
+            };
+            self.httpRequest(request_data);
         },
 
 		projects_view_class (){

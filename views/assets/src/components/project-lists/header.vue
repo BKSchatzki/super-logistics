@@ -19,15 +19,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- project popup dialog -->
-            <div id="pm-project-dialog" v-pm-popup-box style="z-index:999;" :title="start_new_project" v-show="has_create_capability()">
-                <project-create-form :project="{}"></project-create-form>
-            </div>
-            <!--  Add task popup -->
-            <div id="pm-global-task-dialog" v-pm-popup-box style="z-index:999;" :title="start_new_task" v-show="has_create_capability()">
-                <globally-task-create-form></globally-task-create-form>
-            </div>
         </div>
 
         

@@ -176,38 +176,49 @@ class Project_Controller {
         return $this->get_response( $resource );
 	}
 
-	public function create_project(  $data ) {
-		$project = Project::create( $data );
-		add_option('projectId_git_bit_hash_'.$project->id , sha1(strtotime("now").$project->id));
-		// Establishing relationships
-		$category_ids = isset( $data[ 'categories' ] ) ? $data[ 'categories' ]  : [];
-		if ( $category_ids ) {
-			$project->categories()->sync( $category_ids );
-		}
+	public function create_project( $data ) {
+    // Extraction of no empty inputs and create project
+    $project = Project::create( $data );
+    add_option('projectId_git_bit_hash_'.$project->id , sha1(strtotime("now").$project->id));
+    // Establishing relationships
+    $category_ids = isset( $data[ 'categories' ] ) ? $data[ 'categories' ]  : [];
+    if ( $category_ids ) {
+        $project->categories()->sync( $category_ids );
+    }
 
-		$assignees = isset( $data[ 'assignees' ] ) ? $data['assignees'] : [];
-		$assignees[] = [
-			'user_id' => wp_get_current_user()->ID,
-			'role_id' => 1, // 1 for manager
-		];
-		//craeate list inbox when create project
-		$this->create_list_inbox($project->id);
+    // Check if a stage_id is provided in the data
+    if (isset($data['stage_id'])) {
+        // Find the stage
+        $stage = Stage::find($data['stage_id']);
+        // Associate the project with the stage
+        $project->stage()->associate($stage);
+        // Save the project to persist the changes
+        $project->save();
+    }
 
-		if ( is_array( $assignees ) ) {
-			$this->assign_users( $project, $assignees );
-		}
-		do_action( 'pm_project_new', $project, $data );
-		// Transforming database model instance
-		$resource = new Item( $project, new Project_Transformer );
-		$response = $this->get_response( $resource );
-		$response['message'] = pm_get_text('success_messages.project_created');
-		do_action( 'cpm_project_new', $project->id, $project->toArray(), $data ); // will deprecated
-		do_action( 'pm_after_new_project', $response, $data );
+    $assignees = isset( $data[ 'assignees' ] ) ? $data['assignees'] : [];
+    $assignees[] = [
+        'user_id' => wp_get_current_user()->ID,
+        'role_id' => 1, // 1 for manager
+    ];
+    //create list inbox when create project
+    $this->create_list_inbox($project->id);
 
-		( new Project_Role_Relation )->set_relation_after_create_project( $response['data'] );
+    if ( is_array( $assignees ) ) {
+        $this->assign_users( $project, $assignees );
+    }
+    do_action( 'pm_project_new', $project, $data );
+    // Transforming database model instance
+    $resource = new Item( $project, new Project_Transformer );
+    $response = $this->get_response( $resource );
+    $response['message'] = pm_get_text('success_messages.project_created');
+    do_action( 'cpm_project_new', $project->id, $project->toArray(), $data ); // will deprecated
+    do_action( 'pm_after_new_project', $response, $data );
 
-        return $response;
-	}
+    ( new Project_Role_Relation )->set_relation_after_create_project( $response['data'] );
+
+    return $response;
+}
 
 	public function store( WP_REST_Request $request ) {
 		// Extraction of no empty inputs and create project

@@ -115,8 +115,6 @@ export default {
 
             var o = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) /1000);
 
-            //console.log(o);
-
             if(o > 185) {
                 return '#848484';
             } else {
@@ -624,6 +622,23 @@ export default {
 
         resetSelectedUsers () {
             this.$root.$store.commit('resetSelectedUsers');
+        },
+
+        getProjectsAtStage (stageId) {
+            const self = this;
+            const request = {
+                url: self.base_url + `pm/v2/stages/${stageId}`,
+                success (res) {
+                    console.log("success at getProjectsAtStage: ", res);
+                    for (let project of res) {
+                        self.$store.commit("setProjectStage", {
+                            projectId: project.project_id,
+                            stageId: stageId
+                        });
+                    }
+                }
+            };
+            self.httpRequest(request);
         },
 
         getProjects ( args ) {

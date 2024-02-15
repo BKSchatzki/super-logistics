@@ -1,5 +1,4 @@
 <template>
-  <transition name="modal">
     <div class="pm-task-create-fields">
         <div>
             <div class="fields">
@@ -72,7 +71,6 @@
         </div>
         
     </div>
-  </transition>
 </template>
 
 

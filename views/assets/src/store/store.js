@@ -14,9 +14,12 @@ export default new pm.Vuex.Store({
         projects: [],
         project: {},
         projectMeta: {},
+        project_stages: {},
         project_users: [],
         is_single_task: false,
         categories: [],
+        stages: [],
+        product_stages: {},
         categoryMeta: {},
         roles: [],
         milestones: [],
@@ -135,6 +138,9 @@ export default new pm.Vuex.Store({
             state.categories = categories;
             state.isFetchCategories = true;
         },
+        setStages (state, stages) {
+            state.stages = stages;
+        },
         setCategoryMeta (state, meta) {
             state.categoryMeta = meta;
         },
@@ -178,7 +184,10 @@ export default new pm.Vuex.Store({
                 state.pagination = data.pagination;
             }
         },
-
+        setProjectStage(state, {projectId, stageId}) {
+            state.project_stages[projectId] = parseInt(stageId);
+            console.log("setProjectStage went off", state.project_stages);
+        },
         afterDeleteProject (state, project_id) {
             var project_index = state.getIndex(state.projects, project_id, 'id');
             state.projects.splice(project_index,1);

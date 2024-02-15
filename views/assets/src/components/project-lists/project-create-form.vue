@@ -3,20 +3,25 @@
         <form action="" method="post" class="pm-form pm-project-form" @submit.prevent="projectFormAction();">
 
             <div class="item project-name">
-                <!-- v-model="project_name" -->
                 <input type="text" v-model="project.title"  id="project_name" :placeholder="name_of_the_project" size="45" />
             </div>
 
+<!--Category-->
             <div class="pm-form-item item project-category">
-                <!-- v-model="project_cat" -->
                 <select v-model="project_category"  id='project_cat' class='chosen-select'>
                     <option value="0">Category</option>
                     <option v-for="category in categories" :value="category.id" :key="category.id" >{{ category.title }}</option>
                 </select>
             </div>
-
+<!--Stage-->
+            <div class="pm-form-item item project-stage">
+                <select v-model="project_stage" id='project_stage' class='chosen-select'>
+                    <option value='0'>Stage</option>
+                    <option v-for="stage in stages" :value="stage.id" :key="stage.id">{{ stage.title }}</option>
+                </select>
+            </div>
+<!--Description-->
             <div class="pm-form-item item project-detail">
-                <!-- v-model="project_description" -->
                 <textarea v-model="project_description"  class="pm-project-description" id="" rows="5" :placeholder="details_of_project"></textarea>
             </div>
             <div class="pm-project-form-users-wrap" v-if="selectedUsers.length">
@@ -31,29 +36,28 @@
                             </td>
 
                             <td>
-                                <a @click.prevent="deleteUser(projectUser)" v-if="canUserEdit(projectUser)" hraf="#" class="pm-del-proj-role pm-assign-del-user">
+                                <a @click.prevent="deleteUser(projectUser)" v-if="canUserEdit(projectUser)" href="#" class="pm-del-proj-role pm-assign-del-user">
                                     <span class="dashicons dashicons-trash"></span>
-                                    <!-- <span class="title">{{ __( 'Delete', 'wedevs-project-manager') }}</span> -->
                                 </a>
                             </td>
                         </tr>
                     </table>
                 </div>
             </div>
-
+<!--Users/Coworkers to add to project-->
             <div class="pm-form-item item project-users" v-if="show_role_field">
                 <input v-pm-users class="pm-project-coworker" type="text" name="user" :placeholder="search_user" size="45">
             </div>
 
             <pm-do-action hook="pm_project_form" :actionData="project"></pm-do-action>
-
+<!--Notify Co-Workers-->
             <div class="pm-form-item item project-notify">
                 <label>
                     <input type="checkbox" v-model="project_notify" name="project_notify" id="project-notify" value="yes" />
                     {{ __( 'Notify Co-Workers', 'wedevs-project-manager') }}
                 </label>
             </div>
-
+<!--Submit-->
             <div class="submit">
                 <input v-if="project.id" type="submit" name="update_project" id="update_project" class="pm-button pm-primary" :value="update_project">
                 <input v-if="!project.id" type="submit" name="add_project" id="add_project" class="pm-button pm-primary" :value="add_new_project">
@@ -69,41 +73,11 @@
     </div>
 </template>
 
-<style lang="less">
-    .pm-project-form {
-        .project-department {
-            label {
-                line-height: 1;
-                display: block;
-                margin-bottom: 5px;
-            }
-            select {
-                display: block;
-            }
-        }
-        .pm-project-form-users-wrap {
-            overflow: hidden;
-            .pm-project-role {
-                max-height: 150px;
-                overflow: auto;
-
-                .user-td {
-                	width: 115px;
-                	select {
-                		padding-left: 10px !important;
-                	}
-                }
-            }
-        }
-    }
-</style>
-
 <script>
-    import directive from './directive.js';
+    import stageMixin from './mixin.js';
     import project_new_user_form from './project-new-user-form.vue';
-    import Mixins from './mixin';
 
-    var new_project_form = {
+    export default {
 
         props: { //projectFormStatus
             project: {
@@ -113,11 +87,12 @@
                 }
             }
         },
-
+        mixins: [stageMixin],
         data () {
             return {
                 project_name: '',
                 project_cat: 0,
+                project_stage: 0,
                 project_description: typeof this.project.description == 'undefined' ? '' : this.project.description.content,
                 project_notify: false,
                 assignees: [],
@@ -136,6 +111,7 @@
         },
         created () {
             this.setProjectUser();
+            this.getStages();
         },
         computed: {
             roles () {
@@ -144,6 +120,10 @@
 
             categories () {
                 return this.$root.$store.state.categories;
+            },
+
+            stages () {
+                return this.$root.$store.state.stages;
             },
 
             selectedUsers () {
@@ -231,10 +211,6 @@
                 return true
 
             },
-            /**
-             * Action after submit the form to save and update
-             * @return {[void]}
-             */
             projectFormAction () {
                 if ( this.show_spinner ) {
                     return;
@@ -255,6 +231,7 @@
                         'notify_users': this.project_notify,
                         'assignees': this.formatUsers(this.selectedUsers),
                         'status': this.project.status,
+                        'stage': this.project_stage,
                         'department_id': this.project.department_id
                     }
                 }
@@ -303,9 +280,8 @@
                     this.$root.$store.commit('resetSelectedUsers');
                 }
             },
-
             closeForm () {
-
+                this.$emit('update:is-active', false);
                 this.closePopper();
                 if(!this.project.hasOwnProperty('id')) {
                     this.project.title = '';
@@ -313,8 +289,8 @@
                     this.project.description = ''
                     this.project_notify = [];
                     this.project.status = '';
+                    this.project_stage = '';
                     this.$store.commit('setSeletedUser', []);
-                    jQuery( "#pm-project-dialog" ).dialog('close');
                 }
                 this.showHideProjectForm(false);
                 this.$emit('makeFromClose', false)
@@ -325,5 +301,66 @@
         }
     }
 
-    export default new_project_form;
 </script>
+
+<style lang="less">
+.pm-project-form {
+  max-width: 100%; /* Adjust width as necessary */
+  padding: 20px;
+  background: #f9f9f9; /* Light grey background */
+  border-radius: 4px; /* Rounded corners for the form */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+
+  .item, .pm-form-item {
+    margin-bottom: 15px; /* Consistent margin for form items */
+  }
+
+  input[type="text"],
+  select,
+  textarea {
+    width: 100%; /* Full width */
+    padding: 10px;
+    border: 1px solid #ddd; /* Light grey border */
+    border-radius: 3px;
+    box-sizing: border-box; /* Prevents padding from affecting width */
+  }
+
+  .submit {
+    display: flex; /* Aligns buttons next to each other */
+    justify-content: space-between; /* Space between buttons */
+    align-items: center; /* Vertical alignment */
+
+    input[type="submit"] {
+      padding: 10px 15px;
+      background-color: #5C6AC4; /* Primary color for submit button */
+      color: #fff; /* White text */
+      border: none;
+      border-radius: 3px;
+      cursor: pointer; /* Hand cursor on hover */
+    }
+
+    .project-cancel {
+      padding: 10px 15px;
+      background-color: #eee; /* Lighter grey for cancel button */
+      border: 1px solid #ddd; /* Matching border with inputs */
+      border-radius: 3px;
+      cursor: pointer;
+    }
+  }
+
+  .pm-loading {
+    display: none; /* Hide loading by default, show via JS if needed */
+  }
+
+  /* User roles table adjustments */
+  .pm-project-form-users-wrap {
+    .pm-project-role {
+      .user-td {
+        select {
+          padding: 5px; /* Reduced padding */
+        }
+      }
+    }
+  }
+}
+</style>

@@ -16,9 +16,10 @@ class Menu {
 
         $slug = pm_admin_slug();
 
-        $home = add_menu_page( __( 'Project Manager', 'wedevs-project-manager' ), __( 'Project Manager', 'wedevs-project-manager' ), self::$capability, $slug, array( new Output, 'home_page' ), self::pm_svg(), 3 );
+        $home = add_menu_page( 'Upholstery PM', 'Upholstery PM', self::$capability, $slug, array( new Output, 'home_page' ), self::pm_svg(), 3 );
 
         $submenu[$slug][] = [ __( 'Projects', 'wedevs-project-manager' ), self::$capability, "admin.php?page={$slug}#/" ];
+        $submenu[$slug][] = ['Kanban Board', self::$capability, "admin.php?page={$slug}#/kanban" ];
 
         $active_task = self::my_task_count();
         $mytask_text = sprintf( __( 'My Tasks %s', 'wedevs-project-manager' ), '<span class="awaiting-mod count-1"><span class="pending-count">' . $active_task . '</span></span>' );

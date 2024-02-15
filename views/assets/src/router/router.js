@@ -5,7 +5,9 @@ import '@components/importtools/router';
 //import '@components/tools/router';
 import '@components/my-tasks/router';
 import '@components/reports/router';
+import '@components/global-kanban/router';
 
+// IF NOT PRO
 if ( !PM_Vars.is_pro ) {
     require('@components/welcome/router');
     require('@components/premium/router');
@@ -32,9 +34,7 @@ weDevs_PM_Routers.push({
 	path: '/',
     component:  Empty,
     name: 'project_root',
-    // Not all of the files which contain routes are listed in this file,
-    // so you have to find the files our there that contribute to this parent route.
-    // good luck
+
 	children: wedevsPMGetRegisterChildrenRoute('project_root')
 });
 

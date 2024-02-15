@@ -98,6 +98,23 @@
               </a>
             </div>
           </li>
+
+          <li class="pm-col-lg-3 pm-col-sm-6 pm-col-xs-6">
+            <div class="pm-card pm-card-default card-milestone-tasks">
+              <img :src="getAssetUrl( '/images/taskby_milestone.svg' )" height="50"> <br>
+              <h3>
+                Jobs by Input Date
+                <Badge />
+              </h3>
+              <div class="project-meta-text" v-html="'<p>Browse<strong>tasks</strong> according to <strong>Input Date</strong></p>'"></div>
+              <a href="#" @click.stop class="pm--btn pm--btn-default">
+                <i class="flaticon-eye"></i>
+                {{ __( 'View Full Report', 'wedevs-project-manager' ) }}
+                <UpgraderOverlay />
+              </a>
+            </div>
+          </li>
+
           <div class="clearfix"></div>
         </ul>
 
@@ -189,11 +206,7 @@ export default {
   components: {
     Badge,
     UpgraderOverlay,
-  },
-
-  mounted: function(){
-    pm.NProgress.done();
-  },
+  }
 }
 
 </script>

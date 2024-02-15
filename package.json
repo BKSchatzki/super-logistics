@@ -1,6 +1,6 @@
 {
   "name": "pmapi",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "Front-end package manager for project manager",
   "main": "index.js",
   "directories": {
@@ -108,6 +108,7 @@
     "vue-popperjs": "^1.6.3",
     "vue-router": "^3.0.1",
     "vue2-daterange-picker": "^0.5.1",
+    "vuedraggable": "^2.24.3",
     "vuex": "^3.0.0"
   }
 }

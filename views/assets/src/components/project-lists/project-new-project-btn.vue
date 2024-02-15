@@ -1,30 +1,48 @@
 <template>
-    <div>
-        <a href="#" id="pm-create-project" @click.prevent="is_project_popup_active()" class="pm-btn pm-btn-primary pm-btn-uppercase">
-            <i class="pm-icon flaticon-plus" aria-hidden="true"></i>&nbsp;&nbsp;{{ __( 'New Project', 'wedevs-project-manager') }}
-        </a>
-        <a href="#" id="pm-create-project" @click.prevent="is_project_popup_active()" class="pm-btn pm-btn-primary pm-btn-uppercase">
-            <i class="pm-icon flaticon-plus" aria-hidden="true"></i>&nbsp;&nbsp;New Customer
-        </a>
-<!--        <a href="#" id="pm-create-global-task" @click.prevent="is_task_popup_active()" class="pm-btn pm-btn-primary pm-btn-uppercase">-->
-<!--            <i class="pm-icon flaticon-plus" aria-hidden="true"></i>&nbsp;&nbsp;New Task-->
-<!--        </a>-->
-    </div>
+  <div>
+    <!-- "New Project" Button -->
+    <button @click="showCustomerModal = true">New Project</button>
+    <!-- "New Customer" Button -->
+    <button @click="showCustomerModal = true">New Customer</button>
+    <!-- "New Task" Button -->
+    <button @click="showTaskModal = true">New Task</button>
+
+    <!-- Project Modal -->
+    <modal-component :is-active.sync="showCustomerModal">
+      <project-create-form :is-active="showCustomerModal" @update:is-active="val => showCustomerModal = val"></project-create-form>
+    </modal-component>
+
+
+    <!-- Customer Modal -->
+    <modal-component :is-active.sync="showCustomerModal">
+      <project-create-form :is-active="showCustomerModal" @update:is-active="val => showCustomerModal = val"></project-create-form>
+    </modal-component>
+
+
+    <!-- Task Modal -->
+    <modal-component :is-active="showTaskModal" @close="showTaskModal = false">
+      <globally-task-create-form></globally-task-create-form>
+    </modal-component>
+  </div>
 </template>
 
 <script>
-    var project_btn = {
-        methods: {
-            is_project_popup_active () {
-                jQuery('#pm-project-dialog').dialog( "open" );
-                //this.$store.commit('is_popup_active', {is_active: true});
-            },
-            is_task_popup_active () {
-                jQuery('#pm-global-task-dialog').dialog( "open" );
-                //this.$store.commit('is_popup_active', {is_active: true});
-            }
-        }
-    }
+import ModalComponent from "@components/common/Modal.vue";
+import ProjectCreateForm from "@components/project-lists/project-create-form.vue";
+import GloballyTaskCreateForm from "@components/common/globally-task-create-form.vue";
 
-    export default project_btn;
+export default {
+  components: {
+    "globally-task-create-form": GloballyTaskCreateForm,
+    "modal-component": ModalComponent,
+    "project-create-form": ProjectCreateForm
+  },
+  data() {
+    return {
+      showProjectModal: false,
+      showCustomerModal: false,
+      showTaskModal: false
+    };
+  }
+};
 </script>

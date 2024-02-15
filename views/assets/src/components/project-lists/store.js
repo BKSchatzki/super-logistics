@@ -2,13 +2,14 @@
 /**
  * Make sure to call pm.Vue.use(Vuex) first if using a vuex module system
  */
-var Store = {
+const Store = {
     state: {
 
         projects: [],
         project: {},
         project_users: [],
         categories: [],
+        stages: [],
         roles: [],
         milestones: [],
         milestones_load: false,
@@ -41,12 +42,14 @@ var Store = {
         setProject (state, project) {
             state.projects.push(project);
         },
-
         setProjectUsers (state, users) {
             state.project_users = users;
         },
         setCategories (state, categories) {
             state.categories = categories;
+        },
+        setStages (state, stages) {
+            state.stages = stages;
         },
         setRoles (state, roles) {
             state.roles = roles;

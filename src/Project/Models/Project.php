@@ -56,6 +56,10 @@ class Project extends Eloquent {
         return $this->belongsToMany( 'WeDevs\PM\Category\Models\Category', pm_tb_prefix() . 'pm_category_project', 'project_id', 'category_id' );
     }
 
+    public function stage() {
+        return $this->belongsTo('WeDevs\PM\Stage\Models\Stage', 'stage_id', 'id', m_tb_prefix() . 'pm_stage_project');
+    }
+
     /**
      *  we join pm_roles table with pm_role_user 
      */
