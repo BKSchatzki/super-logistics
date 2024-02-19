@@ -2,6 +2,7 @@ export default new pm.Vuex.Store({
     state: {
         manageCapability:[],
         is_need_fetch_view_type: true,
+        // project state
         projectLoaded : false,
         projectOverviewLoaded: false,
         projectDiscussLoaded: false,
@@ -14,13 +15,15 @@ export default new pm.Vuex.Store({
         projects: [],
         project: {},
         projectMeta: {},
-        project_stages: {},
         project_users: [],
-        is_single_task: false,
-        categories: [],
+        // stages state (kanban)
         stages: [],
-        product_stages: {},
+        project_stages: {},
+        // categories state
+        categories: [],
         categoryMeta: {},
+        // more
+        is_single_task: false,
         roles: [],
         milestones: [],
         milestones_load: false,

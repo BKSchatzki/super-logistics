@@ -53,11 +53,13 @@ class Project extends Eloquent {
     }
 
     public function categories() {
-        return $this->belongsToMany( 'WeDevs\PM\Category\Models\Category', pm_tb_prefix() . 'pm_category_project', 'project_id', 'category_id' );
+        return $this->belongsToMany( 'WeDevs\PM\Category\Models\Category',
+            pm_tb_prefix() . 'pm_category_project', 'project_id', 'category_id');
     }
 
     public function stage() {
-        return $this->belongsTo('WeDevs\PM\Stage\Models\Stage', 'stage_id', 'id', m_tb_prefix() . 'pm_stage_project');
+        return $this->belongsToMany('WeDevs\PM\Stage\Models\Stage',
+            pm_tb_prefix() . 'pm_stage_projects', 'project_id', 'stage_id');
     }
 
     /**
@@ -67,9 +69,13 @@ class Project extends Eloquent {
         $role_id = Role::where('status', 1)->get(['id'])->toArray();
         $role_id = wp_list_pluck($role_id, 'id');
         
-        return $this->belongsToMany( 'WeDevs\PM\User\Models\User', pm_tb_prefix() . 'pm_role_user', 'project_id', 'user_id' )
+        return $this->belongsToMany( 'WeDevs\PM\User\Models\User',
+            pm_tb_prefix() . 'pm_role_user',
+            'project_id',
+            'user_id'
+            )
             ->whereIn( 'role_id', $role_id)
-            ->withPivot( 'project_id', 'role_id' ); 
+            ->withPivot( 'project_id', 'role_id' );
     }
 
     public function task_lists() {

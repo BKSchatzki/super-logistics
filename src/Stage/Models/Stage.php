@@ -14,10 +14,10 @@ class Stage extends Eloquent {
     protected $fillable = [
         'title',
         'description',
-        'categorible_type',
+        'type',
     ];
 
     public function project() {
-        return $this->hasMany('WeDevs\PM\Project\Models\Project', 'stage_id', 'id', pm_tb_prefix() . 'pm_stage_project');
+        return $this->belongsToMany( 'WeDevs\PM\Project\Models\Project', pm_tb_prefix() . 'pm_stage_projects', 'stage_id', 'project_id' );
     }
 }

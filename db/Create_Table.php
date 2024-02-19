@@ -290,7 +290,7 @@ class PM_Create_Table {
 			  `type` varchar(255) DEFAULT NULL,
 			  `status` tinyint(2) unsigned NOT NULL DEFAULT '1',
 			  `is_private` tinyint(2) UNSIGNED default 0,
-			  `project_id` int(11) UNSIGNED NOT NULL,
+			  `project_id` int(11) UNSIGNED,
 			  `created_by` int(11) UNSIGNED DEFAULT NULL,
 			  `updated_by` int(11) UNSIGNED DEFAULT NULL,
 			  `created_at` timestamp NULL DEFAULT NULL,
