@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM_Pro\Modules\Kanboard\Src\Controllers;
+namespace WeDevs\PM\Global_Kanboard\Controllers;
 
 use Reflection;
 use WP_REST_Request;
@@ -13,12 +13,13 @@ use WeDevs\PM\Common\Models\Boardable;
 use WeDevs\PM\Common\Traits\Request_Filter;
 use Carbon\Carbon;
 use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM_Pro\Modules\Kanboard\Src\Models\Kanboard;
-use WeDevs\PM_Pro\Modules\Kanboard\Src\Transformers\Kanboard_Transformer;
-use WeDevs\PM_Pro\Modules\Kanboard\Src\Models\Kanboard_Boardable;
-use WeDevs\PM_Pro\Modules\Kanboard\Src\Transformers\Kanboard_Task_Transformer;
+use WeDevs\PM\Global_Kanboard\Models\Global_Kanboard;
+use WeDevs\PM\Global_Kanboard\Transformers\Global_Kanboard_Transformer;
+use WeDevs\PM\Global_Kanboard\Models\Global_Kanboard_Boardable;
+use WeDevs\PM\Global_Kanboard\Transformers\Global_Kanboard_Task_Transformer;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use WeDevs\PM\Task\Transformers\Task_Transformer;
+use WeDevs\PM\Project\Transformers\Project_Transformer;
 use Illuminate\Pagination\Paginator;
 use WeDevs\PM\Task\Controllers\Task_Controller;
 use WeDevs\PM\Common\Models\Assignee;
@@ -26,35 +27,39 @@ use WeDevs\PM\Task_List\Transformers\List_Task_Transformer;
 use WeDevs\PM\task\Helper\Task as Advanced_Task;
 use WeDevs\PM\Task\Helper\Task as Task_Helper;
 
+use WeDevs\PM\Project\Helper\Project as Project_Helper;
 
-class Kanboard_Controller {
+class Global_Kanboard_Controller {
 
     use Transformer_Manager, Request_Filter;
 
-    private static $_instance;
+    private static $instance;
+    private static $global_kanboard_id = 999999;
 
     public static function getInstance() {
-        if ( !self::$_instance ) {
-            self::$_instance = new self();
+        if ( !self::$instance ) {
+            self::$instance = new self();
         }
 
-        return self::$_instance;
+        return self::$instance;
     }
 
     public function index( WP_REST_Request $request ) {
-        $project_id = $request->get_param( 'project_id' );
+    // this is for the global kanboard, the table pm_boards uses project ids
+    // however since this doesn't belong to a project, we use the global kanboard id
+    // which is 999999 (arbitrary, fixed)
 
-        if ( !$this->hsaDefautlBoard( $project_id ) ) {
-            $default_bords = $this->setDefaultBoard( $project_id );
+        if ( !$this->hasDefaultBoard( self::$global_kanboard_id ) ) {
+            $this->setDefaultBoard( self::$global_kanboard_id );
         }
 
-        $boards = Kanboard::with('meta')
-            ->where('project_id', $project_id)
+        $boards = Global_Kanboard::with('meta')
+            ->where('project_id', self::$global_kanboard_id)
             ->where( 'type', 'kanboard' )
             ->orderBy( 'order', 'ASC' )
             ->get();
 
-        $resource = new Collection( $boards, new Kanboard_Transformer );
+        $resource = new Collection( $boards, new Global_Kanboard_Transformer );
 
         return $this->get_response( $resource );
     }
@@ -92,8 +97,34 @@ class Kanboard_Controller {
         return [];
     }
 
-    public function hsaDefautlBoard( $project_id ) {
-        $default_board = Kanboard::where( 'project_id', $project_id )
+    public function store_searchable_project(WP_REST_Request $request) {
+
+        $board_id   = $request->get_param( 'board_id' );
+        $project_id = $request->get_param( 'project_id' );
+
+        $has_project = Boardable::where('board_type', 'kanboard')
+            ->where('boardable_id', $project_id)
+            ->first();
+
+        if ( ! $has_project ) {
+
+            $data = [
+                'board_id'       => $board_id,
+                'board_type'     => 'kanboard',
+                'boardable_id'   => $project_id,
+                'boardable_type' => 'project',
+                'order'          => 0
+            ];
+
+            Boardable::create($data);
+
+        }
+
+        return [];
+    }
+
+    public function hasDefaultBoard( $project_id ) {
+        $default_board = Global_Kanboard::where( 'project_id', $project_id )
             ->where( 'type', 'kanboard' )
             ->get()
             ->toArray();
@@ -105,68 +136,68 @@ class Kanboard_Controller {
         return true;
     }
 
-    function setDefaultBoard( $project_id ) {
+    protected function setDefaultBoard() {
+    // Creates the default board for a new kanban instance
+    // This instance then becomes the "default board" even if the instance is edited
+        self::$global_kanboard_id;
+
         $default = array(
             array(
-                'title'      => __( 'Open', 'kbc' ),
+                'title'      => __( 'Sales Call', 'kbc' ),
                 'order'      => 0,
                 'type'       => 'kanboard',
-                'project_id' => $project_id
+                'project_id' => self::$global_kanboard_id
             ),
-
             array(
-                'title'       => __( 'In Progress', 'kbc' ),
+                'title'       => __( 'Estimate Delivered', 'kbc' ),
                 'order'      => 1,
                 'type'       => 'kanboard',
-                'project_id' => $project_id
+                'project_id' => self::$global_kanboard_id
             ),
             array(
-                'title'       => __( 'Done', 'kbc' ),
+                'title'       => __( 'Job in Progress', 'kbc' ),
                 'order'      => 2,
                 'type'       => 'kanboard',
-                'project_id' => $project_id
+                'project_id' => self::$global_kanboard_id
+            ),
+            array(
+                'title'       => __( 'Paid', 'kbc' ),
+                'order'      => 3,
+                'type'       => 'kanboard',
+                'project_id' => self::$global_kanboard_id
             ),
 
             array(
 
-                'title'      => __( 'Overdue', 'kbc' ),
-                'order'      => 3,
+                'title'      => __( 'Completed', 'kbc' ),
+                'order'      => 4,
                 'type'       => 'kanboard',
-                'project_id' => $project_id
+                'project_id' => self::$global_kanboard_id
             )
         );
 
-        $default = apply_filters( 'pm_kanban_default_boards', $default, $project_id );
+        $default = apply_filters( 'pm_kanban_default_boards', $default, self::$global_kanboard_id );
 
-        $insert = Kanboard::insert( $default );
+        Global_Kanboard::insert( $default );
     }
 
     public function show( WP_REST_Request $request ) {
-        $board_id       = $request->get_param( 'board_id' );
-        $project_id     = $request->get_param( 'project_id' );
-        $per_page       = $request->get_param( 'per_page' );
-        $per_page       = $per_page ? $per_page : 50;
-        $page           = $request->get_param( 'page' );
-        $page           = $page ? $page : 1;
-        $bortable_table = 'pm_boardables';
-        $task_table     = 'pm_tasks';
+    // this is the function to return tasks for the entire Global Kanban)
+        $board_id        = $request->get_param( 'board_id' );
+        $per_page        = 50;
+        $boardable_table = 'pm_boardables';
+        $project_table   = 'pm_projects';
 
-        Paginator::currentPageResolver(function () use ($page) {
-            return $page;
-        });
-
-        $tasks = Kanboard::with('tasks')
+        $projects = Global_Kanboard::with('projects')
             ->find($board_id)
-            ->tasks();
-           // ->getQuery();// Task list can not fetch from task transformer, if you include this line
+            ->projects();
 
-        $tasks = apply_filters( 'pm_task_query', $tasks,  $project_id, $request );
-        $tasks = $tasks->paginate( $per_page, ['*'] );
+        $projects = apply_filters( 'pm_projects_query', $projects,  self::$global_kanboard_id, $request );
+        $projects = $projects->paginate( $per_page, ['*'] );
 
-        $task_collection = $tasks->getCollection();
+        $project_collection = $projects->getCollection();
 
-        $resource = new Collection( $task_collection, new Task_Transformer );
-        $resource->setPaginator( new IlluminatePaginatorAdapter( $tasks ) );
+        $resource = new Collection( $project_collection, new Project_Transformer );
 
         return $this->get_response( $resource );
     }
@@ -175,7 +206,7 @@ class Kanboard_Controller {
     public function store( WP_REST_Request $request ) {
         $project_id  = $request->get_param( 'project_id' );
 
-        $latest_order = Kanboard::latest_order( $project_id, 'kanboard' );
+        $latest_order = Global_Kanboard::latest_order( $project_id, 'kanboard' );
 
         $data = [
             'title'      => $request->get_param( 'board_title' ),
@@ -184,7 +215,7 @@ class Kanboard_Controller {
             'project_id' => $request->get_param( 'project_id' ),
         ];
 
-        $kanboard = Kanboard::create($data);
+        $kanboard = Global_Kanboard::create($data);
 
         $resource = new Item( $kanboard, new Kanboard_Transformer );
         $message  = [
@@ -200,7 +231,7 @@ class Kanboard_Controller {
         $board_id   = $request->get_param( 'board_id' );
         $project_id = $request->get_param( 'project_id' );
 
-        $board = Kanboard::find($board_id );
+        $board = Global_Kanboard::find($board_id );
 
         if ( ! $board ) {
             return false;
@@ -226,7 +257,7 @@ class Kanboard_Controller {
         $project_id = $request->get_param( 'project_id' );
 
         // Select the time
-        $board = Kanboard::where( 'id', $board_id )
+        $board = Global_Kanboard::where( 'id', $board_id )
             ->first();
 
         $this->delete_all_relation($board);
@@ -243,6 +274,45 @@ class Kanboard_Controller {
         return $this->get_response(null, $message);
     }
 
+    public function update_boardable( WP_REST_Request $request ) {
+        $from_board_id = $request->get_param( 'from_board_id' );
+        $project_id = $request->get_param( 'project_id' );
+        $to_board_id = $request->get_param( 'to_board_id' );
+
+        // Select the time
+        $boardable = Boardable::where( 'board_id', $from_board_id )
+            ->where( 'board_type', 'kanboard' )
+            ->where( 'boardable_id', $project_id )
+            ->first();
+
+        $boardable->update(['board_id' => $to_board_id]);
+
+        $message = [
+            'message' => 'Project successfully moved from board $from_board_id to board $to_board_id'
+        ];
+
+        return $this->get_response(null, $message);
+    }
+
+    public function remove_boardable( WP_REST_Request $request ) {
+        $board_id = $request->get_param( 'board_id' );
+        $project_id = $request->get_param( 'project_id' );
+
+        // Select the time
+        $boardable = Boardable::where( 'board_id', $board_id )
+            ->where( 'board_type', 'kanboard' )
+            ->where( 'boardable_id', $project_id )
+            ->first();
+
+        $boardable->delete();
+
+        $message = [
+            'message' => 'Project removed from board successfully'
+        ];
+
+        return $this->get_response(null, $message);
+    }
+
     function delete_all_relation(Kanboard $board) {
         $board->boardables()->delete();
     }
@@ -252,7 +322,7 @@ class Kanboard_Controller {
         $project_id = $request->get_param('project_id');
 
         foreach ( $board_orders as $key => $value) {
-            Kanboard::where( 'project_id', $project_id )
+            Global_Kanboard::where( 'project_id', $project_id )
                 ->where( 'type', 'kanboard' )
                 ->where( 'id', $value['section_id'] )
                 ->update( ['order' => $value['order']] );
@@ -487,12 +557,20 @@ class Kanboard_Controller {
 
                         if ( $meta['meta_value']['todo']['section'] == 'lists' ) {
                             if ( !empty( $meta['meta_value']['todo']['lists'] ) ) {
-                                return new \WP_Error( 'newlyadded', __( "Plase remove the 'task lists' item from others column", "pm-pro" ) );
+                                return new \WP_Error(
+                                    'newlyadded',
+                                    __( "Please remove the 'task lists' item from others column",
+                                    "pm-pro"
+                                    ) );
                             }
                         }
 
                         if ( $meta['meta_value']['todo']['section'] == 'newlyadded' ) {
-                            return new \WP_Error( 'newlyadded', __( "You have selectd 'Newlyadded' option for others column", "pm-pro" ) );
+                            return new \WP_Error(
+                                'newlyadded',
+                                __( "You have selectd 'Newlyadded' option for others column",
+                                "pm-pro" )
+                            );
                         }
                     }
                 }
@@ -509,7 +587,10 @@ class Kanboard_Controller {
 
                         if ( $meta['meta_value']['todo']['section'] == 'newlyadded' ) {
                             if ( !empty( $data['todo']['lists'] ) ) {
-                                return new \WP_Error( 'newlyadded', __( "Please remove the 'Newlyadded' option from others column", "pm-pro" ) );
+                                return new \WP_Error(
+                                    'newlyadded',
+                                    __( "Please remove the 'Newlyadded' option from others column", "pm-pro" )
+                                );
                             }
                         }
 
@@ -542,8 +623,15 @@ class Kanboard_Controller {
 
                 if ( $meta['meta_value']['type'] == 'done' ) {
 
-                    if ( $meta['meta_value']['done']['completed'] == $data['done']['completed'] && $data['done']['completed'] != 'false' && !empty($data['done']['completed']) ) {
-                        return new \WP_Error( 'done', __( "You have already selectd 'completed tasks' in others column", "pm-pro" ) );
+                    if ( $meta['meta_value']['done']['completed'] == $data['done']['completed']
+                        && $data['done']['completed'] != 'false'
+                        && !empty($data['done']['completed']) ) {
+
+                        return new \WP_Error( 'done', __(
+                            "You have already selected 'completed tasks' in others column",
+                            "pm-pro"
+                            )
+                        );
                     }
                 }
             }
@@ -602,7 +690,7 @@ class Kanboard_Controller {
         $project_id = $postData['project_id'];
         $board_id = $postData['board_id'];
 
-        $tasks = Kanboard::with('tasks')
+        $tasks = Global_Kanboard::with('tasks')
             ->find( $board_id )
             ->tasks()
             ->get()
@@ -859,7 +947,7 @@ class Kanboard_Controller {
             }
         }
 
-        $boards = Kanboard::select( $tb_lists. '.id' )
+        $boards = Global_Kanboard::select( $tb_lists. '.id' )
             ->where( $tb_lists . '.type', 'kanboard' )
             ->with(
                 [
@@ -930,50 +1018,27 @@ class Kanboard_Controller {
         return wp_send_json_success();
     }
 
-    public function get_tasks( WP_REST_Request $request ) {
+    public function get_projects( WP_REST_Request $request ) {
         global $wpdb;
-        $project_id = $request->get_param('project_id');
-        $lists = $request->get_param('lists');
-        $with = $request->get_param('with');
-        $tk_ids = [];
 
-        $tasks = Task_Helper::get_results([
-            'project_id' => $project_id,
-            'lists' => $lists,
-            'with' => $with
-
-        ]);
-
-        $tk_ids = wp_list_pluck( $tasks['data'], 'id' );
-
-        $boards = Boardable::where( 'board_type', 'kanboard' )
-            ->where( 'board_type', 'task' )
-            ->whereIn( 'boardable_id', $tk_ids )
+        $all_projects = Project::where('status', 0)
             ->get()
             ->toArray();
 
+        $preexisting_boardables = Boardable::where( 'board_type', 'kanboard' )
+            ->where( 'boardable_type', 'project' )
+            ->get()
+            ->toArray();
 
-        $query_id = implode( ',', $tk_ids );
-
-        if ( empty( $query_id ) ) {
+        if ( empty( $boardables ) ) {
             wp_send_json_success( [] );
-        }
+        };
 
-        $query = "SELECT *
-            FROM {$wpdb->prefix}pm_boardables as bor
-            LEFT JOIN {$wpdb->prefix}pm_tasks as tsk ON bor.boardable_id=tsk.id
-            WHERE bor.board_type='kanboard'
-            AND bor.boardable_type='task'
-            AND tsk.id IN ($query_id)
-            AND tsk.project_id={$project_id}";
-
-        $results = $wpdb->get_results( $query );
-
-        $kb_tk_ids = wp_list_pluck( $results, 'id' );
+        // Project Ids which are already on the kanban
+        $gk_project_ids = wp_list_pluck( $results, 'id' );
 
         foreach ( $tasks['data'] as $key => $task ) {
-            //pmpr($task);
-            if ( in_array( $task['id'], $kb_tk_ids ) ) {
+            if ( in_array( $task['id'], $gk_project_ids ) ) {
                 unset( $tasks['data'][$key] );
             }
         }

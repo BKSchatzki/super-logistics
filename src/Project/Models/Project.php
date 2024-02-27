@@ -57,11 +57,6 @@ class Project extends Eloquent {
             pm_tb_prefix() . 'pm_category_project', 'project_id', 'category_id');
     }
 
-    public function stage() {
-        return $this->belongsToMany('WeDevs\PM\Stage\Models\Stage',
-            pm_tb_prefix() . 'pm_stage_projects', 'project_id', 'stage_id');
-    }
-
     /**
      *  we join pm_roles table with pm_role_user 
      */
@@ -76,6 +71,11 @@ class Project extends Eloquent {
             )
             ->whereIn( 'role_id', $role_id)
             ->withPivot( 'project_id', 'role_id' );
+    }
+
+    public function boardables() {
+        return $this->hasMany( 'WeDevs\PM\Common\Models\Boardable', 'boardable_id' )
+        ->where( 'boardable_type', 'project' );
     }
 
     public function task_lists() {

@@ -1,3 +1,52 @@
+<script>
+import KanbanColumn from "@components/global-kanban/kanban-column.vue";
+import ProjectNewProjectBtn from "@components/project-lists/project-new-project-btn.vue";
+import KanbanMixins from "@components/global-kanban/mixin";
+
+export default {
+  components: {
+    "new-project-task-btns" : ProjectNewProjectBtn,
+    "kanban-column": KanbanColumn
+  },
+  computed: {
+    gkColumns() {
+      return this.$store.state.globalKanban_columns;
+    }
+  },
+  mixins: [KanbanMixins],
+  methods: {
+    toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        const kanboard = document.getElementById('gk-main');
+        kanboard.requestFullscreen().catch(err => {
+          alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+  },
+
+  created () {
+    const pArgs = {
+      status: 0,
+      per_page: 0
+    };
+
+    this.getProjects(pArgs);
+    this.getGlobalKanban();
+  },
+  data() {
+    return {
+
+    }
+  },
+  mounted() {
+
+  }
+}
+</script>
+
 <template>
   <div class="pm-wrap pm pm-kanboard">
     <new-project-task-btns></new-project-task-btns>
@@ -22,7 +71,7 @@
         <div class="kbc-table-wrap">
           <div class="kbc-th-wrap kbc-section-order-wrap ui-sortable">
 <!------------------------------------Kanban Column(s)--------------------->
-            <kanban-column v-for="stage in stages" :title="stage.title" :stage_id="stage.id" ></kanban-column>
+            <kanban-column v-for="board in gkColumns" :title="board.title" :allProjects="$store.state.projects" :id="board.id"></kanban-column>
 <!------------------------------------Add New Column----------------------->
             <div class="kbc-th kbc-th-new-section kbc-non-sortable ui-sortable-handle">
               <div class="kbc-section-header">
@@ -256,68 +305,3 @@
 }
 /* Kanban styles end */
 </style>
-
-<script>
-import KanbanColumn from "@components/global-kanban/kanban-column.vue";
-import ProjectNewProjectBtn from "@components/project-lists/project-new-project-btn.vue";
-import ProjectMixins from "@components/project-lists/mixin";
-
-export default {
-  components: {
-    "new-project-task-btns" : ProjectNewProjectBtn,
-    "kanban-column": KanbanColumn
-  },
-  mixins: [ProjectMixins],
-  computed: {
-    stages () {
-      // Just a nice little warning
-      // $store.state.stages is set when something calls getStages() in the store
-      // So one of the components on this page is doing it, but if it suddenly doesn't, they may not be there anymore
-      return this.$root.$store.state.stages;
-    }
-  },
-  methods: {
-    toggleFullScreen() {
-      if (!document.fullscreenElement) {
-        const kanboard = document.getElementById('gk-main');
-        kanboard.requestFullscreen().catch(err => {
-          alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-        });
-      } else {
-        document.exitFullscreen();
-      }
-    },
-    projectQuery () {
-      const self = this;
-      const args = {
-        conditions: {
-          status: 'incomplete',
-          with: 'assignees',
-          per_page: self.getSettings('project_per_page', 50),
-          project_meta: 'all',
-          orderby: 'id:desc',
-        },
-
-        callback (res) {
-          self.projectFetchStatus(true);
-          self.loading = false;
-        }
-      }
-
-      this.loading = true;
-      this.getProjects(args);
-    }
-  },
-
-  created () {
-    this.projectQuery();
-  },
-  data() {
-    return {
-    }
-  },
-  mounted() {
-
-  }
-}
-</script>

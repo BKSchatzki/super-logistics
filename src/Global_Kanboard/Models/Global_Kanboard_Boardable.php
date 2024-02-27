@@ -1,10 +1,10 @@
 <?php
-namespace WeDevs\PM_Pro\Modules\Kanboard\Src\Models;
+namespace WeDevs\PM\Global_Kanboard\Models;
 
 use WeDevs\PM\Common\Models\Boardable;
 use WeDevs\PM\Task\Models\Task;
 
-class Kanboard_Boardable extends Boardable {
+class Global_Kanboard_Boardable extends Boardable {
 
 	public function tasks($project_id = false) {
 		if ( $project_id ) {

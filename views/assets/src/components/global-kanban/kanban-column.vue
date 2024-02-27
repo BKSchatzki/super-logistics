@@ -1,9 +1,11 @@
 <script>
+import vSelect from 'vue-select';
 import draggable from "vuedraggable";
 import ProjectNewProjectBtn from "@components/project-lists/project-new-project-btn.vue";
 import CuteMenu from "@components/global-kanban/cute-menu.vue";
 import ProjectCard from "@components/global-kanban/project-card.vue";
 import rootMixins from "@helpers/mixin/mixin.js";
+import GKMixins from "@components/global-kanban/mixin";
 
 export default {
   name: "kanban-column",
@@ -12,17 +14,23 @@ export default {
       type: String,
       required: true
     },
-    stage_id: {
+    allProjects: {
+      type: Array,
+      required: false,
+      default: () => []
+    },
+    id: {
       type: Number,
       required: true
     }
   },
-  mixins: [rootMixins],
+  mixins: [rootMixins, GKMixins],
   components: {
     ProjectCard,
     CuteMenu,
     draggable,
-    'new-project-btn' : ProjectNewProjectBtn
+    'new-project-btn' : ProjectNewProjectBtn,
+    'v-select' : vSelect
   },
   methods: {
     toggleDropdown(dropdownKey) {
@@ -34,62 +42,52 @@ export default {
         }
       }
     },
-    populateProjects() {
-      let projects = this.$store.state.projects;
-      return projects.filter(project => project.stage === this.stage_id);
+    addProject(project) {
+      console.log("Board id: ", this.id);
+      console.log("Project Added: ", project);
+      this.addProjectBoardable(this.id, project);
+      this.dropdowns.addProjMenu = false;
     },
-    updateProjectStage(evt) {
-      let projectId = this.projects[evt.newIndex].id;
-    }
-  },
-  computed: {
-    projects: {
-      get: function () {
-        let project_stages = this.$store.state.project_stages;
-        console.log(this.stage_id, " Whole project_stages object: ", project_stages);
+    moveProject(evt) {
+      // const project_id = parseInt(evt.item.id.split("_")[1]);
+      // const to_board_id = parseInt(evt.to.parentElement.id.split("_")[1]);
+      console.log("evt: ", evt);
+      return true;
+      // console.log("from_board_id: ", this.id);
+      // console.log("to_board_id: ", to_board_id);
 
-        let entries = Object.entries(project_stages);
-        console.log(this.stage_id, " Entries: ", entries);
-
-        let filteredEntries = entries.filter(([projectId, stageId]) => {
-          console.log(this.stage_id, " Current projectId: ", projectId);
-          console.log(this.stage_id, " Current stageId: ", stageId);
-          console.log(this.stage_id, " this.stage_id: ", this.stage_id);
-          let match = stageId === this.stage_id;
-          console.log(this.stage_id, " Match: ", match);
-          return match;
-        });
-        console.log(this.stage_id, " Filtered entries: ", filteredEntries);
-
-        let projectIds = filteredEntries.map(([projectId]) => {
-          console.log(this.stage_id, " Current projectId: ", projectId);
-          return projectId;
-        });
-        console.log(this.stage_id, " Final projectIds: ", projectIds);
-
-        return projectIds;
-      },
-      set(projectId) {
-        this.$store.commit('setProjectStage', {
-          projectId: projectId,
-          stageId: this.stage_id
-        });
-      }
+      // if (to_board_id !== this.id) {
+      //   this.updateProjectBoardable(this.id, project_id, to_board_id);
+      // }
     }
   },
 
   created() {
-    this.getProjectsAtStage(this.stage_id);
+    this.getProjectBoardables(this.id);
   },
-
   data() {
     return {
       dropdowns: {
-        isAddProjMenuVisible: false,
-        isColOptionsMenuVisible: false
+        addProjMenu: false,
+        columnMenu: false
       },
+      board_id: "board_" + this.id,
+      editable: true
     };
   },
+  computed: {
+    colProjects() {
+      return this.$store.state.globalKanban_boardables[this.id] || [];
+    },
+    dragOptions() {
+      return {
+        animation: 0,
+        group: "description",
+        disabled: !this.editable,
+        ghostClass: "ghost"
+      }
+    }
+  }
 }
 </script>
 
@@ -109,25 +107,23 @@ export default {
             <div class="v-popover" fragment="15c5c64b77a">
               <div class="trigger" style="display: inline-block;">
                 <!------------Add Project Button------>
-                <button id="gk-add-project-btn" @click="toggleDropdown('isAddProjMenuVisible')" class="pm-pro-kanboard-action-hrf">
+                <button id="gk-add-project-btn" @click="toggleDropdown('addProjMenu')" class="pm-pro-kanboard-action-hrf">
                   <span style="color: rgb(52, 128, 235);">
                     <i aria-hidden="true" class="fa fa-plus"></i>
                   </span>
                 </button>
-                <!------------Column Options Button-->
-                <button id="gk-col-options-btn" @click="toggleDropdown('isColOptionsMenuVisible')" class="pm-pro-kanboard-action-hrf pm-pro-kanboard-del-btn">
+                <button id="gk-col-options-btn" @click="toggleDropdown('columnMenu')" class="pm-pro-kanboard-action-hrf pm-pro-kanboard-del-btn">
                   <span style="color: rgb(52, 128, 235);">
                     <i aria-hidden="true" class="fa fa-ellipsis-v"></i>
                   </span>
                 </button>
-                <!------------Add Project Dropdown--->
-                <div v-show="dropdowns.isAddProjMenuVisible" class="dropdown-content">
+                <div v-show="dropdowns.addProjMenu" class="dropdown-content">
                   <cute-menu>
-                    <a v-for="project in projectOpts">{{ project.name }}</a>
+                    <v-select ref="select" :options="allProjects" label="title" @input="addProject"></v-select>
                   </cute-menu>
                 </div>
                 <!------------Options Dropdown------->
-                <div v-show="dropdowns.isColOptionsMenuVisible" class="dropdown-content">
+                <div v-show="dropdowns.columnMenu" class="dropdown-content">
                   <cute-menu>
                     <a href="#">Edit</a>
                     <a href="#">Delete</a>
@@ -142,8 +138,10 @@ export default {
       </div>
 <!---------------------------Projects in the Column-------------------------->
       <div class="kbc-tasks-wrap">
-        <draggable v-for="project in projects" v-model="projects" :group="projects" @end="updateProjectStage">
-            <project-card :project="project"></project-card>
+        <draggable :move="moveProject" class="gk-draggable-field" :id="board_id" v-bind="dragOptions">
+          <transition-group class="gk-draggable-field">
+            <project-card v-for="project in colProjects" :key="project.id" :project="project" :board_id="id"></project-card>
+          </transition-group>
         </draggable>
       </div>
       <div class="kbc-section-footer"></div>
@@ -192,6 +190,11 @@ export default {
    margin-right: 10px;
    border-right: 1px solid #e2e2e2;
  }
+
+  .gk-draggable-field {
+    height: 100%;
+    width: 100%;
+  }
 
  .kanboard-menu-wrap {
    padding: 10px 0px;
@@ -255,7 +258,7 @@ export default {
 /* Kanban styles */
 .kbc-clearfix {
   visibility: hidden;
-  display: block;
+  display: block;F
   font-size: 0;
   content: " ";
   clear: both;

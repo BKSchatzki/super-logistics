@@ -1,4 +1,5 @@
 <script>
+import GKMixins from "@components/global-kanban/mixin";
 export default {
   name: "project-card.vue",
   props: {
@@ -7,15 +8,37 @@ export default {
     project: {
       type: Object,
       required: true
+    },
+    board_id: {
+      type: Number,
+      required: true
     }
+  },
+  mixins: [GKMixins],
+  methods: {
+    removeProj() {
+      // removes the project from the board (meaning, the column)
+      this.removeProjectBoardable(this.board_id, this.project.id);
+    }
+  },
+  data () {
+    return {
+      id: "project_" + this.project.id,
+    }
+
   }
 }
 </script>
 
 <template>
-  <div class="gk-project-card">
+  <div class="gk-project-card" :id="id">
     <h4>{{ project.title }}</h4>
-    <a href="/projects/{project.id}">See Project</a>
+    <router-link :to="{ name: 'task_lists', params: { project_id: project.id } }">See Project</router-link>
+    <button @click="removeProj">
+      <span>
+        <i class="fa fa-trash"></i>
+      </span>
+    </button>
   </div>
 </template>
 

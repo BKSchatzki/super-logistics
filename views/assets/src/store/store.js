@@ -16,12 +16,12 @@ export default new pm.Vuex.Store({
         project: {},
         projectMeta: {},
         project_users: [],
-        // stages state (kanban)
-        stages: [],
-        project_stages: {},
         // categories state
         categories: [],
         categoryMeta: {},
+        // Global Kanban state
+        globalKanban_columns: [],
+        globalKanban_boardables: {},
         // more
         is_single_task: false,
         roles: [],
@@ -62,7 +62,6 @@ export default new pm.Vuex.Store({
 
             state.showDescription = status;
         },
-
         afterDeleteProjectCount (state, project) {
             if (typeof project.project === 'undefined') {
                 return;
@@ -88,12 +87,25 @@ export default new pm.Vuex.Store({
                 }
             }
         },
-        // listViewType (state, view_type) {
-        //     state.listView = view_type;
-        // },
         isSigleTask (state, status) {
             state.is_single_task = status;
         },
+        // Global Kanban mutations
+        setGK_columns (state, columns) {
+            if (columns !== undefined) {
+                state.globalKanban_columns = columns;
+            }
+        },
+        setGK_boardables (state, boardables) {
+            if (boardables !== undefined) {
+                if (Object.keys(state.globalKanban_boardables).length === 0) {
+                    state.globalKanban_boardables = boardables;
+                } else {
+                    state.globalKanban_boardables = Object.assign({}, state.globalKanban_boardables, boardables);
+                }
+            }
+        },
+        // Project mutations
         setProjects (state, projects) {
             state.projects = projects.projects;
         },
@@ -104,11 +116,9 @@ export default new pm.Vuex.Store({
             state.project = jQuery.extend(true, {}, project);
             state.projectLoaded = true;
         },
-
         setProjectMeta (state, projectMeta) {
             state.projectMeta = projectMeta;
         },
-
         updateProjectMeta (state, type) {
             if ( typeof state.project.meta === 'undefined') {
                 return ;
@@ -119,7 +129,6 @@ export default new pm.Vuex.Store({
             }
 
         },
-
         decrementProjectMeta (state, type) {
             if ( typeof state.project.meta === 'undefined') {
                 return ;
@@ -129,20 +138,16 @@ export default new pm.Vuex.Store({
                 state.project.meta.data[type] --;
             }
         },
-
         setProjectUsers (state, users) {
             state.project_users = users;
         },
+        // Category mutations
         afterNewCategories (state, categories) {
             state.categories.push(categories);
         },
-
         setCategories (state, categories) {
             state.categories = categories;
             state.isFetchCategories = true;
-        },
-        setStages (state, stages) {
-            state.stages = stages;
         },
         setCategoryMeta (state, meta) {
             state.categoryMeta = meta;
@@ -158,6 +163,7 @@ export default new pm.Vuex.Store({
         setRoles (state, roles) {
             state.roles = roles;
         },
+        // More Project mutations
         newProject (state, projects) {
             var per_page = state.pagination.per_page,
                 length   = state.projects.length;
@@ -187,15 +193,10 @@ export default new pm.Vuex.Store({
                 state.pagination = data.pagination;
             }
         },
-        setProjectStage(state, {projectId, stageId}) {
-            state.project_stages[projectId] = parseInt(stageId);
-            console.log("setProjectStage went off", state.project_stages);
-        },
         afterDeleteProject (state, project_id) {
             var project_index = state.getIndex(state.projects, project_id, 'id');
             state.projects.splice(project_index,1);
         },
-
         updateProject (state, project) {
             var index = state.getIndex(state.projects, project.id, 'id');
             
@@ -203,7 +204,6 @@ export default new pm.Vuex.Store({
             //state.projects[index] = jQuery.extend(true, {}, project);
             state.project = jQuery.extend(true, {}, project);
         },
-
         showHideProjectDropDownAction (state, data) {
             var index = state.getIndex(state.projects, data.project_id, 'id');
 
@@ -213,7 +213,6 @@ export default new pm.Vuex.Store({
                 state.projects[index].settings_hide = data.status;
             }
         },
-
         afterDeleteUserFromProject (state, data) {
             
             if ( data.project_id ) {
@@ -227,7 +226,7 @@ export default new pm.Vuex.Store({
                 state.assignees.splice(index, 1);
             }
         },
-
+        // User mutations
         updateSeletedUser (state, data) {
             if(data.project_id) {
                 var index = state.getIndex(state.projects, data.project_id, 'id');
@@ -238,20 +237,16 @@ export default new pm.Vuex.Store({
             
             $('.pm-project-role').animate({ scrollTop: 0 }, "slow");
         },
-
         setSeletedUser(state, assignees) {
             state.assignees = assignees;
         },
-
         resetSelectedUsers (state) {
             state.assignees = [];
         },
-
         setMilestones(state, milestones){
             state.milestones = milestones;
             state.milestones_load = true;
         },
-
         is_need_fetch_view_type (state, status) {
             state.is_need_fetch_view_type = status;
         },
@@ -268,7 +263,6 @@ export default new pm.Vuex.Store({
             state.projectFileLoaded = false;
             state.projectActivityLoaded = false;
         },
-
         recordHistory(state, history) {
             const to = jQuery.extend(true, {}, history.to);
             const from = jQuery.extend(true, {}, history.from);
@@ -277,14 +271,13 @@ export default new pm.Vuex.Store({
                 to, from
             };
         },
-
         setCreatedUser (state, created_user) {
             state.newlyCreated = created_user;
         },
         resetCreatedUser (state){
             state.newlyCreated = {};
         },
-
+        // Project and DropDown mutations
         setListInProject (state, data) {
 
             var index = state.getIndex(state.projects, data.project_id, 'id');
@@ -313,7 +306,6 @@ export default new pm.Vuex.Store({
         setDropDownProjects (state, projects) {
             state.dropDownProjects = projects;
         },
-
         setDropDownProject (state, projects) {
             projects.forEach( project => {
                 let index = state.getIndex( state.dropDownProjects, project.id, 'id' );
@@ -324,21 +316,9 @@ export default new pm.Vuex.Store({
 
             })
         },
-
         setDropDownTaskTypes (state, taskTypes) {
             state.dropDownTaskTypes = taskTypes;
         },
-
-        // setDropDownProject (state, taskTypes) {
-        //     taskTypes.forEach( taskType => {
-        //         let index = state.getIndex( state.dropDownTaskTypes, taskType.id, 'id' );
-                
-        //         if(index === false) {
-        //             state.dropDownTaskTypes.push(taskType);
-        //         }
-        //     })
-        // },
-
         updateTaskCreateFormLists (state, data) {
 
             if ( !Array.isArray(data.lists) ) {

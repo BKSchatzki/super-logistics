@@ -186,16 +186,6 @@ class Project_Controller {
         $project->categories()->sync( $category_ids );
     }
 
-    // Check if a stage_id is provided in the data
-    if (isset($data['stage_id'])) {
-        // Find the stage
-        $stage = Stage::find($data['stage_id']);
-        // Associate the project with the stage
-        $project->stage()->associate($stage);
-        // Save the project to persist the changes
-        $project->save();
-    }
-
     $assignees = isset( $data[ 'assignees' ] ) ? $data['assignees'] : [];
     $assignees[] = [
         'user_id' => wp_get_current_user()->ID,

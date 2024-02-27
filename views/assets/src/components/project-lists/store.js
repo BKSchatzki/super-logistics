@@ -9,7 +9,6 @@ const Store = {
         project: {},
         project_users: [],
         categories: [],
-        stages: [],
         roles: [],
         milestones: [],
         milestones_load: false,
@@ -47,9 +46,6 @@ const Store = {
         },
         setCategories (state, categories) {
             state.categories = categories;
-        },
-        setStages (state, stages) {
-            state.stages = stages;
         },
         setRoles (state, roles) {
             state.roles = roles;

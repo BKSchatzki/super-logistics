@@ -13,13 +13,6 @@
                     <option v-for="category in categories" :value="category.id" :key="category.id" >{{ category.title }}</option>
                 </select>
             </div>
-<!--Stage-->
-            <div class="pm-form-item item project-stage">
-                <select v-model="project_stage" id='project_stage' class='chosen-select'>
-                    <option value='0'>Stage</option>
-                    <option v-for="stage in stages" :value="stage.id" :key="stage.id">{{ stage.title }}</option>
-                </select>
-            </div>
 <!--Description-->
             <div class="pm-form-item item project-detail">
                 <textarea v-model="project_description"  class="pm-project-description" id="" rows="5" :placeholder="details_of_project"></textarea>
@@ -74,7 +67,6 @@
 </template>
 
 <script>
-    import stageMixin from './mixin.js';
     import project_new_user_form from './project-new-user-form.vue';
 
     export default {
@@ -87,12 +79,10 @@
                 }
             }
         },
-        mixins: [stageMixin],
         data () {
             return {
                 project_name: '',
                 project_cat: 0,
-                project_stage: 0,
                 project_description: typeof this.project.description == 'undefined' ? '' : this.project.description.content,
                 project_notify: false,
                 assignees: [],
@@ -111,7 +101,6 @@
         },
         created () {
             this.setProjectUser();
-            this.getStages();
         },
         computed: {
             roles () {
@@ -120,10 +109,6 @@
 
             categories () {
                 return this.$root.$store.state.categories;
-            },
-
-            stages () {
-                return this.$root.$store.state.stages;
             },
 
             selectedUsers () {
@@ -231,7 +216,6 @@
                         'notify_users': this.project_notify,
                         'assignees': this.formatUsers(this.selectedUsers),
                         'status': this.project.status,
-                        'stage': this.project_stage,
                         'department_id': this.project.department_id
                     }
                 }
@@ -289,7 +273,6 @@
                     this.project.description = ''
                     this.project_notify = [];
                     this.project.status = '';
-                    this.project_stage = '';
                     this.$store.commit('setSeletedUser', []);
                 }
                 this.showHideProjectForm(false);

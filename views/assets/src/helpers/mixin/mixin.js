@@ -507,7 +507,7 @@ export default {
          * @return {viod}      [description]
          */
         newProject (args) {
-            var self = this,
+            const self = this,
             pre_define = {
                 data: {
                     title : '',
@@ -517,13 +517,12 @@ export default {
                     assignees: '',
                     status: 'incomplete'
                 }
-            },
-            args = jQuery.extend(true, pre_define, args );
-            args = pm_apply_filters( 'before_project_save', args );
-            var request = {
+            }
+            const argsComplete = pm_apply_filters( 'before_project_save', jQuery.extend(true, pre_define, args ) );
+            const request = {
                 type: 'POST',
                 url: this.base_url + 'pm/v2/projects/',
-                data: args.data,
+                data: argsComplete.data,
                 success (res) {
                     jQuery( "#pm-project-dialog" ).dialog('destroy');
                     self.$root.$store.commit('newProject', res.data);
@@ -531,8 +530,8 @@ export default {
                     self.resetSelectedUsers();
                     pm.Toastr.success(res.message);
 
-                    if(typeof args.callback === 'function'){
-                        args.callback(res);
+                    if(typeof argsComplete.callback === 'function'){
+                        argsComplete.callback(res);
                     }
                 },
 
@@ -549,8 +548,8 @@ export default {
                         });
                     }
 
-                    if(typeof args.callback === 'function'){
-                        args.callback(res);
+                    if(typeof argsComplete.callback === 'function'){
+                        argsComplete.callback(res);
                     }
 
                 }
@@ -622,23 +621,6 @@ export default {
 
         resetSelectedUsers () {
             this.$root.$store.commit('resetSelectedUsers');
-        },
-
-        getProjectsAtStage (stageId) {
-            const self = this;
-            const request = {
-                url: self.base_url + `pm/v2/stages/${stageId}`,
-                success (res) {
-                    console.log("success at getProjectsAtStage: ", res);
-                    for (let project of res) {
-                        self.$store.commit("setProjectStage", {
-                            projectId: project.project_id,
-                            stageId: stageId
-                        });
-                    }
-                }
-            };
-            self.httpRequest(request);
         },
 
         getProjects ( args ) {

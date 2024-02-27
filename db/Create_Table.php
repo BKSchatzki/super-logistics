@@ -24,8 +24,6 @@ class PM_Create_Table {
         $this->crate_role_projects_table();
         $this->crate_role_project_capabilities_table();
         $this->crate_role_project_users_table();
-        $this->create_stages_table();
-        $this->create_stage_project_table();
         $this->update_version();
         $this->task_types();
     }
@@ -491,48 +489,6 @@ class PM_Create_Table {
 			  PRIMARY KEY (`id`)
 			) DEFAULT CHARSET=utf8";
 
-        dbDelta($sql);
-    }
-
-    // a BigTB Special Right here
-    public function create_stages_table() {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'pm_stages';
-
-        $sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
-            `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-            `title` varchar(255) NOT NULL,
-            `description` text,
-            `categorible_type` varchar(255) DEFAULT NULL,
-            PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-
-        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-        dbDelta( $sql );
-
-        $sql = "INSERT INTO {$table_name} (`title`, `categorible_type`) VALUES
-        ('Open', 'project'),
-        ('In Progress', 'project'),
-        ('Done', 'project'),
-        ('Overdue', 'project');";
-
-        dbDelta( $sql );
-    }
-
-    public function create_stage_project_table() {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'pm_stages';
-        $charset_collate = $wpdb->get_charset_collate();
-
-        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
-            `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-            `title` varchar(255) NOT NULL,
-            `description` text,
-            `categorible_type` varchar(255) DEFAULT NULL,
-            PRIMARY KEY (`id`)
-        ) $charset_collate;";
-
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
     }
 

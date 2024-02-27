@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM_Pro\Modules\Kanboard\Src\Models;
+namespace WeDevs\PM\Global_Kanboard\Models;
 
 use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
 use WeDevs\PM\Common\Traits\Model_Events;
@@ -9,7 +9,7 @@ use WeDevs\PM\Common\Models\Meta;
 use Carbon\Carbon;
 
 
-class Kanboard extends Eloquent {
+class Global_Kanboard extends Eloquent {
 
     use Model_Events;
 
@@ -21,16 +21,26 @@ class Kanboard extends Eloquent {
         'order',
         'project_id',
         'created_by',
-        'updated_by',
+        'updated_b'
     ];
 
     protected $attributes = ['type' => 'kanboard'];
 
     public function tasks() {
 
-    	return $this->belongsToMany( 'WeDevs\PM\Task\Models\Task', pm_tb_prefix() . 'pm_boardables', 'board_id', 'boardable_id' )
+    	return $this->belongsToMany( 'WeDevs\PM\Task\Models\Task', pm_tb_prefix() . 'pm_boardables',
+    	    'board_id', 'boardable_id' )
             ->where( 'board_type', 'kanboard' )
             ->where( 'boardable_type', 'task' )
+            ->orderBy( 'order', 'ASC' );
+    }
+
+    public function projects() {
+
+    	return $this->belongsToMany( 'WeDevs\PM\Project\Models\Project', pm_tb_prefix() . 'pm_boardables',
+    	    'board_id', 'boardable_id' )
+            ->where( 'board_type', 'kanboard' )
+            ->where( 'boardable_type', 'project' )
             ->orderBy( 'order', 'ASC' );
     }
 
