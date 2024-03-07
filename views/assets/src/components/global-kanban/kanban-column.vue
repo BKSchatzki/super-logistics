@@ -1,11 +1,12 @@
 <script>
 import vSelect from 'vue-select';
-import draggable from "vuedraggable";
+import Draggable from "vuedraggable";
 import ProjectNewProjectBtn from "@components/project-lists/project-new-project-btn.vue";
 import CuteMenu from "@components/global-kanban/cute-menu.vue";
-import ProjectCard from "@components/global-kanban/project-card.vue";
+import ProjectTile from "@components/global-kanban/project-tile.vue";
 import rootMixins from "@helpers/mixin/mixin.js";
 import GKMixins from "@components/global-kanban/mixin";
+import ColumnMenu from "@components/global-kanban/column-menu.vue";
 
 export default {
   name: "kanban-column",
@@ -26,9 +27,10 @@ export default {
   },
   mixins: [rootMixins, GKMixins],
   components: {
-    ProjectCard,
+    ColumnMenu,
+    ProjectTile,
     CuteMenu,
-    draggable,
+    Draggable,
     'new-project-btn' : ProjectNewProjectBtn,
     'v-select' : vSelect
   },
@@ -42,23 +44,19 @@ export default {
         }
       }
     },
-    addProject(project) {
-      console.log("Board id: ", this.id);
-      console.log("Project Added: ", project);
-      this.addProjectBoardable(this.id, project);
-      this.dropdowns.addProjMenu = false;
-    },
     moveProject(evt) {
-      // const project_id = parseInt(evt.item.id.split("_")[1]);
-      // const to_board_id = parseInt(evt.to.parentElement.id.split("_")[1]);
-      console.log("evt: ", evt);
+      let fromBoardId = evt.from.id.split("_")[1];
+      let toBoardId = evt.to.id.split("_")[1];
+      let projectId = evt.item.id.split("_")[1];
+      console.log("fromBoardId: ", fromBoardId, " toBoardId: ", toBoardId, " projectId: ", projectId);
+      this.updateProjectBoardable(fromBoardId, projectId, toBoardId);
+    },
+    addProject(project) {
+      this.addProjectBoardable(this.id, project);
+    },
+    allowMove() {
+      // this exclusively approves the move - doesn't even console.log besides that
       return true;
-      // console.log("from_board_id: ", this.id);
-      // console.log("to_board_id: ", to_board_id);
-
-      // if (to_board_id !== this.id) {
-      //   this.updateProjectBoardable(this.id, project_id, to_board_id);
-      // }
     }
   },
 
@@ -92,60 +90,53 @@ export default {
 </script>
 
 <template>
-  <div :data-section_id='id' class="kbc-th kbc-sortable-section kbc-section-order-by ui-sortable-handle">
-    <div class="kbc-section-background">
+  <div :data-section_id='id' class="kbc-th">
 <!---------------------------Header of the Column-------------------------->
-      <div class="kbc-section-header-wrap" style="color: rgb(12, 26, 48); background: rgb(218, 233, 247);">
-        <div class="kbc-section-header">
-          <div :title='title' class="kbc-section-title">
-            <span>{{ title }}</span>
-          </div>
+    <div class="kbc-section-header-wrap" style="color: rgb(12, 26, 48); background: rgb(218, 233, 247);">
+      <div class="kbc-section-header column-drag-handle">
+        <div :title='title' class="kbc-section-title">
+          <span>{{ title }}</span>
         </div>
-        <div class="kbc-section-action kbc-non-sortable">
+      </div>
+      <div class="kbc-section-action kbc-non-sortable">
 <!---------------------------Column Buttons----------------->
-          <div class="kbc-action-icon-wrap">
-            <div class="v-popover" fragment="15c5c64b77a">
-              <div class="trigger" style="display: inline-block;">
-                <!------------Add Project Button------>
-                <button id="gk-add-project-btn" @click="toggleDropdown('addProjMenu')" class="pm-pro-kanboard-action-hrf">
-                  <span style="color: rgb(52, 128, 235);">
-                    <i aria-hidden="true" class="fa fa-plus"></i>
-                  </span>
-                </button>
-                <button id="gk-col-options-btn" @click="toggleDropdown('columnMenu')" class="pm-pro-kanboard-action-hrf pm-pro-kanboard-del-btn">
-                  <span style="color: rgb(52, 128, 235);">
-                    <i aria-hidden="true" class="fa fa-ellipsis-v"></i>
-                  </span>
-                </button>
-                <div v-show="dropdowns.addProjMenu" class="dropdown-content">
-                  <cute-menu>
-                    <v-select ref="select" :options="allProjects" label="title" @input="addProject"></v-select>
-                  </cute-menu>
-                </div>
-                <!------------Options Dropdown------->
-                <div v-show="dropdowns.columnMenu" class="dropdown-content">
-                  <cute-menu>
-                    <a href="#">Edit</a>
-                    <a href="#">Delete</a>
-                  </cute-menu>
-                </div>
+        <div class="kbc-action-icon-wrap">
+          <div class="v-popover" fragment="15c5c64b77a">
+            <div class="trigger" style="display: inline-block;">
+              <!------------Add Project Button------>
+              <button id="gk-add-project-btn" @click="toggleDropdown('addProjMenu')" class="pm-pro-kanboard-action-hrf">
+                <span style="color: rgb(52, 128, 235);">
+                  <i aria-hidden="true" class="fa fa-plus"></i>
+                </span>
+              </button>
+              <!------------Options Button------>
+              <button id="gk-col-options-btn" @click="toggleDropdown('columnMenu')" class="pm-pro-kanboard-action-hrf pm-pro-kanboard-del-btn">
+                <span style="color: rgb(52, 128, 235);">
+                  <i aria-hidden="true" class="fa fa-ellipsis-v"></i>
+                </span>
+              </button>
+              <!------------Add Project Dropdown------->
+              <div v-show="dropdowns.addProjMenu" class="dropdown-content">
+                <cute-menu>
+                  <v-select ref="select" :options="allProjects" label="title" @input="addProject"></v-select>
+                </cute-menu>
+              </div>
+              <!------------Options Dropdown------->
+              <div v-show="dropdowns.columnMenu" class="dropdown-content">
+                <column-menu :board_id="id"></column-menu>
               </div>
             </div>
           </div>
-          <div class="kbc-clearfix"></div>
         </div>
-        <div class="kbc-clearfix"></div>
       </div>
-<!---------------------------Projects in the Column-------------------------->
-      <div class="kbc-tasks-wrap">
-        <draggable :move="moveProject" class="gk-draggable-field" :id="board_id" v-bind="dragOptions">
-          <transition-group class="gk-draggable-field">
-            <project-card v-for="project in colProjects" :key="project.id" :project="project" :board_id="id"></project-card>
-          </transition-group>
-        </draggable>
-      </div>
-      <div class="kbc-section-footer"></div>
     </div>
+<!---------------------------Projects in the Column-------------------------->
+    <div class="kbc-tasks-wrap">
+      <draggable :move="allowMove" class="gk-draggable-field" :id="board_id" v-bind="dragOptions" @end="moveProject">
+        <project-tile v-for="project in colProjects" :key="`project_${project.id}`" :project="project" :board_id="id"></project-tile>
+      </draggable>
+    </div>
+    <div class="kbc-section-footer"></div>
   </div>
 </template>
 
@@ -256,14 +247,6 @@ export default {
 }
 
 /* Kanban styles */
-.kbc-clearfix {
-  visibility: hidden;
-  display: block;F
-  font-size: 0;
-  content: " ";
-  clear: both;
-  height: 0;
-}
 .kbc-kanboard .kbc-sortable-placeholder {
   border: 1px dashed #000;
   margin-left: 6%;

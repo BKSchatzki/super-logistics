@@ -204,20 +204,19 @@ class Global_Kanboard_Controller {
 
 
     public function store( WP_REST_Request $request ) {
-        $project_id  = $request->get_param( 'project_id' );
-
-        $latest_order = Global_Kanboard::latest_order( $project_id, 'kanboard' );
+        // Adds a new board to the global kanban - "boards" are columns in the DB
+        $latest_order = Global_Kanboard::latest_order( self::$global_kanboard_id, 'kanboard' );
 
         $data = [
-            'title'      => $request->get_param( 'board_title' ),
+            'title'      => $request->get_param( 'title' ),
             'order'      => $latest_order + 1,
             'type'       => 'kanboard',
-            'project_id' => $request->get_param( 'project_id' ),
+            'project_id' => self::$global_kanboard_id,
         ];
 
         $kanboard = Global_Kanboard::create($data);
 
-        $resource = new Item( $kanboard, new Kanboard_Transformer );
+        $resource = new Item( $kanboard, new Global_Kanboard_Transformer );
         $message  = [
             'message' => 'New board has been created successfully'
         ];
@@ -243,7 +242,7 @@ class Global_Kanboard_Controller {
 
         $board->update_model( $data );
 
-        $resource = new Item( $board, new Kanboard_Transformer );
+        $resource = new Item( $board, new Global_Kanboard_Transformer );
 
         $message = [
             'message' => 'Your traking time was stop successfully'
@@ -254,21 +253,13 @@ class Global_Kanboard_Controller {
 
     public function destroy( WP_REST_Request $request ) {
         $board_id = $request->get_param( 'board_id' );
-        $project_id = $request->get_param( 'project_id' );
 
-        // Select the time
-        $board = Global_Kanboard::where( 'id', $board_id )
-            ->first();
-
+        $board = Global_Kanboard::where( 'id', $board_id )->first();
         $this->delete_all_relation($board);
-
         $board->delete();
 
-        //$task = Task::find( $task_id );
-        //$resource = new Item( $task, new Task_Transformer );
-
         $message = [
-            'message' => 'Time log deleted successfully'
+            'message' => 'Board deleted successfully'
         ];
 
         return $this->get_response(null, $message);
@@ -279,7 +270,6 @@ class Global_Kanboard_Controller {
         $project_id = $request->get_param( 'project_id' );
         $to_board_id = $request->get_param( 'to_board_id' );
 
-        // Select the time
         $boardable = Boardable::where( 'board_id', $from_board_id )
             ->where( 'board_type', 'kanboard' )
             ->where( 'boardable_id', $project_id )
@@ -313,7 +303,7 @@ class Global_Kanboard_Controller {
         return $this->get_response(null, $message);
     }
 
-    function delete_all_relation(Kanboard $board) {
+    function delete_all_relation(Global_Kanboard $board) {
         $board->boardables()->delete();
     }
 

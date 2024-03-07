@@ -2,15 +2,29 @@
 import KanbanColumn from "@components/global-kanban/kanban-column.vue";
 import ProjectNewProjectBtn from "@components/project-lists/project-new-project-btn.vue";
 import KanbanMixins from "@components/global-kanban/mixin";
+import AddNewColumn from "@components/global-kanban/add-new-column.vue";
+import Draggable from "vuedraggable";
 
 export default {
   components: {
-    "new-project-task-btns" : ProjectNewProjectBtn,
-    "kanban-column": KanbanColumn
+    AddNewColumn,
+    Draggable,
+    KanbanColumn,
+    "new-project-task-btns" : ProjectNewProjectBtn
   },
   computed: {
     gkColumns() {
       return this.$store.state.globalKanban_columns;
+    },
+    dragOptions() {
+      return {
+        animation: 0,
+        group: "columns",
+        sort: true,
+        disabled: !this.editable,
+        ghostClass: "ghost",
+        handle: ".column-drag-handle"
+      }
     }
   },
   mixins: [KanbanMixins],
@@ -24,7 +38,13 @@ export default {
       } else {
         document.exitFullscreen();
       }
-    }
+    },
+    moveColumn(evt) {
+      console.log("Column moved: ", evt);
+    },
+    allowMove() {
+      return true;
+    },
   },
 
   created () {
@@ -35,14 +55,6 @@ export default {
 
     this.getProjects(pArgs);
     this.getGlobalKanban();
-  },
-  data() {
-    return {
-
-    }
-  },
-  mounted() {
-
   }
 }
 </script>
@@ -53,33 +65,22 @@ export default {
     <div id="gk-main" class="pm-kanboard-fullscreen pm-project-module-page">
 <!------------------------------------Header Start-------------------------->
       <div class="kanboard-menu-wrap">
-        <!----------------------------Fullscreen Button-->
+        <!----------------------------Fullscreen Button----->
         <button id="gk-fullscreen-btn" class="fullscreen-view-btn list-action-group" @click="toggleFullScreen">
           <span class="icon-pm-fullscreen"></span>
           <span class="icon-pm-fullscreen-text">{{ __( 'Fullscreen', 'wedevs-project-manager' ) }}</span>
         </button>
-        <div class="pm-list-header-menu">
-          <a :title="__( 'Task Filter', 'wedevs-project-manager' )" href="#" @click.stop class="active-task-filter task-filter list-action-group task-filter-btn">
-            <span class="icon-pm-filter"></span>
-            <span>{{ __( 'Filter', 'wedevs-project-manager' ) }}</span>
-          </a>
-        </div>
         <br>
       </div>
-<!------------------------------------The Board Itself------------------->
+<!------------------------------------The Board Itself--------------->
       <div class="kbc-kanboard">
         <div class="kbc-table-wrap">
-          <div class="kbc-th-wrap kbc-section-order-wrap ui-sortable">
-<!------------------------------------Kanban Column(s)--------------------->
-            <kanban-column v-for="board in gkColumns" :title="board.title" :allProjects="$store.state.projects" :id="board.id"></kanban-column>
-<!------------------------------------Add New Column----------------------->
-            <div class="kbc-th kbc-th-new-section kbc-non-sortable ui-sortable-handle">
-              <div class="kbc-section-header">
-                <div>
-                  <input type="text" :placeholder="__( 'Add new section', 'wedevs-project-manager' )" required="required" class="wpup-new-section-field">
-                </div>
-              </div>
-            </div>
+          <div class="kbc-th-wrap kbc-section-order-wrap">
+            <!---------------------------Kanban Column(s)------------------->
+            <draggable class="gkb-drag-area" :move="allowMove" :list="gkColumns" v-bind="dragOptions" @end="moveColumn">
+              <kanban-column v-for="board in gkColumns" :title="board.title" :allProjects="$store.state.projects" :id="board.id" :key="board.id"></kanban-column>
+            </draggable>
+            <add-new-column></add-new-column>
           </div>
         </div>
       </div>
@@ -88,6 +89,12 @@ export default {
 </template>
 
 <style lang="less" scoped>
+
+.gkb-drag-area {
+  width: 100%;
+  height: 100%;
+}
+
 .pm-kanboard {
   .kbc-kanboard {
     display: flex;

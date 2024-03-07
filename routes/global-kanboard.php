@@ -11,6 +11,17 @@ $generic_permissions = ['WeDevs\PM\Core\Permissions\Authentic'];
 $router->get( 'global-kanboard', 'WeDevs/PM/Global_Kanboard/Controllers/Global_Kanboard_Controller@index' )
     ->permission($generic_permissions);
 
+// Adds a new board (column) to the global kanboard
+$router->post( 'global-kanboard',
+    'WeDevs\PM\Global_Kanboard\Controllers\Global_Kanboard_Controller@store' )
+    ->permission($generic_permissions);
+
+// Adds a new board (column) to the global kanboard
+$router->delete( 'global-kanboard/{board_id}',
+    'WeDevs\PM\Global_Kanboard\Controllers\Global_Kanboard_Controller@destroy' )
+    ->permission($generic_permissions);
+
+// Adds an existing project to the global kanboard
 $router->post( 'global-kanboard/{board_id}/project/{project_id}',
     'WeDevs\PM\Global_Kanboard\Controllers\Global_Kanboard_Controller@store_searchable_project' )
 	->permission($generic_permissions);
@@ -29,16 +40,13 @@ $router->get( 'global-kanboard/{board_id}/projects',
 $router->delete( 'global-kanboard/{board_id}/boardable/{project_id}',
     'WeDevs\PM\Global_Kanboard\Controllers\Global_Kanboard_Controller@remove_boardable' )
     ->permission($generic_permissions);
+
 // updates the boardables to be located on a particular board by editing board column
-$router->put( 'global-kanboard/{from_board_id}/boardable/{project_id}',
+$router->put( 'global-kanboard/boardable',
     'WeDevs\PM\Global_Kanboard\Controllers\Global_Kanboard_Controller@update_boardable' )
     ->permission($generic_permissions);
 // Everything edited above this point
 // Everything old below this point
-
-$router->post( 'projects/{project_id}/kanboard',
-    'WeDevs\PM_Pro\Modules\Kanboard\Src\Controllers\Kanboard_Controller@store' )
-    ->permission( ['WeDevs\PM\Core\Permissions\Project_Manage_Capability'] );
 
 $router->post( 'projects/{project_id}/kanboard/{board_id}/update', 'WeDevs\PM_Pro\Modules\Kanboard\Src\Controllers\Kanboard_Controller@update' )
     ->permission( ['WeDevs\PM\Core\Permissions\Project_Manage_Capability'] );

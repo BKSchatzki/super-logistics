@@ -1,7 +1,7 @@
 <script>
 import GKMixins from "@components/global-kanban/mixin";
 export default {
-  name: "project-card.vue",
+  name: "project-tile",
   props: {
     // the project object should really have everything you need
     // id, title, description, updated_at, created_at, etc.
@@ -48,7 +48,7 @@ export default {
   border: 1px solid #ccc;
   border-radius: 5px;
   margin: 10px 10px 0px;
-  width: 220px;
+  width: calc(100% - 20px);
   height: 60px;
   overflow: hidden;
 

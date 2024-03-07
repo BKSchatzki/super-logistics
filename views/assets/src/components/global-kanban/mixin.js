@@ -68,16 +68,12 @@ export default {
             };
             self.httpRequest(request_data);
         },
-        updateProjectBoardable(board_id, project_id, to_board_id) {
+        updateProjectBoardable(from_board_id, project_id, to_board_id) {
             const self = this;
             const request_data = {
                 type: 'PUT',
-                url: self.base_url + 'pm/v2/global-kanboard/' + board_id + '/boardable/' + project_id,
-                data: {to_board_id},
-                success: function (res) {
-                    console.log('boardable updated: ', res);
-                    self.getProjectBoardables(board_id);
-                },
+                url: self.base_url + 'pm/v2/global-kanboard/boardable',
+                data: {from_board_id, project_id, to_board_id},
                 error: function (res) {
                     console.error('Failed to update project as boardable:', res);
                 }
@@ -99,6 +95,36 @@ export default {
                 }
             };
             self.httpRequest(request_data);
+        },
+        addBoard(title) {
+          const self = this;
+          const request_data = {
+            type: 'POST',
+            url: self.base_url + 'pm/v2/global-kanboard',
+            data: { title },
+            success: function (res) {
+              self.getGlobalKanban();
+            },
+            error: function (res) {
+              console.error('Failed to add board:', res);
+            }
+          };
+          self.httpRequest(request_data);
+        },
+        deleteBoard(board_id) {
+          const self = this;
+          const request_data = {
+            type: 'DELETE',
+            url: self.base_url + 'pm/v2/global-kanboard/' + board_id,
+            success: function (res) {
+              console.log("board deleted");
+              self.getGlobalKanban();
+            },
+            error: function (res) {
+              console.error('Failed to delete board:', res);
+            }
+          };
+          self.httpRequest(request_data);
         },
     }
 }
