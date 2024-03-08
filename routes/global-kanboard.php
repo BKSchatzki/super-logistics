@@ -16,6 +16,11 @@ $router->post( 'global-kanboard',
     'WeDevs\PM\Global_Kanboard\Controllers\Global_Kanboard_Controller@store' )
     ->permission($generic_permissions);
 
+// Changes the order of the boards (columns) on the global kanboard
+$router->put( 'global-kanboard',
+    'WeDevs\PM\Global_Kanboard\Controllers\Global_Kanboard_Controller@board_order' )
+    ->permission($generic_permissions);
+
 // Adds a new board (column) to the global kanboard
 $router->delete( 'global-kanboard/{board_id}',
     'WeDevs\PM\Global_Kanboard\Controllers\Global_Kanboard_Controller@destroy' )

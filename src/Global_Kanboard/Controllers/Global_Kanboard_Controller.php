@@ -226,18 +226,18 @@ class Global_Kanboard_Controller {
 
 
     public function update( WP_REST_Request $request ) {
-        $title      = $request->get_param( 'title' );
-        $board_id   = $request->get_param( 'board_id' );
-        $project_id = $request->get_param( 'project_id' );
+        $board_id = $request->get_param( 'board_id' );
+        $old_idx  = $request->get_param( 'old_idx' );
+        $new_idx  = $request->get_param( 'new_idx' );
 
-        $board = Global_Kanboard::find($board_id );
+        $board_moved = Global_Kanboard::find($board_id );
 
         if ( ! $board ) {
             return false;
         }
 
         $data = [
-            'title' => $title,
+            'order' => $new_idx
         ];
 
         $board->update_model( $data );
@@ -245,7 +245,7 @@ class Global_Kanboard_Controller {
         $resource = new Item( $board, new Global_Kanboard_Transformer );
 
         $message = [
-            'message' => 'Your traking time was stop successfully'
+            'message' => 'Your trcking time was stop successfully'
         ];
 
         return $this->get_response( $resource, $message );
@@ -309,12 +309,11 @@ class Global_Kanboard_Controller {
 
     function board_order( WP_REST_Request $request ) {
         $board_orders = $request->get_param('board_orders');
-        $project_id = $request->get_param('project_id');
 
-        foreach ( $board_orders as $key => $value) {
-            Global_Kanboard::where( 'project_id', $project_id )
+        foreach ( $board_orders as $value) {
+            Global_Kanboard::where( 'project_id', self::$global_kanboard_id )
                 ->where( 'type', 'kanboard' )
-                ->where( 'id', $value['section_id'] )
+                ->where( 'id', $value['id'] )
                 ->update( ['order' => $value['order']] );
         }
 

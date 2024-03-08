@@ -126,5 +126,22 @@ export default {
           };
           self.httpRequest(request_data);
         },
+        updateBoardOrder(updated_boards) {
+          const self = this;
+
+          for (let i = 0; i < updated_boards.length; i++) {
+            updated_boards[i].order = i;
+          }
+
+          const request_data = {
+            type: 'PUT',
+            url: self.base_url + 'pm/v2/global-kanboard/',
+            data: { updated_boards },
+            error: function (res) {
+              console.error('Failed to update board order:', res);
+            }
+          };
+          self.httpRequest(request_data);
+        }
     }
 }

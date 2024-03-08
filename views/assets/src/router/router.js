@@ -6,6 +6,7 @@ import '@components/importtools/router';
 import '@components/my-tasks/router';
 import '@components/reports/router';
 import '@components/global-kanban/router';
+import '@components/material-ordering/router';
 
 // IF NOT PRO
 if ( !PM_Vars.is_pro ) {
@@ -46,7 +47,6 @@ router.beforeEach((to, from, next) => {
     pm.NProgress.start();
     next();
 });
-
 
 //Load all components mixin
 weDevsPmModules.forEach(function(module) {
