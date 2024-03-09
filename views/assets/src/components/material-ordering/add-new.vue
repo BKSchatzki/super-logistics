@@ -21,7 +21,7 @@ export default {
 <template>
   <div id="add-new">
     <new-vendor></new-vendor>
-<!--    <new-order :vendors="vendors"></new-order>-->
+    <new-order :vendors="vendors"></new-order>
   </div>
 </template>
 

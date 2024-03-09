@@ -22,6 +22,9 @@ export default new pm.Vuex.Store({
         // Global Kanban state
         globalKanban_columns: [],
         globalKanban_boardables: {},
+        // Material Orders state
+        materialOrders: [],
+        materialVendors: [],
         // more
         is_single_task: false,
         roles: [],
@@ -104,6 +107,13 @@ export default new pm.Vuex.Store({
                     state.globalKanban_boardables = Object.assign({}, state.globalKanban_boardables, boardables);
                 }
             }
+        },
+        // Material Orders mutations
+        setMaterialOrders (state, orders) {
+            state.materialOrders = orders;
+        },
+        setMaterialVendors (state, vendors) {
+            state.materialVendors = vendors;
         },
         // Project mutations
         setProjects (state, projects) {

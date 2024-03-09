@@ -1,7 +1,21 @@
 <script>
 export default {
   name: "new-vendor",
-  data() {
+  methods: {
+    addVendor(event) {
+      event.preventDefault();
+      console.log("Vendor added");
+      this.clearFields();
+    },
+    clearFields() {
+      this.name = '';
+      this.description = '';
+      this.phone = '';
+      this.email = '';
+      this.address = '';
+    }
+  },
+  data () {
     return {
       name: "",
       description: "",
@@ -9,14 +23,7 @@ export default {
       email: "",
       address: ""
     }
-  },
-  methods: {
-    addVendor(event) {
-      event.preventDefault();
-      console.log("Vendor added");
-    }
   }
-
 }
 </script>
 
@@ -35,10 +42,10 @@ export default {
       <input class="materials-input" type="number" name="phone" :value="phone" placeholder="000-000-0000" required>
       <!------------------------------- Email ---------------------------->
       <label for="email">Email</label>
-      <input class="materials-input" type="number" name="email" :value="email" placeholder="contact@vendor.com" required>
+      <input class="materials-input" type="email" name="email" :value="email" placeholder="contact@vendor.com" required>
       <!------------------------------ Address --------------------------->
       <label for="address">Address</label>
-      <input class="materials-input" type="number" name="address" :value="address" placeholder="Physical Address" required>
+      <input class="materials-input" type="text" name="address" :value="address" placeholder="Physical Address" required>
       <!------------------------------ Submit --------------------------->
       <input class="materials-input" type="submit" value="Submit">
     </form>

@@ -110,27 +110,32 @@ module.exports = function(grunt) {
             options: {},
 
             reset:{
-                cmd: 'npm',
+                cmd: 'npm.cmd',
+                // cmd: 'npm.cmd',
                 args: ['run', 'build']
             },
 
             makepot:{
-                cmd: 'npm',
+                cmd: 'npm.cmd',
+                // cmd: 'npm.cmd',
                 args: ['run', 'makepot']
             },
 
             removeDev:{
-                cmd: 'composer',
+                cmd: 'composer.bat',
+                // cmd: 'composer.bat',
                 args: ['install', '--no-dev']
             },
 
             dumpautoload:{
-                cmd: 'composer',
+                cmd: 'composer.bat',
+                // cmd: 'composer.bat',
                 args: ['dumpautoload', '-o']
             },
 
             composerInstall:{
-                cmd: 'composer',
+                cmd: 'composer.bat',
+                // cmd: 'composer',
                 args: ['install']
             },
 

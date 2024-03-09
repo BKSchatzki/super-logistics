@@ -1,6 +1,6 @@
 <script>
 import Orders from "@components/material-ordering/orders.vue";
-import AddNew from "@components/material-ordering/new-order.vue";
+import AddNew from "@components/material-ordering/add-new.vue";
 
 export default {
   name: "material-ordering",
