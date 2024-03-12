@@ -142,4 +142,9 @@ class Project extends Eloquent {
     public function labels() {
         return  apply_filters( 'pm_task_label', $this );
     }
+
+    public function material_orders() {
+        return $this->belongsToMany('WeDevs\PM\Order\Models\MaterialOrder',
+        pm_tb_prefix() . '_pm_material_order_projects', 'project_id', 'order_id');
+    }
 }

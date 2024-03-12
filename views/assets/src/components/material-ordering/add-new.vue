@@ -1,21 +1,21 @@
 <script>
 import NewVendor from "@components/material-ordering/new-vendor.vue";
 import NewOrder from "@components/material-ordering/new-order.vue";
+import MaterialsMixin from "@components/material-ordering/mixin.js";
 
 export default {
   name: "add-new",
+  mixins: [MaterialsMixin],
   components: {NewVendor, NewOrder},
   computed: {
     vendors() {
-      return [
-        { id: 1, name: "Vendor 1" },
-        { id: 2, name: "Vendor 2" }
-      ];
+      return this.$store.state.materialVendors;
     }
+  },
+  created() {
+    this.getMaterialVendors();
   }
 }
-
-
 </script>
 
 <template>

@@ -21,6 +21,9 @@ export default {
       cost: "",
       date: new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date())
     }
+  },
+  created() {
+    console.log(this.vendors);
   }
 }
 
@@ -32,9 +35,9 @@ export default {
     <form id="new-order-form" @submit="recordOrder">
       <!-------------------------- Select a vendor ---------------------->
       <label for="vendor">Vendor</label>
-      <select class="materials-input" name="vendor" :value="vendor" required>
+      <select class="materials-input" name="vendor" v-model="vendor" required>
         <option disabled value="">Please select a vendor</option>
-        <option v-for="v in add" :value="v.id">{v.name}</option>
+        <option v-for="v in vendors" :value="v.id">{{ v.name }}</option>
       </select>
       <!---------------------------- Description ------------------------>
       <label for="description">Description</label>

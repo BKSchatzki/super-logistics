@@ -21,7 +21,7 @@ class Global_Kanboard extends Eloquent {
         'order',
         'project_id',
         'created_by',
-        'updated_b'
+        'updated_by'
     ];
 
     protected $attributes = ['type' => 'kanboard'];

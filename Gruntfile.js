@@ -88,13 +88,13 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: 'build/',
                 src: ['**/*'],
-                dest: 'wedevs-project-manager'
+                dest: 'upholstery-project-manager'
             }
         },
 
         addtextdomain: {
             options: {
-                textdomain: 'wedevs-project-manager',
+                textdomain: 'upholstery-project-manager',
             },
             update_all_domains: {
                 options: {
