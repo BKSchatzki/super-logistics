@@ -55,6 +55,20 @@ class User_Controller {
         return $this->get_response( $resource );
     }
 
+    public function showCurrent() {
+        $current_user = wp_get_current_user();
+        $current_user = User::find( $current_user->ID );
+
+        if ( $current_user->exists() ) {
+            // The user is logged in
+            $resource = new Item( $current_user, new User_Transformer );
+            return $this->get_response( $resource );
+        } else {
+            // The user is not logged in
+            return new \WP_Error( 'not_logged_in', 'You are not logged in.' );
+        }
+    }
+
     public function store( WP_REST_Request $request ) {
         // Extraction of user data from inputs
         $user_data = [

@@ -34,7 +34,6 @@ class MaterialOrderController {
             'cost'        => $request->get_param( 'cost' ),
             'title'       => $request->get_param( 'title' ),
             'description' => $request->get_param( 'description' ),
-            'projects'    => $request->get_param( 'projects' ),
             'date'        => $request->get_param( 'date' ),
             'ordered_by'  => $request->get_param( 'ordered_by' )
         ];

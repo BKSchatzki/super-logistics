@@ -25,6 +25,8 @@ export default new pm.Vuex.Store({
         // Material Orders state
         materialOrders: [],
         materialVendors: [],
+        users: [],
+        currentUser: {},
         // more
         is_single_task: false,
         roles: [],
@@ -114,6 +116,12 @@ export default new pm.Vuex.Store({
         },
         setMaterialVendors (state, vendors) {
             state.materialVendors = vendors;
+        },
+        setUsers (state, users) {
+            state.users = users;
+        },
+        setCurrentUser (state, user) {
+            state.currentUser = user;
         },
         // Project mutations
         setProjects (state, projects) {

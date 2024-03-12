@@ -12,10 +12,8 @@ export default {
         type: 'GET',
         url: self.base_url + 'pm/v2/materials/orders',
         success: function (res) {
-          // res.data provides a list of the boards associated with the global kanban
           if (res.data !== undefined) {
-            console.log("successfully fetched material orders: ", res.data);
-            //self.$store.commit("setMaterialOrders", res.data);
+            self.$store.commit("setMaterialOrders", res.data);
           }
         },
         error: function (res) {
@@ -59,6 +57,50 @@ export default {
         }
       };
       self.httpRequest(request_data);
+    },
+    addMaterialOrder(dataObj) {
+      // dataObj = {vendor_id: "vendor_id", material_id: "material_id", quantity: "quantity", cost: "cost", date: "date", ordered_by: "ordered_by"  }
+      const self = this;
+      const request_data = {
+        type: 'POST',
+        url: self.base_url + 'pm/v2/materials/orders',
+        data: dataObj,
+        success: function (res) {
+          if (res.data !== undefined) {
+            console.log("successfully added new order: ", res.data);
+            self.getMaterialOrders();
+          }
+        },
+        error: function (res) {
+          console.error('Failed to add new order:', res);
+        }
+      };
+      self.httpRequest(request_data);
+    },
+    getUsers () {
+      const self = this;
+
+      self.httpRequest({
+        url: self.base_url + 'pm/v2/users/',
+        success (res) {
+          if (res.data !== undefined) {
+            console.log('users fetched from mixin: ', res.data);
+            self.$store.commit('setUsers', res.data);
+          }
+        }
+      })
+    },
+    getCurrentUser() {
+      const self = this;
+      self.httpRequest({
+        url: self.base_url + 'pm/v2/current-user',
+        success (res) {
+          if (res.data !== undefined) {
+            console.log('current user fetched from mixin: ', res.data);
+            self.$store.commit('setCurrentUser', res.data);
+          }
+        }
+      })
     }
   }
 }

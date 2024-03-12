@@ -8,6 +8,7 @@ use Carbon\Carbon;
 class MaterialOrder extends Eloquent {
 
     use Model_Events;
+    public $timestamps = false;
     protected $table = 'pm_material_orders';
     protected $fillable = [
         'id',
@@ -15,7 +16,6 @@ class MaterialOrder extends Eloquent {
         'cost',
         'title',
         'description',
-        'projects',
         'date',
         'ordered_by'
     ];
@@ -25,7 +25,7 @@ class MaterialOrder extends Eloquent {
     }
 
     public function projects() {
-        return $this->belongsToMany('WeDevs\PM\Project\Models\Project', pm_tb_prefix() . 'pm_material_order_projects',
+        return $this->belongsToMany('WeDevs\PM\Project\Models\Project', pm_tb_prefix() . 'pm_material_orders_projects',
         'order_id', 'project_id');
     }
 
