@@ -19,3 +19,9 @@ $router->post( 'materials/orders', 'WeDevs/PM/Materials/Controllers/MaterialOrde
 
 $router->post( 'materials/vendors', 'WeDevs/PM/Materials/Controllers/MaterialVendorController@store' )
     ->permission($generic_permissions);
+
+$router->delete( 'materials/orders/{id}', 'WeDevs/PM/Materials/Controllers/MaterialOrderController@delete' )
+    ->permission($generic_permissions);
+
+$router->delete( 'materials/vendors/{id}', 'WeDevs/PM/Materials/Controllers/MaterialVendorController@delete' )
+    ->permission($generic_permissions);

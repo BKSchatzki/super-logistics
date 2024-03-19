@@ -2,11 +2,11 @@ import projects from '@components/project-lists/router';
 import categories from '@components/categories/router';
 import add_ons from '@components/add-ons/router';
 import '@components/importtools/router';
-//import '@components/tools/router';
 import '@components/my-tasks/router';
 import '@components/reports/router';
 import '@components/global-kanban/router';
 import '@components/material-ordering/router';
+import '@components/project/project-materials/router';
 
 // IF NOT PRO
 if ( !PM_Vars.is_pro ) {
@@ -16,12 +16,11 @@ if ( !PM_Vars.is_pro ) {
     require('@components/progress/router');
     require('@components/calendar/router');
     require('@components/pro-modules/router');
-    // require('@components/woo-project/router');
 
     // Pro prompt pages.
     require('@components/pro-settings/router');
     require('@components/project-modules/router');
-    require('@components/project-settings/router');
+    require('@components/project/project-settings/router');
 
     // Pro prompt fields.
     require('@components/privacy/router');

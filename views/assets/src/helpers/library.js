@@ -14,10 +14,10 @@ pm.commonComponents = commonComp.default;
 
 Vue.use(VTooltip);
 
-import Lists from '@components/project-task-lists/mixin'
+import Lists from '@components/project/project-task-lists/mixin'
 import Mixins from '@helpers/mixin/mixin'
 import Settings from '@components/settings/mixin'
-import SingleTask from '@components/project-task-lists/single-task.vue';
+import SingleTask from '@components/project/project-task-lists/single-task.vue';
 // import listpage from '@components/project-task-lists/lists.vue';
 
 pm.SingleTask = SingleTask;

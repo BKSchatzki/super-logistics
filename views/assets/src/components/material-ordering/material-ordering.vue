@@ -4,29 +4,55 @@ import AddNew from "@components/material-ordering/add-new.vue";
 import MaterialsMixin from "@components/material-ordering/mixin.js";
 
 export default {
-  name: "material-ordering",
+  components: { Orders, AddNew },
   mixins: [MaterialsMixin],
-  components: {
-    Orders,
-    AddNew
+  computed: {
+    project() {
+      return this.$store.state.project;
+    }
+  },
+  watch: {
+    project() {
+      console.log("Project changed (material-ordering.vue): ", this.project);
+    }
   },
   created() {
     this.getMaterialVendors();
     this.getUsers();
+    this.getProjects();
   }
 }
 </script>
 
 <template>
-  <div>
+  <div class="mo-main">
     <h1>Material Orders</h1>
     <p>Keep track of your material ordering by vendor, or make new orders.</p>
-    <orders></orders>
-    <add-new></add-new>
+    <div class="content">
+      <orders class="orders"></orders>
+      <add-new class="add-new"></add-new>
+    </div>
   </div>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
+.mo-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+}
+
+.orders {
+  flex: 0.618;
+}
+
+.add-new {
+  flex: 0.382;
+}
 
 .materials-input {
   width: 100%;

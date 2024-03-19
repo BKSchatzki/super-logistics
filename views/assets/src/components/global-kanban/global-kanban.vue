@@ -47,13 +47,11 @@ export default {
       return true;
     },
   },
-
   data() {
     return {
       editable: true
     }
   },
-
   created () {
     const pArgs = {
       status: 0,

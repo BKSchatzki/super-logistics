@@ -7,12 +7,12 @@ import VueContentLoading from '@components/common/VueContentLoading.vue';
 import DateTimePicker from '@components/common/time-picker.vue';
 import colorPicker from '@components/common/color-picker.vue';
 import DoAction from '@components/common/do-action.vue';
-import ListForm from '@components/project-task-lists/new-task-list-form.vue';
-import TaskForm from '@components/project-task-lists/new-task-form.vue';
-import DatePicker from '@components/project-task-lists/date-picker.vue';
+import ListForm from '@components/project/project-task-lists/new-task-list-form.vue';
+import TaskForm from '@components/project/project-task-lists/new-task-form.vue';
+import DatePicker from '@components/project/project-task-lists/date-picker.vue';
 import ContentDatePicker from '@components/common/content-date-picker.vue';
 import pmFile from '@components/common/pm-file.vue';
-import TaskList from '@components/project-task-lists/lists.vue';
+import TaskList from '@components/project/project-task-lists/lists.vue';
 import HeaderMenu from '@components/common/menu.vue';
 import Comments from '@components/common/comments.vue';
 import Popper from 'vue-popperjs';
@@ -33,7 +33,7 @@ import RoundProgressBar from '@components/common/round-progress-bar.vue';
 import DoSlot from '@components/common/do-slot.vue';
 import Vue2DateRangePicker from '@components/common/vue2-daterange-picker.vue'
 import FullCalendar from '@components/common/fullcalendar.vue'
-import SingleTask from '@components/project-task-lists/single-task.vue';
+import SingleTask from '@components/project/project-task-lists/single-task.vue';
 
 pm.Vue.component('pm-pagination', pagination);
 pm.Vue.component('pm-date-picker', datePicker);

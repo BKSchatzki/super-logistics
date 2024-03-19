@@ -144,7 +144,7 @@ class Project extends Eloquent {
     }
 
     public function material_orders() {
-        return $this->belongsToMany('WeDevs\PM\Order\Models\MaterialOrder',
-        pm_tb_prefix() . '_pm_material_orders_projects', 'project_id', 'order_id');
+        return $this->belongsToMany('WeDevs\PM\Materials\Models\MaterialOrder',
+        pm_tb_prefix() . 'pm_material_orders_projects', 'project_id', 'order_id');
     }
 }

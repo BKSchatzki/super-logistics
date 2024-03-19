@@ -1,25 +1,15 @@
 
 weDevsPmRegisterModule('projectLists', 'project-lists');
 
-import overview from '@components/project-overview/router';
-import activities from '@components/project-activities/router';
-import files from '@components/project-files/router';
-import {task_lists, single_list} from '@components/project-task-lists/router';
-import {discussions, single_discussion} from '@components/project-discussions/router';
-import {milestones} from '@components/project-milestones/router';
+import overview from '@components/project/project-overview/router';
+import activities from '@components/project/project-activities/router';
+import files from '@components/project/project-files/router';
+import {task_lists, single_list} from '@components/project/project-task-lists/router';
+import {discussions, single_discussion} from '@components/project/project-discussions/router';
+import {milestones} from '@components/project/project-milestones/router';
+import {materials} from '@components/project/project-materials/router';
 
-
-// const empty = resolve => {
-//     require.ensure(['./empty.vue'], () => {
-//         resolve(require('./empty.vue'));
-//     });
-// }
 import empty from './empty.vue'
-// const project_lists = resolve => {
-//     require.ensure(['./active-projects.vue'], () => {
-//         resolve(require('./active-projects.vue'));
-//     });
-// }
 
 // These are Vue Components
 import project_lists from './active-projects.vue'
@@ -100,9 +90,7 @@ weDevsPMRegisterChildrenRoute('project_root',
             component: empty,
             name: 'projects',
             children: wedevsPMGetRegisterChildrenRoute('projects'),
-
         }
-        
     ]
 );
 

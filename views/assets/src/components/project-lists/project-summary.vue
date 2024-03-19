@@ -5,126 +5,118 @@
         <div class="pm-project-column" v-for="project in projects" :key="project.id">
 
             <article class="pm-project-item clearfix">
-                <!-- project item header -->
-                <div class="pm-project-item-header">
-                    <h3 class="pm-project-title pm-d-inline pm-pull-left">
-                        <router-link 
-                            :title="project.title"
-                            :to="{ name: 'task_lists',  params: { project_id: project.id }}"
-                        >
-                            {{ project.title }}
-                        </router-link>
-                    </h3>
-                    <ul class="pm-pull-right pm-list-inline pm-project-settings">
+              <!--------------------------------------- project item header -->
+
+              <div class="pm-project-item-header">
+                  <h3 class="pm-project-title pm-d-inline pm-pull-left">
+                    <router-link :title="project.title" :to="{ name: 'task_lists',  params: { project_id: project.id }}">
+                      {{ project.title }}
+                    </router-link>
+                  </h3>
+                  <!-- Favorite and Three dots -->
+                  <ul class="pm-pull-right pm-list-inline pm-project-settings">
+                    <li>
+                      <favourite :project="project"></favourite>
+                    </li>
+
+                    <li class="pm-has-dropdown" v-if="is_manager(project)">
+                      <!-- Favorite Button -->
+                      <a @click.prevent="dropdownTrigger(project)" :data-project_id="project.id" href="#" class="pm-dropdown-trigger">
+                          <i class="pm-icon flaticon-more"></i>
+                      </a>
+                      <!-- Little three dot menu -->
+                      <ul :class="dropdownToggleClass(project)">
                         <li>
-                            <favourite :project="project"></favourite>
+                          <a href="#" @click.prevent="projectMarkAsDoneUndone(project)" class="pm-archive" >
+                            <span v-if="project.status == 'incomplete' ||  project.status == '0'" class="dashicons dashicons-yes"></span>
+                            <span v-if="project.status == 'incomplete' ||  project.status == '0'">{{ __( 'Complete', 'wedevs-project-manager') }}</span>
+                            <span v-if="project.status == 'complete' ||  project.status == '1'" class="dashicons dashicons-undo"></span>
+                            <span v-if="project.status == 'complete' ||  project.status == '1'">{{ __( 'Restore', 'wedevs-project-manager') }}</span>
+                          </a>
                         </li>
-
-                        <li class="pm-has-dropdown" v-if="is_manager(project)">
-                            <a @click.prevent="dropdownTrigger(project)" :data-project_id="project.id" href="#" class="pm-dropdown-trigger">
-                                <i class="pm-icon flaticon-more"></i>
-                            </a>
-                            <!-- prev condition v-if="project.settings_hide && is_manager(project)" -->
-                            <ul :class="dropdownToggleClass(project)">
-                                <li>
-                                    <a href="#" @click.prevent="projectMarkAsDoneUndone(project)" class="pm-archive" >
-                                        <span v-if="project.status == 'incomplete' ||  project.status == '0'" class="dashicons dashicons-yes"></span>
-                                        <span v-if="project.status == 'incomplete' ||  project.status == '0'">{{ __( 'Complete', 'wedevs-project-manager') }}</span>
-
-                                        <span v-if="project.status == 'complete' ||  project.status == '1'" class="dashicons dashicons-undo"></span>
-                                        <span v-if="project.status == 'complete' ||  project.status == '1'">{{ __( 'Restore', 'wedevs-project-manager') }}</span>
-                                        
-                                    </a>
-                                </li>
-                                <li>
-                                    <pm-do-action :hook="'project_action_menu'" :actionData="project" ></pm-do-action>
-                                </li>
-
-                                <li>
-                                    <a href="#" @click.prevent="deleteProject(project.id, project)" class="pm-project-delete-link" :title="__( 'Delete project', 'wedevs-project-manager')">
-                                        <span class="dashicons dashicons-trash"></span>
-                                        <span>{{ __( 'Delete', 'wedevs-project-manager') }}</span>
-                                    </a>
-                                </li>
-                            </ul>
+                        <li>
+                            <pm-do-action :hook="'project_action_menu'" :actionData="project" ></pm-do-action>
                         </li>
-                    </ul>
+                        <li>
+                          <a href="#" @click.prevent="deleteProject(project.id, project)" class="pm-project-delete-link" :title="__( 'Delete project', 'wedevs-project-manager')">
+                            <span class="dashicons dashicons-trash"></span>
+                            <span>{{ __( 'Delete', 'wedevs-project-manager') }}</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
                 </div><!-- /.item header -->
                 
-                <!-- project item's body -->
+              <!--------------------------------------- project item's body -->
                 <div class="pm-project-item-body">
-                    <!-- <ul class="pm-project-tags pm-list-inline">
-                        <li>
-                            <a href="#" class="tag-design">Design</a>
-                        </li>
-                    </ul> -->
-                    <div class="pm-project-info">
-                        <div :title="project.description.content" class="pm-project-description">
-                            <p v-text="project.description.content"></p>
-                        </div>
+                  <div class="pm-project-info">
+                    <div :title="project.description.content" class="pm-project-description">
+                      <p v-text="project.description.content"></p>
+                    </div>
                         <ul class="pm-project-meta-counters pm-list-inline">
-                            <li class="pm-meta-overview pm-has-tooltip">
-                                <router-link :to="{
-                                    name: 'task_lists',
-                                    params: {
-                                        project_id: project.id
-                                    }}">
-                                    <i class="pm-icon logo icon-pm-task-list" aria-hidden="true"></i>
-                                    <span class="pm-tooltip-label">{{ parseInt( project.meta.data.total_tasks ) + tooltipLabels.tasks }}</span>
-                                </router-link>
-                            </li>
-                            <li class="pm-meta-discussion pm-has-tooltip">
-                                <router-link :to="{
-                                    name: 'discussions',
-                                    params: {
-                                        project_id: project.id
-                                    }}">
-                                    <i class="pm-icon flaticon-pm-discussions"></i>
-                                    <span class="pm-tooltip-label">{{ parseInt( project.meta.data.total_discussion_boards ) + tooltipLabels.discussions }}</span>
-                                </router-link>
-                            </li>
-                            <li class="pm-meta-list pm-has-tooltip">
-                                <router-link :to="{
-                                    name: 'task_lists',
-                                    params: {
-                                        project_id: project.id
-                                    }}">
-                                    <i class="pm-icon flaticon-list"></i>
-                                    <span class="pm-tooltip-label">{{ parseInt( project.meta.data.total_task_lists ) + tooltipLabels.tasksLists }}</span>
-                                </router-link>
-                            </li>
-                            <li class="pm-meta-files pm-has-tooltip">
-                                <router-link :to="{
-                                    name: 'pm_files',
-                                    params: {
-                                        project_id: project.id
-                                    }}">
-                                    <i class="pm-icon flaticon-document"></i>
-                                    <span class="pm-tooltip-label">{{ parseInt( project.meta.data.total_files ) + tooltipLabels.files }}</span>
-                                </router-link>
-                            </li>
-                            <li class="pm-meta-flag pm-has-tooltip">
-                                <router-link :to="{
-                                    name: 'milestones',
-                                    params: {
-                                        project_id: project.id
-                                    }}">
-                                    <i class="pm-icon flaticon-flag"></i>
-                                    <span class="pm-tooltip-label">{{ parseInt( project.meta.data.total_milestones ) + tooltipLabels.milestones }}</span>
-                                </router-link>
-                            </li>
-                            <li class="pm-meta-comment pm-has-tooltip">
-                                <a href="#">
-                                    <i class="pm-icon flaticon-comment-black-oval-bubble-shape"></i>
-                                    <span class="pm-tooltip-label">{{ parseInt( project.meta.data.total_comments ) + tooltipLabels.comments }}</span>
-                                </a>
-                            </li>
+                          <li class="pm-meta-overview pm-has-tooltip">
+                            <router-link :to="{
+                              name: 'task_lists',
+                              params: {
+                                  project_id: project.id
+                              }}">
+                              <i class="pm-icon logo icon-pm-task-list" aria-hidden="true"></i>
+                              <span class="pm-tooltip-label">{{ parseInt( project.meta.data.total_tasks ) + tooltipLabels.tasks }}</span>
+                            </router-link>
+                          </li>
+                          <li class="pm-meta-discussion pm-has-tooltip">
+                            <router-link :to="{
+                              name: 'discussions',
+                              params: {
+                                  project_id: project.id
+                              }}">
+                              <i class="pm-icon flaticon-pm-discussions"></i>
+                              <span class="pm-tooltip-label">{{ parseInt( project.meta.data.total_discussion_boards ) + tooltipLabels.discussions }}</span>
+                            </router-link>
+                          </li>
+                          <li class="pm-meta-list pm-has-tooltip">
+                            <router-link :to="{
+                              name: 'task_lists',
+                              params: {
+                                  project_id: project.id
+                              }}">
+                              <i class="pm-icon flaticon-list"></i>
+                              <span class="pm-tooltip-label">{{ parseInt( project.meta.data.total_task_lists ) + tooltipLabels.tasksLists }}</span>
+                            </router-link>
+                          </li>
+                          <li class="pm-meta-files pm-has-tooltip">
+                            <router-link :to="{
+                              name: 'pm_files',
+                              params: {
+                                  project_id: project.id
+                              }}">
+                              <i class="pm-icon flaticon-document"></i>
+                              <span class="pm-tooltip-label">{{ parseInt( project.meta.data.total_files ) + tooltipLabels.files }}</span>
+                            </router-link>
+                          </li>
+                          <li class="pm-meta-flag pm-has-tooltip">
+                            <router-link :to="{
+                              name: 'milestones',
+                              params: {
+                                  project_id: project.id
+                              }}">
+                              <i class="pm-icon flaticon-flag"></i>
+                              <span class="pm-tooltip-label">{{ parseInt( project.meta.data.total_milestones ) + tooltipLabels.milestones }}</span>
+                            </router-link>
+                          </li>
+                          <li class="pm-meta-comment pm-has-tooltip">
+                            <a href="#">
+                              <i class="pm-icon flaticon-comment-black-oval-bubble-shape"></i>
+                              <span class="pm-tooltip-label">{{ parseInt( project.meta.data.total_comments ) + tooltipLabels.comments }}</span>
+                            </a>
+                          </li>
                         </ul>
 
                         <!-- progress -->
                         <div class="pm-project-progress">
-                            <!-- <div :style="projectCompleteStatus(project)" class="bar completed"></div> -->
-                            <span :style="projectCompleteStatus(project)" class="pm-project-status"></span>
+                          <!-- <div :style="projectCompleteStatus(project)" class="bar completed"></div> -->
+                          <span :style="projectCompleteStatus(project)" class="pm-project-status"></span>
                         </div>
 
                         <!-- project users -->

@@ -11,7 +11,7 @@ shell.rm('-rf', outputPath)
 shell.rm('-rf', path.resolve( __dirname, 'views/assets/vendor/wp-hooks/pm-hooks.js'))
 
 function resolve (dir) {
-  return path.join(__dirname, './views/assets/src', dir)
+  return path.join(__dirname, './views/assets/', dir)
 }
 
 if (isProduction) {
@@ -51,12 +51,13 @@ module.exports =[
         resolve: {
             extensions: ['.js', '.vue', '.json'],
             alias: {
-              '@components': resolve('components'),
-              '@directives': resolve('directives'),
-              '@helpers': resolve('helpers'),
-              '@router': resolve('router'),
-              '@store': resolve('store'),
-              '@src': resolve('')
+              '@assets': resolve(''),
+              '@components': resolve('src/components'),
+              '@directives': resolve('src/directives'),
+              '@helpers': resolve('src/helpers'),
+              '@router': resolve('src/router'),
+              '@store': resolve('src/store'),
+              '@src': resolve('src/')
             }
         },
         

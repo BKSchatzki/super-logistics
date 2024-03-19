@@ -52,10 +52,11 @@
                 case 'milestone':
                     url = '#/projects/'+ item.project_id + '/milestones/';
                     break;
-
                 case 'discussion_board':
-
                     break;
+                case 'project_materials':
+                  url = '#/projects/'+ item.project_id + '/materials/';
+                   break;
                 case 'task_list':
                     url = '#/projects/'+ item.project_id + '/task-lists/'+ item.id;
                     break;

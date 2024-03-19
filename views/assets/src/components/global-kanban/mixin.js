@@ -16,7 +16,6 @@ export default {
         }
     },
     methods: {
-
         getGlobalKanban() {
             const self = this;
             const request_data = {

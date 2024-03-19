@@ -1,4 +1,4 @@
-import TaskLists from '@components/project-task-lists/mixin';
+import TaskLists from '@components/project/project-task-lists/mixin';
 
 export default {
 	taskLists: TaskLists

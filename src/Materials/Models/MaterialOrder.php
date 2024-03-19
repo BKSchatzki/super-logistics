@@ -25,8 +25,8 @@ class MaterialOrder extends Eloquent {
     }
 
     public function projects() {
-        return $this->belongsToMany('WeDevs\PM\Project\Models\Project', pm_tb_prefix() . 'pm_material_orders_projects',
-        'order_id', 'project_id');
+        return $this->belongsToMany('WeDevs\PM\Project\Models\Project',
+        pm_tb_prefix() . 'pm_material_orders_projects', 'order_id', 'project_id');
     }
 
     public function orderedBy() {

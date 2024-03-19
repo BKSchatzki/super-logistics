@@ -81,8 +81,8 @@ class MaterialVendorController {
         return $this->get_response(null, $message);
     }
 
-    function delete_all_relation(MaterialVendor $order) {
-        $order->projects()->delete();
+    function delete_all_relation(MaterialVendor $vendor) {
+        $vendor->materialOrders()->delete();
     }
 }
 

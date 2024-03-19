@@ -1,4 +1,4 @@
-import TaskLists from '@components/project-task-lists/mixin';
+import TaskLists from '@components/project/project-task-lists/mixin';
 import Url from '@wordpress/url';
 import classnames from 'classnames';
 
@@ -1474,40 +1474,6 @@ export default {
                     }, 100); // cleanup
                 }
             }
-        },
-
-        isEmpty (mixedVar) {
-
-
-            if( 
-                mixedVar === false 
-                    ||
-                mixedVar == 0
-                    || 
-                mixedVar == '0'
-                    ||
-                mixedVar == null
-                    ||
-                mixedVar == ''
-                    ||
-                typeof mixedVar == 'undefined'
-            ) {
-                return true;
-            }
-
-            if(this.is_array(mixedVar)) {
-                if(!mixedVar.length) {
-                    return true;
-                }
-            }
-
-            if (this.is_object(mixedVar)) {
-                if( jQuery.isEmptyObject(mixedVar) ) {
-                    return true;
-                }
-            }
-
-            return false
         },
 
         can_edit_task (task) {

@@ -409,14 +409,14 @@
 
             windowActivity (el) {
                 
-                var settingsWrap  = jQuery(el.target).closest('.header-settings'),
+                    const settingsWrap  = jQuery(el.target).closest('.header-settings'),
                     settingsBtn       = jQuery(el.target).hasClass('header-settings-btn'),
                     projectUpdatebtn  = jQuery(el.target).hasClass('project-update-btn'),
                     projectUdpateWrap = jQuery(el.target).closest('.project-edit-form'),
                     newUser           = jQuery(el.target).hasClass('pm-more-user-form-btn'),
                     newUserbtn        = jQuery(el.target).hasClass('pm-new-user-btn'),
                     userSelect        = jQuery(el.target).closest('.ui-autocomplete'),
-                    newUserDialog     = jQuery('.pm-new-user-wrap').dialog('isOpen'),
+                    newUserDialog     = jQuery('.pm-new-user-wrap').data('ui-dialog') ? jQuery('.pm-new-user-wrap').dialog('isOpen') : false,
                     dialogClose       = jQuery(el.target).hasClass('ui-icon-closethick');
 
 

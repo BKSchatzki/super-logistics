@@ -30,15 +30,22 @@ class MaterialOrderController {
 
     public function store(WP_REST_Request $request) {
         $data = [
-            'vendor_id'   => $request->get_param( 'vendor_id' ),
-            'cost'        => $request->get_param( 'cost' ),
-            'title'       => $request->get_param( 'title' ),
-            'description' => $request->get_param( 'description' ),
-            'date'        => $request->get_param( 'date' ),
-            'ordered_by'  => $request->get_param( 'ordered_by' )
+            'vendor_id'    => $request->get_param( 'vendor_id' ),
+            'cost'         => $request->get_param( 'cost' ),
+            'title'        => $request->get_param( 'title' ),
+            'description'  => $request->get_param( 'description' ),
+            'date'         => $request->get_param( 'date' ),
+            'ordered_by'   => $request->get_param( 'ordered_by' ),
         ];
 
+        $projects = $request->get_param( 'associated_projects' );
+
+        // Create the MaterialOrder
         $newOrder = MaterialOrder::create($data);
+
+        // Attach the projects to the MaterialOrder
+        $newOrder->projects()->attach($projects);
+
         $resource = new Item( $newOrder, new MaterialOrderTransformer );
         $message  = ['message' => 'New order has been added successfully'];
 
@@ -75,7 +82,6 @@ class MaterialOrderController {
         $id = $request->get_param( 'id' );
 
         $order = MaterialOrder::where( 'id', $id )->first();
-        $this->delete_all_relation($order);
         $order->delete();
 
         $message = [
@@ -83,10 +89,6 @@ class MaterialOrderController {
         ];
 
         return $this->get_response(null, $message);
-    }
-
-    function delete_all_relation(MaterialOrder $order) {
-        $order->projects()->delete();
     }
 }
 

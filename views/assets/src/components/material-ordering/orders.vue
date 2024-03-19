@@ -1,70 +1,59 @@
 <script>
 import MaterialsMixin from "@components/material-ordering/mixin.js";
+import Order from "@components/material-ordering/order.vue";
+import Vendor from "@components/material-ordering/vendor.vue";
 
 export default {
   name: "orders",
+  components: {Order, Vendor},
   mixins: [MaterialsMixin],
+  props: ["project"],
   computed: {
     orders() {
-      return this.$store.state.materialOrders;
+      if (this.project) {
+        console.log("if statement tripped in orders.vue. project: ", this.project);
+        return this.$store.state.materialOrders.filter(order => order.projects.includes(this.project.id))
+      }
+      console.log("if statement missed in orders.vue. project: ", this.project);
+      return this.$store.state.materialOrders
     },
-    vendors() {
-      const orders = this.$store.state.materialOrders;
-      const vendors = [...this.$store.state.materialVendors];
-
-      vendors.forEach(vendor => {
-        vendor.orders = orders.filter(order => order.vendor_id === vendor.id);
-      });
-
-      return vendors;
-    },
-    users() {
-      return this.$store.state.users;
-    }
+    vendors() { return this.$store.state.materialVendors },
+    users() { return this.$store.state.users }
   },
-  mounted() {
-    this.getMaterialOrders().then(() => {
-      this.isLoading = false;
-    })
-    console.log("orders in component: ", this.orders);
-    console.log("vendors in component: ", this.vendors);
-  },
-  data() {
-    return {
-      isLoading: true
-    }
+  created: function() {
+    // this is literally here to make this load faster. I don't know why it works.
+    this.getProjects();
   }
 }
 
 </script>
 
 <template>
-  <h2>Orders</h2>
-  <p>View existing orders here.</p>
-  <div v-if="isLoading">
-    Loading...
-  </div>
-  <div v-else v-for="vendor in vendors">
-    <h3>{{ vendor.name }}</h3>
-    <div v-if="vendor.orders && vendor.orders.length" v-bind:key="vendor.id">
-      <ul>
-        <li v-for="order in vendor.orders" v-bind:key="order.id">
-          <div>
-            <h4>{{ order.title }}</h4>
-            <p>{{ order.description }}</p>
-            <p>{{ order.cost }}</p>
-            <p>{{ order.date }}</p>
-          </div>
-        </li>
-      </ul>
-      <p v-if="vendor.orders.length === 0">No orders placed yet with this vendor.</p>
+  <div id="material-orders">
+    <div class="mo-container" v-for="v in vendors">
+      <vendor :vendor="v"></vendor>
+      <div v-if="v.orders && v.orders.length" v-bind:key="v.id">
+        <ul>
+          <order v-for="order in v.orders" :key="order.id" :order="order"></order>
+        </ul>
+      </div>
+      <p class="mo-lame-msg"v-else>
+        No orders placed yet with this vendor.
+      </p>
     </div>
-  </div>
-  <div v-if="vendors.length === 0" v-bind:key="vendor.id">
-    <h3>No materials ordered to date.</h3>
+    <div v-if="vendors.length === 0">
+      <p class="mo-lame-msg">Record and view all of the orders made for materials here. No materials ordered to date.</p>
+    </div>
   </div>
 </template>
 
 <style scoped lang="less">
-
+.mo-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.mo-lame-msg {
+  margin-left: 10px;
+}
 </style>
