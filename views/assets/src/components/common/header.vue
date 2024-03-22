@@ -1,3 +1,163 @@
+<script>
+import do_action from './do-action.vue';
+import edit_project from './../project-lists/project-create-form.vue';
+
+export default {
+  data () {
+    return {
+      project_action: __('Project Actions', 'wedevs-project-manager'),
+      settings_hide: false,
+      settingStatus: false,
+      isEnableUpdateForm: false,
+      popperOptions:
+          {
+            placement: 'top-end',
+            modifiers:
+                {
+                  offset: {
+                    offset: '0, 10px'
+                  }
+                }
+          },
+      projectFormStatus : false,
+    }
+
+  },
+  watch: {
+    '$route' (to, from) {
+      this.project_id = typeof to.params.project_id !== 'undefined' ? to.params.project_id : 0;
+      if(!this.isProjectLoaded) {
+        this.getGloabalProject(to.params.project_id);
+      }
+
+      this.getProjectCategories();
+      this.getRoles();
+    }
+  },
+
+  computed: {
+    isProjectLoaded () {
+      let project = this.$store.state.project;
+
+      return jQuery.isEmptyObject(project) ? false : true;
+    },
+
+    is_project_edit_mode () {
+      return this.$store.state.is_project_form_active;
+    },
+
+    project () {
+      return  this.$store.state.project;
+    },
+
+    hasProject () {
+
+      return this.$store.state.project.hasOwnProperty('id');
+    },
+
+    showDescription () {
+      return this.$store.state.showDescription;
+    }
+
+  },
+
+  created () {
+    this.getGloabalProject();
+    this.getProjectCategories();
+    this.getRoles();
+    window.addEventListener('click', this.windowActivity);
+  },
+
+  components: {
+    'do-action': do_action,
+    'edit-project': edit_project
+  },
+
+  methods: {
+    updateDescriptionVisibility () {
+      let status = this.showDescription ? false : true;
+      this.$store.commit( 'updateShowDescription', status );
+    },
+
+    windowActivity (el) {
+
+      const settingsWrap  = jQuery(el.target).closest('.header-settings'),
+          settingsBtn               = jQuery(el.target).hasClass('header-settings-btn'),
+          projectUpdatebtn     = jQuery(el.target).hasClass('project-update-btn'),
+          projectUdpateWrap = jQuery(el.target).closest('.project-edit-form'),
+          newUser                = jQuery(el.target).hasClass('pm-more-user-form-btn'),
+          newUserbtn           = jQuery(el.target).hasClass('pm-new-user-btn'),
+          userSelect             = jQuery(el.target).closest('.ui-autocomplete'),
+          newUserDialog      = jQuery('.pm-new-user-wrap').data('ui-dialog') ? jQuery('.pm-new-user-wrap').dialog('isOpen') : false,
+          dialogClose            = jQuery(el.target).hasClass('ui-icon-closethick');
+
+
+      if ( !settingsBtn && !settingsWrap.length ) {
+        this.settingStatus = false;
+      }
+
+      if (
+          !projectUpdatebtn
+          && !projectUdpateWrap.length
+          && !newUser
+          && !userSelect.length
+          && !newUserbtn
+          && !newUserDialog
+          && !dialogClose
+      ) {
+        this.showHideProjectForm(false);
+        this.projectFormStatus = false;
+      }
+    },
+
+    enableDisableUpdateForm () {
+      this.isEnableUpdateForm = this.isEnableUpdateForm ? false : true;
+    },
+
+    showHideSettings () {
+      this.settingStatus = this.settingStatus ? false : true;
+    },
+    showProjectAction () {
+      this.settings_hide = !this.settings_hide;
+    },
+
+    selfProjectMarkDone () {
+
+      var args = {
+        data: {
+          id : this.project.id,
+          status: this.project.status === 'complete' ? 'incomplete' : 'complete',
+          title: this.project.title,
+        },
+        callback: function ( res ) {
+          this.$root.$store.commit(
+              'showHideProjectDropDownAction',
+              {
+                status: false,
+                project_id: this.project_id
+              }
+          );
+        }
+      }
+
+      this.updateProject( args );
+    },
+
+    checkFormStatus(){
+      if(this.projectFormStatus){
+        this.projectFormStatus = false ;
+      } else {
+        this.projectFormStatus = true ;
+      }
+    },
+
+    makeFromClose(value){
+      this.projectFormStatus = value ;
+    }
+  }
+}
+</script>
+
 <template>
     <div class="pm-header-title-content" v-if="isProjectLoaded">
         <div class="header-row-1">
@@ -323,165 +483,3 @@
     }
  
 </style>
-
-<script>
-    //import router from './../../router/router';
-    import do_action from './do-action.vue';
-    import edit_project from './../project-lists/project-create-form.vue';
-   
-
-    export default {
-        data () {
-            return {
-                project_action: __('Project Actions', 'wedevs-project-manager'),
-                settings_hide: false,
-                settingStatus: false,
-                isEnableUpdateForm: false,
-                popperOptions: 
-                {
-                    placement: 'top-end',
-                    modifiers: 
-                    { 
-                        offset: { 
-                            offset: '0, 10px' 
-                        } 
-                    }
-                },
-                projectFormStatus : false,
-            }
-
-        },
-        watch: {
-            '$route' (to, from) {
-                this.project_id = typeof to.params.project_id !== 'undefined' ? to.params.project_id : 0;
-                if(!this.isProjectLoaded) {
-                    this.getGloabalProject(to.params.project_id);    
-                }
-                
-                this.getProjectCategories();
-                this.getRoles();
-            }
-        },
-
-        computed: {
-            isProjectLoaded () {
-                let project = this.$store.state.project;
-                
-                return jQuery.isEmptyObject(project) ? false : true;
-            },
-
-            is_project_edit_mode () {
-                return this.$store.state.is_project_form_active;
-            },
-
-            project () {
-                return  this.$store.state.project;
-            },
-
-            hasProject () {
-
-                return this.$store.state.project.hasOwnProperty('id');
-            },
-
-            showDescription () {
-                return this.$store.state.showDescription;
-            }
-
-        },
-        
-        created () {
-            this.getGloabalProject();
-            this.getProjectCategories();
-            this.getRoles(); 
-            window.addEventListener('click', this.windowActivity);
-        },
-
-        components: {
-            'do-action': do_action,
-            'edit-project': edit_project
-        },
-
-        methods: {
-            updateDescriptionVisibility () {
-                let status = this.showDescription ? false : true;
-                this.$store.commit( 'updateShowDescription', status );
-            },
-
-            windowActivity (el) {
-                
-                    const settingsWrap  = jQuery(el.target).closest('.header-settings'),
-                    settingsBtn       = jQuery(el.target).hasClass('header-settings-btn'),
-                    projectUpdatebtn  = jQuery(el.target).hasClass('project-update-btn'),
-                    projectUdpateWrap = jQuery(el.target).closest('.project-edit-form'),
-                    newUser           = jQuery(el.target).hasClass('pm-more-user-form-btn'),
-                    newUserbtn        = jQuery(el.target).hasClass('pm-new-user-btn'),
-                    userSelect        = jQuery(el.target).closest('.ui-autocomplete'),
-                    newUserDialog     = jQuery('.pm-new-user-wrap').data('ui-dialog') ? jQuery('.pm-new-user-wrap').dialog('isOpen') : false,
-                    dialogClose       = jQuery(el.target).hasClass('ui-icon-closethick');
-
-
-                if ( !settingsBtn && !settingsWrap.length ) {
-                    this.settingStatus = false;
-                }
-             
-                if ( 
-                    !projectUpdatebtn 
-                    && !projectUdpateWrap.length 
-                    && !newUser 
-                    && !userSelect.length 
-                    && !newUserbtn
-                    && !newUserDialog 
-                    && !dialogClose
-                ) {
-                    this.showHideProjectForm(false);
-                    this.projectFormStatus = false;
-                }
-            },
-
-            enableDisableUpdateForm () {
-                this.isEnableUpdateForm = this.isEnableUpdateForm ? false : true;
-            },
-
-            showHideSettings () {
-                this.settingStatus = this.settingStatus ? false : true;
-            },
-            showProjectAction () {
-                this.settings_hide = !this.settings_hide;
-            },
-
-            selfProjectMarkDone () {
-
-                var args = {
-                    data: {
-                        id : this.project.id,
-                        status: this.project.status === 'complete' ? 'incomplete' : 'complete',
-                        title: this.project.title,
-                    },
-                    callback: function ( res ) {
-                        this.$root.$store.commit(
-                            'showHideProjectDropDownAction', 
-                            {
-                                status: false, 
-                                project_id: this.project_id
-                            }
-                        );
-                    }
-                } 
-
-                this.updateProject( args );
-            },
-
-            checkFormStatus(){
-                if(this.projectFormStatus){
-                    this.projectFormStatus = false ;
-                } else {
-                    this.projectFormStatus = true ;
-                }
-            },
-
-            makeFromClose(value){
-                this.projectFormStatus = value ;
-            }
-        }
-    }
-</script>

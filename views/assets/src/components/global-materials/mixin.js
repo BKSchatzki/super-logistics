@@ -145,7 +145,7 @@ export default {
 
     },
 
-    getUsers () {
+    getWPUsers () {
       const self = this;
 
       self.httpRequest({

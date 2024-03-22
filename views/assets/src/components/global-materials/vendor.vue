@@ -1,6 +1,6 @@
 <script>
 import "@assets/css/variables.css";
-import MaterialsMixin from "@components/material-ordering/mixin.js";
+import MaterialsMixin from "@components/global-materials/mixin.js";
 export default {
   name: "vendor.vue",
   mixins: [MaterialsMixin],

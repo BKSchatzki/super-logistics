@@ -106,23 +106,21 @@
             roles () {
                 return this.$root.$store.state.roles;
             },
-
             categories () {
                 return this.$root.$store.state.categories;
             },
-
             selectedUsers () {
                 if(!this.project.hasOwnProperty('assignees')) {
                     return this.$store.state.assignees;
                 } else {
-                    var projects = this.$store.state.projects;
-                    var index = projects.findIndex(i => i.id == this.project.id);
-                    if (index !== -1) {
-                        return projects[index].assignees.data;
+                    const projects = this.$store.state.projects;
+                    const index = projects.findIndex(i => i.id == this.project.id);
+                    if (index && index !== -1) {
+                        console.log("current project: ", this.project);
+                        return this.project.assignees.data;
                     }
                 }
             },
-
             project_category: {
                 get () {
                     if ( this.project.hasOwnProperty('id') ) {
@@ -145,11 +143,9 @@
                     this.project_cat = cat;
                 }
             },
-
             show_role_field () {
                 return typeof PM_BP_Vars !== 'undefined' ? PM_BP_Vars.show_role_field : true;
             },
-
             getProjectDetails(){
                 try {
                     var project = this.$store.state.project ;

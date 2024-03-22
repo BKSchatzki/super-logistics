@@ -161,7 +161,7 @@ export default {
             } else {
                 var projects = this.$store.state.projects;
                 var index = projects.findIndex(i => i.id == this.project.id);
-                if (index !== -1) {
+                if (index && index !== -1) {
                     return projects[index].assignees.data;
                 }
             }

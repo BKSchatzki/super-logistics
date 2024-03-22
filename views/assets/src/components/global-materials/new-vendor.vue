@@ -1,5 +1,5 @@
 <script>
-import MaterialsMixin from "@components/material-ordering/mixin.js";
+import MaterialsMixin from "@components/global-materials/mixin.js";
 export default {
   name: "new-vendor",
   mixins: [MaterialsMixin],

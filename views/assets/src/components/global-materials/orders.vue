@@ -1,7 +1,7 @@
 <script>
-import MaterialsMixin from "@components/material-ordering/mixin.js";
-import Order from "@components/material-ordering/order.vue";
-import Vendor from "@components/material-ordering/vendor.vue";
+import MaterialsMixin from "@components/global-materials/mixin.js";
+import Order from "@components/global-materials/order.vue";
+import Vendor from "@components/global-materials/vendor.vue";
 
 export default {
   name: "orders",
@@ -9,23 +9,11 @@ export default {
   mixins: [MaterialsMixin],
   props: ["project"],
   computed: {
-    orders() {
-      if (this.project) {
-        console.log("if statement tripped in orders.vue. project: ", this.project);
-        return this.$store.state.materialOrders.filter(order => order.projects.includes(this.project.id))
-      }
-      console.log("if statement missed in orders.vue. project: ", this.project);
-      return this.$store.state.materialOrders
-    },
+    orders() { return this.$store.state.materialOrders },
     vendors() { return this.$store.state.materialVendors },
     users() { return this.$store.state.users }
-  },
-  created: function() {
-    // this is literally here to make this load faster. I don't know why it works.
-    this.getProjects();
   }
 }
-
 </script>
 
 <template>

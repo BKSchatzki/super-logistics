@@ -1,3 +1,73 @@
+<script>
+import header from '@components/common/header.vue';
+import new_milestone_form from './new-milestone-form.vue';
+import pagination from '@components/common/pagination.vue';
+import do_action from '@components/common/do-action.vue';
+import late_milestones from './late-milestones.vue';
+import upcoming_milestones from './upcoming-milestones.vue';
+import completed_milestones from './completed-milestones.vue';
+import Mixins from './mixin';
+
+export default {
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.getSelfMilestones();
+    });
+  },
+  mixins: [Mixins],
+  data () {
+    return {
+      current_page_number: 1,
+    }
+  },
+
+  watch: {
+    '$route' (route) {
+      this.getSelfMilestones(this);
+    }
+  },
+  components: {
+    'pm-header': header,
+    'new-milestone-form': new_milestone_form,
+    'pm-do-action': do_action,
+    'pm-pagination': pagination,
+    'late-milestones': late_milestones,
+    'upcomming-milestone': upcoming_milestones,
+    'completed-milestones': completed_milestones
+  },
+  computed: {
+    milestoneTemplate () {
+      return this.$store.state.projectMilestones.milestone_template;
+    },
+    blankTemplate () {
+      if(!this.$store.state.projectMilestones.milestones.length) {
+        return true;
+      }
+
+      return false;
+    },
+    is_milestone_form_active () {
+      return this.$store.state.projectMilestones.is_milestone_form_active;
+    },
+
+    milestones () {
+      return this.$store.state.projectMilestones.milestones;
+    },
+
+    total_milestone_page () {
+      if(typeof this.$store.state.projectMilestones.milestone_meta !== 'undefined'){
+        return this.$store.state.projectMilestones.milestone_meta.total_pages;
+      }
+      return false;
+    },
+
+    isFetchMilestone () {
+      return this.$store.state.projectMilestones.isFetchMilestone;
+    }
+  }
+}
+</script>
+
 <template>
     <div class="pm-wrap pm-front-end" id="pm-milestone-page">
         <pm-header></pm-header>
@@ -84,89 +154,11 @@
 </template>
 
 <style lang="less">
-    .pm-milestone {
-        .pm-blank-template {
-            background: transparent;
-            border: none;
-            box-shadow: none;
-        }
-    }
-</style>
-
-<script>
-    import header from '@components/common/header.vue';
-    import new_milestone_form from './new-milestone-form.vue';
-    import pagination from '@components/common/pagination.vue';
-    import do_action from '@components/common/do-action.vue';
-    import late_milestones from './late-milestones.vue';
-    import upcoming_milestones from './upcoming-milestones.vue';
-    import completed_milestones from './completed-milestones.vue';
-    import Mixins from './mixin';
-
-    export default {
-        beforeRouteEnter (to, from, next) {
-            next(vm => {
-                vm.getSelfMilestones();
-            });
-        },
-        mixins: [Mixins],
-        data () {
-            return {
-                current_page_number: 1,
-            }
-        },
-
-        watch: {
-            '$route' (route) {
-                this.getSelfMilestones(this);
-            }
-        },
-        components: {
-            'pm-header': header,
-            'new-milestone-form': new_milestone_form,
-            'pm-do-action': do_action,
-            'pm-pagination': pagination,
-            'late-milestones': late_milestones,
-            'upcomming-milestone': upcoming_milestones,
-            'completed-milestones': completed_milestones
-        },
-        computed: {
-            milestoneTemplate () {
-                return this.$store.state.projectMilestones.milestone_template;
-            },
-            blankTemplate () {
-                if(!this.$store.state.projectMilestones.milestones.length) {
-                    return true;
-                }
-
-                return false;
-            },
-            is_milestone_form_active () {
-                return this.$store.state.projectMilestones.is_milestone_form_active;
-            },
-
-            milestones () {
-                return this.$store.state.projectMilestones.milestones;
-            },
-
-            total_milestone_page () {
-                if(typeof this.$store.state.projectMilestones.milestone_meta !== 'undefined'){
-                    return this.$store.state.projectMilestones.milestone_meta.total_pages;
-                }
-                return false;
-            },
-
-            isFetchMilestone () {
-                return this.$store.state.projectMilestones.isFetchMilestone;
-            }
-        },
-        methods: {
-            
-        }
-    }
-
-</script>
-
-<style>
-    
+.pm-milestone {
+  .pm-blank-template {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+}
 </style>

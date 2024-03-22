@@ -1,6 +1,6 @@
 <script>
 import "@assets/css/variables.css";
-import MaterialsMixin from "@components/material-ordering/mixin.js";
+import MaterialsMixin from "@components/global-materials/mixin.js";
 export default {
   name: "order.vue",
   mixins: [MaterialsMixin],
@@ -8,13 +8,20 @@ export default {
     order: {
       type: Object,
       required: true,
-      validator: function (order) {
-        return order.hasOwnProperty('title') &&
-                order.hasOwnProperty('cost') &&
-                order.hasOwnProperty('date') &&
-                order.hasOwnProperty('ordered_by');
+      validator: function (o) {
+        return o.hasOwnProperty('title') &&
+            o.hasOwnProperty('cost') &&
+            o.hasOwnProperty('date') &&
+            o.hasOwnProperty('ordered_by');
       }
     },
+    vendor: {
+      type: Object,
+      required: true,
+      validator: function (v) {
+        return v.hasOwnProperty('name');
+      }
+    }
   },
   methods: {
     deleteOrder() {
@@ -41,7 +48,7 @@ export default {
     <div class="mo-order">
       <div class="mo-top-box">
         <div class="title-and-button">
-          <b class="mo-title">{{ order.title }}</b>
+          <b class="mo-title">{{ order.title }} - {{ vendor.name }}</b>
           <button @click="deleteOrder">
               <span>
                 <i class="fa fa-trash"></i>

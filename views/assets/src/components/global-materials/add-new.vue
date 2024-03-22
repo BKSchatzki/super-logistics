@@ -1,7 +1,7 @@
 <script>
-import NewVendor from "@components/material-ordering/new-vendor.vue";
-import NewOrder from "@components/material-ordering/new-order.vue";
-import MaterialsMixin from "@components/material-ordering/mixin.js";
+import NewVendor from "@components/global-materials/new-vendor.vue";
+import NewOrder from "@components/global-materials/new-order.vue";
+import MaterialsMixin from "@components/global-materials/mixin.js";
 
 export default {
   name: "add-new",

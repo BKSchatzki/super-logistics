@@ -1,3 +1,99 @@
+<script>
+import header from '@components/common/header.vue';
+import directive from './directive';
+import Mixins from './mixin';
+import searchUser from './searchUser.vue';
+
+export default {
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.getOverViews();
+    });
+  },
+  data(){
+    return {
+      show_modal: false
+    }
+  },
+  mixins:[Mixins],
+  computed: {
+    ...pm.Vuex.mapState('projectOverview',
+        {
+          'meta': state => state.meta,
+          'users': state => state.assignees,
+          'graph': state => state.graph
+        }
+    ),
+    fetchOverview () {
+      return this.$root.$store.state.projectOverviewLoaded;
+    },
+
+
+    // meta () {
+    //     return this.$store.state.meta;
+    // },
+
+    // users () {
+    //     return this.$store.state.assignees;
+    // },
+
+    // graph () {
+    //     return this.$store.state.graph;
+    // }
+  },
+  components: {
+    'pm-header': header,
+    'search-user': searchUser
+  },
+  watch: {
+    '$route' (to, from) {
+      this.getOverViews();
+      this.$forceUpdate();
+    }
+  },
+
+  methods : {
+    ...pm.Vuex.mapMutations('projectOverview',
+        [
+          'setOverViews'
+        ]
+    ),
+    getOverViews () {
+      var args = {
+        conditions : {
+          with : 'overview_graph'
+        },
+        project_id: this.$route.params.project_id,
+        callback  (res) {
+
+          this.setOverViews( res.data );
+          this.$root.$store.state.projectOverviewLoaded = true;
+          pm.NProgress.done();
+        }
+      }
+
+      this.getProject(args);
+    },
+    addUser(){
+      this.show_modal = true;
+    },
+    hidePop(){
+      this.show_modal = false;
+      this.removeSelected();
+    }
+
+  },
+  beforeDestroy () {
+    this.$root.$store.state.projectOverviewLoaded = false;
+  },
+  mounted () {
+    this.getProjects();
+  }
+
+}
+
+</script>
+
 <template>
     <div class="pm-wrap pm-front-end pm-overview">
         <pm-header></pm-header>
@@ -145,202 +241,108 @@
 </template>
 
 <style lang="less">
-    .project-overview {
-        .user-lists {
-            margin-right: 0;
-        }
-        .pm-delte-user {
-            overflow: visible !important;
-        }
-    }
-    .pm .pm-col-10 {
-        margin-bottom: 0;
-    }
+.project-overview {
+  .user-lists {
+    margin-right: 0;
+  }
+  .pm-delte-user {
+    overflow: visible !important;
+  }
+}
+.pm .pm-col-10 {
+  margin-bottom: 0;
+}
 
-    .users-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+.users-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  padding: 10px;
+  h3 {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .user-title {
+    margin-bottom: 0;
+  }
+}
+
+#pm-add-user-wrap {
+  #pm-add-user-wrap {
+    position: relative;
+
+    .add-user-pop {
+      top: 100% !important;
+      right: 0 !important;
+      padding: 10px 0 0 !important;
+
+      &:after {
+        right: 10px !important;;
+      }
+    }
+  }
+
+  .pm .project-overview .pm-right-part h3 {
+    margin-bottom: 10px;
+    padding: 0;
+  }
+
+  .pm .project-overview .pm-right-part h3 {
+    /*margin: 5px !important;*/
+    /*padding: 0 !important;*/
+  }
+
+  .user-btn {
+    display: inline-block;
+    float: left
+  }
+
+  .add-user {
+    cursor: pointer;
+  }
+
+  .user_list {
+    margin-top: 5px !important;
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 !important;
+      padding: 5px 10px;
+
+      &:not(:last-child) {
+        margin-bottom: 5px !important;
         border-bottom: 1px solid #eee;
-        padding: 10px;
-        h3 {
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-        .user-title {
-            margin-bottom: 0;
-        }
-    }
-
-    #pm-add-user-wrap {
-      #pm-add-user-wrap {
-        position: relative;
-
-        .add-user-pop {
-          top: 100% !important;
-          right: 0 !important;
-          padding: 10px 0 0 !important;
-
-          &:after {
-            right: 10px !important;;
-          }
-        }
       }
 
-      .pm .project-overview .pm-right-part h3 {
-        margin-bottom: 10px;
-        padding: 0;
-      }
-
-      .pm .project-overview .pm-right-part h3 {
-        /*margin: 5px !important;*/
-        /*padding: 0 !important;*/
-      }
-
-      .user-btn {
+      a.pm-delete-user {
+        display: none !important;
+        overflow: visible !important;
         display: inline-block;
-        float: left
-      }
+        height: auto;
 
-      .add-user {
-        cursor: pointer;
-      }
-
-      .user_list {
-        margin-top: 5px !important;
-
-        li {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin: 0 !important;
-          padding: 5px 10px;
-
-          &:not(:last-child) {
-            margin-bottom: 5px !important;
-            border-bottom: 1px solid #eee;
-          }
-
-          a.pm-delete-user {
-            display: none !important;
-            overflow: visible !important;
-            display: inline-block;
-            height: auto;
-
-            i.icon-pm-delete:before {
-              /*color: #c7cfd1 !important;*/
-            }
-          }
-
-          &:hover {
-            a.pm-delete-user {
-              display: block !important;
-              cursor: pointer;
-              font-size: 14px;
-              padding: 0;
-              margin: 10px;
-            }
-          }
-
-          .list-left {
-            flex-basis: 90%;
-          }
+        i.icon-pm-delete:before {
+          /*color: #c7cfd1 !important;*/
         }
       }
+
+      &:hover {
+        a.pm-delete-user {
+          display: block !important;
+          cursor: pointer;
+          font-size: 14px;
+          padding: 0;
+          margin: 10px;
+        }
+      }
+
+      .list-left {
+        flex-basis: 90%;
+      }
     }
+  }
+}
 
 </style>
-
-<script>
-    import header from '@components/common/header.vue';
-    import directive from './directive';
-    import Mixins from './mixin';
-    import searchUser from './searchUser.vue';
-
-    export default {
-        beforeRouteEnter (to, from, next) {
-            next(vm => {
-                vm.getOverViews();
-            });
-        },
-        data(){
-            return {
-                show_modal: false
-            }
-        },
-        mixins:[Mixins],
-        computed: {
-            ...pm.Vuex.mapState('projectOverview',
-                {
-                    'meta': state => state.meta,
-                    'users': state => state.assignees,
-                    'graph': state => state.graph
-                }
-            ),
-            fetchOverview () {
-                return this.$root.$store.state.projectOverviewLoaded;
-            },
-
-
-            // meta () {
-            //     return this.$store.state.meta;
-            // },
-
-            // users () {
-            //     return this.$store.state.assignees;
-            // },
-
-            // graph () {
-            //     return this.$store.state.graph;
-            // }
-        },
-        components: {
-            'pm-header': header,
-            'search-user': searchUser
-        },
-        watch: {
-            '$route' (to, from) {
-                this.getOverViews();
-                this.$forceUpdate();
-            }
-        },
-
-        methods : {
-            ...pm.Vuex.mapMutations('projectOverview',
-                [
-                    'setOverViews'
-                ]
-            ),
-            getOverViews () {
-                var args = {
-                    conditions : {
-                        with : 'overview_graph'
-                    },
-                    project_id: this.$route.params.project_id,
-                    callback  (res) {
-                        
-                        this.setOverViews( res.data );
-                        this.$root.$store.state.projectOverviewLoaded = true;
-                        pm.NProgress.done();
-                    }
-                }
-
-                this.getProject(args);
-            },
-            addUser(){
-                this.show_modal = true;
-            },
-            hidePop(){
-                this.show_modal = false;
-                this.removeSelected();
-            }
-
-        },
-        beforeDestroy () {
-            this.$root.$store.state.projectOverviewLoaded = false;
-        }
-
-
-    }
-
-</script>

@@ -1,9 +1,9 @@
 <script>
 import pmMenu from "@components/common/menu.vue";
 import pmHeader from "@components/common/header.vue";
-import orders from "@components/material-ordering/orders.vue";
-import addNew from "@components/material-ordering/add-new.vue";
-import MaterialsMixin from "@components/material-ordering/mixin.js";
+import orders from "@components/project/project-materials/project-orders.vue";
+import addNew from "@components/global-materials/add-new.vue";
+import MaterialsMixin from "@components/global-materials/mixin.js";
 
 export default {
   components: { pmMenu, pmHeader, orders, addNew },
@@ -14,7 +14,8 @@ export default {
   created() {
     this.getMaterialOrders();
     this.getMaterialVendors();
-    this.getUsers();
+    this.getWPUsers();
+    this.getProjects();
   }
 }
 </script>
@@ -24,14 +25,15 @@ export default {
     <pm-header></pm-header>
     <pm-menu></pm-menu>
     <div class="pm-materials-container">
-      <p>Orders relevant to this project.</p>
       <div class="content">
         <orders class="orders" :project="project"></orders>
         <add-new class="add-new"></add-new>
       </div>
+      <p>These orders are specific to this project. for all orders go
+        <router-link to="/materials">here.</router-link>
+      </p>
     </div>
   </div>
-
 </template>
 
 <style lang="less">
@@ -50,11 +52,11 @@ export default {
   }
 
   .orders {
-    flex: 0.618;
+    flex: 0.7;
   }
 
   .add-new {
-    flex: 0.382;
+    flex: 0.3;
   }
 
   .materials-input {

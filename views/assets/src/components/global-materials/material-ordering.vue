@@ -1,7 +1,7 @@
 <script>
-import Orders from "@components/material-ordering/orders.vue";
-import AddNew from "@components/material-ordering/add-new.vue";
-import MaterialsMixin from "@components/material-ordering/mixin.js";
+import Orders from "@components/global-materials/orders.vue";
+import AddNew from "@components/global-materials/add-new.vue";
+import MaterialsMixin from "@components/global-materials/mixin.js";
 
 export default {
   components: { Orders, AddNew },
@@ -13,12 +13,12 @@ export default {
   },
   watch: {
     project() {
-      console.log("Project changed (material-ordering.vue): ", this.project);
+      console.log("Project changed (global-materials.vue): ", this.project);
     }
   },
   created() {
     this.getMaterialVendors();
-    this.getUsers();
+    this.getWPUsers();
     this.getProjects();
   }
 }

@@ -5,7 +5,7 @@ import '@components/importtools/router';
 import '@components/my-tasks/router';
 import '@components/reports/router';
 import '@components/global-kanban/router';
-import '@components/material-ordering/router';
+import '@components/global-materials/router';
 import '@components/project/project-materials/router';
 
 // IF NOT PRO

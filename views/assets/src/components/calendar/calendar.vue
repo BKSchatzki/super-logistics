@@ -1,3 +1,18 @@
+<script>
+import PMCalender from '@components/calendar/pm-calender';
+import UpgraderOverlay from '@components/upgrade/overlay';
+
+export default {
+  components: {
+    PMCalender,
+    UpgraderOverlay,
+  },
+  mounted: function(){
+    pm.NProgress.done();
+  }
+}
+</script>
+
 <template>
   <div id="pm-calender-page" class="pm-calender-page pm-wrap pm-front-end pm-calendar-wrap">
     <div id="icon-themes" class="icon32"><br/></div>
@@ -12,6 +27,7 @@
                 <div class="multiselect__tags">
                   <div class="multiselect__tags-wrap" style="display: none;"></div>
                   <div class="multiselect__spinner" style="display: none;"></div>
+                  <!---------------------------------------- Filter logic (well, all of the functional logic) is obscured, but put in place ------------------------->
                   <input name="" type="text" autocomplete="off" :placeholder="__( 'Filter by project', 'wedevs-project-manager' )" tabindex="0" class="multiselect__input" style="display: none;">
                   <span class="multiselect__single">{{ __( 'Recurring Test Project', 'wedevs-project-manager' ) }}</span>
                 </div>
@@ -220,29 +236,3 @@
   }
 }
 </style>
-
-<script>
-  import PMCalender from '@components/calendar/pm-calender';
-  import UpgraderOverlay from '@components/upgrade/overlay';
-
-  export default {
-    components: {
-      PMCalender,
-      UpgraderOverlay,
-    },
-
-    data() {
-      return {
-
-      }
-    },
-
-    mounted: function(){
-      pm.NProgress.done();
-    },
-
-    methods: {
-
-    },
-  }
-</script>

@@ -1,4 +1,4 @@
 // project-materials.js
-import MaterialOrderingMixin from '@components/material-ordering/mixin.js';
+import MaterialOrderingMixin from '@components/global-materials/mixin.js';
 
 export default MaterialOrderingMixin;

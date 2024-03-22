@@ -1,4 +1,4 @@
-import MaterialOrdering from '@components/material-ordering/material-ordering.vue'
+import MaterialOrdering from '@components/global-materials/material-ordering.vue'
 
 weDevsPMRegisterChildrenRoute('project_root',
     [
