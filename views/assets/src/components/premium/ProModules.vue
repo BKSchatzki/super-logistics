@@ -73,8 +73,8 @@
                         'icon': 'time-tracker.svg'
                     },
                     {
-                        'title': __( 'Invoice', 'wedevs-project-manager'),
-                        'description': __( 'Invoice creation, payment collection have never been easier before.', 'wedevs-project-manager'),
+                        'title': __( 'Invoice-to-die', 'wedevs-project-manager'),
+                        'description': __( 'Invoice-to-die creation, payment collection have never been easier before.', 'wedevs-project-manager'),
                         'buttonUrl': 'https://wedevs.com/products/plugins/wp-project-manager-pro/invoice/',
                         'cardClass': 'invoice',
                         'icon': 'invoice.svg'

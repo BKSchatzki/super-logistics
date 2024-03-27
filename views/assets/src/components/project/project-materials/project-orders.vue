@@ -16,15 +16,7 @@ export default {
   methods: {
     getProjSpecificOrders() {
       const orders = this.$store.state.materialOrders;
-      console.log("orders: ", orders);
-      console.log("project: ", this.project);
       return orders.filter(order => order.projects.some(project => project.id == this.project.id));
-    }
-  },
-  watch: {
-    vendors() {
-      console.log("vendors: ", this.vendors);
-      console.log("orders: ", this.orders);
     }
   }
 }

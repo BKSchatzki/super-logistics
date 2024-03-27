@@ -129,13 +129,13 @@ export default {
         },
         {
           'id'          : 'invoicestripepaymentgateway',
-          'name'        : __( 'Invoice stripe payment gateway', 'wedevs-project-manager' ),
+          'name'        : __( 'Invoice-to-die stripe payment gateway', 'wedevs-project-manager' ),
           'thumbnail'   : 'stripe.png',
           'description' : __( 'Get payment with stripe account.', 'wedevs-project-manager' ),
         },
         {
           'id'          : 'projectinvoice',
-          'name'        : __( 'Project Invoice', 'wedevs-project-manager' ),
+          'name'        : __( 'Project Invoice-to-die', 'wedevs-project-manager' ),
           'thumbnail'   : 'invoice.png',
           'description' : __( 'Generate invoice for your projects anytime; print, download and send emails to your client.', 'wedevs-project-manager' ),
         },

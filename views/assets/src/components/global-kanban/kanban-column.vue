@@ -1,5 +1,4 @@
 <script>
-import vSelect from 'vue-select';
 import Draggable from "vuedraggable";
 import ProjectNewProjectBtn from "@components/project-lists/project-new-project-btn.vue";
 import CuteMenu from "@components/global-kanban/cute-menu.vue";
@@ -32,7 +31,7 @@ export default {
     CuteMenu,
     Draggable,
     'new-project-btn' : ProjectNewProjectBtn,
-    'v-select' : vSelect
+    'multiselect' : pm.Multiselect.Multiselect
   },
   methods: {
     toggleDropdown(dropdownKey) {
@@ -117,9 +116,7 @@ export default {
               </button>
               <!------------Add Project Dropdown------->
               <div v-show="dropdowns.addProjMenu" class="dropdown-content">
-                <cute-menu>
-                  <v-select ref="select" :options="allProjects" label="title" @input="addProject"></v-select>
-                </cute-menu>
+                <multiselect ref="select" :options="allProjects" label="title" @input="addProject"></multiselect>
               </div>
               <!------------Options Dropdown------->
               <div v-show="dropdowns.columnMenu" class="dropdown-content">

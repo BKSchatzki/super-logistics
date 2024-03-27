@@ -28,7 +28,7 @@ export default {
             name: this.__( 'Overview', 'wedevs-project-manager'),
             count: '',
             class: 'overview pm-sm-col-12',
-            order: 4
+            order: 10
           },
           { // Activities
             route: { name: 'activities', project_id: this.project_id },
@@ -63,7 +63,7 @@ export default {
             name: this.__( 'Files', 'wedevs-project-manager'),
             count: project.meta.data.total_files,
             class: 'files pm-sm-col-12',
-            order: 6
+            order: 12
           } // and the Kanban board, Gantt chart, and Invoices are pro features
         ]
       );

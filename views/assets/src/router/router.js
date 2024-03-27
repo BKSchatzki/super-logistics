@@ -6,7 +6,9 @@ import '@components/my-tasks/router';
 import '@components/reports/router';
 import '@components/global-kanban/router';
 import '@components/global-materials/router';
+import '@components/global-profitability/router';
 import '@components/project/project-materials/router';
+import '@components/tasks-report/router';
 
 // IF NOT PRO
 if ( !PM_Vars.is_pro ) {

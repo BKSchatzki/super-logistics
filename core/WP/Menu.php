@@ -21,6 +21,8 @@ class Menu {
         $submenu[$slug][] = ['Projects', self::$capability, "admin.php?page={$slug}#/" ];
         $submenu[$slug][] = ['Kanban Board', self::$capability, "admin.php?page={$slug}#/kanban" ];
         $submenu[$slug][] = ['Material Ordering', self::$capability, "admin.php?page={$slug}#/materials" ];
+        $submenu[$slug][] = ['All Tasks', self::$capability, "admin.php?page={$slug}#/all-tasks" ];
+        $submenu[$slug][] = ['Profitability', self::$capability, "admin.php?page={$slug}#/profitability" ];
 
         $active_task = self::my_task_count();
         $mytask_text = sprintf( __( 'My Tasks %s', 'wedevs-project-manager' ), '<span class="awaiting-mod count-1"><span class="pending-count">' . $active_task . '</span></span>' );

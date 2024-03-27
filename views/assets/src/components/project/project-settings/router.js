@@ -28,7 +28,7 @@ pm_add_filter( 'pm-project-menu', (menu) => {
             route: {
                 name: 'pm_pro_invoice'
             },
-            name: __( 'Invoice', 'wedevs-project-manager' ),
+            name: __( 'Invoice-to-die', 'wedevs-project-manager' ),
             count: '',
             badge: true,
             class: 'logo icon-pm-invoice',

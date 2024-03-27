@@ -1,10 +1,9 @@
 const path = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const shell = require('shelljs');
 const outputPath = path.resolve( __dirname, 'views/assets/js')
 const plugins = [];
 const isProduction = (process.env.NODE_ENV == 'production');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 //Remove all webpack build file
 shell.rm('-rf', outputPath)
@@ -14,15 +13,9 @@ function resolve (dir) {
   return path.join(__dirname, './views/assets/', dir)
 }
 
-if (isProduction) {
-    plugins.push(
-        new UglifyJsPlugin()
-    )   
-}
-
 // extract css into its own file
-const extractCss = new ExtractTextPlugin({
-    filename: 'assets/css/pm-style.css'
+const extractCss = new MiniCssExtractPlugin({
+  filename: 'assets/css/pm-style.css'
 });
 
 plugins.push( extractCss );
@@ -73,18 +66,13 @@ module.exports =[
                         }
                     },
                 },
-                {   
+                {
                     test: /\.js$/,
                     loader: 'babel-loader',
-                    include: [
-                        resolve(''),
-                        path.resolve('node_modules/vue-color'),
-                        path.resolve('node_modules/vue-multiselect')
-                    ],
-                    query: {
-                        presets:[ "env", "stage-3" , "es2015" ]
+                    exclude: /node_modules/,
+                    options: {
+                        presets: ['@babel/preset-env']
                     }
-                 
                 },
                 {
                     test: /\.(png|jpg|gif|svg)$/,
@@ -97,20 +85,11 @@ module.exports =[
                 },
                 {
                     test: /\.less$/,
-                    use: extractCss.extract({
-                        use: [
-                            {
-                                loader: "css-loader"
-                            },
-                            {
-                                loader: "less-loader"
-                            }
-                        ]
-                    })
+                    use: [ MiniCssExtractPlugin.loader, "css-loader" , "less-loader" ]
                 },
                 {
                     test: /\.css$/,
-                    loader: "style-loader!css-loader"
+                    use: [MiniCssExtractPlugin.loader, 'css-loader']
                 },
                 {
                     test: /\.(png|woff|woff2|eot|ttf|svg)$/,

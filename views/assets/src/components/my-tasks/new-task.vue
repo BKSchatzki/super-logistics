@@ -1,8 +1,8 @@
 <script>
-
+import Multiselect from 'vue-multiselect'
 export default {
   components: {
-    'multiselect': pm.Multiselect.Multiselect,
+    'multiselect': Multiselect,
   },
   props: {
     users: {
@@ -76,7 +76,6 @@ export default {
         data: data,
         success (res) {
           self.projects = res.data;
-          console.log("Projects set in new task form: ", res.data);
           self.fetchProjects = true;
 
           if(res.data.length) {
@@ -226,7 +225,6 @@ export default {
     }
   },
   created () {
-    console.log("New Task form getProjects called");
     // This is a local function - not from the mixin
     this.getProjects();
   }

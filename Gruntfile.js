@@ -133,11 +133,11 @@ module.exports = function(grunt) {
                 args: ['dumpautoload', '-o']
             },
 
-            composerInstall:{
-                cmd: 'composer.bat',
-                // cmd: 'composer',
-                args: ['install']
-            },
+            // composerInstall:{
+            //     cmd: 'composer.bat',
+            //     // cmd: 'composer',
+            //     args: ['install']
+            // },
 
         }
     });
@@ -164,7 +164,7 @@ module.exports = function(grunt) {
         'replace',
         'copy',
         'compress',
-        'run:composerInstall',
+        // 'run:composerInstall',
         'run:dumpautoload',
     ]);
 };

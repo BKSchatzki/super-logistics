@@ -9,6 +9,7 @@ export default {
         }
     },
     methods: {
+
         cutString(string, length, dot){
             var output = "";
             output = string.substring(0, parseInt(length));
@@ -17,6 +18,7 @@ export default {
             }
             return output;
         },
+
         saveUsers () {
 
             if (!this.project.title) {
@@ -110,23 +112,6 @@ export default {
             this.saveUsers();
         },
 
-        // appendUser(s_user){
-        //
-        //     var has_user = this.selectedUsers.find(function(user) {
-        //         return s_user.id === user.id ? true : false;
-        //     });
-        //
-        //     if (!has_user) {
-        //         this.addUserMeta(s_user);
-        //         this.$store.commit('updateSeletedUser', {
-        //             item:  s_user,
-        //             project_id: this.project.id
-        //         });
-        //     }
-        //
-        //     return false;
-        // },
-
         closeSearch () {
             this.$emit('close');
         },
@@ -151,12 +136,13 @@ export default {
         project () {
             return  this.$store.state.project;
         },
+
         roles () {
             return this.$root.$store.state.roles;
         },
 
         selectedUsers () {
-            if(!this.project.hasOwnProperty('assignees')) {
+            if(this.project.hasOwnProperty('assignees')) {
                 return this.$store.state.assignees;
             } else {
                 var projects = this.$store.state.projects;

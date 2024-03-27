@@ -26,20 +26,7 @@ export default {
     ),
     fetchOverview () {
       return this.$root.$store.state.projectOverviewLoaded;
-    },
-
-
-    // meta () {
-    //     return this.$store.state.meta;
-    // },
-
-    // users () {
-    //     return this.$store.state.assignees;
-    // },
-
-    // graph () {
-    //     return this.$store.state.graph;
-    // }
+    }
   },
   components: {
     'pm-header': header,
@@ -51,7 +38,6 @@ export default {
       this.$forceUpdate();
     }
   },
-
   methods : {
     ...pm.Vuex.mapMutations('projectOverview',
         [
@@ -89,7 +75,6 @@ export default {
   mounted () {
     this.getProjects();
   }
-
 }
 
 </script>

@@ -277,8 +277,8 @@ function pm_delete_meta( $id, $project_id, $type, $key = false ) {
 
 function pm_get_response( $resource, $extra = [] ) {
     $manager = new \League\Fractal\Manager();
-    $data_serialize = new \League\Fractal\Serializer\DataArraySerializer();
-    $manager->setSerializer( $data_serialize );
+    $data_serializer = new \League\Fractal\Serializer\DataArraySerializer();
+    $manager->setSerializer( $data_serializer );
 
     if ( isset( $_GET['with'] ) ) {
         $manager->parseIncludes( sanitize_text_field( wp_unslash( $_GET['with'] ) ) );

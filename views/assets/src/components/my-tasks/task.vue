@@ -1,3 +1,90 @@
+<script>
+
+export default{
+  props: ['task'],
+
+  mixins: [PmMixin.projectTaskLists],
+
+  data () {
+    return{
+      task_status : this.task.status == 'complete' ? 1 : 0,
+      taskId: false,
+      projectId: false
+    }
+  },
+
+  components: {
+    'single-task': pm.SingleTask
+  },
+
+  created () {
+    pmBus.$on('pm_after_close_single_task_modal', this.afterCloseSingleTaskModal);
+  },
+
+  methods: {
+    getLabels (task) {
+      return typeof task.labels == 'undefined' ? [] : task.labels.data;
+    },
+
+    afterCloseSingleTaskModal () {
+      this.taskId = false;
+      this.projectId = false;
+    },
+
+    doneUndone (){
+      var self = this,
+          task_status = this.task.status === 'complete' ? 0 : 1;
+      var args = {
+        data: {
+          title: this.task.title,
+          task_id: this.task.id,
+          status : task_status,
+          project_id: parseInt(this.task.project_id),
+        },
+        callback (res) {
+          self.$store.commit("myTask/afterDoneUndoneTask", {task: res.data, route: self.$route.name});
+        }
+      }
+
+
+      this.taskDoneUndone( args );
+    },
+
+    getSingleTask (task) {
+      this.taskId = task.id;
+      this.projectId = task.project_id;
+    },
+
+    afterCloseSingleTaskModal () {
+      var params = {}, route = null;
+      if (typeof this.$route.params.user_id !== 'undefined') {
+        params.user_id = parseInt(this.$route.params.user_id)
+      }
+
+      if(this.$route.name == 'mytask_current_single_task') {
+        route = 'mytask-current';
+      }
+
+      if(this.$route.name == 'mytask_complete_single_task') {
+        route = 'mytask-complete';
+      }
+
+      if(this.$route.name == 'mytask_outstanding_single_task') {
+        route = 'outstanding-task';
+      }
+      if(route) {
+        this.$router.push({
+          name: route,
+          params: params
+        });
+      }
+      this.taskId = false;
+      this.projectId = false;
+    },
+  }
+}
+</script>
+
 <template>
     <div class="pm-todo-wrap clearfix">
         <div class="pm-todo-content" >
@@ -58,93 +145,6 @@
         </div>
     </div>
 </template>
-
-<script>
-
-    export default{
-        props: ['task'],
-        
-        mixins: [PmMixin.projectTaskLists],
-        
-        data () {
-            return{
-                task_status : this.task.status == 'complete' ? 1 : 0,
-                taskId: false,
-                projectId: false
-            }
-        },
-        
-        components: {
-        	'single-task': pm.SingleTask
-        },
-        
-        created () {
-            pmBus.$on('pm_after_close_single_task_modal', this.afterCloseSingleTaskModal);
-        },
-
-        methods: {
-            getLabels (task) {
-                return typeof task.labels == 'undefined' ? [] : task.labels.data;
-            },
-
-            afterCloseSingleTaskModal () {
-                this.taskId = false;
-                this.projectId = false;
-            },
-            
-            doneUndone (){
-                var self = this,
-                task_status = this.task.status === 'complete' ? 0 : 1;
-                var args = {
-                    data: {
-                        title: this.task.title,
-                        task_id: this.task.id,
-                        status : task_status,
-                        project_id: parseInt(this.task.project_id),
-                    },
-                    callback (res) {
-                        self.$store.commit("myTask/afterDoneUndoneTask", {task: res.data, route: self.$route.name});
-                    }
-                }
-
-
-                this.taskDoneUndone( args );
-            },
-
-            getSingleTask (task) {
-                this.taskId = task.id;
-                this.projectId = task.project_id;
-            },
-            
-            afterCloseSingleTaskModal () {
-                var params = {}, route = null;
-                if (typeof this.$route.params.user_id !== 'undefined') {
-                    params.user_id = parseInt(this.$route.params.user_id)
-                }
-
-                if(this.$route.name == 'mytask_current_single_task') {
-                    route = 'mytask-current';
-                }
-
-                if(this.$route.name == 'mytask_complete_single_task') {
-                    route = 'mytask-complete';
-                }
-
-                if(this.$route.name == 'mytask_outstanding_single_task') {
-                    route = 'outstanding-task';
-                }
-                if(route) {
-                    this.$router.push({
-                            name: route,
-                            params: params
-                        });
-                }
-                this.taskId = false;
-                this.projectId = false;
-            },
-        }
-    }
-</script>
 
 <style scoped>
     .label-color {

@@ -1,5 +1,6 @@
 export default new pm.Vuex.Store({ 
     state: {
+        allTasks: [],
         manageCapability:[],
         is_need_fetch_view_type: true,
         // project state
@@ -27,6 +28,9 @@ export default new pm.Vuex.Store({
         materialVendors: [],
         users: [],
         currentUser: {},
+        // Profitability
+        materialCosts: 0,
+        laborCosts: 0,
         // more
         is_single_task: false,
         roles: [],
@@ -62,6 +66,9 @@ export default new pm.Vuex.Store({
     },
 
     mutations: {
+        setAllTasks (state, tasks) {
+            state.allTasks = tasks;
+        },
         updateShowDescription( state, status ) {
             status = status || false;
 
@@ -122,6 +129,13 @@ export default new pm.Vuex.Store({
         },
         setCurrentUser (state, user) {
             state.currentUser = user;
+        },
+        // Profitability
+        setMaterialCosts (state, material_costs) {
+          state.materialCosts = material_costs;
+        },
+        setLaborCosts (state, labor_costs) {
+          state.laborCosts = labor_costs;
         },
         // Project mutations
         setProjects (state, projects) {
