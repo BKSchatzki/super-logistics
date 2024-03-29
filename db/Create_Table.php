@@ -24,6 +24,9 @@ class PM_Create_Table {
         $this->crate_role_projects_table();
         $this->crate_role_project_capabilities_table();
         $this->crate_role_project_users_table();
+        $this->create_material_orders_table();
+        $this->create_material_orders_projects_table();
+        $this->create_material_vendors_table();
         $this->update_version();
         $this->task_types();
     }
@@ -488,6 +491,56 @@ class PM_Create_Table {
 			  `updated_at` timestamp NULL DEFAULT NULL,
 			  PRIMARY KEY (`id`)
 			) DEFAULT CHARSET=utf8";
+
+        dbDelta($sql);
+    }
+
+
+    public function create_material_orders_table()
+    {
+        global $wpdb;
+        $table_name = $this->prefix() . 'pm_material_orders';
+
+        $sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
+           `id` int(6) NOT NULL,
+            `vendor_id` int(6) NOT NULL,
+            `cost` mediumint(9) NOT NULL,
+            `title` tinytext NOT NULL,
+            `description` text NOT NULL,
+            `date` date NOT NULL,
+            `ordered_by` int(11) NOT NULL,
+			  PRIMARY KEY (`id`)
+			) DEFAULT CHARSET=utf8";
+
+        dbDelta($sql);
+    }
+
+    public function create_material_orders_projects_table()
+    {
+        global $wpdb;
+        $table_name = $this->prefix() . 'pm_material_orders_projects';
+
+        $sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
+             `order_id` int(11) NOT NULL,
+             `project_id` int(11) NOT NULL
+            ) DEFAULT CHARSET=utf8";
+
+        dbDelta($sql);
+    }
+
+    public function create_material_vendors_table()
+    {
+        global $wpdb;
+        $table_name = $this->prefix() . 'pm_material_vendors';
+
+        $sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
+               `id` int(11) NOT NULL,
+               `name` tinytext NOT NULL,
+               `description` text,
+               `phone` tinytext,
+               `email` tinytext,
+               `address` tinytext
+            ) DEFAULT CHARSET=utf8";
 
         dbDelta($sql);
     }

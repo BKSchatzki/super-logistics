@@ -36,7 +36,9 @@ export default {
   },
   computed: {
     vendors() { return this.$store.state.materialVendors },
-    users() { return this.$store.state.users },
+    users() {
+      return this.$store.state.users;
+    },
     currentUser() { return this.$store.state.currentUser },
     projects() { return this.$store.state.projects }
   },

@@ -1,47 +1,34 @@
 <script>
-import OverviewMixin from "@components/project/project-overview/mixin";
+import ProfitMixin from "@components/global-profitability/mixin";
+import MaterialsMixin from "@components/global-materials/mixin";
+import Invoices from "@components/global-profitability/invoices";
+import MaterialCosts from "@components/global-profitability/material-costs.vue";
+import BottomLine from "@components/global-profitability/bottom-line.vue";
 export default {
   name: "profitability",
-  mixins: [OverviewMixin],
+  components: { MaterialCosts, Invoices, BottomLine },
+  mixins: [ProfitMixin, MaterialsMixin],
   computed: {
-    materialCosts() {
-      return this.$store.state.materialCosts;
+    invoices() {
+      return this.$store.state.invoices;
     },
-    laborCosts() {
-      return 2370;
-    },
-    payments() {
-      return 2000;
-    },
+    vendorsWithCosts() {
+      return this.$store.state.materialVendors;
+    }
   },
   created() {
-    this.getMaterialCosts(this.$store.state.project.id);
-    this.getLaborCosts(this.$store.state.project.id);
+    this.getInvoices();
+    this.getMaterialVendors()
   },
 }
 </script>
 
 <template>
   <div>
-    <h2>Project Profitability</h2>
-    <table class="p-table" aria-describedby="Profitability Table">
-      <tr>
-        <th>Material Costs</th>
-        <td>{{ materialCosts }}</td>
-      </tr>
-      <tr>
-        <th>Labor Costs</th>
-        <td>{{ laborCosts }}</td>
-      </tr>
-      <tr>
-        <th>Total in Payments</th>
-        <td>{{ payments }}</td>
-      </tr>
-      <tr>
-        <th>Profitability</th>
-        <td>{{ payments - (laborCosts + materialCosts) }}</td>
-      </tr>
-    </table>
+    <h2>Overall Profitability</h2>
+    <invoices :invoices="invoices"></invoices>
+    <material-costs :vendors="vendorsWithCosts"></material-costs>
+    <bottom-line :invoices="invoices" :vendors="vendorsWithCosts"></bottom-line>
   </div>
 </template>
 

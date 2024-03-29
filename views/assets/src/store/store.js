@@ -29,6 +29,7 @@ export default new pm.Vuex.Store({
         users: [],
         currentUser: {},
         // Profitability
+        invoices: [],
         materialCosts: 0,
         laborCosts: 0,
         // more
@@ -136,6 +137,9 @@ export default new pm.Vuex.Store({
         },
         setLaborCosts (state, labor_costs) {
           state.laborCosts = labor_costs;
+        },
+        setInvoices (state, invoices) {
+          state.invoices = invoices;
         },
         // Project mutations
         setProjects (state, projects) {

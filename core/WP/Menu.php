@@ -19,7 +19,7 @@ class Menu {
         $home = add_menu_page( 'Upholstery PM', 'Upholstery PM', self::$capability, $slug, array( new Output, 'home_page' ), self::pm_svg(), 3 );
 
         $submenu[$slug][] = ['Projects', self::$capability, "admin.php?page={$slug}#/" ];
-        $submenu[$slug][] = ['Kanban Board', self::$capability, "admin.php?page={$slug}#/kanban" ];
+        $submenu[$slug][] = ['Master Kanban', self::$capability, "admin.php?page={$slug}#/kanban" ];
         $submenu[$slug][] = ['Material Ordering', self::$capability, "admin.php?page={$slug}#/materials" ];
         $submenu[$slug][] = ['All Tasks', self::$capability, "admin.php?page={$slug}#/all-tasks" ];
         $submenu[$slug][] = ['Profitability', self::$capability, "admin.php?page={$slug}#/profitability" ];

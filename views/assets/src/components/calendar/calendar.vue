@@ -1,6 +1,6 @@
 <script>
-import PMCalender from '@components/calendar/pm-calender';
-import UpgraderOverlay from '@components/upgrade/overlay';
+import PMCalender from '@components/calendar/pm-calender.vue';
+import UpgraderOverlay from '@components/upgrade/overlay.vue';
 
 export default {
   components: {
@@ -83,6 +83,7 @@ export default {
               </div>
             </div>
             <input type="submit" class="btn button-secondary" :value="__( 'Filter', 'wedevs-project-manager' )">
+            <input type="submit" class="btn button-secondary" :value="'Show All'">
           </div>
         </form>
       </div>

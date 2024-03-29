@@ -116,7 +116,7 @@ export default {
               </button>
               <!------------Add Project Dropdown------->
               <div v-show="dropdowns.addProjMenu" class="dropdown-content">
-                <multiselect ref="select" :options="allProjects" label="title" @input="addProject"></multiselect>
+                <multiselect class="gk-add-proj" ref="select" :options="allProjects" label="title" @input="addProject"></multiselect>
               </div>
               <!------------Options Dropdown------->
               <div v-show="dropdowns.columnMenu" class="dropdown-content">
@@ -141,6 +141,13 @@ export default {
 .gk-col-drag-area {
   height: 100%;
   width: 100%;
+}
+.gk-add-proj {
+  width: 10rem;
+  position: absolute;
+  top: 100%; /* Position just below the container */
+  left: 0;
+  z-index: 1000;
 }
 .kbc-section-header-wrap {
   height: 50px;

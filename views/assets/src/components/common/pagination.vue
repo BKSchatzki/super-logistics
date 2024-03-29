@@ -18,10 +18,7 @@
                 v-for="page in total_pages" 
                 :class="pageClass(page) + ' pm-pagination-btn'" 
                 :to="{ 
-                    name: component_name,  
-                    // params: { 
-                    //     current_page_number: page 
-                    // },
+                    name: component_name,
                     params: setParams(page),
                     query: route_query
                 }">

@@ -1,4 +1,4 @@
-import Calendar from '@components/calendar/calendar';
+import Calendar from '@components/calendar/calendar.vue';
 
 weDevsPMRegisterChildrenRoute('project_root', 
     [

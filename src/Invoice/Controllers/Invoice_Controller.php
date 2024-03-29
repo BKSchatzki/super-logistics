@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM_Pro\Modules\Invoice\Src\Controllers;
+namespace WeDevs\PM\Invoice\Controllers;
 
 use Reflection;
 use WP_REST_Request;
@@ -26,40 +26,10 @@ class Invoice_Controller {
 
     use Transformer_Manager, Request_Filter;
 
-    public function index( WP_REST_Request $request ) {
-        $project_id = $request->get_param( 'project_id' );
-        $per_page = $request->get_param( 'per_page' );
-        $per_page = $per_page ? $per_page : 15;
-        $frontend = $request->get_param( 'frontend' );
+    public function show_all( WP_REST_Request $request ) {
+        $invoices = Invoice::orderBy('created_at', 'DESC')->get();
 
-        $page = $request->get_param( 'page' );
-        $page = $page ? $page : 1;
-
-        Paginator::currentPageResolver(function () use ($page) {
-            return $page;
-        });
-
-        if ( $project_id && empty( $frontend ) ) {
-            $invoices = Invoice::where( 'project_id', $project_id )
-                ->orderBy( 'created_at', 'DESC' )
-                ->paginate( $per_page, ['*'] );
-
-        } else if ( $project_id && ! empty( $frontend ) ) {
-            $invoices = Invoice::where( 'project_id', $project_id )
-                ->where( 'client_id', get_current_user_id() )
-                ->orderBy( 'created_at', 'DESC' )
-                ->paginate( $per_page, ['*'] );
-        } else {
-            $invoices = Invoice::where( 'client_id', get_current_user_id() )
-                ->orderBy( 'created_at', 'DESC' )
-                ->paginate( $per_page, ['*'] );
-        }
-
-
-        $invoice_collection = $invoices->getCollection();
-
-        $resource = new Collection( $invoice_collection, new Invoice_Transformer );
-        $resource->setPaginator( new IlluminatePaginatorAdapter( $invoices ) );
+        $resource = new Collection( $invoices, new Invoice_Transformer );
         $resource->setMeta(
             [
                 'client_addresses' => $this->get_clients_address( $resource )
