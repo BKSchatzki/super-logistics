@@ -3,7 +3,7 @@
 return [
     'name'        => 'PM Upholstery Plus',
     'slug'        => 'pm',
-    'version'     => '1.0.0',
+    'version'     => '2.6.13',
     'api'     	  => '2',
     'db_version'  => '2.5',
     'text_domain' => 'pm',
