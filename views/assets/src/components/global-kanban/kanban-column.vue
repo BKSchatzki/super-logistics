@@ -47,11 +47,14 @@ export default {
       let fromBoardId = evt.from.id.split("_")[1];
       let toBoardId = evt.to.id.split("_")[1];
       let projectId = evt.item.id.split("_")[1];
-      console.log("fromBoardId: ", fromBoardId, " toBoardId: ", toBoardId, " projectId: ", projectId);
       this.updateProjectBoardable(fromBoardId, projectId, toBoardId);
     },
     addProject(project) {
       this.addProjectBoardable(this.id, project);
+      this.dropdowns.addProjMenu = false;
+    },
+    deleteColumn() {
+      this.deleteBoard(this.id);
     },
     allowMove() {
       // this exclusively approves the move - doesn't even console.log besides that
@@ -109,18 +112,14 @@ export default {
                 </span>
               </button>
               <!------------Options Button------>
-              <button id="gk-col-options-btn" @click="toggleDropdown('columnMenu')" class="pm-pro-kanboard-action-hrf pm-pro-kanboard-del-btn">
+              <button id="gk-col-options-btn" @click="deleteColumn" class="pm-pro-kanboard-action-hrf pm-pro-kanboard-del-btn">
                 <span style="color: rgb(52, 128, 235);">
-                  <i aria-hidden="true" class="fa fa-ellipsis-v"></i>
+                  <i aria-hidden="true" class="fa fa-trash"></i>
                 </span>
               </button>
               <!------------Add Project Dropdown------->
               <div v-show="dropdowns.addProjMenu" class="dropdown-content">
                 <multiselect class="gk-add-proj" ref="select" :options="allProjects" label="title" @input="addProject"></multiselect>
-              </div>
-              <!------------Options Dropdown------->
-              <div v-show="dropdowns.columnMenu" class="dropdown-content">
-                <column-menu :board_id="id"></column-menu>
               </div>
             </div>
           </div>
@@ -143,7 +142,7 @@ export default {
   width: 100%;
 }
 .gk-add-proj {
-  width: 10rem;
+  width: 14rem;
   position: absolute;
   top: 100%; /* Position just below the container */
   left: 0;

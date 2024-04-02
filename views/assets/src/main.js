@@ -3,7 +3,7 @@ import router from '@router/router'
 import store from '@store/store'
 import '@directives/directive'
 import Mixin from '@helpers/mixin/mixin'
-import ModuleMixin from '@helpers/mixin/module-mixin'
+import ModuleMixins from '@helpers/mixin/module-mixin'
 import App from './App.vue'
 import '@helpers/common-components'
 import menuFix from '@helpers/menu-fix';
@@ -20,7 +20,7 @@ var PM_Vue = {
     store,
     router,
     render: t => t(App),
-    moduleMixins: ModuleMixin
+    ModuleMixins
 }
 
 Vue.mixin(Mixin);

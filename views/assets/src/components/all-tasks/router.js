@@ -1,4 +1,4 @@
-import AllTasks from '@components/tasks-report/all-tasks';
+import AllTasks from '@components/all-tasks/all-tasks';
 weDevsPMRegisterChildrenRoute( "project_root",
     [
         {
@@ -17,8 +17,8 @@ weDevs_PM_Components.push({
 
 // The placeholder reports menu for the free version of the plugin
 
-import Menu from '@components/tasks-report/menu';
-import Reports from '@components/tasks-report/reports';
+import Menu from '@components/all-tasks/menu';
+import Reports from '@components/all-tasks/reports';
 
 weDevsPMRegisterChildrenRoute( "my_tasks",
   [

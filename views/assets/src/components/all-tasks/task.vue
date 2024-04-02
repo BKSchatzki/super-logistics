@@ -25,7 +25,6 @@ export default{
     getLabels (task) {
       return typeof task.labels == 'undefined' ? [] : task.labels.data;
     },
-
     doneUndone (){
       var self = this,
           task_status = this.task.status === 'complete' ? 0 : 1;
@@ -44,12 +43,10 @@ export default{
 
       this.taskDoneUndone( args );
     },
-
     getSingleTask (task) {
       this.taskId = task.id;
       this.projectId = task.project_id;
     },
-
     afterCloseSingleTaskModal () {
       var params = {}, route = null;
       if (typeof this.$route.params.user_id !== 'undefined') {
@@ -135,11 +132,13 @@ export default{
             </span>
           </router-link>
         </span>
+        <div class="pm-clearfix"></div>
       </div>
+      <div class="clearfix"></div>
     </div>
-  </div>
-  <div v-if="parseInt(taskId) && parseInt(projectId)">
-    <single-task :taskId="taskId" :projectId="projectId"></single-task>
+    <div v-if="parseInt(taskId) && parseInt(projectId)">
+      <single-task :taskId="taskId" :projectId="projectId"></single-task>
+    </div>
   </div>
 </template>
 

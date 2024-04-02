@@ -12,7 +12,7 @@ import overview from './overview.vue';
 import mytaskTemplete from './my-tasks.vue';
 
 if ( !PM_Vars.is_pro ) {
-    require('@components/tasks-report/router');
+    require('@components/all-tasks/router');
 }
 
 //'/my-tasks/:user_id(\\d+)?',

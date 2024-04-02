@@ -502,7 +502,7 @@ class PM_Create_Table {
         $table_name = $this->prefix() . 'pm_material_orders';
 
         $sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
-           `id` int(6) NOT NULL,
+            `id` int(6) NOT NULL AUTO_INCREMENT,
             `vendor_id` int(6) NOT NULL,
             `cost` mediumint(9) NOT NULL,
             `title` tinytext NOT NULL,
@@ -534,12 +534,13 @@ class PM_Create_Table {
         $table_name = $this->prefix() . 'pm_material_vendors';
 
         $sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
-               `id` int(11) NOT NULL,
+               `id` int(6) NOT NULL AUTO_INCREMENT,
                `name` tinytext NOT NULL,
                `description` text,
                `phone` tinytext,
                `email` tinytext,
-               `address` tinytext
+               `address` tinytext,
+                PRIMARY KEY (`id`)
             ) DEFAULT CHARSET=utf8";
 
         dbDelta($sql);

@@ -5,7 +5,7 @@
  * Description: Project Management Plugin for Upholstery Businesses using Wordpress. Requires WP Project Manager Pro.
  * Author: BigTB, weDevs
  * Author URI: https://bigtb.com
- * Version: 3.0.0
+ * Version: 2.6.13
  * Text Domain: wedevs-project-manager
  * Domain Path: /languages
  * License: GPL2

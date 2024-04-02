@@ -7,11 +7,15 @@ export default {
   name: "orders",
   components: {Order, Vendor},
   mixins: [MaterialsMixin],
-  props: ["project"],
   computed: {
     orders() { return this.$store.state.materialOrders },
     vendors() { return this.$store.state.materialVendors },
     users() { return this.$store.state.users }
+  },
+  watch: {
+    orders() {
+      console.log("Orders updated: ", this.orders);
+    }
   }
 }
 </script>

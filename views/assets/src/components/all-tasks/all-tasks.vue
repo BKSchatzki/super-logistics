@@ -1,6 +1,6 @@
 <script>
-import TRMixin from '@components/tasks-report/mixin.js';
-import Task from '@components/tasks-report/task.vue';
+import TRMixin from '@components/all-tasks/mixin.js';
+import Task from '@components/all-tasks/task.vue';
 export default {
   name: "all-tasks",
   mixins: [TRMixin],
@@ -13,7 +13,6 @@ export default {
   watch: {
     tasks() {
       this.tasks.length ? this.loading = false : this.loading = true;
-      console.log('tasks: ', this.tasks);
     }
   },
   data() {

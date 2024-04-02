@@ -25,7 +25,7 @@ export default {
     <pm-header></pm-header>
     <pm-menu></pm-menu>
     <div class="pm-materials-container">
-      <div class="content">
+      <div class="pm-content">
         <orders class="orders" :project="project"></orders>
         <add-new class="add-new"></add-new>
       </div>
@@ -36,7 +36,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
   .pm-materials-container {
     display: flex;
     flex-direction: column;
@@ -46,7 +46,7 @@ export default {
     background: #FAFAFA;
   }
 
-  .content {
+  .pm-content {
     display: flex;
     flex-direction: row;
   }

@@ -1432,7 +1432,8 @@ export default {
          * Close popup by checking popper
          */
          closePopper(){
-            jQuery('body').trigger('click');
+             jQuery('body').trigger('click');
+             this.$emit('disableProjectForm', false)
         },
 
         exportCsvFile (xhr, response) {
