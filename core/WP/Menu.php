@@ -16,7 +16,7 @@ class Menu {
 
         $slug = pm_admin_slug();
 
-        $home = add_menu_page( 'Upholstery PM', 'Upholstery PM', self::$capability, $slug, array( new Output, 'home_page' ), self::pm_svg(), 3 );
+        $home = add_menu_page( 'Project Manager', 'Project Manager', self::$capability, $slug, array( new Output, 'home_page' ), self::pm_svg(), 3 );
 
         $submenu[$slug][] = ['Projects', self::$capability, "admin.php?page={$slug}#/" ];
         $submenu[$slug][] = ['Master Kanban', self::$capability, "admin.php?page={$slug}#/kanban" ];

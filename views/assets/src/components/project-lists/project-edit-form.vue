@@ -201,85 +201,74 @@ export default {
 
 <template>
   <div class="create-project-modal">
-    <div class="popup-mask">
-      <div class="popup-container">
-        <!--The X button-->
-        <span class="close-modal">
-          <a  @click="closeForm"><span class="dashicons dashicons-no"></span></a>
-        </span>
-        <div class="popup-body">
-          <form action="" method="post" class="pm-form pm-project-form" @submit.prevent="projectFormAction();">
-<!-------------------------------------------Customer Name------------------>
-            <div class="item project-name">
-              <input type="text" v-model="project.title"  id="project_name" :placeholder="name_of_the_project" size="45" />
-            </div>
-<!---------------------------------------------Category--------------------->
-            <div class="pm-form-item item project-category">
-              <select v-model="project_category"  id='project_cat' class='chosen-select'>
-                <option value="0">Category</option>
-                <option v-for="category in categories" :value="category.id" :key="category.id" >{{ category.title }}</option>
-              </select>
-            </div>
-<!--------------------------------------------Description------------------->
-            <div class="pm-form-item item project-detail">
-              <textarea v-model="project_description"  class="pm-project-description" id="" rows="5" :placeholder="details_of_project"></textarea>
-            </div>
-<!-----------------------------------------Personnel Involved--------------->
-            <div class="pm-project-form-users-wrap" v-if="selectedUsers.length">
-              <div class="pm-form-item pm-project-role" v-if="show_role_field">
-                <table>
-                  <tr v-for="projectUser in selectedUsers" :key="projectUser.id">
-                    <td>{{ projectUser.display_name }}</td>
-                    <td class="user-td">
-                      <select  v-model="projectUser.roles.data[0].id" :disabled="!canUserEdit(projectUser)">
-                        <option v-for="role in roles" :value="role.id" :key="role.id" >{{ __(role.title, 'wedevs-project-manager') }}</option>
-                      </select>
-                    </td>
-
-                    <td>
-                      <a @click.prevent="deleteUser(projectUser)" v-if="canUserEdit(projectUser)" hraf="#" class="pm-del-proj-role pm-assign-del-user">
-                        <span class="dashicons dashicons-trash"></span>
-                        <!-- <span class="title">{{ __( 'Delete', 'wedevs-project-manager') }}</span> -->
-                      </a>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-<!--------------------------------------------Add Personnel----------------->
-            <div class="pm-form-item item project-users" v-if="show_role_field">
-              <input v-pm-users class="pm-project-coworker" type="text" name="user" :placeholder="search_user" size="45">
-            </div>
-
-            <pm-do-action hook="pm_project_form" :actionData="project"></pm-do-action>
-
-            <div class="pm-form-item item project-notify">
-              <label>
-                <input type="checkbox" v-model="project_notify" name="project_notify" id="project-notify" value="yes" />
-                {{ __( 'Notify Co-Workers', 'wedevs-project-manager') }}
-              </label>
-            </div>
-
-            <div class="submit">
-              <input v-if="project.id" type="submit" name="update_project" id="update_project" class="pm-button pm-primary" :value="update_project">
-              <input v-if="!project.id" type="submit" name="add_project" id="add_project" class="pm-button pm-primary" :value="add_new_project">
-              <a @click="closeForm" class="pm-button pm-secondary project-cancel" href="#">{{ __( 'Close', 'wedevs-project-manager') }}</a>
-              <span v-show="show_spinner" class="pm-loading"></span>
-
-            </div>
-
-          </form>
-          <div v-pm-user-create-popup-box id="pm-create-user-wrap" class="pm-new-user-wrap" :title="create_new_user">
-            <project-new-user-form></project-new-user-form>
+        <form action="" method="post" class="pm-form pm-project-form" @submit.prevent="projectFormAction();">
+          <!-------------------------------------------Customer Name------------------>
+          <div class="item project-name">
+            <input type="text" v-model="project.title"  id="project_name" :placeholder="name_of_the_project" size="45" />
           </div>
+          <!---------------------------------------------Category--------------------->
+          <div class="pm-form-item item project-category">
+            <select v-model="project_category"  id='project_cat' class='chosen-select'>
+              <option value="0">Category</option>
+              <option v-for="category in categories" :value="category.id" :key="category.id" >{{ category.title }}</option>
+            </select>
+          </div>
+          <!--------------------------------------------Description------------------->
+          <div class="pm-form-item item project-detail">
+            <textarea v-model="project_description"  class="pm-project-description" id="" rows="5" :placeholder="details_of_project"></textarea>
+          </div>
+          <!-----------------------------------------Personnel Involved--------------->
+          <div class="pm-project-form-users-wrap" v-if="selectedUsers.length">
+            <div class="pm-form-item pm-project-role" v-if="show_role_field">
+              <table>
+                <tr v-for="projectUser in selectedUsers" :key="projectUser.id">
+                  <td>{{ projectUser.display_name }}</td>
+                  <td class="user-td">
+                    <select  v-model="projectUser.roles.data[0].id" :disabled="!canUserEdit(projectUser)">
+                      <option v-for="role in roles" :value="role.id" :key="role.id" >{{ __(role.title, 'wedevs-project-manager') }}</option>
+                    </select>
+                  </td>
+
+                  <td>
+                    <a @click.prevent="deleteUser(projectUser)" v-if="canUserEdit(projectUser)" hraf="#" class="pm-del-proj-role pm-assign-del-user">
+                      <span class="dashicons dashicons-trash"></span>
+                      <!-- <span class="title">{{ __( 'Delete', 'wedevs-project-manager') }}</span> -->
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <!--------------------------------------------Add Personnel----------------->
+          <div class="pm-form-item item project-users" v-if="show_role_field">
+            <input v-pm-users class="pm-project-coworker" type="text" name="user" :placeholder="search_user" size="45">
+          </div>
+
+          <pm-do-action hook="pm_project_form" :actionData="project"></pm-do-action>
+
+          <div class="pm-form-item item project-notify">
+            <label>
+              <input type="checkbox" v-model="project_notify" name="project_notify" id="project-notify" value="yes" />
+              {{ __( 'Notify Co-Workers', 'wedevs-project-manager') }}
+            </label>
+          </div>
+
+          <div class="submit">
+            <input v-if="project.id" type="submit" name="update_project" id="update_project" class="pm-button pm-primary" :value="update_project">
+            <input v-if="!project.id" type="submit" name="add_project" id="add_project" class="pm-button pm-primary" :value="add_new_project">
+            <span v-show="show_spinner" class="pm-loading"></span>
+
+          </div>
+
+        </form>
+        <div v-pm-user-create-popup-box id="pm-create-user-wrap" class="pm-new-user-wrap" :title="create_new_user">
+          <project-new-user-form></project-new-user-form>
         </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <style lang="less" scoped>
-.create-project-modal .popup-mask .popup-container {
+.create-project-modal .popup-container {
   height: 400px !important;
   top: 110px !important;
 }

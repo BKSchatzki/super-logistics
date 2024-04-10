@@ -1,6 +1,6 @@
 <script>
 import do_action from './do-action.vue';
-import edit_project from './../project-lists/project-create-form.vue';
+import edit_project from './../project-lists/project-edit-form.vue';
 
 export default {
   data () {
@@ -11,7 +11,7 @@ export default {
       isEnableUpdateForm: false,
       popperOptions:
           {
-            placement: 'top-end',
+            placement: 'bottom-start',
             modifiers:
                 {
                   offset: {
@@ -163,7 +163,8 @@ export default {
         <div class="header-row-1">
             <div class="project-title">
                 <span class="title">{{ project.title }}</span>
-                
+
+<!-------------------------- Edit Project Button ------------------>
                 <div class="settings first header-settings" v-if="is_manager()">
                     <pm-popper trigger="click" :options="popperOptions" :force-show="projectFormStatus">
                         <div class="pm-popper popper">
@@ -171,9 +172,10 @@ export default {
                         </div>
                         <!-- popper trigger element -->
                         <a href="#" @click.prevent="checkFormStatus" slot="reference" :title="__( 'action', 'wedevs-project-manager')" class="pm-project-update-wrap pm-popper-ref popper-ref icon-pm-pencil project-update-btn"></a>
-                        
+
                     </pm-popper>
                 </div>
+<!-----------------------------Settings Button- ------------------>
                 <div class="action-settings settings header-settings" v-if="is_manager()">
                     <pm-popper trigger="click" :options="popperOptions">
                         <div class="pm-popper popper">
@@ -238,248 +240,249 @@ export default {
 </template>
 
 <style lang="less">
-    
-    .pm-header-title-content {
-        .header-row-1 {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
+
+.pm-header-title-content {
+  .header-row-1 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .description {
+    background: #f9f9f9;
+    margin-top: 16px;
+    padding: 10px;
+    border: 1px solid #d7d7d7;
+    color: #47525d;
+    text-align: justify;
+  }
+
+  .settings.header-settings {
+    position: relative;
+
+    .project-edit-form {
+      left: 0;
+      white-space: nowrap;
+      padding: 10px 15px !important;
+      min-width: 250px;
+      @media (max-width: 767px){
+        left: inherit;
+        right: 0px;
+      }
+
+      .pm-form {
+        .item {
+          margin-right: 0;
+          input[type='text'], input[type='email'], input[type='tel'], textarea, select {
+            width: 100%;
+            &:focus {
+              border-color: #027eb3;
+            }
+          }
         }
 
-        .description {
-            background: #f9f9f9;
-            margin-top: 16px;
-            padding: 10px;
-            border: 1px solid #d7d7d7;
-            color: #47525d;
-            text-align: justify;
+        .pm-del-proj-role {
+          cursor: pointer;
         }
 
-        .settings.header-settings {
-            position: relative;
-
-            .project-edit-form {
-                left: 0;
-                white-space: nowrap;
-                padding: 10px 15px !important;
-                min-width: 250px;
-                @media (max-width: 767px){
-                    left: inherit;
-                    right: 0px;
-                }
-                
-                .pm-form {
-                    .item {
-                        margin-right: 0;
-                        input[type='text'], input[type='email'], input[type='tel'], textarea, select {
-                            width: 100%;
-                            &:focus {
-                                border-color: #027eb3;
-                            }
-                        }
-                    }
-                    
-                    .pm-del-proj-role {
-                        cursor: pointer;
-                    }
-                    
-                    #project-notify {
-                        margin-right: 5px;
-                    }
-                    
-                    table {
-                        width: 100%;
-                        td:nth-child(2){
-                            text-align: center;
-                            select {
-                                width: 100%;
-                            }
-                        }
-                        td:last-child {
-                            text-align: right;
-                        }
-                    }
-                    
-                    .submit {
-                        .project-cancel {
-                            box-shadow: 0 1px 0 #c5c5c5;
-                        }
-                        
-                        .pm-loading:after {
-                            margin: 6px 0 0 10px;
-                        }
-                    }
-                }
-            }
+        #project-notify {
+          margin-right: 5px;
         }
 
-        .project-status {
-            
-            .incomplete, .complete {
-                border: 1px solid #E5E4E4;
-                background: #fff;
-                padding: 4px 8px;
-                margin-left: 5px;
-                cursor: pointer;
-                border-radius: 3px;
-                color: #788383;
-                font-size: 12px;
-
-                &:hover {
-                    border: 1px solid #1A9ED4;
-                    color: #1A9ED4;
-                }
+        table {
+          width: 100%;
+          td:nth-child(2){
+            text-align: center;
+            select {
+              width: 100%;
             }
-        }
-        
-        .project-title {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            position: relative;
-
-            .project-edit-form {
-                text-align: left;
-                padding: 5px 5px 15px 15px;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-                border: 1px solid #DDDDDD;
-                background: #fff;
-                border-radius: 3px;
-                box-shadow: 0px 2px 40px 0px rgba(214, 214, 214, 0.6);
-            }
-
-            .title {
-                font-size: 18px;
-                font-weight: bold;
-                color: #000;
-                margin-right: 20px;
-                white-space: nowrap;
-            }
-            
+          }
+          td:last-child {
+            text-align: right;
+          }
         }
 
-        .settings {
-            position: relative;
-            display: flex;
-            align-items: center;
-            border: 1px solid #E5E4E4;
-            border-right-color: #fff;
-            background: #fff;
-            color: #95A5A6;
-            cursor: pointer;
+        .submit {
+          .project-cancel {
+            box-shadow: 0 1px 0 #c5c5c5;
+          }
 
-            &:hover {
-                border-color: #1A9ED4;
-
-                .icon-pm-settings, .flaticon-text-document, .icon-pm-pencil {
-                    &:before {
-                        color: #1A9ED4;
-
-                    }
-                }
-            }
-
-            .flaticon-text-document {
-                height: 28px;
-                padding: 0 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #95A5A6;
-
-                &:before {
-                    font-size: 1rem;
-                }
-            }
-
-            .header-settings-btn {
-                height: 28px;
-                padding: 0 10px;
-                display: flex;
-                align-items: center;
-            }
-
-            .icon-pm-pencil {
-                height: 28px;
-                color: #95A5A6;
-                padding: 0px 10px;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9;
-            }
-
-            .pm-action-menu-container {
-                padding: 7px 0;
-                background: #fff;
-                box-shadow: 0px 2px 40px 0px rgba(214, 214, 214, 0.6);
-                border-radius: 3px;
-                border: 1px solid #ddd;
-                min-width: 120px;
-                &:after,
-                &:before {
-                    display: none;
-                }
-
-                @media (max-width: 767px){
-                    left: inherit !important;
-                    right: 0 !important;
-                }
-
-                .action-ul {
-                    margin: 0;
-                    padding: 0;
-
-
-                    li {
-                        margin: 0;
-                        padding: 0;
-                        a {
-                            display: flex;
-                            align-items: center;
-                            padding: 5px 10px;
-
-                            .icon-pm-completed, .icon-pm-delete, .icon-pm-undo-arrow {
-                                width: 20px;
-                            }
-                            .icon-pm-undo-arrow {
-                                &:before {
-                                    font-size: 11px;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+          .pm-loading:after {
+            margin: 6px 0 0 10px;
+          }
         }
-
-        .settings.first {
-            border-top-left-radius: 3px;
-            border-bottom-left-radius: 3px;
-        }
-
-        .settings.last {
-            border-top-right-radius: 3px;
-            border-bottom-right-radius: 3px;
-            border-right: 1px solid #E5E4E4;
-
-            &:hover {
-                border-right-color: #1A9ED4;
-            }
-        }
+      }
     }
-    
-    @media (max-width: 767px){
-        .project-search-box-container .pm-search-field input {
-            min-width: 100%;
-        }
+  }
+
+  .project-status {
+
+    .incomplete, .complete {
+      border: 1px solid #E5E4E4;
+      background: #fff;
+      padding: 4px 8px;
+      margin-left: 5px;
+      cursor: pointer;
+      border-radius: 3px;
+      color: #788383;
+      font-size: 12px;
+
+      &:hover {
+        border: 1px solid #1A9ED4;
+        color: #1A9ED4;
+      }
+    }
+  }
+
+  .project-title {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    .project-edit-form {
+      text-align: left;
+      padding: 5px 5px 15px 15px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      border: 1px solid #DDDDDD;
+      background: #fff;
+      border-radius: 3px;
+      box-shadow: 0px 2px 40px 0px rgba(214, 214, 214, 0.6);
     }
 
-    @media (max-width: 360px) {
-        .project-title .pm-project-form .project-cancel {
-            margin-bottom: 0px !important;
-        }
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #000;
+      margin-right: 20px;
+      white-space: nowrap;
     }
- 
+
+  }
+
+  .settings {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid #E5E4E4;
+    border-right-color: #fff;
+    background: #fff;
+    color: #95A5A6;
+    cursor: pointer;
+
+    &:hover {
+      border-color: #1A9ED4;
+
+      .icon-pm-settings, .flaticon-text-document, .icon-pm-pencil {
+        &:before {
+          color: #1A9ED4;
+
+        }
+      }
+    }
+
+    .flaticon-text-document {
+      height: 28px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #95A5A6;
+
+      &:before {
+        font-size: 1rem;
+      }
+    }
+
+    .header-settings-btn {
+      height: 28px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .icon-pm-pencil {
+      height: 28px;
+      color: #95A5A6;
+      padding: 0px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9;
+    }
+
+    .pm-action-menu-container {
+      padding: 7px 0;
+      background: #fff;
+      box-shadow: 0px 2px 40px 0px rgba(214, 214, 214, 0.6);
+      border-radius: 3px;
+      border: 1px solid #ddd;
+      min-width: 120px;
+      &:after,
+      &:before {
+        display: none;
+      }
+
+      @media (max-width: 767px){
+        left: inherit !important;
+        right: 0 !important;
+      }
+
+      .action-ul {
+        margin: 0;
+        padding: 0;
+
+
+        li {
+          margin: 0;
+          padding: 0;
+          a {
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+
+            .icon-pm-completed, .icon-pm-delete, .icon-pm-undo-arrow {
+              width: 20px;
+            }
+            .icon-pm-undo-arrow {
+              &:before {
+                font-size: 11px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .settings.first {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+  }
+
+  .settings.last {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-right: 1px solid #E5E4E4;
+
+    &:hover {
+      border-right-color: #1A9ED4;
+    }
+  }
+}
+
+@media (max-width: 767px){
+  .project-search-box-container .pm-search-field input {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .project-title .pm-project-form .project-cancel {
+    margin-bottom: 0px !important;
+  }
+}
+
 </style>
+

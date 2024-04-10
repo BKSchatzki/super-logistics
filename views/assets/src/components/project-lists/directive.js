@@ -1,27 +1,27 @@
 
-var Project = {
+const Project = {
     coWorkerSearch: function(el, binding, vnode) {
         
-        var $ = jQuery;
-        var pm_abort;
-        var context = vnode.context;
+        const $ = jQuery;
+        const context = vnode.context;
+        let pm_abort;
 
         $( ".pm-project-coworker" ).autocomplete( {
             minLength: 1,
             
             source: function( request, response ) {
-                var args = {
+                const args = {
                     conditions: {
                        query : request.term
                     },
                     callback: function (res) {
                         if ( res.data.length ) {
-                            const assignes = this.$store.state.assignees;
-                            if ( assignes.length == 0 ) {
+                            const assignees = this.$store.state.assignees;
+                            if ( assignees.length === 0 ) {
                                 response( res.data );
                                 return;
                             }
-                            const users = assignes.map( item => item.id );
+                            const users = assignees.map( item => item.id );
                             const result  = res.data.filter( item => !users.includes( item.id ) );
                             response( result );
                         } else {
@@ -60,8 +60,8 @@ var Project = {
                     
                 } else {
 
-                    var has_user = context.selectedUsers.find(function(user) {
-                        return ui.item.id === user.id ? true : false;
+                    const has_user = context.selectedUsers.find(function(user) {
+                        return ui.item.id == user.id ? true : false;
                     });
                     
                     if (!has_user) {
@@ -81,7 +81,7 @@ var Project = {
             }
 
         } ).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-            var no_user = context.__( 'No users found.', 'wedevs-project-manager'),
+            const no_user = context.__( 'No users found.', 'wedevs-project-manager'),
                 create_new_user = context.__( 'Create a new user', 'wedevs-project-manager');
             
             if ( item.email ) {

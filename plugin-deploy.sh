@@ -27,7 +27,7 @@ PLUGINVERSION=$(grep "Version" $SRC_DIR/$MAINFILE | awk '{ print $NF}')
 
 echo ".........................................."
 echo
-echo "Preparing to deploy WP PM Upholstery Plus"
+echo "Preparing to deploy Advanced WP PM Plus"
 echo "(Current version: $PLUGINVERSION)"
 echo
 echo ".........................................."

@@ -83,18 +83,18 @@ module.exports = function(grunt) {
             main: {
                 options: {
                     mode: 'zip',
-                    archive: './build/pm-upholstery-v' + pkg.version + '.zip'
+                    archive: './build/advanced-wp-pm-v' + pkg.version + '.zip'
                 },
                 expand: true,
                 cwd: 'build/',
                 src: ['**/*'],
-                dest: 'upholstery-project-manager'
+                dest: 'advanced-project-manager'
             }
         },
 
         addtextdomain: {
             options: {
-                textdomain: 'upholstery-project-manager',
+                textdomain: 'advanced-project-manager',
             },
             update_all_domains: {
                 options: {

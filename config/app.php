@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'name'        => 'PM Upholstery Plus',
+    'name'        => 'Advanced WP PM',
     'slug'        => 'pm',
-    'version'     => '2.6.13',
+    'version'     => '2.6.14',
     'api'     	  => '2',
     'db_version'  => '2.5',
     'text_domain' => 'pm',
