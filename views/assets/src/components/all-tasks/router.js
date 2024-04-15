@@ -5,6 +5,10 @@ weDevsPMRegisterChildrenRoute( "project_root",
             path: 'all-tasks',
             component: AllTasks,
             name: 'all-tasks',
+            meta: {
+                label: 'All Tasks',
+                order: 3,
+            }
         }
     ]
 );

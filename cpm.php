@@ -5,7 +5,7 @@
  * Description: Advanced Project Management Software for businesses. Requires WP Project Manager Pro.
  * Author: BigTB, weDevs
  * Author URI: https://bigtb.com
- * Version: 2.6.14
+ * Version: 2.6.15
  * Text Domain: wedevs-project-manager
  * Domain Path: /languages
  * License: GPL2

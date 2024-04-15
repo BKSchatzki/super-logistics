@@ -49,10 +49,6 @@ class Global_Kanboard_Controller {
     // however since this doesn't belong to a project, we use the global kanboard id
     // which is 999999 (arbitrary, fixed)
 
-        if ( !$this->hasDefaultBoard( self::$global_kanboard_id ) ) {
-            $this->setDefaultBoard( self::$global_kanboard_id );
-        }
-
         $boards = Global_Kanboard::with('meta')
             ->where('project_id', self::$global_kanboard_id)
             ->where( 'type', 'kanboard' )

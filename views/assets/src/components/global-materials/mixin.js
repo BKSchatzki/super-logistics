@@ -81,7 +81,7 @@ export default {
         data: dataObj,
         success: function (res) {
           console.log("successfully added order: ", res.data);
-          self.getMaterialOrders();
+          self.getMaterialVendors();
         },
         error: function (res) {
           console.error('Failed to add new order:', res);
@@ -98,7 +98,7 @@ export default {
         success: function (res) {
           if (res.data !== undefined) {
             console.log("successfully deleted order: ", res.data);
-            self.getMaterialOrders();
+            self.getMaterialVendors();
           }
         },
         error: function (res) {

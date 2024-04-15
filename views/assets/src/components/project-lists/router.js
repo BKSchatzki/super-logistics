@@ -24,7 +24,7 @@ weDevsPMRegisterChildrenRoute('projects',
             component: project_lists,
             name: 'project_lists',
             meta: {
-                label: __('Projects', 'wedevs-project-manager'),
+                label: __( 'Projects', 'wedevs-project-manager'),
                 order: 1,
             },
             children: [

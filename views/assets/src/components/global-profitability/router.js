@@ -6,6 +6,10 @@ weDevsPMRegisterChildrenRoute('project_root',
             path: '/profitability',
             component: Profitability,
             name: 'profitability',
+            meta: {
+              label: 'Profitability',
+              order: 6,
+            }
         }
     ]
 );
