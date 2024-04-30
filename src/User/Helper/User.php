@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\User\Helper;
+namespace SL\User\Helper;
 
 class User {
 	

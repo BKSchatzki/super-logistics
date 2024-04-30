@@ -1,17 +1,17 @@
 <?php
 
-namespace WeDevs\PM\Search\Controllers;
+namespace SL\Search\Controllers;
 
 use WP_REST_Request;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\User\Models\User_Role;
-use WeDevs\PM\Common\Traits\Request_Filter;
-use WeDevs\PM\User\Models\User;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Common\Models\Board;
+use SL\Common\Traits\Transformer_Manager;
+use SL\User\Models\User_Role;
+use SL\Common\Traits\Request_Filter;
+use SL\User\Models\User;
+use SL\Project\Models\Project;
+use SL\Task\Models\Task;
+use SL\Common\Models\Board;
 use Illuminate\Database\Capsule\Manager as DB;
 
 class Search_Controller {
@@ -81,7 +81,7 @@ class Search_Controller {
         });
 
         if ( empty( $projects ) ) {
-            $projects = [ [ "no_result" => __( "No results found.", 'wedevs-project-manager' )] ];
+            $projects = [ [ "no_result" => __( "No results found.", 'super-logistics' )] ];
         }
 
         return $projects;
@@ -124,7 +124,7 @@ class Search_Controller {
 		$items = array_merge( $items, $this->search_in_broad( $string, $project_id ));
 
         if ( empty( $items ) ) {
-            $items = [ [ "no_result" => __( "No results found.", 'wedevs-project-manager' ) ]];
+            $items = [ [ "no_result" => __( "No results found.", 'super-logistics' ) ]];
 		}
 
         return $items;

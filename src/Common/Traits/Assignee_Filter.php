@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Common\Traits;
+namespace SL\Common\Traits;
 
-use WeDevs\PM\Common\Models\Assignee;
+use SL\Common\Models\Assignee;
 
 trait Assignee_Filter {
 

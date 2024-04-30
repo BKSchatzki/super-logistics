@@ -6,9 +6,9 @@
  * Time: 11:59 AM
  */
 
-namespace WeDevs\PM\Tools\Library;
+namespace SL\Tools\Library;
 
-class PM_Trello {
+class SL_Trello {
 
     /**
      * API Endpoint

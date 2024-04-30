@@ -1,13 +1,13 @@
 <?php
 
-namespace WeDevs\PM\Imports\Helpers;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Task_List\Models\Task_List;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Common\Models\Boardable;
-use WeDevs\PM\Imports\Models\Import ;
-use WeDevs\PM\User\Models\User_Role;
-use WeDevs\PM\Common\Models\Assignee;
+namespace SL\Imports\Helpers;
+use SL\Project\Models\Project;
+use SL\Task_List\Models\Task_List;
+use SL\Task\Models\Task;
+use SL\Common\Models\Boardable;
+use SL\Imports\Models\Import ;
+use SL\User\Models\User_Role;
+use SL\Common\Models\Assignee;
 
 
 class Import_helper {

@@ -2,7 +2,7 @@
 
 # args
 MSG=${1-'deploy from git'}
-MAINFILE="cpm.php" # for version checking
+MAINFILE="super-logistics.php" # for version checking
 
 # paths
 SRC_DIR=$(git rev-parse --show-toplevel)

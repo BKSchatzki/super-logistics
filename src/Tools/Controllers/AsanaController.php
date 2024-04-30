@@ -6,9 +6,9 @@
  * Time: 1:54 PM
  */
 
-// namespace WeDevs\PM\Tools\Controllers;
+// namespace SL\Tools\Controllers;
 
-// use WeDevs\PM\Tools\Helpers\ImportAsana;
+// use SL\Tools\Helpers\ImportAsana;
 // use WP_REST_Request;
 
 // class AsanaController

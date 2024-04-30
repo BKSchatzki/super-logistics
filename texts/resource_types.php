@@ -2,24 +2,24 @@
 
 return [
     'project' => [
-        __( 'project', 'wedevs-project-manager' ),
+        __( 'project', 'super-logistics' ),
     ],
     'discussion_board' => [
-        __( 'discussion board', 'wedevs-project-manager' ),
+        __( 'discussion board', 'super-logistics' ),
     ],
     'task_list' => [
-        __( 'task list', 'wedevs-project-manager' ),
+        __( 'task list', 'super-logistics' ),
     ],
     'task' => [
-        __( 'task', 'wedevs-project-manager' ),
+        __( 'task', 'super-logistics' ),
     ],
     'milestone' => [
-        __( 'milestone', 'wedevs-project-manager' ),
+        __( 'milestone', 'super-logistics' ),
     ],
     'comment' => [
-        __( 'comment', 'wedevs-project-manager' ),
+        __( 'comment', 'super-logistics' ),
     ],
     'file' => [
-        __( 'file', 'wedevs-project-manager' ),
+        __( 'file', 'super-logistics' ),
     ],
 ];

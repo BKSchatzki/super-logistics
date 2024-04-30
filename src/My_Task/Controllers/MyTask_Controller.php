@@ -1,21 +1,21 @@
 <?php
 
-namespace WeDevs\PM\My_Task\Controllers;
+namespace SL\My_Task\Controllers;
 
 use WP_REST_Request;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Common\Traits\Request_Filter;
-use WeDevs\PM\User\Models\User;
-use WeDevs\PM\User\Transformers\User_Transformer;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Common\Traits\Request_Filter;
+use SL\User\Models\User;
+use SL\User\Transformers\User_Transformer;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Pagination\Paginator;
-use WeDevs\PM\Calendar\Transformers\Calendar_Transformer;
-use WeDevs\PM\User\Models\User_Role;
-use WeDevs\PM\Activity\Transformers\Activity_Transformer;
+use SL\Calendar\Transformers\Calendar_Transformer;
+use SL\User\Models\User_Role;
+use SL\Activity\Transformers\Activity_Transformer;
 
 
 class MyTask_Controller {
@@ -131,7 +131,7 @@ class MyTask_Controller {
             $date  = new \DateTimeImmutable( $start );
             $start = $date->format( 'Y-m-d' );
         } catch ( \Exception $exception ) {
-            return new \WP_Error( 400, esc_html__( 'Starting date is not valid. Please re-check your request.', 'wedevs-project-manager' ) );
+            return new \WP_Error( 400, esc_html__( 'Starting date is not valid. Please re-check your request.', 'super-logistics' ) );
         }
 
         $user_id       = get_current_user_id();

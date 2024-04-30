@@ -1,15 +1,15 @@
 <?php
 
-namespace WeDevs\PM\Comment\Validators;
+namespace SL\Comment\Validators;
 
-use WeDevs\PM\Core\Validator\Abstract_Validator;
+use SL\Core\Validator\Abstract_Validator;
 
 class Update_Comment extends Abstract_Validator {
     public function messages() {
         return [
-            'content.required' => __( 'Comment title is required.', 'wedevs-project-manager' ),
-            'id.required'      => __( 'Comment ID is required.', 'wedevs-project-manager' ),
-            'id.gtz'           => __( 'Comment ID must be greater than zero', 'wedevs-project-manager' ),
+            'content.required' => __( 'Comment title is required.', 'super-logistics' ),
+            'id.required'      => __( 'Comment ID is required.', 'super-logistics' ),
+            'id.gtz'           => __( 'Comment ID must be greater than zero', 'super-logistics' ),
         ];
     }
 

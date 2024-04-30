@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Activity\Helper;
+namespace SL\Activity\Helper;
 
 
 use WP_REST_Request;

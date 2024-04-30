@@ -6,7 +6,7 @@
             :style="{backgroundColor: value}"
             @click="toggleColorPicker"
         >
-            <span>{{ __('Select Color', 'wedevs-project-manager') }}</span>
+            <span>{{ __('Select Color', 'super-logistics') }}</span>
         </button>
 
         <input
@@ -22,13 +22,13 @@
                 type="button"
                 class="button button-small"
                 @click="updateColor({})"
-            >{{ __('Clear', 'wedevs-project-manager') }}</button>
+            >{{ __('Clear', 'super-logistics') }}</button>
 
             <button
                 type="button"
                 class="button button-small"
                 @click="toggleColorPicker"
-            >{{ __('Close', 'wedevs-project-manager') }}</button>
+            >{{ __('Close', 'super-logistics') }}</button>
         </div>
 
         <sketch

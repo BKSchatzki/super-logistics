@@ -1,12 +1,12 @@
 <?php
 
-namespace WeDevs\PM\File\Models;
+namespace SL\File\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
-use WeDevs\PM\User\Models\User;
-use WeDevs\PM\Comment\Models\Comment;
-use WeDevs\PM\Common\Models\Board;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
+use SL\User\Models\User;
+use SL\Comment\Models\Comment;
+use SL\Common\Models\Board;
 
 class File extends Eloquent {
     use Model_Events;
@@ -26,12 +26,12 @@ class File extends Eloquent {
     ];
 
     public function comment() {
-        return $this->hasOne( 'WeDevs\PM\Comment\Models\Comment', 'id', 'fileable_id');
-        return $this->belongsToMany( 'WeDevs\PM\Common\Models\Board', pm_tb_prefix() . 'pm_comments', 'id', 'commentable_id', 'fileable_id');
+        return $this->hasOne( 'SL\Comment\Models\Comment', 'id', 'fileable_id');
+        return $this->belongsToMany( 'SL\Common\Models\Board', pm_tb_prefix() . 'pm_comments', 'id', 'commentable_id', 'fileable_id');
     }
 
     public function meta() {
-        return $this->hasMany( 'WeDevs\PM\Common\Models\Meta', 'entity_id' )->where('entity_type', 'file');
+        return $this->hasMany( 'SL\Common\Models\Meta', 'entity_id' )->where('entity_type', 'file');
     }
 
     public function children() {

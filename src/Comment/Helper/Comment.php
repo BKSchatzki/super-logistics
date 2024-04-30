@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Comment\Helper;
+namespace SL\Comment\Helper;
 
-use WeDevs\PM\File\Helper\File;
+use SL\File\Helper\File;
 
 class Comment {
 

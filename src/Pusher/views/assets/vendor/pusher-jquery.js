@@ -1,6 +1,6 @@
 ;(function($) {
 
-    class PM_Pusher {
+    class SL_Pusher {
         constructor() {
             this.pusher = '';
             this.channel = '';
@@ -11,13 +11,13 @@
         }
 
         authentication() {
-            if(!PM_Pusher_Vars.pusher_app_key) {
+            if(!SL_Pusher_Vars.pusher_app_key) {
                 return this;
             }
             
-            this.pusher = new Pusher( PM_Pusher_Vars.pusher_app_key , {
-                cluster: PM_Pusher_Vars.pusher_cluster,
-                authEndpoint: `${PM_Pusher_Vars.api_base_url}${PM_Pusher_Vars.api_namespace}/user/1/pusher/auth`
+            this.pusher = new Pusher( SL_Pusher_Vars.pusher_app_key , {
+                cluster: SL_Pusher_Vars.pusher_cluster,
+                authEndpoint: `${SL_Pusher_Vars.api_base_url}${SL_Pusher_Vars.api_namespace}/user/1/pusher/auth`
             });
 
             return this;
@@ -27,7 +27,7 @@
             if(!this.pusher) {
                 return this;
             }
-            this.channel = this.pusher.subscribe(PM_Pusher_Vars.channel+'-'+PM_Pusher_Vars.user_id);
+            this.channel = this.pusher.subscribe(SL_Pusher_Vars.channel+'-'+SL_Pusher_Vars.user_id);
 
             return this;
         }
@@ -38,7 +38,7 @@
             }
             var self = this;
 
-            jQuery.each(PM_Pusher_Vars.events,function( key, event ) {
+            jQuery.each(SL_Pusher_Vars.events,function( key, event ) {
 
                 self.channel.bind(event, function(data) {
                     let title = typeof data.title == 'undefined' ? '' : data.title;
@@ -70,6 +70,6 @@
         }
     }
 
-    var PM_Pusher_Action = new PM_Pusher();
+    var SL_Pusher_Action = new SL_Pusher();
 
 })('jQuery')

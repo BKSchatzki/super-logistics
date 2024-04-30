@@ -6,18 +6,18 @@
  * Time: 5:48 PM
  */
 
-namespace WeDevs\PM\Tools\Helpers;
+namespace SL\Tools\Helpers;
 
-use WeDevs\PM\Tools\Library\PM_Asana;
+use SL\Tools\Library\SL_Asana;
 use WP_Background_Process;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Role\Models\Role;
-use WeDevs\PM\User\Models\User_Role;
-use WeDevs\PM\Common\Models\Board;
-use WeDevs\PM\Common\Models\Boardable;
-use WeDevs\PM\Common\Models\Assignee;
-use WeDevs\PM\Comment\Models\Comment;
+use SL\Project\Models\Project;
+use SL\Task\Models\Task;
+use SL\Role\Models\Role;
+use SL\User\Models\User_Role;
+use SL\Common\Models\Board;
+use SL\Common\Models\Boardable;
+use SL\Common\Models\Assignee;
+use SL\Comment\Models\Comment;
 
 
 class ImportAsana extends WP_Background_Process
@@ -46,7 +46,7 @@ class ImportAsana extends WP_Background_Process
         } else {
             if(array_key_exists('token', $this->credentials)) {
                 if(!empty($this->credentials['token'])){
-                    $this->asana = new PM_Asana([
+                    $this->asana = new SL_Asana([
                         'personalAccessToken' => base64_decode($this->credentials['token'])
                     ]);
                 }

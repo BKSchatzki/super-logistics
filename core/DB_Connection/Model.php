@@ -1,7 +1,7 @@
 <?php
 
-namespace WeDevs\PM\Core\DB_Connection;
-use WeDevs\PM\Activity\Activity_Log;
+namespace SL\Core\DB_Connection;
+use SL\Activity\Activity_Log;
 use WeDevs\ORM\Eloquent\Database;
 
 /**

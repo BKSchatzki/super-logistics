@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Comment\Validators;
+namespace SL\Comment\Validators;
 
-use WeDevs\PM\Core\Sanitizer\Abstract_Sanitizer;
+use SL\Core\Sanitizer\Abstract_Sanitizer;
 
 class Comment_Sanitizer extends Abstract_Sanitizer {
 	public function filters() {

@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Pusher\Src\Controllers;
+namespace SL\Pusher\Src\Controllers;
 
 use Reflection;
 use WP_REST_Request;
@@ -7,9 +7,9 @@ use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Common\Traits\Request_Filter;
-use WeDevs\PM\Pusher\Core\Auth\Auth;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Common\Traits\Request_Filter;
+use SL\Pusher\Core\Auth\Auth;
 
 
 class Pusher_Controller {

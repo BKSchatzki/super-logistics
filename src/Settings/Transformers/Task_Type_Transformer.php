@@ -1,10 +1,10 @@
 <?php
 
-namespace WeDevs\PM\Settings\Transformers;
+namespace SL\Settings\Transformers;
 
-use WeDevs\PM\Settings\Models\Task_Types;
+use SL\Settings\Models\Task_Types;
 use League\Fractal\TransformerAbstract;
-use WeDevs\PM\Common\Traits\Resource_Editors;
+use SL\Common\Traits\Resource_Editors;
 
 class Task_Type_Transformer extends TransformerAbstract {
 

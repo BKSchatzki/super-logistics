@@ -2,18 +2,18 @@
     <div class="Settings-page-wrapper">
         <h2 class="pm-settings-nav-menu-wrap nav-tab-wrapper">
             <router-link class="nav-tab" :to="{name: 'general'}">
-                {{ __( 'General Settings', 'wedevs-project-manager') }}
+                {{ __( 'General Settings', 'super-logistics') }}
             </router-link>
 
             <router-link class="nav-tab" :to="{name: 'email'}">
-                {{ __( 'E-Mail Settings', 'wedevs-project-manager') }}
+                {{ __( 'E-Mail Settings', 'super-logistics') }}
             </router-link>
             <router-link class="nav-tab" :to="{name: 'pusher_settings_tab'}">
-                {{ __( 'Pusher', 'wedevs-project-manager') }}
+                {{ __( 'Pusher', 'super-logistics') }}
             </router-link>
 
             <router-link class="nav-tab" :to="{name: 'task_type_settings_tab'}">
-                {{ __( 'Task Type', 'wedevs-project-manager') }}
+                {{ __( 'Task Type', 'super-logistics') }}
             </router-link>
             <pm-do-action :hook="'pm-settings-tab'"></pm-do-action>
         </h2>
@@ -27,7 +27,7 @@
 <script>
 export default{
     beforeRouteEnter (to, from, next) {
-        if ( pmUserCanAccess( PM_Vars.admin_cap_slug ) ) {
+        if ( pmUserCanAccess( SL_Vars.admin_cap_slug ) ) {
             next();
         } else {
             next( '/' );

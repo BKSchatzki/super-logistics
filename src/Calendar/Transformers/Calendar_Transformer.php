@@ -1,9 +1,9 @@
 <?php
 
-namespace WeDevs\PM\Calendar\Transformers;
+namespace SL\Calendar\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use WeDevs\PM\User\Models\User;
+use SL\User\Models\User;
 
 class Calendar_Transformer extends TransformerAbstract {
 

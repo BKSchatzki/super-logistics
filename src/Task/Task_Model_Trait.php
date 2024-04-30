@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\PM\Task;
+namespace SL\Task;
 
 use Carbon\Carbon;
 

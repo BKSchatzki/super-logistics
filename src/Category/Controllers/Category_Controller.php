@@ -1,15 +1,15 @@
 <?php
 
-namespace WeDevs\PM\Category\Controllers;
+namespace SL\Category\Controllers;
 
 use WP_REST_Request;
-use WeDevs\PM\Category\Models\Category;
+use SL\Category\Models\Category;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Category\Transformers\Category_Transformer;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Category\Transformers\Category_Transformer;
 // use Illuminate\Database\Capsule\Manager as DB;
 use \WeDevs\ORM\Eloquent\Facades\DB;
 use Illuminate\Pagination\Paginator;

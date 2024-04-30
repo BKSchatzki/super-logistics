@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Milestone\Sanitizers;
+namespace SL\Milestone\Sanitizers;
 
-use WeDevs\PM\Core\Sanitizer\Abstract_Sanitizer;
+use SL\Core\Sanitizer\Abstract_Sanitizer;
 
 class Milestone_Sanitizer extends Abstract_Sanitizer {
 	public function filters() {

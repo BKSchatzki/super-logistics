@@ -1,11 +1,11 @@
 <?php 
 
-namespace WeDevs\PM\Core\Notifications\Emails;
+namespace SL\Core\Notifications\Emails;
 
 /**
 * Email Notification When a new project created
 */
-use WeDevs\PM\Core\Notifications\Email;
+use SL\Core\Notifications\Email;
 
 class New_Task_Notification extends Email {
     
@@ -43,7 +43,7 @@ class New_Task_Notification extends Email {
         }
 
         $template_name = apply_filters( 'pm_new_task_email_template_path', $this->get_template_path( '/html/new-task.php' ) );
-        $subject = sprintf( __( '[%s][%s] New Task Assigned: %s', 'wedevs-project-manager' ), $this->get_blogname(), $task_raw['project_title'], $task_raw['title'] );
+        $subject = sprintf( __( '[%s][%s] New Task Assigned: %s', 'super-logistics' ), $this->get_blogname(), $task_raw['project_title'], $task_raw['title'] );
 
 
         $message = $this->get_content_html( $template_name, $task_raw );

@@ -1,8 +1,8 @@
 <?php
-namespace WeDevs\PM\Milestone\Helper;
+namespace SL\Milestone\Helper;
 
-use WeDevs\PM\Task_List\Helper\Task_List;
-use WeDevs\PM\Discussion_Board\Helper\Discussion_Board;
+use SL\Task_List\Helper\Task_List;
+use SL\Discussion_Board\Helper\Discussion_Board;
 
 use WP_REST_Request;
 // data: {

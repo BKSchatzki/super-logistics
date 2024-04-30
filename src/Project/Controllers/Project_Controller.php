@@ -1,24 +1,24 @@
 <?php
 
-namespace WeDevs\PM\Project\Controllers;
+namespace SL\Project\Controllers;
 
 use WP_REST_Request;
-use WeDevs\PM\Project\Models\Project;
+use SL\Project\Models\Project;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Project\Transformers\Project_Transformer;
-use WeDevs\PM\Common\Traits\Request_Filter;
-use WeDevs\PM\User\Models\User;
-use WeDevs\PM\User\Models\User_Role;
-use WeDevs\PM\Category\Models\Category;
-use WeDevs\PM\Common\Traits\File_Attachment;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Project\Transformers\Project_Transformer;
+use SL\Common\Traits\Request_Filter;
+use SL\User\Models\User;
+use SL\User\Models\User_Role;
+use SL\Category\Models\Category;
+use SL\Common\Traits\File_Attachment;
 use Illuminate\Pagination\Paginator;
-use WeDevs\PM\Common\Models\Meta;
-use WeDevs\PM\Task_List\Models\Task_List;
-use WeDevs\PM\Project\Helper\Project_Role_Relation;
+use SL\Common\Models\Meta;
+use SL\Task_List\Models\Task_List;
+use SL\Project\Helper\Project_Role_Relation;
 
 class Project_Controller {
 
@@ -404,10 +404,10 @@ class Project_Controller {
 		do_action( "pm_after_favaurite_project", $request );
 		
 		if ( $favourite == 'true' ) {
-			$response = $this->get_response( null, [ 'message' =>  __( "The project has been marked as favorite", 'wedevs-project-manager' ) ] );
+			$response = $this->get_response( null, [ 'message' =>  __( "The project has been marked as favorite", 'super-logistics' ) ] );
 		} else {
 
-			$response = $this->get_response( null, [ 'message' =>  __( "The project has been removed from favorite", 'wedevs-project-manager' ) ] );
+			$response = $this->get_response( null, [ 'message' =>  __( "The project has been removed from favorite", 'super-logistics' ) ] );
 		}
 
         return $response;
@@ -425,8 +425,8 @@ class Project_Controller {
 		if ( empty( $meta->meta_value ) ) {
 
 			$list = Task_List::create([
-				'title' => __('Inbox', 'wedevs-project-manager'),
-				'description' => __('This is a system default task list. Any task without an assigned tasklist will appear here.', 'wedevs-project-manager'),
+				'title' => __('Inbox', 'super-logistics'),
+				'description' => __('This is a system default task list. Any task without an assigned tasklist will appear here.', 'super-logistics'),
 				'order' => 999999,
 				'project_id' => $project_id,
 			]);

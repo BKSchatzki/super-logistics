@@ -9,7 +9,7 @@
 
         components['fragment'] = Fragment.Fragment;
         
-        weDevs_PM_Components.map(function(obj, key) {
+        weDevs_SL_Components.map(function(obj, key) {
             if (obj.property.mixins) {
                 obj.property.mixins.push(mixin);
             } else {
@@ -46,7 +46,7 @@
             var components = [],
                 self = this;
 
-            weDevs_PM_Components.map(function(obj, key) {
+            weDevs_SL_Components.map(function(obj, key) {
                 if (obj.hook == self.hook) {
                     components.push(
                        Vue.compile('<'+obj.component+' @componentUpdate="updateState" :actionData="actionData"></'+obj.component+'>').render.call(self)

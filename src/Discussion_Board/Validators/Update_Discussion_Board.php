@@ -1,15 +1,15 @@
 <?php
 
-namespace WeDevs\PM\Discussion_Board\Validators;
+namespace SL\Discussion_Board\Validators;
 
-use WeDevs\PM\Core\Validator\Abstract_Validator;
+use SL\Core\Validator\Abstract_Validator;
 
 class Update_Discussion_Board extends Abstract_Validator {
     public function messages() {
         return [
-            'title.required' => __( 'Discussion title is required.', 'wedevs-project-manager' ),
-            'id.required'    => __( 'Discussion ID is required.', 'wedevs-project-manager' ),
-            'id.gtz'         => __( 'Discussion ID must be greater than zero', 'wedevs-project-manager' ),
+            'title.required' => __( 'Discussion title is required.', 'super-logistics' ),
+            'id.required'    => __( 'Discussion ID is required.', 'super-logistics' ),
+            'id.gtz'         => __( 'Discussion ID must be greater than zero', 'super-logistics' ),
         ];
     }
 

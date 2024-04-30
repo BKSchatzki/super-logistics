@@ -1,14 +1,14 @@
 <?php
 
-namespace WeDevs\PM\Discussion_Board\Validators;
+namespace SL\Discussion_Board\Validators;
 
-use WeDevs\PM\Core\Validator\Abstract_Validator;
+use SL\Core\Validator\Abstract_Validator;
 
 class Create_Discussion_Board extends Abstract_Validator {
     public function messages() {
         return [
-            'title.required' => __( 'Discussion title is required.', 'wedevs-project-manager' ),
-            'project_id.required' => __( 'Project ID is required.', 'wedevs-project-manager' ),
+            'title.required' => __( 'Discussion title is required.', 'super-logistics' ),
+            'project_id.required' => __( 'Project ID is required.', 'super-logistics' ),
         ];
     }
 

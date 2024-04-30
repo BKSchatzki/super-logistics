@@ -1,10 +1,10 @@
 <?php
-namespace WeDevs\PM\Imports\Controllers;
+namespace SL\Imports\Controllers;
 
-use WeDevs\PM\Imports\Models\Import;
+use SL\Imports\Models\Import;
 use WP_REST_Request;
-use WeDevs\PM\Imports\Helpers\Trello_helper ;
-use WeDevs\PM\Imports\Helpers\Import_helper as Import_helper ;
+use SL\Imports\Helpers\Trello_helper ;
+use SL\Imports\Helpers\Import_helper as Import_helper ;
 
 
 class Trello_Controller {

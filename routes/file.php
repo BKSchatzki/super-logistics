@@ -1,27 +1,27 @@
 <?php
 
-use WeDevs\PM\Core\Router\Router;
+use SL\Core\Router\Router;
 
 $router = Router::singleton();
 
-$router->get( 'projects/{project_id}/files', 'WeDevs/PM/File/Controllers/File_Controller@index' )
-    ->permission( ['WeDevs\PM\Core\Permissions\Access_Project'] );
+$router->get( 'projects/{project_id}/files', 'SL/File/Controllers/File_Controller@index' )
+    ->permission( ['SL\Core\Permissions\Access_Project'] );
 
-$router->post( 'projects/{project_id}/files', 'WeDevs/PM/File/Controllers/File_Controller@store' )
-    ->permission( ['WeDevs\PM\Core\Permissions\Create_File'] )
-    ->sanitizer( 'WeDevs\PM\File\Sanitizers\File_Sanitizer' );
+$router->post( 'projects/{project_id}/files', 'SL/File/Controllers/File_Controller@store' )
+    ->permission( ['SL\Core\Permissions\Create_File'] )
+    ->sanitizer( 'SL\File\Sanitizers\File_Sanitizer' );
 
-$router->get( 'projects/{project_id}/files/{file_id}', 'WeDevs/PM/File/Controllers/File_Controller@show' )
-    ->permission( ['WeDevs\PM\Core\Permissions\Access_Project'] );
+$router->get( 'projects/{project_id}/files/{file_id}', 'SL/File/Controllers/File_Controller@show' )
+    ->permission( ['SL\Core\Permissions\Access_Project'] );
 
-$router->post( 'projects/{project_id}/files/{file_id}/update', 'WeDevs/PM/File/Controllers/File_Controller@rename' )
-    ->permission( ['WeDevs\PM\Core\Permissions\Edit_File'] )
-    ->sanitizer( 'WeDevs\PM\File\Sanitizers\File_Sanitizer' );
+$router->post( 'projects/{project_id}/files/{file_id}/update', 'SL/File/Controllers/File_Controller@rename' )
+    ->permission( ['SL\Core\Permissions\Edit_File'] )
+    ->sanitizer( 'SL\File\Sanitizers\File_Sanitizer' );
 
-$router->post( 'projects/{project_id}/files/{file_id}/delete', 'WeDevs/PM/File/Controllers/File_Controller@destroy' )
-    ->permission( ['WeDevs\PM\Core\Permissions\Edit_File'] );
+$router->post( 'projects/{project_id}/files/{file_id}/delete', 'SL/File/Controllers/File_Controller@destroy' )
+    ->permission( ['SL\Core\Permissions\Edit_File'] );
 
-$router->get( 'projects/{project_id}/files/{file_id}/users/{user_id}/download', 'WeDevs/PM/File/Controllers/File_Controller@download' )
-    ->permission( ['WeDevs\PM\Core\Permissions\Access_Project'] );
+$router->get( 'projects/{project_id}/files/{file_id}/users/{user_id}/download', 'SL/File/Controllers/File_Controller@download' )
+    ->permission( ['SL\Core\Permissions\Access_Project'] );
 
-$router->get( 'get-mime-type-icon', 'WeDevs/PM/File/Controllers/File_Controller@get_mime_type_icon' );
+$router->get( 'get-mime-type-icon', 'SL/File/Controllers/File_Controller@get_mime_type_icon' );

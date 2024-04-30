@@ -1,8 +1,8 @@
 <?php
-namespace WeDevs\PM\Materials\Models;
+namespace SL\Materials\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
 use Carbon\Carbon;
 
 class MaterialOrder extends Eloquent {
@@ -21,11 +21,11 @@ class MaterialOrder extends Eloquent {
     ];
 
     public function vendor() {
-        return $this->belongsTo('WeDevs\PM\Materials\Models\MaterialVendor', 'vendor_id');
+        return $this->belongsTo('SL\Materials\Models\MaterialVendor', 'vendor_id');
     }
 
     public function projects() {
-        return $this->belongsToMany('WeDevs\PM\Project\Models\Project',
+        return $this->belongsToMany('SL\Project\Models\Project',
         pm_tb_prefix() . 'pm_material_orders_projects', 'order_id', 'project_id');
     }
 

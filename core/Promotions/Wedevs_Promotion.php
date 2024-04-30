@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Core\Promotions;
+namespace SL\Core\Promotions;
 
 /**
 * Promotion class
@@ -79,7 +79,7 @@ abstract class Wedevs_Promotion {
                 <div class="content">
                     <h2><?php echo esc_html( $notice['title'] ); ?></h2>
                     <p><?php echo esc_html( $notice['content'] ); ?></p>
-                    <a href="<?php echo esc_url( $notice['link'] ); ?>" class="button button-primary promo-btn" target="_blank"><?php echo !empty( $notice['btn_text'] ) ? esc_html( $notice['btn_text'] ) : esc_html__( 'Learn More &rarr;', 'wedevs-project-manager' ); ?></a>
+                    <a href="<?php echo esc_url( $notice['link'] ); ?>" class="button button-primary promo-btn" target="_blank"><?php echo !empty( $notice['btn_text'] ) ? esc_html( $notice['btn_text'] ) : esc_html__( 'Learn More &rarr;', 'super-logistics' ); ?></a>
                 </div>
                 <span class="prmotion-close-icon dashicons dashicons-no-alt" data-key="<?php echo esc_attr( $notice['key'] ); ?>" data-promo_key="<?php echo esc_attr( $this->promo_option_key ); ?>"></span>
                 <div class="clear"></div>
@@ -187,11 +187,11 @@ abstract class Wedevs_Promotion {
                 && 
             ! wp_verify_nonce( ( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) ), 'pm_christmas_offer' ) 
         ) {
-            wp_send_json_error( __( 'Invalid nonce', 'wedevs-project-manager' ) );
+            wp_send_json_error( __( 'Invalid nonce', 'super-logistics' ) );
         }
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( __( 'You have no permission to do that', 'wedevs-project-manager' ) );
+            wp_send_json_error( __( 'You have no permission to do that', 'super-logistics' ) );
         }
 
         if ( isset( $_POST['pm_upgrade_promotion_dismissed'] ) && isset( $_POST['pm_upgrade_promotion_dismissed'] ) ) {

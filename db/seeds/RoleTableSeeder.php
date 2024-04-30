@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
-use WeDevs\PM\Role\Models\Role;
-use \WeDevs\PM\Settings\Models\Settings;
+use SL\Role\Models\Role;
+use \SL\Settings\Models\Settings;
 use Carbon\Carbon;
 
 class RoleTableSeeder extends Seeder
@@ -20,9 +20,9 @@ class RoleTableSeeder extends Seeder
         if (!Role::count()) {
             Role::insert([
                 [
-                    'title'       => __( 'Manager', 'wedevs-project-manager' ),
+                    'title'       => __( 'Manager', 'super-logistics' ),
                     'slug'        => 'manager',
-                    'description' => __( 'Manager is a person who manages the project.', 'wedevs-project-manager' ),
+                    'description' => __( 'Manager is a person who manages the project.', 'super-logistics' ),
                     'status'      => 1,
                     'created_by'  => $user->ID,
                     'updated_by'  => $user->ID,
@@ -30,9 +30,9 @@ class RoleTableSeeder extends Seeder
                     'updated_at'  => Carbon::now(),
                 ],
                 [
-                    'title'       => __( 'Co-Worker', 'wedevs-project-manager' ),
+                    'title'       => __( 'Co-Worker', 'super-logistics' ),
                     'slug'        => 'co_worker',
-                    'description' => __( 'Co-worker is person who works under a project.', 'wedevs-project-manager' ),
+                    'description' => __( 'Co-worker is person who works under a project.', 'super-logistics' ),
                     'status'      => 1,
                     'created_by'  => $user->ID,
                     'updated_by'  => $user->ID,

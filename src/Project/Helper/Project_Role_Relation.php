@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Project\Helper;
+namespace SL\Project\Helper;
 
 
 class Project_Role_Relation {

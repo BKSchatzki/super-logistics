@@ -1,10 +1,10 @@
 <?php
 
-namespace WeDevs\PM\Category\Models;
+namespace SL\Category\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
-use WeDevs\PM\Project\Models\Project;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
+use SL\Project\Models\Project;
 
 
 class Category extends Eloquent {
@@ -22,6 +22,6 @@ class Category extends Eloquent {
     ];
 
     public function projects() {
-        return $this->belongsToMany( 'WeDevs\PM\Project\Models\Project', pm_tb_prefix() . 'pm_category_project', 'category_id', 'project_id' );
+        return $this->belongsToMany( 'SL\Project\Models\Project', pm_tb_prefix() . 'pm_category_project', 'category_id', 'project_id' );
     }
 }

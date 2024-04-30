@@ -1,6 +1,6 @@
 <template>
     <div class="pm-task-comment-wrap">
-        <!-- <div class="discuss-text pm-h2">{{ __( 'Discussion', 'wedevs-project-manager') }}</div> -->
+        <!-- <div class="discuss-text pm-h2">{{ __( 'Discussion', 'super-logistics') }}</div> -->
 
         <div  class="comment-content">
             <ul class="comment-content-ul" v-if="comments.length">
@@ -29,13 +29,13 @@
                                         <li>
                                             <a  href="#" @click.prevent="showHideTaskCommentForm( comment )">
                                                 <span class="icon-pm-pencil"></span>
-                                                <span class="comment-action-edit">{{ __('Edit', 'wedevs-project-manager') }}</span>
+                                                <span class="comment-action-edit">{{ __('Edit', 'super-logistics') }}</span>
                                             </a>
                                         </li>
                                         <li>
                                             <a href="#" @click.prevent="deleteTaskComment( comment )">
                                                 <span class="icon-pm-delete"></span>
-                                                <span class="comment-action-delete">{{ __('Delete', 'wedevs-project-manager') }}</span>
+                                                <span class="comment-action-delete">{{ __('Delete', 'super-logistics') }}</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -64,11 +64,11 @@
             <div class="comment-field-content">
                 <div class="pm-avatar comment-field-avatar">
                     <a  href="#/my-tasks">
-                        <img class="avatar" :src="PM_Vars.avatar_url">
+                        <img class="avatar" :src="SL_Vars.avatar_url">
                     </a>
                 </div>
                 <div class="comment-field">
-                    <div @click.prevent="showHideNewCommentField()" v-if="!commentFormMeta.activeNewCommentField" class="comment-field-text pm-light-font">{{ __( 'Add a comment', 'wedevs-project-manager' ) }}</div>
+                    <div @click.prevent="showHideNewCommentField()" v-if="!commentFormMeta.activeNewCommentField" class="comment-field-text pm-light-font">{{ __( 'Add a comment', 'super-logistics' ) }}</div>
                     <task-comment-form
                         v-if="commentFormMeta.activeNewCommentField"
                         :task="commentable"
@@ -356,8 +356,8 @@
 
         data: function() {
             return {
-                currnet_user_id: PM_Vars.current_user.ID,
-                avatar_url: PM_Vars.avatar_url,
+                currnet_user_id: SL_Vars.current_user.ID,
+                avatar_url: SL_Vars.avatar_url,
                 commentFormMeta: {
                     activeNewCommentField: false   
                 }
@@ -425,7 +425,7 @@
             },
 
             deleteTaskComment (comment) {
-                if ( !confirm( this.__( 'Are you sure?', 'wedevs-project-manager') ) ) {
+                if ( !confirm( this.__( 'Are you sure?', 'super-logistics') ) ) {
                     return;
                 }
                 var self = this;

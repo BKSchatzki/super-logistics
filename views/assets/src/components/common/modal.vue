@@ -59,7 +59,7 @@
                         width: this.width === 'auto' ? undefined : (isNaN(this.width) ? this.width : `${this.width}px`)
                       }
                 }else {
-                    let pm = document.getElementById("wedevs-project-manager");
+                    let pm = document.getElementById("super-logistics");
                         style = {
                             maxWidth : `${pm.clientWidth-100}px` ,
                             maxHeight:`${pm.clientHeight-100}px`

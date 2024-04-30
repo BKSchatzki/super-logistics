@@ -1,7 +1,7 @@
 <template>
 	<div  class="pm-multiselect pm-multiselect-single-task">
         <div class="pm-multiselect-content">
-            <div class="assign-to">{{ __('Assign to', 'wedevs-project-manager') }}</div>
+            <div class="assign-to">{{ __('Assign to', 'super-logistics') }}</div>
             <multiselect
                 v-model="selected"
                 :options="users"
@@ -10,7 +10,7 @@
                 :clear-on-select="true"
                 :show-labels="true"
                 :searchable="true"
-                :placeholder="__('Search User', 'wedevs-project-manager')"
+                :placeholder="__('Search User', 'super-logistics')"
                 select-label=""
                 selected-label="selected"
                 deselect-label=""

@@ -1,10 +1,10 @@
 <?php
 
-namespace WeDevs\PM\Category\Transformers;
+namespace SL\Category\Transformers;
 
-use WeDevs\PM\Category\Models\Category;
+use SL\Category\Models\Category;
 use League\Fractal\TransformerAbstract;
-use WeDevs\PM\Common\Traits\Resource_Editors;
+use SL\Common\Traits\Resource_Editors;
 
 class Category_Transformer extends TransformerAbstract {
 

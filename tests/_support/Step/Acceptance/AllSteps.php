@@ -30,7 +30,7 @@ class AllSteps extends \AcceptanceTester
 	{
 		$I = $this;
 		$I->click('Project Manager');
-		$I->waitForElement('#wedevs-project-manager h3.pm-project-title', 30);
+		$I->waitForElement('#super-logistics h3.pm-project-title', 30);
 		$I->click('New Project');
 		$I->fillField('#project_name', $this->faker()->text( 40 ));
 		$I->fillField('.pm-form-item > .pm-project-description', $this->faker()->text( 200 ));

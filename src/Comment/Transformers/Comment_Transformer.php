@@ -1,13 +1,13 @@
 <?php
 
-namespace WeDevs\PM\Comment\Transformers;
+namespace SL\Comment\Transformers;
 
-use WeDevs\PM\Comment\Models\Comment;
+use SL\Comment\Models\Comment;
 use League\Fractal\TransformerAbstract;
-use WeDevs\PM\File\Transformers\File_Transformer;
+use SL\File\Transformers\File_Transformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\User\Transformers\User_Transformer;
-use WeDevs\PM\Common\Traits\Resource_Editors;
+use SL\User\Transformers\User_Transformer;
+use SL\Common\Traits\Resource_Editors;
 
 class Comment_Transformer extends TransformerAbstract {
 

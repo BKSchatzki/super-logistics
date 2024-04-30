@@ -40,7 +40,7 @@
                 type: [Object],
                 default () {
                     return {
-                        placeholder: __('Task Lists', 'wedevs-project-manager'),
+                        placeholder: __('Task Lists', 'super-logistics'),
                         projectId: false
                     }
                 }

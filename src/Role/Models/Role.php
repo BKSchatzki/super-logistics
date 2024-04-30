@@ -1,9 +1,9 @@
 <?php
 
-namespace WeDevs\PM\Role\Models;
+namespace SL\Role\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
 
 class Role extends Eloquent {
 

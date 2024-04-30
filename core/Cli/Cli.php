@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Core\Cli;
+namespace SL\Core\Cli;
 
 /**
  * Base CLI class contains wrapper APIs

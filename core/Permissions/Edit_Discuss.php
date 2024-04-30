@@ -1,9 +1,9 @@
 <?php
 
-namespace WeDevs\PM\Core\Permissions;
+namespace SL\Core\Permissions;
 
-use WeDevs\PM\Core\Permissions\Abstract_Permission;
-use WeDevs\PM\Discussion_Board\Models\Discussion_Board;
+use SL\Core\Permissions\Abstract_Permission;
+use SL\Discussion_Board\Models\Discussion_Board;
 use WP_REST_Request;
 
 class Edit_Discuss extends Abstract_Permission {
@@ -27,6 +27,6 @@ class Edit_Discuss extends Abstract_Permission {
 
         }
 
-        return new \WP_Error( 'Discuss', __( "You have no permission.", "wedevs-project-manager" ) );
+        return new \WP_Error( 'Discuss', __( "You have no permission.", "super-logistics" ) );
     }
 }

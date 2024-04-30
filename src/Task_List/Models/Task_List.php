@@ -1,17 +1,17 @@
 <?php
 
-namespace WeDevs\PM\Task_List\Models;
+namespace SL\Task_List\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Common\Models\Boardable;
-use WeDevs\PM\Comment\Models\Comment;
-use WeDevs\PM\File\Models\File;
-use WeDevs\PM\User\Models\User;
-use WeDevs\PM\Milestone\Models\Milestone;
-use WeDevs\PM\Common\Models\Meta;
-use WeDevs\PM\Common\Traits\Board_Status;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
+use SL\Task\Models\Task;
+use SL\Common\Models\Boardable;
+use SL\Comment\Models\Comment;
+use SL\File\Models\File;
+use SL\User\Models\User;
+use SL\Milestone\Models\Milestone;
+use SL\Common\Models\Meta;
+use SL\Common\Traits\Board_Status;
 
 class Task_List extends Eloquent {
     use Model_Events, Board_Status;
@@ -38,15 +38,15 @@ class Task_List extends Eloquent {
     }
 
     public function board() {
-        return $this->hasMany( 'WeDevs\PM\Common\Models\Boardable', 'boardable_id' )->where( 'boardable_type', 'task_list' );
+        return $this->hasMany( 'SL\Common\Models\Boardable', 'boardable_id' )->where( 'boardable_type', 'task_list' );
     }
 
     public function boardables() {
-        return $this->hasMany( 'WeDevs\PM\Common\Models\Boardable', 'board_id' )->where( 'board_type', 'task_list' );
+        return $this->hasMany( 'SL\Common\Models\Boardable', 'board_id' )->where( 'board_type', 'task_list' );
     }
 
     public function tasks( $project_id = false ) {
-        $tasks = $this->belongsToMany( 'WeDevs\PM\Task\Models\Task', pm_tb_prefix() . 'pm_boardables', 'board_id', 'boardable_id' )
+        $tasks = $this->belongsToMany( 'SL\Task\Models\Task', pm_tb_prefix() . 'pm_boardables', 'board_id', 'boardable_id' )
             ->where( pm_tb_prefix() . 'pm_boardables.boardable_type', 'task' )
             ->where( pm_tb_prefix() . 'pm_boardables.board_type', 'task_list' )
             ->withPivot( 'order' );
@@ -59,32 +59,32 @@ class Task_List extends Eloquent {
     }
 
     public function comments() {
-        return $this->hasMany( 'WeDevs\PM\Comment\Models\Comment', 'commentable_id' )->where( 'commentable_type', 'task_list' );
+        return $this->hasMany( 'SL\Comment\Models\Comment', 'commentable_id' )->where( 'commentable_type', 'task_list' );
     }
 
     public function assignees() {
-        return $this->belongsToMany( 'WeDevs\PM\User\Models\User', pm_tb_prefix() . 'pm_boardables', 'board_id', 'boardable_id')
+        return $this->belongsToMany( 'SL\User\Models\User', pm_tb_prefix() . 'pm_boardables', 'board_id', 'boardable_id')
             ->where( 'board_type', 'task_list' )
             ->where( 'boardable_type', 'user' );
     }
 
     public function files() {
-        return $this->hasMany( 'WeDevs\PM\File\Models\File', 'fileable_id' )->where( 'fileable_type', 'task_list' );
+        return $this->hasMany( 'SL\File\Models\File', 'fileable_id' )->where( 'fileable_type', 'task_list' );
     }
 
     public function milestones() {
-        return $this->belongsToMany( 'WeDevs\PM\Milestone\Models\Milestone', pm_tb_prefix() . 'pm_boardables', 'boardable_id', 'board_id' )
+        return $this->belongsToMany( 'SL\Milestone\Models\Milestone', pm_tb_prefix() . 'pm_boardables', 'boardable_id', 'board_id' )
             ->where( 'board_type', 'milestone' )
             ->where( 'boardable_type', 'task_list' );
     }
 
     public function metas() {
-        return $this->hasMany( 'WeDevs\PM\Common\Models\Meta', 'entity_id' )
+        return $this->hasMany( 'SL\Common\Models\Meta', 'entity_id' )
             ->where( 'entity_type', 'task_list' );
     }
 
     public function filter_privacy( $status ) {
-        return $this->hasOne( 'WeDevs\PM\Common\Models\Meta', 'entity_id' )
+        return $this->hasOne( 'SL\Common\Models\Meta', 'entity_id' )
             ->where( 'entity_type', 'task_list' )
             ->where( 'meta_key', 'privary' )
             ->where( 'meta_value', '!=', $status );

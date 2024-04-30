@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Task\Helper;
+namespace SL\Task\Helper;
 
 use WP_REST_Request;
 
@@ -87,11 +87,11 @@ class Task {
         fputcsv(
             $output,
             [
-                __( 'Tasks', 'wedevs-project-manager' ),
-                __( 'Task List', 'wedevs-project-manager' ),
-                __( 'Project Name', 'wedevs-project-manager' ),
-        	    __( 'Due Date', 'wedevs-project-manager' ),
-                __( 'Created At', 'wedevs-project-manager' )
+                __( 'Tasks', 'super-logistics' ),
+                __( 'Task List', 'super-logistics' ),
+                __( 'Project Name', 'super-logistics' ),
+        	    __( 'Due Date', 'super-logistics' ),
+                __( 'Created At', 'super-logistics' )
             ]
         );
 

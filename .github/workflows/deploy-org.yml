@@ -43,7 +43,7 @@ jobs:
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-          SLUG: wedevs-project-manager
+          SLUG: super-logistics
       
       - name: Create Release
         id: create_release
@@ -69,7 +69,7 @@ jobs:
           asset_path: ${{ steps.deploy.outputs.zip-path }}
 
           # Provide what the file should be named when attached to the release (plugin-name.zip)
-          asset_name: wedevs-project-manager.zip
+          asset_name: super-logistics.zip
 
           # Provide the file type.
           asset_content_type: application/zip

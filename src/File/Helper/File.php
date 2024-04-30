@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\File\Helper;
+namespace SL\File\Helper;
 
-use WeDevs\PM\Core\File_System\File_System;
+use SL\Core\File_System\File_System;
 
 class File {
 

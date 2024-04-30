@@ -1,15 +1,15 @@
 <?php
 
-namespace WeDevs\PM\Milestone\Validators;
+namespace SL\Milestone\Validators;
 
-use WeDevs\PM\Core\Validator\Abstract_Validator;
+use SL\Core\Validator\Abstract_Validator;
 
 class Update_Milestone extends Abstract_Validator {
     public function messages() {
         return [
-            'title.required' => __( 'Milestone title is required.', 'wedevs-project-manager' ),
-            'id.required'    => __( 'Milestone ID is required.', 'wedevs-project-manager' ),
-            'id.gtz'         => __( 'Milestone ID must be greater than zero', 'wedevs-project-manager' ),
+            'title.required' => __( 'Milestone title is required.', 'super-logistics' ),
+            'id.required'    => __( 'Milestone ID is required.', 'super-logistics' ),
+            'id.gtz'         => __( 'Milestone ID must be greater than zero', 'super-logistics' ),
         ];
     }
 

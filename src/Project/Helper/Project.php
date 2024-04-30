@@ -1,8 +1,8 @@
 <?php
-namespace WeDevs\PM\Project\Helper;
+namespace SL\Project\Helper;
 
 use WP_REST_Request;
-use WeDevs\PM\Task_List\Helper\Task_List;
+use SL\Task_List\Helper\Task_List;
 
 // data: {
 // 	with: 'assignees,categories,overview_graph',

@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Core\Upgrades;
+namespace SL\Core\Upgrades;
 
 use WP_Background_Process;
 
@@ -157,7 +157,7 @@ class Upgrade_2_3 extends WP_Background_Process {
                         
                         jQuery.ajax({
                             type: 'POST',
-                            url: PM_Vars.api_base_url +'pm/v2/settings/notice',
+                            url: SL_Vars.api_base_url +'pm/v2/settings/notice',
                             data: {
                                 action: 'pm_migration_notice_2_3',
                             }

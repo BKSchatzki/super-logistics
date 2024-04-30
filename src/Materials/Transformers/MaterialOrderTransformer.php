@@ -1,10 +1,10 @@
 <?php
 
-namespace WeDevs\PM\Materials\Transformers;
+namespace SL\Materials\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use WeDevs\PM\Common\Traits\Resource_Editors;
-use WeDevs\PM\Materials\Models\MaterialOrder;
+use SL\Common\Traits\Resource_Editors;
+use SL\Materials\Models\MaterialOrder;
 
 class MaterialOrderTransformer extends TransformerAbstract {
 

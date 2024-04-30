@@ -1,10 +1,10 @@
 <?php
 
-namespace WeDevs\PM\Task\Observers;
+namespace SL\Task\Observers;
 
-use WeDevs\PM\Core\Database\Model_Observer;
-use WeDevs\PM\Activity\Models\Activity;
-use WeDevs\PM\Task\Models\Task;
+use SL\Core\Database\Model_Observer;
+use SL\Activity\Models\Carrier;
+use SL\Task\Models\Task;
 use Carbon\Carbon;
 
 
@@ -147,7 +147,7 @@ class Task_Observer extends Model_Observer {
     }
 
     public static function log_activity( Task $item, $action, $action_type, $meta = null ) {
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => $action,
             'action_type'   => $action_type,

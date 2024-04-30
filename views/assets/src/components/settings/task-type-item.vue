@@ -9,9 +9,9 @@
 
             <td>
                 <div class="action-wrap">
-                    <span><a @click.prevent="isUpdateMode = isUpdateMode ? false : true" href="#">{{ __( 'Edit', 'wedevs-project-manager' ) }}</a></span>
+                    <span><a @click.prevent="isUpdateMode = isUpdateMode ? false : true" href="#">{{ __( 'Edit', 'super-logistics' ) }}</a></span>
                     <span class="pipe">|</span>
-                    <span><a @click.prevent="selfRemove( taskType.id )" href="#">{{ __( 'Delete', 'wedevs-project-manager' ) }}</a></span>
+                    <span><a @click.prevent="selfRemove( taskType.id )" href="#">{{ __( 'Delete', 'super-logistics' ) }}</a></span>
                 </div>
             </td>
         </tr>
@@ -55,7 +55,7 @@
 
         methods: {
             selfRemove (id) {
-                if(!confirm(__('Are you sure?', 'wedevs-project-manager') )) {
+                if(!confirm(__('Are you sure?', 'super-logistics') )) {
                     return false;
                 }
                 

@@ -1,11 +1,11 @@
 <?php 
 
-namespace WeDevs\PM\Core\Notifications\Emails;
+namespace SL\Core\Notifications\Emails;
 
 /**
 * Email Notification When a new project created
 */
-use WeDevs\PM\Core\Notifications\Email;
+use SL\Core\Notifications\Email;
 
 class New_Project_Notification extends Email {
     
@@ -27,7 +27,7 @@ class New_Project_Notification extends Email {
         }
 
         $template_name = apply_filters( 'pm_new_project_email_template_path', $this->get_template_path( '/html/new-project.php' ) );
-        $subject       = sprintf( __( '[%s] New Project Created: %s', 'wedevs-project-manager' ), $this->get_blogname(), $project['title'] );
+        $subject       = sprintf( __( '[%s] New Project Created: %s', 'super-logistics' ), $this->get_blogname(), $project['title'] );
         $assignees     = $project['assignees']['data'];
         $users         = array();
 

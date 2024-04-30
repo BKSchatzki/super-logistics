@@ -1,14 +1,14 @@
 <?php
 
-namespace WeDevs\PM\Project\Validators;
+namespace SL\Project\Validators;
 
-use WeDevs\PM\Core\Validator\Abstract_Validator;
+use SL\Core\Validator\Abstract_Validator;
 
 class Create_Project extends Abstract_Validator {
     public function messages() {
         return [
-            'title.required' => __( 'Project title is required.', 'wedevs-project-manager' ),
-            'title.pm_unique' => __( 'Project title must be unique.', 'wedevs-project-manager' ),
+            'title.required' => __( 'Project title is required.', 'super-logistics' ),
+            'title.pm_unique' => __( 'Project title must be unique.', 'super-logistics' ),
         ];
     }
 

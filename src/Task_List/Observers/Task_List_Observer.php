@@ -1,10 +1,10 @@
 <?php
 
-namespace WeDevs\PM\Task_List\Observers;
+namespace SL\Task_List\Observers;
 
-use WeDevs\PM\Core\Database\Model_Observer;
-use WeDevs\PM\Activity\Models\Activity;
-use WeDevs\PM\Task_List\Models\Task_List;
+use SL\Core\Database\Model_Observer;
+use SL\Activity\Models\Carrier;
+use SL\Task_List\Models\Task_List;
 use Reflection;
 
 class Task_List_Observer extends Model_Observer {
@@ -72,7 +72,7 @@ class Task_List_Observer extends Model_Observer {
     }
 
     private function log_activity( Task_list $item, $action, $action_type, $meta = null ) {
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => $action,
             'action_type'   => $action_type,

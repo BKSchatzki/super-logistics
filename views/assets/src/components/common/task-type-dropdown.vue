@@ -116,7 +116,7 @@
             placeholder: {
             	type: [String],
             	default () {
-            		return __( 'Choose task type', 'wedevs-project-manager' )
+            		return __( 'Choose task type', 'super-logistics' )
             	}
             },
 

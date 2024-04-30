@@ -1,20 +1,20 @@
 <?php
 
-namespace WeDevs\PM\Comment\Controllers;
+namespace SL\Comment\Controllers;
 
 use WP_REST_Request;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Common\Traits\Last_Activity;
-use WeDevs\PM\Comment\Transformers\Comment_Transformer;
-use WeDevs\PM\Common\Traits\Request_Filter;
-use WeDevs\PM\Comment\Models\Comment;
-use WeDevs\PM\Core\File_System\File_System;
-use WeDevs\PM\File\Models\File;
-use WeDevs\PM\Common\Traits\File_Attachment;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Common\Traits\Last_Activity;
+use SL\Comment\Transformers\Comment_Transformer;
+use SL\Common\Traits\Request_Filter;
+use SL\Comment\Models\Comment;
+use SL\Core\File_System\File_System;
+use SL\File\Models\File;
+use SL\Common\Traits\File_Attachment;
 
 class Comment_Controller {
 

@@ -8,17 +8,17 @@
                         <img v-if="!file.absoluteUrl" class="pm-uploaded-file" :src="file.thumb" :alt="file.name" :title="file.name">
                     </a> 
                     
-                    <a href="#" @click.prevent="deletefile(file.id)" class="button">{{ __( 'Delete File', 'wedevs-project-manager') }}</a>
+                    <a href="#" @click.prevent="deletefile(file.id)" class="button">{{ __( 'Delete File', 'super-logistics') }}</a>
                         
                 </div>
                      
             </div>
             <span> 
-                <span v-if="!attr.onlyButton"> {{ __('To attach', 'wedevs-project-manager') }}</span>
+                <span v-if="!attr.onlyButton"> {{ __('To attach', 'super-logistics') }}</span>
                 <a v-pm-uploader class="pm-upload-pickfiles"  href="#">
                     {{ attr.buttonText }}
                 </a> 
-                <span v-if="!attr.onlyButton">{{ __('from your computer.', 'wedevs-project-manager') }}</span>
+                <span v-if="!attr.onlyButton">{{ __('from your computer.', 'super-logistics') }}</span>
             </span>
         </div>
     </div>
@@ -42,7 +42,7 @@
     // Register a global custom directive called v-pm-popup-box
     Vue.directive('pm-uploader', {
         inserted: function (el, binding, vnode) { 
-            new PM_Uploader(el, 'pm-upload-container', vnode.context );
+            new SL_Uploader(el, 'pm-upload-container', vnode.context );
         },
     });
 
@@ -69,7 +69,7 @@
                 default () {
                     return {
                         onlyButton: false,
-                        buttonText: __('select files', 'wedevs-project-manager')
+                        buttonText: __('select files', 'super-logistics')
                     }
                 }
             }

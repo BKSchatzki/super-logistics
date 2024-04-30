@@ -1,9 +1,9 @@
 <?php
-namespace WeDevs\PM\Task_List\Transformers;
+namespace SL\Task_List\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use WeDevs\PM\Task_List\Helper\Task_List;
-use WeDevs\PM\Common\Traits\Resource_Editors;
+use SL\Task_List\Helper\Task_List;
+use SL\Common\Traits\Resource_Editors;
 
 class Generate_List_Transformer {
 	use Resource_Editors;

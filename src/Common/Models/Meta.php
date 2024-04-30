@@ -1,10 +1,10 @@
 <?php
 
-namespace WeDevs\PM\Common\Models;
+namespace SL\Common\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
-use WeDevs\PM\Milestone\Models\Milestone;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
+use SL\Milestone\Models\Milestone;
 
 class Meta extends Eloquent {
 
@@ -23,7 +23,7 @@ class Meta extends Eloquent {
     ];
 
     public function milestone() {
-        return $this->belongsTo( 'WeDevs\PM\Milestone\Models\Milestone', 'entity_id' );
+        return $this->belongsTo( 'SL\Milestone\Models\Milestone', 'entity_id' );
     }
 
     public function getMetaValueAttribute( $value ) {

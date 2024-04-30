@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Core\Database;
+namespace SL\Core\Database;
 
-use WeDevs\PM\Core\Database\Migration_Model;
+use SL\Core\Database\Migration_Model;
 use Create_Migrations_Table;
 
 class Migrater {

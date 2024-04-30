@@ -1,11 +1,11 @@
 <?php
-namespace WeDevs\PM\Global_Kanboard\Models;
+namespace SL\Global_Kanboard\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
-use WeDevs\PM\Common\Models\Boardable;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Common\Models\Meta;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
+use SL\Common\Models\Boardable;
+use SL\Task\Models\Task;
+use SL\Common\Models\Meta;
 use Carbon\Carbon;
 
 
@@ -28,7 +28,7 @@ class Global_Kanboard extends Eloquent {
 
     public function tasks() {
 
-    	return $this->belongsToMany( 'WeDevs\PM\Task\Models\Task', pm_tb_prefix() . 'pm_boardables',
+    	return $this->belongsToMany( 'SL\Task\Models\Task', pm_tb_prefix() . 'pm_boardables',
     	    'board_id', 'boardable_id' )
             ->where( 'board_type', 'kanboard' )
             ->where( 'boardable_type', 'task' )
@@ -37,7 +37,7 @@ class Global_Kanboard extends Eloquent {
 
     public function projects() {
 
-    	return $this->belongsToMany( 'WeDevs\PM\Project\Models\Project', pm_tb_prefix() . 'pm_boardables',
+    	return $this->belongsToMany( 'SL\Project\Models\Project', pm_tb_prefix() . 'pm_boardables',
     	    'board_id', 'boardable_id' )
             ->where( 'board_type', 'kanboard' )
             ->where( 'boardable_type', 'project' )
@@ -45,11 +45,11 @@ class Global_Kanboard extends Eloquent {
     }
 
     public function boardables() {
-        return $this->hasMany( 'WeDevs\PM\Common\Models\Boardable', 'board_id' )->where( 'board_type', 'kanboard' );
+        return $this->hasMany( 'SL\Common\Models\Boardable', 'board_id' )->where( 'board_type', 'kanboard' );
     }
 
     public function meta() {
-        return $this->hasMany( 'WeDevs\PM\Common\Models\Meta', 'entity_id' )->where( 'entity_type', 'kanboard' );
+        return $this->hasMany( 'SL\Common\Models\Meta', 'entity_id' )->where( 'entity_type', 'kanboard' );
     }
 
     public static function latest_order( $project_id, $board_type ) {

@@ -1,16 +1,16 @@
 <?php
 
-namespace WeDevs\PM\Project\Observers;
+namespace SL\Project\Observers;
 
-use WeDevs\PM\Core\Database\Model_Observer;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Activity\Models\Activity;
+use SL\Core\Database\Model_Observer;
+use SL\Project\Models\Project;
+use SL\Activity\Models\Carrier;
 use Carbon\Carbon;
 
 class Project_Observer extends Model_Observer {
 
     public function created( $resource ) {
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => 'create_project',
             'action_type'   => 'create',
@@ -28,7 +28,7 @@ class Project_Observer extends Model_Observer {
     }
 
     protected function title( Project $item, $old_value ) {
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => 'update_project_title',
             'action_type'   => 'update',
@@ -43,7 +43,7 @@ class Project_Observer extends Model_Observer {
     }
 
     protected function description( Project $item, $old_value ) {
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => 'update_project_description',
             'action_type'   => 'update',
@@ -57,7 +57,7 @@ class Project_Observer extends Model_Observer {
     }
 
     protected function status( Project $item, $old_value ) {
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => 'update_project_status',
             'action_type'   => 'update',
@@ -73,7 +73,7 @@ class Project_Observer extends Model_Observer {
     }
 
     protected function budget( Project $item, $old_value ) {
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => 'update_project_budget',
             'action_type'   => 'update',
@@ -89,7 +89,7 @@ class Project_Observer extends Model_Observer {
     }
 
     protected function pay_rate( Project $item, $old_value ) {
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => 'update_project_pay_rate',
             'action_type'   => 'update',
@@ -105,7 +105,7 @@ class Project_Observer extends Model_Observer {
     }
 
     protected function est_completion_date( Project $item, $old_value ) {
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => 'update_project_est_completion_date',
             'action_type'   => 'update',
@@ -122,7 +122,7 @@ class Project_Observer extends Model_Observer {
     }
 
     protected function color_code( Project $item, $old_value ) {
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => 'update_project_color_code',
             'action_type'   => 'update',

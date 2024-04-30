@@ -1,8 +1,8 @@
 <?php
-namespace WeDevs\PM_Pro\Imports\Controllers;
+namespace SL_Pro\Imports\Controllers;
 
 use WP_REST_Request;
-use WeDevs\PM_Pro\Imports\Helpers\Trello_helper ;
+use SL_Pro\Imports\Helpers\Trello_helper ;
 
 
 class Trello_Controller {

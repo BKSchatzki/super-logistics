@@ -1,9 +1,9 @@
 <?php
 
-namespace WeDevs\PM\Task_List\Transformers;
+namespace SL\Task_List\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use WeDevs\PM\Task\Models\Task;
+use SL\Task\Models\Task;
 
 class List_Task_Transformer extends TransformerAbstract {
     public $list_task_transormer_filter = true;

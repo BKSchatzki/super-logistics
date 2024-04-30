@@ -33,7 +33,7 @@
             var settings = {
                 selector: 'textarea#' + self.editor_id,
                 menubar: false,
-                placeholder: __( 'Write a comment...', 'wedevs-project-manager'),
+                placeholder: __( 'Write a comment...', 'super-logistics'),
                 branding: false,
                 menubar: false,
                 auto_focus : self.editor_id,
@@ -54,7 +54,7 @@
                     });
                 },
 
-                external_plugins: PM_Vars.todo_list_text_editor.external_plugins,
+                external_plugins: SL_Vars.todo_list_text_editor.external_plugins,
                 fontsize_formats: '10px 11px 13px 14px 16px 18px 22px 25px 30px 36px 40px 45px 50px 60px 65px 70px 75px 80px',
                 font_formats : 'Arial=arial,helvetica,sans-serif;'+
                     'Comic Sans MS=comic sans ms,sans-serif;'+
@@ -65,7 +65,7 @@
                     'Times New Roman=times new roman,times;'+
                     'Trebuchet MS=trebuchet ms,geneva;'+
                     'Verdana=verdana,geneva;',
-                plugins: PM_Vars.todo_list_text_editor.plugins,
+                plugins: SL_Vars.todo_list_text_editor.plugins,
                 // valid_elements : 'a[href|target=_blank],strong,i,em,b,br,p,span[style],code,pre',
                 // extended_valid_elements:'span[class|style|id|name|title|pm-user-id|pm-user]',
                 // paste_word_valid_elements: "a[href|target=_blank],b,strong,i,em,p,span[style],br,code,pre",

@@ -6,26 +6,26 @@
  * Time: 5:48 PM
  */
 
-namespace WeDevs\PM\Tools\Helpers;
+namespace SL\Tools\Helpers;
 use WP_Background_Process;
 use WP_Query;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Role\Models\Role;
-use WeDevs\PM\User\Models\User_Role;
-use WeDevs\PM_Pro\User\Models\User;
-use WeDevs\PM\Milestone\Models\Milestone;
-use WeDevs\PM\Common\Models\Meta;
-use WeDevs\PM\Common\Models\Board;
-use WeDevs\PM\Common\Models\Boardable;
-use WeDevs\PM\Common\Models\Assignee;
-use WeDevs\PM\File\Models\File;
-use WeDevs\PM\Comment\Models\Comment;
-use WeDevs\PM\Settings\Models\Settings;
-use WeDevs\PM\Category\Models\Category;
-use WeDevs\PM\Activity\Models\Activity;
+use SL\Project\Models\Project;
+use SL\Task\Models\Task;
+use SL\Role\Models\Role;
+use SL\User\Models\User_Role;
+use SL_Pro\User\Models\User;
+use SL\Milestone\Models\Milestone;
+use SL\Common\Models\Meta;
+use SL\Common\Models\Board;
+use SL\Common\Models\Boardable;
+use SL\Common\Models\Assignee;
+use SL\File\Models\File;
+use SL\Comment\Models\Comment;
+use SL\Settings\Models\Settings;
+use SL\Category\Models\Category;
+use SL\Activity\Models\Carrier;
 
-use WeDevs\PM\Tools\Library\PM_Trello;
+use SL\Tools\Library\SL_Trello;
 
 class ImportTrello extends WP_Background_Process
 {
@@ -51,7 +51,7 @@ class ImportTrello extends WP_Background_Process
             pm_set_settings('trello_credentials', array('api_key' => '', 'token' => ''));
         } else {
             if(array_key_exists('api_key', $this->credentials)) {
-                $this->trello = new PM_Trello($this->credentials['api_key'], $this->credentials['token']);
+                $this->trello = new SL_Trello($this->credentials['api_key'], $this->credentials['token']);
             }
             $this->imported = get_option('imported_from_trello');
             $this->importing = get_option('importing_from_trello');

@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Pusher\Core\Auth;
+namespace SL\Pusher\Core\Auth;
 
-use WeDevs\PM\Pusher\Core\Auth\Pusher_Crypto as PusherCrypto;
+use SL\Pusher\Core\Auth\Pusher_Crypto as PusherCrypto;
 
 class Auth {
 

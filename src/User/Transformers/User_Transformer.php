@@ -1,16 +1,16 @@
 <?php
 
-namespace WeDevs\PM\User\Transformers;
+namespace SL\User\Transformers;
 
 use League\Fractal\TransformerAbstract;
 
-use WeDevs\PM\User\Models\User;
-use WeDevs\PM\User\Models\User_Role;
+use SL\User\Models\User;
+use SL\User\Models\User_Role;
 
 
-use WeDevs\PM\My_Task\Transformers\Project_Transformer;
-use WeDevs\PM\Role\Transformers\Role_Transformer;
-use WeDevs\PM\Task\Transformers\Task_Transformer;
+use SL\My_Task\Transformers\Project_Transformer;
+use SL\Role\Transformers\Role_Transformer;
+use SL\Task\Transformers\Task_Transformer;
 use Carbon\Carbon;
 
 class User_Transformer extends TransformerAbstract {

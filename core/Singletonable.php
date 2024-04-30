@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\PM\Core;
+namespace SL\Core;
 
 use Reflection;
 
@@ -108,7 +108,7 @@ trait Singletonable {
 }
 
 //Example: singleton() first param
-// use WeDevs\PM\Core\Singletonable;
+// use SL\Core\Singletonable;
 
 // $obj = test::singleton(['xyz' => 'Hello World!']);
 
@@ -122,7 +122,7 @@ trait Singletonable {
 //
 
 //Example: singleton() second param
-// use WeDevs\PM\Core\Singletonable;
+// use SL\Core\Singletonable;
 
 // $obj = test::singleton(['xyz' => 'Hello World!'], [
 //     'method' => 'kkk',

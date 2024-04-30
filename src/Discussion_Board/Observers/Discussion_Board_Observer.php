@@ -1,10 +1,10 @@
 <?php
 
-namespace WeDevs\PM\Discussion_Board\Observers;
+namespace SL\Discussion_Board\Observers;
 
-use WeDevs\PM\Core\Database\Model_Observer;
-use WeDevs\PM\Activity\Models\Activity;
-use WeDevs\PM\Discussion_Board\Models\Discussion_Board;
+use SL\Core\Database\Model_Observer;
+use SL\Activity\Models\Carrier;
+use SL\Discussion_Board\Models\Discussion_Board;
 use Reflection;
 
 class Discussion_Board_Observer extends Model_Observer {
@@ -57,7 +57,7 @@ class Discussion_Board_Observer extends Model_Observer {
     }
 
     private function log_activity( Discussion_Board $item, $action, $action_type, $meta = null ) {
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => $action,
             'action_type'   => $action_type,

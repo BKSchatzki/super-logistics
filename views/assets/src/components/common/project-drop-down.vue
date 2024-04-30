@@ -116,7 +116,7 @@
                 type: [Object],
                 default () {
                     return {
-                        placeholder: __( 'Select a project', 'wedevs-project-manager' ),
+                        placeholder: __( 'Select a project', 'super-logistics' ),
                         searchProjects: true
                     }
                 }

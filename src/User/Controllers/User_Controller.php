@@ -1,21 +1,21 @@
 <?php
 
-namespace WeDevs\PM\User\Controllers;
+namespace SL\User\Controllers;
 
 use WP_REST_Request;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Common\Traits\Request_Filter;
-use WeDevs\PM\User\Models\User;
-use WeDevs\PM\User\Transformers\User_Transformer;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Common\Traits\Request_Filter;
+use SL\User\Models\User;
+use SL\User\Transformers\User_Transformer;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Pagination\Paginator;
-use WeDevs\PM\Calendar\Transformers\Calendar_Transformer;
-use WeDevs\PM\User\Models\User_Role;
-use WeDevs\PM\Activity\Transformers\Activity_Transformer;
+use SL\Calendar\Transformers\Calendar_Transformer;
+use SL\User\Models\User_Role;
+use SL\Activity\Transformers\Activity_Transformer;
 
 class User_Controller {
     use Transformer_Manager, Request_Filter;
@@ -171,7 +171,7 @@ class User_Controller {
 
     public function save_users_map_name( WP_REST_Request $request ) {
         if ( ! current_user_can( 'manage_options' ) ) {
-            return new \WP_Error( 'usersmap', __( 'You have no permission to create/update user meta.', 'wedevs-project-manager' ) );
+            return new \WP_Error( 'usersmap', __( 'You have no permission to create/update user meta.', 'super-logistics' ) );
         }
 
         $usernames = $request->get_params();

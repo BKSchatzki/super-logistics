@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Settings\Helper;
+namespace SL\Settings\Helper;
 
 
 class Settings {

@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\PM\Core\Validator;
+namespace SL\Core\Validator;
 
 use WP_REST_Request;
 

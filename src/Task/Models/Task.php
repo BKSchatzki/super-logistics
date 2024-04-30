@@ -1,19 +1,19 @@
 <?php
 
-namespace WeDevs\PM\Task\Models;
+namespace SL\Task\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
-use WeDevs\PM\Task\Task_Model_Trait;
-use WeDevs\PM\Task_List\Models\Task_List;
-use WeDevs\PM\Common\Models\Board;
-use WeDevs\PM\Common\Models\Boardable;
-use WeDevs\PM\File\Models\File;
-use WeDevs\PM\Comment\Models\Comment;
-use WeDevs\PM\Common\Models\Assignee;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Common\Models\Meta;
-use WeDevs\PM\Activity\Models\Activity;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
+use SL\Task\Task_Model_Trait;
+use SL\Task_List\Models\Task_List;
+use SL\Common\Models\Board;
+use SL\Common\Models\Boardable;
+use SL\File\Models\File;
+use SL\Comment\Models\Comment;
+use SL\Common\Models\Assignee;
+use SL\Project\Models\Project;
+use SL\Common\Models\Meta;
+use SL\Activity\Models\Carrier;
 use Carbon\Carbon;
 
 
@@ -70,43 +70,43 @@ class Task extends Eloquent {
     }
 
     public function task_lists() {
-        return $this->belongsToMany( 'WeDevs\PM\Task_List\Models\Task_List', pm_tb_prefix() . 'pm_boardables', 'boardable_id', 'board_id' )
+        return $this->belongsToMany( 'SL\Task_List\Models\Task_List', pm_tb_prefix() . 'pm_boardables', 'boardable_id', 'board_id' )
             ->where( pm_tb_prefix() . 'pm_boardables.board_type', 'task_list')
             ->where( pm_tb_prefix() . 'pm_boardables.boardable_type', 'task');
     }
 
     public function boards() {
-        return $this->belongsToMany( 'WeDevs\PM\Common\Models\Board', pm_tb_prefix() . 'pm_boardables', 'boardable_id', 'board_id' )
+        return $this->belongsToMany( 'SL\Common\Models\Board', pm_tb_prefix() . 'pm_boardables', 'boardable_id', 'board_id' )
             ->where( pm_tb_prefix() . 'pm_boardables.boardable_type', 'task');
     }
 
     public function boardables() {
-        return $this->hasMany( 'WeDevs\PM\Common\Models\Boardable', 'boardable_id' )->where( 'boardable_type', 'task' );
+        return $this->hasMany( 'SL\Common\Models\Boardable', 'boardable_id' )->where( 'boardable_type', 'task' );
     }
 
     public function files() {
-        return $this->hasMany( 'WeDevs\PM\File\Models\File', 'fileable_id' )->where( 'fileable_type', 'task' );
+        return $this->hasMany( 'SL\File\Models\File', 'fileable_id' )->where( 'fileable_type', 'task' );
     }
 
     public function comments() {
-        return $this->hasMany( 'WeDevs\PM\Comment\Models\Comment', 'commentable_id' )->whereIn( 'commentable_type', ['task'] );
+        return $this->hasMany( 'SL\Comment\Models\Comment', 'commentable_id' )->whereIn( 'commentable_type', ['task'] );
     }
 
     public function assignees() {
-        return $this->hasMany( 'WeDevs\PM\Common\Models\Assignee', 'task_id' );
+        return $this->hasMany( 'SL\Common\Models\Assignee', 'task_id' );
     }
     
     public function user() {
-        return $this->belongsToMany( 'WeDevs\PM\User\Models\User', pm_tb_prefix() . 'pm_assignees', 'task_id', 'assigned_to' )
+        return $this->belongsToMany( 'SL\User\Models\User', pm_tb_prefix() . 'pm_assignees', 'task_id', 'assigned_to' )
             ->withPivot('completed_at', 'assigned_at', 'started_at', 'status');
     }
 
     public function activities() {
-        return $this->hasMany( 'WeDevs\PM\Activity\Models\Activity', 'resource_id' )->where( 'resource_type', 'task' )->orderBy( 'created_at', 'DESC' );
+        return $this->hasMany( 'SL\Activity\Models\Carrier', 'resource_id' )->where( 'resource_type', 'task' )->orderBy( 'created_at', 'DESC' );
     }
 
     public function projects() {
-        return $this->belongsTo( 'WeDevs\PM\Project\Models\Project', 'project_id');
+        return $this->belongsTo( 'SL\Project\Models\Project', 'project_id');
     }
 
     public function task_model( $key = '' ) {
@@ -114,12 +114,12 @@ class Task extends Eloquent {
     }
 
     public function metas() {
-        return $this->hasMany( 'WeDevs\PM\Common\Models\Meta', 'entity_id' )
+        return $this->hasMany( 'SL\Common\Models\Meta', 'entity_id' )
             ->where( 'entity_type', 'task' );
     }
 
     public function completer() {
-        return $this->belongsTo( 'WeDevs\PM\User\Models\User', 'completed_by' );
+        return $this->belongsTo( 'SL\User\Models\User', 'completed_by' );
     }
 
     public function labels() {

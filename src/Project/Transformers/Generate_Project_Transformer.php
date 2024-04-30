@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Project\Transformers;
+namespace SL\Project\Transformers;
 
 use League\Fractal\TransformerAbstract;
 

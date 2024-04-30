@@ -1,16 +1,16 @@
 <?php
 
-use WeDevs\PM\Core\Textdomain\Textdomain;
-use WeDevs\PM\Core\Notifications\Email;
+use SL\Core\Textdomain\Textdomain;
+use SL\Core\Notifications\Email;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
-use WeDevs\PM\Task\Transformers\Task_Transformer;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Task_List\Models\Task_List;
-use WeDevs\PM\Milestone\Models\Milestone;
-use WeDevs\PM\Discussion_Board\Models\Discussion_Board;
+use SL\Task\Transformers\Task_Transformer;
+use SL\Task\Models\Task;
+use SL\Task_List\Models\Task_List;
+use SL\Milestone\Models\Milestone;
+use SL\Discussion_Board\Models\Discussion_Board;
 use Illuminate\Database\Eloquent\Collection;
-use WeDevs\PM\Project\Models\Project;
+use SL\Project\Models\Project;
 
 function pm_get_text( $key ) {
     return Textdomain::get_text( $key);
@@ -136,15 +136,15 @@ function pm_get_setting( $key = null, $project_id = false ) {
     $all_settings = null;
 
     if ( $key && $project_id ) {
-        $settings = \WeDevs\PM\Settings\Models\Settings::where( 'key', $key )
+        $settings = \SL\Settings\Models\Settings::where( 'key', $key )
             ->where('project_id', $project_id)
             ->first();
     } else if ($key) {
-        $settings = \WeDevs\PM\Settings\Models\Settings::where( 'key', $key )
+        $settings = \SL\Settings\Models\Settings::where( 'key', $key )
             ->first();
     } else {
-        $hide = \WeDevs\PM\Settings\Models\Settings::$hideSettings;
-        $all_settings = \WeDevs\PM\Settings\Models\Settings::whereNotIn( 'key', $hide )->get();
+        $hide = \SL\Settings\Models\Settings::$hideSettings;
+        $all_settings = \SL\Settings\Models\Settings::whereNotIn( 'key', $hide )->get();
     }
 
     if ( $settings ) {
@@ -163,17 +163,17 @@ function pm_get_settings( $key = null, $project_id = false ) {
     $settings = null;
 
     if ( $key && $project_id ) {
-        $settings = \WeDevs\PM\Settings\Models\Settings::where( 'key', $key )
+        $settings = \SL\Settings\Models\Settings::where( 'key', $key )
             ->where('project_id', $project_id)
             ->get()
             ->toArray();
     } else if ( $key ) {
-        $settings = \WeDevs\PM\Settings\Models\Settings::where( 'key', $key )
+        $settings = \SL\Settings\Models\Settings::where( 'key', $key )
             ->get()
             ->toArray();
 
     } else if ( $project_id ) {
-        $settings = \WeDevs\PM\Settings\Models\Settings::where( 'project_id', $project_id )
+        $settings = \SL\Settings\Models\Settings::where( 'project_id', $project_id )
             ->get()
             ->toArray();
     }
@@ -184,11 +184,11 @@ function pm_get_settings( $key = null, $project_id = false ) {
 function pm_delete_settings( $key, $project_id = false ) {
 
     if ( $project_id ) {
-        $settings = \WeDevs\PM\Settings\Models\Settings::where( 'key', $key )
+        $settings = \SL\Settings\Models\Settings::where( 'key', $key )
             ->where('project_id', $project_id)
             ->first();
     } else {
-        $settings = \WeDevs\PM\Settings\Models\Settings::where( 'key', $key )
+        $settings = \SL\Settings\Models\Settings::where( 'key', $key )
             ->first();
     }
 
@@ -204,16 +204,16 @@ function pm_delete_settings( $key, $project_id = false ) {
 function pm_set_settings( $key, $value, $project_id = false ){
 
     if ( $project_id == false ){
-        $settings = \WeDevs\PM\Settings\Models\Settings::updateOrCreate(['key' => $key], ['value' => $value ]);
+        $settings = \SL\Settings\Models\Settings::updateOrCreate(['key' => $key], ['value' => $value ]);
     }else {
-        $settings = \WeDevs\PM\Settings\Models\Settings::updateOrCreate(['key' => $key, 'project_id' => $project_id ], ['value' => $value ]);
+        $settings = \SL\Settings\Models\Settings::updateOrCreate(['key' => $key, 'project_id' => $project_id ], ['value' => $value ]);
     }
 
     return $settings;
 }
 
 function pm_add_meta( $id, $project_id, $type, $key, $value ) {
-    WeDevs\PM\Common\Models\Meta::create([
+    SL\Common\Models\Meta::create([
         'entity_id'   => $id,
         'entity_type' => $type,
         'meta_key'    => $key,
@@ -226,7 +226,7 @@ function pm_add_meta( $id, $project_id, $type, $key, $value ) {
 
 
 function pm_update_meta( $id, $project_id, $type, $key, $value ) {
-    $meta = WeDevs\PM\Common\Models\Meta::where( 'entity_id', $id )
+    $meta = SL\Common\Models\Meta::where( 'entity_id', $id )
         ->where( 'project_id', $project_id )
         ->where( 'entity_type', $type )
         ->where( 'meta_key', $key )
@@ -242,7 +242,7 @@ function pm_update_meta( $id, $project_id, $type, $key, $value ) {
 function pm_get_meta( $entity_id, $project_id, $type, $key, $single = true ) {
     $entity_id = pm_get_prepare_data( $entity_id );
 
-    $meta = WeDevs\PM\Common\Models\Meta::where( function($q) use($project_id) {
+    $meta = SL\Common\Models\Meta::where( function($q) use($project_id) {
             if ( !empty( $project_id ) ) {
                 $q->where( 'project_id', $project_id );
             }
@@ -261,7 +261,7 @@ function pm_get_meta( $entity_id, $project_id, $type, $key, $single = true ) {
 }
 
 function pm_delete_meta( $id, $project_id, $type, $key = false ) {
-    $meta = WeDevs\PM\Common\Models\Meta::where( 'entity_id', $id )
+    $meta = SL\Common\Models\Meta::where( 'entity_id', $id )
         ->where( 'project_id', $project_id )
         ->where( 'entity_type', $type );
 
@@ -303,7 +303,7 @@ function pmpr() {
 }
 
 function pm_pro_get_project_capabilities( $project_id ) {
-    $caps = WeDevs\PM\Settings\Models\Settings::where('key', 'capabilities')
+    $caps = SL\Settings\Models\Settings::where('key', 'capabilities')
         ->where('project_id', $project_id)
         ->first();
 
@@ -328,7 +328,7 @@ function pm_pro_get_project_capabilities( $project_id ) {
 function pm_is_user_in_project( $project_id, $user_id = false ) {
     $user_id = $user_id ? $user_id : get_current_user_id();
 
-    $user_in_project = WeDevs\PM\User\Models\User_Role::where( 'project_id', $project_id )
+    $user_in_project = SL\User\Models\User_Role::where( 'project_id', $project_id )
         ->where( 'user_id', $user_id )
         ->first();
 
@@ -338,7 +338,7 @@ function pm_is_user_in_project( $project_id, $user_id = false ) {
 function pm_is_user_in_task( $project_id, $user_id = false ) {
     $user_id = $user_id ? $user_id : get_current_user_id();
 
-    $user_in_task = WeDevs\PM\Common\Models\Assignee::where( 'project_id', $project_id )
+    $user_in_task = SL\Common\Models\Assignee::where( 'project_id', $project_id )
         ->where( 'assigned_to', $user_id )
         ->first();
 
@@ -348,7 +348,7 @@ function pm_is_user_in_task( $project_id, $user_id = false ) {
 function pm_get_role( $project_id, $user_id = false ) {
     $user_id = $user_id ? $user_id : get_current_user_id();
 
-    $role = WeDevs\PM\User\Models\User_Role::with('role')
+    $role = SL\User\Models\User_Role::with('role')
         ->where( 'project_id', $project_id )
         ->where( 'user_id', $user_id )
         ->first();
@@ -379,7 +379,7 @@ function pm_is_manager( $project_id, $user_id = false ) {
 }
 
 /**
- * Checking for PM_Admin capability
+ * Checking for SL_Admin capability
  * @param  boolean $user_id
  * @return [type]
  */
@@ -399,7 +399,7 @@ function pm_has_admin_capability( $user_id = false ) {
 }
 
 /**
- * Checking for PM_Managre capability
+ * Checking for SL_Managre capability
  * @param  boolean $user_id
  * @return [type]
  */
@@ -1003,7 +1003,7 @@ function pm_dashboard_title() {
     $dashboard_title = get_option( 'pm_frontend_dashboard_title' );
 
     if ( ! $dashboard_title ) {
-        $dashboard_title = __( 'Project Manager', 'wedevs-project-manager' );
+        $dashboard_title = __( 'Project Manager', 'super-logistics' );
     }
 
     return apply_filters( 'pm_dashboard_title', $dashboard_title );
@@ -1023,9 +1023,18 @@ function pm_register_query_var() {
  *
  * @return string
  */
-function pm_root_element() {
+function internal_root_element() {
     $id = pm_root_element_id();
-    return apply_filters( 'pm_root_element', '<div id="'. $id .'"></div>' );
+    return apply_filters( 'internal_root_element', '<div id="'. $id .'-internal"></div>' );
+}
+/**
+ * Get HTML wrap
+ *
+ * @return string
+ */
+function external_root_element() {
+    $id = pm_root_element_id();
+    return apply_filters( 'external_root_element', '<div id="'. $id .'-external"></div>' );
 }
 
 /**
@@ -1076,7 +1085,7 @@ function pm_active_for_network() {
     $plugin_path = false;
     
     foreach ( $plugins as $path => $plugin ) {
-        if ( $plugin['TextDomain'] == 'wedevs-project-manager' ) {
+        if ( $plugin['TextDomain'] == 'super-logistics' ) {
             $plugin_path = $path;
         }
     }
@@ -1162,7 +1171,7 @@ function pm_second_to_time( $seconds ) {
  * @return [type]
  */
 function pm_get_projects( $params = [] ) {
-     return WeDevs\PM\Project\Helper\Project::get_results( $params );
+     return SL\Project\Helper\Project::get_results( $params );
 }
 
 /**
@@ -1171,7 +1180,7 @@ function pm_get_projects( $params = [] ) {
  * @return [type]
  */
 function pm_get_task_lists( $params = [] ) {
-     return \WeDevs\PM\Task_List\Helper\Task_List::get_results( $params );
+     return \SL\Task_List\Helper\Task_List::get_results( $params );
 }
 
 /**
@@ -1180,7 +1189,7 @@ function pm_get_task_lists( $params = [] ) {
  * @return [type]
  */
 function pm_get_tasks( $params = [] ) {
-     return \WeDevs\PM\task\Helper\Task::get_results( $params );
+     return \SL\task\Helper\Task::get_results( $params );
 }
 
 /**
@@ -1189,7 +1198,7 @@ function pm_get_tasks( $params = [] ) {
  * @return [type]
  */
 function pm_get_activities( $params = [] ) {
-     return \WeDevs\PM\Activity\Helper\Activity::get_results( $params );
+     return \SL\Activity\Helper\Activity::get_results( $params );
 }
 
 /**
@@ -1198,7 +1207,7 @@ function pm_get_activities( $params = [] ) {
  * @return [type]
  */
 function pm_get_milestones( $params = [] ) {
-     return \WeDevs\PM\Milestone\Helper\Milestone::get_results( $params );
+     return \SL\Milestone\Helper\Milestone::get_results( $params );
 }
 
 /**
@@ -1207,7 +1216,7 @@ function pm_get_milestones( $params = [] ) {
  * @return [type]
  */
 function pm_get_discussions( $params = [] ) {
-     return \WeDevs\PM\Discussion_Board\Helper\Discussion_Board::get_results( $params );
+     return \SL\Discussion_Board\Helper\Discussion_Board::get_results( $params );
 }
 
 /**
@@ -1216,7 +1225,7 @@ function pm_get_discussions( $params = [] ) {
  * @return [type]
  */
 function pm_get_comments( $params = [] ) {
-     return \WeDevs\PM\Comment\Helper\Comment::get_results( $params );
+     return \SL\Comment\Helper\Comment::get_results( $params );
 }
 
 /**
@@ -1225,7 +1234,7 @@ function pm_get_comments( $params = [] ) {
  * @return [type]
  */
 function pm_get_files( $params = [] ) {
-     return \WeDevs\PM\File\Helper\File::get_results( $params );
+     return \SL\File\Helper\File::get_results( $params );
 }
 
 /**
@@ -1234,7 +1243,7 @@ function pm_get_files( $params = [] ) {
  * @return [type]
  */
 function pm_get_users( $params = [] ) {
-     return \WeDevs\PM\User\Helper\User::get_results( $params );
+     return \SL\User\Helper\User::get_results( $params );
 }
 
 /**
@@ -1319,8 +1328,8 @@ function pm_manager_cap_slug() {
  */
 function pm_access_capabilities( $cap = false ) {
     $caps = [
-        pm_admin_cap_slug()   => __( 'PM Admin', 'wedevs-project-manager' ),
-        pm_manager_cap_slug() => __( 'PM Manager', 'wedevs-project-manager' ),
+        pm_admin_cap_slug()   => __( 'PM Admin', 'super-logistics' ),
+        pm_manager_cap_slug() => __( 'PM Manager', 'super-logistics' ),
     ];
 
     $caps = apply_filters( 'pm_access_capabilities', $caps );

@@ -1,17 +1,17 @@
 <?php
 
-namespace WeDevs\PM\File\Controllers;
+namespace SL\File\Controllers;
 
 use WP_REST_Request;
-use WeDevs\PM\File\Models\File;
+use SL\File\Models\File;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\File\Transformers\File_Transformer;
-use WeDevs\PM\Core\File_System\File_System;
-use WeDevs\PM\Common\Traits\Request_Filter;
+use SL\Common\Traits\Transformer_Manager;
+use SL\File\Transformers\File_Transformer;
+use SL\Core\File_System\File_System;
+use SL\Common\Traits\Request_Filter;
 use Illuminate\Pagination\Paginator;
 
 class File_Controller {
@@ -99,7 +99,7 @@ class File_Controller {
 
         if ( ! file_exists( $path ) ) {
             header( "Status: 404 Not Found" );
-            die( esc_html__( 'file not found', 'wedevs-project-manager' ) );
+            die( esc_html__( 'file not found', 'super-logistics' ) );
         }
 
         $file_name = basename( $path );

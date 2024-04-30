@@ -6,13 +6,13 @@
  * Time: 9:25 PM
  */
 
-namespace WeDevs\PM\Tools\Library;
+namespace SL\Tools\Library;
 
 
 use ActiveCollab\SDK\Client;
 use ActiveCollab\SDK\Token;
 
-class PM_ActiveCol
+class SL_ActiveCol
 {
     private $token;
     private $client;

@@ -6,7 +6,7 @@
  * Time: 2:12 PM
  */
 
-// namespace WeDevs\PM\Tools\Helpers;
+// namespace SL\Tools\Helpers;
 
 // use WP_Background_Process;
 // use ActiveCollab\SDK\Client;

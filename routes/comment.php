@@ -1,29 +1,29 @@
 <?php
 
-use WeDevs\PM\Core\Router\Router;
-use WeDevs\PM\Core\Permissions\Authentic;
-use WeDevs\PM\Core\Permissions\Access_Project;
+use SL\Core\Router\Router;
+use SL\Core\Permissions\Authentic;
+use SL\Core\Permissions\Access_Project;
 
 $router  = Router::singleton();
-$access  = 'WeDevs\PM\Core\Permissions\Access_Project';
+$access  = 'SL\Core\Permissions\Access_Project';
 
-$router->get( 'projects/{project_id}/comments', 'WeDevs/PM/Comment/Controllers/Comment_Controller@index' )
+$router->get( 'projects/{project_id}/comments', 'SL/Comment/Controllers/Comment_Controller@index' )
     ->permission([$access]);
 
-$router->post( 'projects/{project_id}/comments', 'WeDevs/PM/Comment/Controllers/Comment_Controller@store' )
+$router->post( 'projects/{project_id}/comments', 'SL/Comment/Controllers/Comment_Controller@store' )
     ->permission([$access])
-    ->validator( 'WeDevs\PM\Comment\Validators\Create_Comment' )
-    ->sanitizer( 'WeDevs\PM\Comment\Validators\Comment_Sanitizer' );
+    ->validator( 'SL\Comment\Validators\Create_Comment' )
+    ->sanitizer( 'SL\Comment\Validators\Comment_Sanitizer' );
 
 
-$router->get( 'projects/{project_id}/comments/{comment_id}', 'WeDevs/PM/Comment/Controllers/Comment_Controller@show' )
+$router->get( 'projects/{project_id}/comments/{comment_id}', 'SL/Comment/Controllers/Comment_Controller@show' )
     ->permission([$access]);
 
-$router->post( 'projects/{project_id}/comments/{comment_id}', 'WeDevs/PM/Comment/Controllers/Comment_Controller@update' )
-    ->permission(['WeDevs\PM\Core\Permissions\Edit_Comment'])
-    ->validator( 'WeDevs\PM\Comment\Validators\Create_Comment' )
-    ->sanitizer( 'WeDevs\PM\Comment\Validators\Comment_Sanitizer' );
+$router->post( 'projects/{project_id}/comments/{comment_id}', 'SL/Comment/Controllers/Comment_Controller@update' )
+    ->permission(['SL\Core\Permissions\Edit_Comment'])
+    ->validator( 'SL\Comment\Validators\Create_Comment' )
+    ->sanitizer( 'SL\Comment\Validators\Comment_Sanitizer' );
 
 
-$router->post( 'projects/{project_id}/comments/{comment_id}/delete', 'WeDevs/PM/Comment/Controllers/Comment_Controller@destroy' )
-    ->permission(['WeDevs\PM\Core\Permissions\Edit_Comment']);
+$router->post( 'projects/{project_id}/comments/{comment_id}/delete', 'SL/Comment/Controllers/Comment_Controller@destroy' )
+    ->permission(['SL\Core\Permissions\Edit_Comment']);

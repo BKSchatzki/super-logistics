@@ -1,10 +1,10 @@
 <?php
 
-namespace WeDevs\PM\Milestone\Observers;
+namespace SL\Milestone\Observers;
 
-use WeDevs\PM\Core\Database\Model_Observer;
-use WeDevs\PM\Activity\Models\Activity;
-use WeDevs\PM\Milestone\Models\Milestone;
+use SL\Core\Database\Model_Observer;
+use SL\Activity\Models\Carrier;
+use SL\Milestone\Models\Milestone;
 use Reflection;
 
 class Milestone_Observer extends Model_Observer {
@@ -55,7 +55,7 @@ class Milestone_Observer extends Model_Observer {
     }
 
     private function log_activity( Milestone $item, $action, $action_type, $meta = null ) {
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => $action,
             'action_type'   => $action_type,

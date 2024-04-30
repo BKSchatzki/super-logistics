@@ -1,6 +1,6 @@
 <!--Usage for this component
 <pm-button
-    :label="__( 'Click Me', 'wedevs-project-manager')"
+    :label="__( 'Click Me', 'super-logistics')"
     isPrimary
     spinner
     type="button"
@@ -176,7 +176,7 @@
 		props: {
 			label: {
 				type: String,
-				default: __( 'Submit', 'wedevs-project-manager' )
+				default: __( 'Submit', 'super-logistics' )
 			},
 
 			isPrimary: {

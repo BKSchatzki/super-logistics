@@ -1,9 +1,9 @@
 <?php
 
-namespace WeDevs\PM\Settings\Models;
+namespace SL\Settings\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
 
 class Task_Types extends Eloquent {
 

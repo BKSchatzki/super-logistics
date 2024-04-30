@@ -1,4 +1,3 @@
-import TaskLists from '@components/project/project-task-lists/mixin';
 import Url from '@wordpress/url';
 import classnames from 'classnames';
 
@@ -6,23 +5,22 @@ export default {
 
     data () {
         return {
-            //base_url: PM_Vars.base_url +'/'+ PM_Vars.rest_api_prefix,
-            base_url: PM_Vars.api_base_url,
-            permalinkStructure: PM_Vars.permalinkStructure,
+            //base_url: SL_Vars.base_url +'/'+ SL_Vars.rest_api_prefix,
+            base_url: SL_Vars.api_base_url,
+            permalinkStructure: SL_Vars.permalinkStructure,
             project_id: typeof this.$route === 'undefined'? false : parseInt( this.$route.params.project_id ),
-            current_user: PM_Vars.current_user,
-            avatar_url: PM_Vars.avatar_url,
-            text: PM_Vars.text,
-            PM_Vars: PM_Vars,
+            current_user: SL_Vars.current_user,
+            avatar_url: SL_Vars.avatar_url,
+            text: SL_Vars.text,
+            SL_Vars: SL_Vars,
             pm: pm,
-            taskLists: TaskLists,
             currentDate: pm.Moment(new Date()).format('YYYY-MM-DD'),
             randomNumber: []
         }
     },
 
     created () {
-        setLocaleData(PM_Vars.language.pm);
+        setLocaleData(SL_Vars.language.pm);
     },
 
     methods: {
@@ -46,7 +44,7 @@ export default {
         },
 
         hasTaskStartField () {
-            if (!PM_Vars.is_pro) {
+            if (!SL_Vars.is_pro) {
                 return false;
             }
 
@@ -198,7 +196,7 @@ export default {
         },
 
         can_edit_comment (commnet) {
-            var user = PM_Vars.current_user;
+            var user = SL_Vars.current_user;
             if (commnet.commentable_type == 'task_activity') {
                 return false;
             }
@@ -393,37 +391,37 @@ export default {
 
             var pre_define  = typeof pre_define == 'undefined' ? false : pre_define,
                 objKey = typeof objKey == 'undefined' ? false : objKey,
-                settings  = PM_Vars.settings;
+                settings  = SL_Vars.settings;
 
             if (objKey) {
-                if ( typeof PM_Vars.settings[objKey] === 'undefined' ) {
+                if ( typeof SL_Vars.settings[objKey] === 'undefined' ) {
                     return pre_define;
                 }
-                if ( typeof PM_Vars.settings[objKey][key] === 'undefined' ){
+                if ( typeof SL_Vars.settings[objKey][key] === 'undefined' ){
                     return pre_define;
                 }
 
 
-                if ( PM_Vars.settings[objKey][key] === "true" ){
+                if ( SL_Vars.settings[objKey][key] === "true" ){
                     return true;
-                } else if ( PM_Vars.settings[objKey][key] === "false" ){
+                } else if ( SL_Vars.settings[objKey][key] === "false" ){
                     return false;
                 } else {
-                    return PM_Vars.settings[objKey][key];
+                    return SL_Vars.settings[objKey][key];
                 }
             }
 
 
-            if ( typeof PM_Vars.settings[key] == 'undefined' ) {
+            if ( typeof SL_Vars.settings[key] == 'undefined' ) {
                 return pre_define;
             }
 
-            if ( PM_Vars.settings[key] == "true" ){
+            if ( SL_Vars.settings[key] == "true" ){
                 return true;
-            } else if ( PM_Vars.settings[key] == "false" ){
+            } else if ( SL_Vars.settings[key] == "false" ){
                 return false;
             } else {
-                return PM_Vars.settings[key];
+                return SL_Vars.settings[key];
             }
 
         },
@@ -447,16 +445,16 @@ export default {
                 xhr.setRequestHeader("Authorization_name", btoa('mslweiew')); //btoa js encoding base64_encode
                 xhr.setRequestHeader("Authorization_password", btoa('1$%#$8sgf&*FBI')); //atob js decode base64_decode
 
-                xhr.setRequestHeader("X-WP-Nonce", PM_Vars.permission);
+                xhr.setRequestHeader("X-WP-Nonce", SL_Vars.permission);
             };
 
             if(typeof property.data == 'undefined') {
                 property.data = {
-                    is_admin: PM_Vars.is_admin
+                    is_admin: SL_Vars.is_admin
                 }
             }
 
-            property.data.is_admin = typeof property.data.is_admin == 'undefined' ? PM_Vars.is_admin : property.data.is_admin;
+            property.data.is_admin = typeof property.data.is_admin == 'undefined' ? SL_Vars.is_admin : property.data.is_admin;
             property.beforeSend = typeof property.beforeSend === 'undefined' ? before : property.beforeSend;
 
             return jQuery.ajax(property);
@@ -659,8 +657,6 @@ export default {
                     if(typeof args.callback != 'undefined'){
                         args.callback(res.data);
                     }
-
-                    pmProjects = res.data;
                 }
             };
             
@@ -1054,7 +1050,7 @@ export default {
         },
 
         deleteProject (id, project) {
-            if ( ! confirm( this.__( 'Are you sure to delete this project?', 'wedevs-project-manager') ) ) {
+            if ( ! confirm( this.__( 'Are you sure to delete this project?', 'super-logistics') ) ) {
                 return;
             }
             var self = this;
@@ -1359,13 +1355,13 @@ export default {
         },
 
         myTaskRedirect (userid) {
-            var current_user = PM_Vars.current_user.ID;
+            var current_user = SL_Vars.current_user.ID;
 
             if (!this.canShowMyTaskRedirect(userid) ) {
                 return false;
             }
 
-            if (!PM_Vars.is_pro) {
+            if (!SL_Vars.is_pro) {
                 return this.$router.resolve({ name: 'my-tasks'}).href;
 
             }
@@ -1379,7 +1375,7 @@ export default {
         },
 
         canShowMyTaskRedirect (userid) {
-            var current_user = PM_Vars.current_user.ID;
+            var current_user = SL_Vars.current_user.ID;
             if (this.has_manage_capability()) {
                 return true;
             }
@@ -1391,7 +1387,7 @@ export default {
         },
 
         fileDownload (fileId) {
-            let url = this.base_url + '/pm/v2/projects/'+this.project_id+'/files/'+fileId+'/users/'+PM_Vars.current_user.ID+'/download';
+            let url = this.base_url + '/pm/v2/projects/'+this.project_id+'/files/'+fileId+'/users/'+SL_Vars.current_user.ID+'/download';
                 url = this.setPermalink( url );
             
             window.location.href = url;
@@ -1399,7 +1395,7 @@ export default {
 
         getDownloadUrl(fileId, project_id) {
             project_id = project_id || this.project_id;
-            let url = this.base_url + '/pm/v2/projects/'+ project_id +'/files/'+fileId+'/users/'+PM_Vars.current_user.ID+'/download';
+            let url = this.base_url + '/pm/v2/projects/'+ project_id +'/files/'+fileId+'/users/'+SL_Vars.current_user.ID+'/download';
             url = this.setPermalink( url );
 
             return url;
@@ -1415,17 +1411,17 @@ export default {
 
         deleteSettings (key, pre_define ) {
             var pre_define   = pre_define || false,
-                settings  = PM_Vars.settings;
+                settings  = SL_Vars.settings;
 
-            if ( typeof PM_Vars.settings[key] === 'undefined' ) {
+            if ( typeof SL_Vars.settings[key] === 'undefined' ) {
                 return pre_define;
             }
 
-            return PM_Vars.settings[key];
+            return SL_Vars.settings[key];
         },
 
         getAssetUrl(str) {
-            return PM_Vars.assets_url + str;
+            return SL_Vars.assets_url + str;
         },
 
         /**
@@ -1478,13 +1474,13 @@ export default {
         },
 
         can_edit_task (task) {
-            var user = PM_Vars.current_user;
+            var user = SL_Vars.current_user;
             
             if (this.is_manager()) {
                 return true;
             }
             
-            if ( this.userCanAccess(PM_Vars.manager_cap_slug) ) {
+            if ( this.userCanAccess(SL_Vars.manager_cap_slug) ) {
                 return true;
             }
 

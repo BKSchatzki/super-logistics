@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\PM\Core\Promotions;
+namespace SL\Core\Promotions;
 
 /**
 * Promotion class
@@ -49,13 +49,13 @@ class Offers {
             $offer->key       = $promo_notice['key'];
             $offer->btn_txt   = ! empty( $promo_notice['action_title'] ) ? $promo_notice['action_title'] : 'Get Now';
             $offer->message   = [];
-            $offer->message[] = sprintf( __( '<strong>%s</strong>', 'wedevs-project-manager' ), $promo_notice['title'] );
+            $offer->message[] = sprintf( __( '<strong>%s</strong>', 'super-logistics' ), $promo_notice['title'] );
 
             if ( ! empty( $promo_notice['description'] ) ) {
-                $offer->message[] = sprintf( __( '%s', 'wedevs-project-manager' ), $promo_notice['description'] );
+                $offer->message[] = sprintf( __( '%s', 'super-logistics' ), $promo_notice['description'] );
             }
 
-            $offer->message[] = sprintf( __( '%s', 'wedevs-project-manager' ), $promo_notice['content'] );
+            $offer->message[] = sprintf( __( '%s', 'super-logistics' ), $promo_notice['content'] );
             $offer->message   = implode( '<br>', $offer->message );
 
             if ( $disabled_key != $promo_notice['key'] ) {
@@ -131,7 +131,7 @@ class Offers {
                         <?php echo wp_kses( $offer->message, [ 'strong' => [], 'br' => [] ] ); ?>
                         <br>
                         <a class="link" target="_blank" href="<?php echo esc_url( $offer->link ); ?>">
-                            <?php printf( esc_html__( '%s', 'wedevs-project-manager' ), $offer->btn_txt ); ?>
+                            <?php printf( esc_html__( '%s', 'super-logistics' ), $offer->btn_txt ); ?>
                         </a>
                     </p>
                 </div>
@@ -173,12 +173,12 @@ class Offers {
         }
 
         if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'pm_dismiss_offer' ) ) {
-            wp_send_json_error( __( 'Invalid nonce', 'wedevs-project-manager' ) );
+            wp_send_json_error( __( 'Invalid nonce', 'super-logistics' ) );
             return;
         }
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( __( 'You have no permission to do that', 'wedevs-project-manager' ) );
+            wp_send_json_error( __( 'You have no permission to do that', 'super-logistics' ) );
             return;
         }
 

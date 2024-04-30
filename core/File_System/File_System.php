@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\PM\Core\File_System;
+namespace SL\Core\File_System;
 
 require_once( ABSPATH . 'wp-admin/includes/file.php' );
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace WeDevs\PM\Activity\Transformers;
+namespace SL\Activity\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use WeDevs\PM\Activity\Models\Activity;
-use WeDevs\PM\User\Transformers\User_Transformer;
-use WeDevs\PM\Project\Transformers\Project_Transformer;
+use SL\Activity\Models\Carrier;
+use SL\User\Transformers\User_Transformer;
+use SL\Project\Transformers\Project_Transformer;
 
 class Activity_Transformer extends TransformerAbstract {
 
@@ -13,7 +13,7 @@ class Activity_Transformer extends TransformerAbstract {
         'actor', 'project'
     ];
 
-    public function transform( Activity $item ) {
+    public function transform(Carrier $item ) {
         if ( $item->action == 'cpm_migration' ){
             $message = $item->meta['text'];
         }else {
@@ -32,20 +32,20 @@ class Activity_Transformer extends TransformerAbstract {
         ];
     }
 
-    public function includeActor( Activity $item ) {
+    public function includeActor(Carrier $item ) {
         $actor = $item->actor;
 
         return $this->item( $actor, new User_Transformer );
     }
 
-    public function includeProject( Activity $item ) {
+    public function includeProject(Carrier $item ) {
         $project = $item->project;
         $project_transformer = new Project_Transformer;
         $project_transformer = $project_transformer->setDefaultIncludes([]);
         return $this->item ( $project, $project_transformer);
     }
 
-    private function parse_meta( Activity $activity ) {
+    private function parse_meta(Carrier $activity ) {
         $parsed_meta = [];
 
         switch ( $activity->resource_type ) {
@@ -81,31 +81,31 @@ class Activity_Transformer extends TransformerAbstract {
         return $parsed_meta;
     }
 
-    private function parse_meta_for_task( Activity $activity ) {
+    private function parse_meta_for_task(Carrier $activity ) {
         return $activity->meta;
     }
 
-    private function parse_meta_for_task_list( Activity $activity ) {
+    private function parse_meta_for_task_list(Carrier $activity ) {
         return $activity->meta;
     }
 
-    private function parse_meta_for_discussion_board( Activity $activity ) {
+    private function parse_meta_for_discussion_board(Carrier $activity ) {
         return $activity->meta;
     }
 
-    private function parse_meta_for_milestone( Activity $activity ) {
+    private function parse_meta_for_milestone(Carrier $activity ) {
         return $activity->meta;
     }
 
-    private function parse_meta_for_project( Activity $activity ) {
+    private function parse_meta_for_project(Carrier $activity ) {
         return $activity->meta;
     }
 
-    private function parse_meta_for_file( Activity $activity ) {
+    private function parse_meta_for_file(Carrier $activity ) {
         return $activity->meta;
     }
 
-    private function parse_meta_for_comment( Activity $activity ) {
+    private function parse_meta_for_comment(Carrier $activity ) {
         $meta = [];
 
         if ( ! is_array( $activity ) ) {

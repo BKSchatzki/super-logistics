@@ -1,9 +1,9 @@
 <?php
-namespace WeDevs\PM\Core\Upgrades;
+namespace SL\Core\Upgrades;
 
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Common\Models\Meta;
-use WeDevs\PM\Task_List\Models\Task_List;
+use SL\Project\Models\Project;
+use SL\Common\Models\Meta;
+use SL\Task_List\Models\Task_List;
 
 /**
  *   Upgrade project manager 2.0
@@ -30,8 +30,8 @@ class Upgrade_2_2 {
             if ( empty( $meta->meta_value ) ) {
 
                 $list = Task_List::create([
-                    'title' => __('Inbox', 'wedevs-project-manager'),
-                    'description' => __('This is a system default task list. Any task without an assigned tasklist will appear here.', 'wedevs-project-manager'),
+                    'title' => __('Inbox', 'super-logistics'),
+                    'description' => __('This is a system default task list. Any task without an assigned tasklist will appear here.', 'super-logistics'),
                     'order' => 999999,
                     'project_id' => $project->id,
                 ]);

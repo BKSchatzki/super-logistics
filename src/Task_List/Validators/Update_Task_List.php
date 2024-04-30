@@ -1,15 +1,15 @@
 <?php
 
-namespace WeDevs\PM\Task_List\Validators;
+namespace SL\Task_List\Validators;
 
-use WeDevs\PM\Core\Validator\Abstract_Validator;
+use SL\Core\Validator\Abstract_Validator;
 
 class Update_Task_List extends Abstract_Validator {
     public function messages() {
         return [
-            'title.required' => __( 'Task list title is required.', 'wedevs-project-manager' ),
-            'id.required'    => __( 'Task list ID is required.', 'wedevs-project-manager' ),
-            'id.gtz'         => __( 'Task list ID must be greater than zero', 'wedevs-project-manager' ),
+            'title.required' => __( 'Task list title is required.', 'super-logistics' ),
+            'id.required'    => __( 'Task list ID is required.', 'super-logistics' ),
+            'id.gtz'         => __( 'Task list ID must be greater than zero', 'super-logistics' ),
         ];
     }
 

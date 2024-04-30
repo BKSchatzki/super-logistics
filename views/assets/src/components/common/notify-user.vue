@@ -1,10 +1,10 @@
 <template>
     <div class="notify-users" v-if="assain_users.length">    
         <h2 class="pm-box-title"> 
-            {{ __( 'Notify users', 'wedevs-project-manager') }}               
+            {{ __( 'Notify users', 'super-logistics') }}
             <label class="pm-small-title" for="select-all"> 
                 <input type="checkbox" v-model="select_all" id="select-all" @change="select_all_user()" class="pm-toggle-checkbox" > 
-                {{ __( 'Select all', 'wedevs-project-manager') }}
+                {{ __( 'Select all', 'super-logistics') }}
             </label>
         </h2>
         <ul class="pm-user-list">

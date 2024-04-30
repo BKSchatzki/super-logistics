@@ -1,14 +1,14 @@
 <?php
 
-namespace WeDevs\PM\Task_List\Validators;
+namespace SL\Task_List\Validators;
 
-use WeDevs\PM\Core\Validator\Abstract_Validator;
+use SL\Core\Validator\Abstract_Validator;
 
 class Create_Task_List extends Abstract_Validator {
     public function messages() {
         return [
-            'title.required' => __( 'Task list title is required.', 'wedevs-project-manager' ),
-            'project_id.required' => __( 'Project ID is required.', 'wedevs-project-manager' ),
+            'title.required' => __( 'Task list title is required.', 'super-logistics' ),
+            'project_id.required' => __( 'Project ID is required.', 'super-logistics' ),
         ];
     }
 

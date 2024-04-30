@@ -1,14 +1,14 @@
 <?php
 
-namespace WeDevs\PM\Comment\Validators;
+namespace SL\Comment\Validators;
 
-use WeDevs\PM\Core\Validator\Abstract_Validator;
+use SL\Core\Validator\Abstract_Validator;
 
 class Create_Comment extends Abstract_Validator {
     public function messages() {
         return [
-            'content.required' => __( 'Comment title is required.', 'wedevs-project-manager' ),
-            'project_id.required' => __( 'Project ID is required.', 'wedevs-project-manager' ),
+            'content.required' => __( 'Comment title is required.', 'super-logistics' ),
+            'project_id.required' => __( 'Project ID is required.', 'super-logistics' ),
         ];
     }
 

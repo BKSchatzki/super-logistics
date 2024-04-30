@@ -1,16 +1,16 @@
 <?php
 
-namespace WeDevs\PM\Discussion_Board\Transformers;
+namespace SL\Discussion_Board\Transformers;
 
-use WeDevs\PM\Discussion_Board\Models\Discussion_Board;
+use SL\Discussion_Board\Models\Discussion_Board;
 use League\Fractal\TransformerAbstract;
-use WeDevs\PM\Common\Transformers\Boardable_User_Transformer;
-use WeDevs\PM\Comment\Transformers\Comment_Transformer;
-use WeDevs\PM\File\Transformers\File_Transformer;
-use WeDevs\PM\User\Transformers\User_Transformer;
+use SL\Common\Transformers\Boardable_User_Transformer;
+use SL\Comment\Transformers\Comment_Transformer;
+use SL\File\Transformers\File_Transformer;
+use SL\User\Transformers\User_Transformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Milestone\Transformers\Milestone_Transformer;
-use WeDevs\PM\Common\Traits\Resource_Editors;
+use SL\Milestone\Transformers\Milestone_Transformer;
+use SL\Common\Traits\Resource_Editors;
 use Illuminate\Pagination\Paginator;
 
 class Discussion_Board_Transformer extends TransformerAbstract {

@@ -1,10 +1,10 @@
 <?php
 
-namespace WeDevs\PM\Activity;
+namespace SL\Activity;
 
 use ReflectionClass;
 use Reflection;
-use WeDevs\PM\Activity\Models\Activity;
+use SL\Activity\Models\Carrier;
 
 class Activity_Log {
 

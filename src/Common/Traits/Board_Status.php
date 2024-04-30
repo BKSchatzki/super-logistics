@@ -1,6 +1,6 @@
 <?php 
 
-namespace WeDevs\PM\Common\Traits;
+namespace SL\Common\Traits;
 
 trait Board_Status {
         // Allowed status for a task list

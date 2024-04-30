@@ -170,9 +170,9 @@
 		data () {
 			return {
 				default: {
-					title: __( 'Title', 'wedevs-project-manager' ),
-					cancelButton: __( 'Cancel', 'wedevs-project-manager' ),
-					submitButton: __( 'Add New', 'wedevs-project-manager' ),
+					title: __( 'Title', 'super-logistics' ),
+					cancelButton: __( 'Cancel', 'super-logistics' ),
+					submitButton: __( 'Add New', 'super-logistics' ),
 					loading: false,
 					isForm: true,
 					manageLoading: false,

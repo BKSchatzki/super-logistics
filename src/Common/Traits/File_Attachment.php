@@ -1,10 +1,10 @@
 <?php
 
-namespace WeDevs\PM\Common\Traits;
+namespace SL\Common\Traits;
 
 use ReflectionClass;
-use WeDevs\PM\Core\File_System\File_System;
-use WeDevs\PM\File\Models\File;
+use SL\Core\File_System\File_System;
+use SL\File\Models\File;
 
 trait File_Attachment {
 

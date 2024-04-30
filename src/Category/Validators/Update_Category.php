@@ -1,15 +1,15 @@
 <?php
 
-namespace WeDevs\PM\Category\Validators;
+namespace SL\Category\Validators;
 
-use WeDevs\PM\Core\Validator\Abstract_Validator;
+use SL\Core\Validator\Abstract_Validator;
 
 class Update_Category extends Abstract_Validator {
     public function messages() {
         return [
-            'title.required' => __( 'Category title is required.', 'wedevs-project-manager' ),
-            'id.required'    => __( 'Category ID is required.', 'wedevs-project-manager' ),
-            'id.gtz'         => __( 'Category ID must be greater than zero', 'wedevs-project-manager' ),
+            'title.required' => __( 'Category title is required.', 'super-logistics' ),
+            'id.required'    => __( 'Category ID is required.', 'super-logistics' ),
+            'id.gtz'         => __( 'Category ID must be greater than zero', 'super-logistics' ),
         ];
     }
 

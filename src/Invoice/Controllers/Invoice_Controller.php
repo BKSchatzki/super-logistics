@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Invoice\Controllers;
+namespace SL\Invoice\Controllers;
 
 use Reflection;
 use WP_REST_Request;
@@ -7,20 +7,20 @@ use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Common\Models\Boardable;
-use WeDevs\PM\Common\Traits\Request_Filter;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Project\Models\Project;
+use SL\Common\Models\Boardable;
+use SL\Common\Traits\Request_Filter;
 use Carbon\Carbon;
-use WeDevs\PM\Settings\Controllers\Settings_Controller;
-use WeDevs\PM\Settings\Transformers\Settings_Transformer;
-use WeDevs\PM_Pro\Modules\Invoice\Src\Models\Invoice;
-use WeDevs\PM_Pro\Modules\Invoice\Src\Transformers\Invoice_Transformer;
-use WeDevs\PM\Common\Models\Meta;
-use WeDevs\PM_Pro\Modules\Invoice\Core\PDF\PDF;
-use WeDevs\PM\Core\Notifications\Email;
+use SL\Settings\Controllers\Settings_Controller;
+use SL\Settings\Transformers\Settings_Transformer;
+use SL_Pro\Modules\Invoice\Src\Models\Invoice;
+use SL_Pro\Modules\Invoice\Src\Transformers\Invoice_Transformer;
+use SL\Common\Models\Meta;
+use SL_Pro\Modules\Invoice\Core\PDF\PDF;
+use SL\Core\Notifications\Email;
 use Illuminate\Pagination\Paginator;
-use WeDevs\PM_Pro\Modules\Invoice\Core\Permission\Payment;
+use SL_Pro\Modules\Invoice\Core\Permission\Payment;
 
 class Invoice_Controller {
 
@@ -325,13 +325,13 @@ class Invoice_Controller {
         $invoice_settings = pm_get_setting( 'invoice' );
         $currency_code    = empty( $invoice_settings['currency_code'] ) ? 'USD' : $invoice_settings['currency_code'];
         $client_address   = get_user_meta( $invoice['client_id'], 'pm_invoice_address', true );
-        $countries        = require_once PM_PRO_INVOICE_PATH . 'includes/ISO_Country_Code.php';
-        $currency_symbols = require_once PM_PRO_INVOICE_PATH . 'includes/Currency_Symbols.php';
+        $countries        = require_once SL_PRO_INVOICE_PATH . 'includes/ISO_Country_Code.php';
+        $currency_symbols = require_once SL_PRO_INVOICE_PATH . 'includes/Currency_Symbols.php';
 
         $currency_symbol  = empty( $currency_symbols[$currency_code] ) ? 'USD' : html_entity_decode($currency_symbols[$currency_code]);
 
         ob_start();
-            require_once PM_PRO_INVOICE_PATH . '/views/PDF/PDF.php';
+            require_once SL_PRO_INVOICE_PATH . '/views/PDF/PDF.php';
         $print_invoice = ob_get_clean();
 
         return PDF::generator( $print_invoice, $options );
@@ -360,7 +360,7 @@ class Invoice_Controller {
         $subject  = $invoice['title'];
         $to       = $user->user_email;
         $id       = str_replace( ' ', '_', $subject ) . '_' . time() . mt_rand( '1111111', '9999999' );
-        $pdf_file = PM_PRO_INVOICE_PATH . "/temp/{$id}.pdf";
+        $pdf_file = SL_PRO_INVOICE_PATH . "/temp/{$id}.pdf";
 
         file_put_contents( $pdf_file, $pdf_output );
 

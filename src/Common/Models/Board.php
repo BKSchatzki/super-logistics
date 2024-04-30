@@ -1,11 +1,11 @@
 <?php
 
-namespace WeDevs\PM\Common\Models;
+namespace SL\Common\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
-use WeDevs\PM\Common\Models\Meta;
-use WeDevs\PM\Common\Traits\Board_Status;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
+use SL\Common\Models\Meta;
+use SL\Common\Traits\Board_Status;
 
 class Board extends Eloquent {
 
@@ -25,7 +25,7 @@ class Board extends Eloquent {
     ];
 
     public function metas() {
-        return $this->hasMany( 'WeDevs\PM\Common\Models\Meta', 'entity_id' )
+        return $this->hasMany( 'SL\Common\Models\Meta', 'entity_id' )
             ->whereIn( 'entity_type', [ 'milestone', 'task_list', 'discussion_board' ] );
     }
 }

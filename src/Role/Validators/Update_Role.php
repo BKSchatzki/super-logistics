@@ -1,15 +1,15 @@
 <?php
 
-namespace WeDevs\PM\Role\Validators;
+namespace SL\Role\Validators;
 
-use WeDevs\PM\Core\Validator\Abstract_Validator;
+use SL\Core\Validator\Abstract_Validator;
 
 class Update_Role extends Abstract_Validator {
     public function messages() {
         return [
-            'title.required' => __( 'Role title is required.', 'wedevs-project-manager' ),
-            'id.required'    => __( 'Role ID is required.', 'wedevs-project-manager' ),
-            'id.gtz'         => __( 'Role ID must be greater than zero', 'wedevs-project-manager' ),
+            'title.required' => __( 'Role title is required.', 'super-logistics' ),
+            'id.required'    => __( 'Role ID is required.', 'super-logistics' ),
+            'id.gtz'         => __( 'Role ID must be greater than zero', 'super-logistics' ),
         ];
     }
 

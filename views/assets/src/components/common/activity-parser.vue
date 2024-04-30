@@ -162,10 +162,10 @@
 
             actor_url () {
                 
-                var current_user = PM_Vars.current_user.ID;
+                var current_user = SL_Vars.current_user.ID;
                 var userid = this.activity.actor.data.id;
 
-                if (!PM_Vars.is_pro) {
+                if (!SL_Vars.is_pro) {
                     return this.$router.resolve({ name: 'my-tasks'}).href;
                     
                 }

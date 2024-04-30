@@ -1,7 +1,7 @@
 <?php
 
-namespace WeDevs\PM_Pro\Imports\Helpers;
-use WeDevs\PM_Pro\Imports\Models\Import ;
+namespace SL_Pro\Imports\Helpers;
+use SL_Pro\Imports\Models\Import ;
 
 
 class Trello_helper {

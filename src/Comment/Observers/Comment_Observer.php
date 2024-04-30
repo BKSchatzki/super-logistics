@@ -1,17 +1,17 @@
 <?php
 
-namespace WeDevs\PM\Comment\Observers;
+namespace SL\Comment\Observers;
 
-use WeDevs\PM\Core\Database\Model_Observer;
-use WeDevs\PM\Comment\Models\Comment;
-use WeDevs\PM\Activity\Models\Activity;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Task_List\Models\Task_List;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Discussion_Board\Models\Discussion_Board as Board;
-use WeDevs\PM\Milestone\Models\Milestone;
-use WeDevs\PM\File\Models\File;
-use WeDevs\PM\Core\File_System\File_System;
+use SL\Core\Database\Model_Observer;
+use SL\Comment\Models\Comment;
+use SL\Activity\Models\Carrier;
+use SL\Task\Models\Task;
+use SL\Task_List\Models\Task_List;
+use SL\Project\Models\Project;
+use SL\Discussion_Board\Models\Discussion_Board as Board;
+use SL\Milestone\Models\Milestone;
+use SL\File\Models\File;
+use SL\Core\File_System\File_System;
 use Reflection;
 
 class Comment_Observer extends Model_Observer {
@@ -88,7 +88,7 @@ class Comment_Observer extends Model_Observer {
             $action = 'update_comment_on_task';
         }
 
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => $action,
             'action_type'   => $action_type,
@@ -119,7 +119,7 @@ class Comment_Observer extends Model_Observer {
             $action = 'delete_comment_on_task_list';
         }
 
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => $action,
             'action_type'   => $action_type,
@@ -150,7 +150,7 @@ class Comment_Observer extends Model_Observer {
             $action = 'delete_comment_on_discussion_board';
         }
 
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => $action,
             'action_type'   => $action_type,
@@ -181,7 +181,7 @@ class Comment_Observer extends Model_Observer {
             $action = 'delete_comment_on_milestone';
         }
 
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => $action,
             'action_type'   => $action_type,
@@ -208,7 +208,7 @@ class Comment_Observer extends Model_Observer {
             $action = 'update_comment_on_project';
         }
 
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => $action,
             'action_type'   => $action_type,
@@ -244,7 +244,7 @@ class Comment_Observer extends Model_Observer {
             $action = 'delete_comment_on_file';
         }
 
-        Activity::create([
+        Carrier::create([
             'actor_id'      => get_current_user_id(),
             'action'        => $action,
             'action_type'   => $action_type,

@@ -5,11 +5,11 @@
  * Date: 18/12/18
  * Time: 10:17 AM
  */
-// namespace WeDevs\PM\Tools\Controllers;
+// namespace SL\Tools\Controllers;
 
 // use WP_REST_Request;
 
-// use WeDevs\PM\Tools\Helpers\ImportTrello;
+// use SL\Tools\Helpers\ImportTrello;
 
 // class TrelloController
 // {

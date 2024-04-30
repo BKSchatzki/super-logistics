@@ -1,17 +1,17 @@
 <?php
 
-namespace WeDevs\PM\Milestone\Controllers;
+namespace SL\Milestone\Controllers;
 
 use WP_REST_Request;
-use WeDevs\PM\Milestone\Models\Milestone;
+use SL\Milestone\Models\Milestone;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Milestone\Transformers\Milestone_Transformer;
-use WeDevs\PM\Common\Traits\Request_Filter;
-use WeDevs\PM\Common\Models\Meta;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Milestone\Transformers\Milestone_Transformer;
+use SL\Common\Traits\Request_Filter;
+use SL\Common\Models\Meta;
 use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Pagination\Paginator;

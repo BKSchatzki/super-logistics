@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Materials\Controllers;
+namespace SL\Materials\Controllers;
 
 use Reflection;
 use WP_REST_Request;
@@ -7,14 +7,14 @@ use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Common\Traits\Request_Filter;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Project\Models\Project;
+use SL\Common\Traits\Request_Filter;
 use Carbon\Carbon;
-use WeDevs\PM\Materials\Models\MaterialOrder;
-use WeDevs\PM\Materials\Transformers\MaterialOrderTransformer;
+use SL\Materials\Models\MaterialOrder;
+use SL\Materials\Transformers\MaterialOrderTransformer;
 use Illuminate\Database\Capsule\Manager as Capsule;
-use WeDevs\PM\Project\Helper\Project as Project_Helper;
+use SL\Project\Helper\Project as Project_Helper;
 
 class MaterialOrderController {
 

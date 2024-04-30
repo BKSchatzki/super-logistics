@@ -1,9 +1,9 @@
 <?php
-namespace WeDevs\PM\Discussion_Board\Helper;
+namespace SL\Discussion_Board\Helper;
 
-use WeDevs\PM\Milestone\Helper\Milestone;
-use WeDevs\PM\Comment\Helper\Comment;
-use WeDevs\PM\File\Helper\File;
+use SL\Milestone\Helper\Milestone;
+use SL\Comment\Helper\Comment;
+use SL\File\Helper\File;
 
 
 use WP_REST_Request;

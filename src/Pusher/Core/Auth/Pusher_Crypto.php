@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\PM\Pusher\Core\Auth;
+namespace SL\Pusher\Core\Auth;
 
 class Pusher_Crypto {
     private $encryption_master_key = '';

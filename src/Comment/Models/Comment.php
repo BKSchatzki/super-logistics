@@ -1,13 +1,13 @@
 <?php
 
-namespace WeDevs\PM\Comment\Models;
+namespace SL\Comment\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
-use WeDevs\PM\File\Models\File;
-use WeDevs\PM\Discussion_Board\Models\Discussion_Board;
-use WeDevs\PM\Task_List\Models\Task_List;
-use WeDevs\PM\Task\Models\Task;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
+use SL\File\Models\File;
+use SL\Discussion_Board\Models\Discussion_Board;
+use SL\Task_List\Models\Task_List;
+use SL\Task\Models\Task;
 
 class Comment extends Eloquent {
 
@@ -30,7 +30,7 @@ class Comment extends Eloquent {
     }
 
     public function files() {
-        return $this->hasMany( 'WeDevs\PM\File\Models\File', 'fileable_id' )->where( 'fileable_type', 'comment' );
+        return $this->hasMany( 'SL\File\Models\File', 'fileable_id' )->where( 'fileable_type', 'comment' );
     }
 
     public static function parent_comment( $comment_id ) {
@@ -44,15 +44,15 @@ class Comment extends Eloquent {
     }
 
     public function discussion_board() {
-        return $this->belongsTo('WeDevs\PM\Discussion_Board\Models\Discussion_Board', 'commentable_id');
+        return $this->belongsTo('SL\Discussion_Board\Models\Discussion_Board', 'commentable_id');
     }
 
     public function task_list() {
-        return $this->belongsTo( 'WeDevs\PM\Task_List\Models\Task_List', 'commentable_id');
+        return $this->belongsTo( 'SL\Task_List\Models\Task_List', 'commentable_id');
     }
 
     public function task() {
-        return $this->belongsTo( 'WeDevs\PM\Task\Models\Task', 'commentable_id');
+        return $this->belongsTo( 'SL\Task\Models\Task', 'commentable_id');
     }
 
     public function setMentionedUsersAttribute( $value ) {

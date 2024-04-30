@@ -1,18 +1,18 @@
 <?php 
 
-namespace WeDevs\PM\Core\Notifications;
+namespace SL\Core\Notifications;
 
 /**
 * class background email email processing
 *
 * @class    Background_Emailer
 * @version  2.0.0
-* @package  WeDevs\PM\Core
+* @package  SL\Core
 * @category Class
 * @author   weDevs
 */
 use WP_Background_Process;
-use WeDevs\PM\Core\Notifications\Notification;
+use SL\Core\Notifications\Notification;
 
 class Background_Emailer extends WP_Background_Process
 {
@@ -45,7 +45,7 @@ class Background_Emailer extends WP_Background_Process
                 Notification::send_queued_transactional_email( $callback['filter'], $callback['args'] );
             } catch ( Exception $e ) {
                 if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                    trigger_error( esc_attr__( 'Transactional email triggered fatal error for callback ', 'wedevs-project-manager' ) . $callback['filter'], E_USER_WARNING );
+                    trigger_error( esc_attr__( 'Transactional email triggered fatal error for callback ', 'super-logistics' ) . $callback['filter'], E_USER_WARNING );
                 }
             }
         }

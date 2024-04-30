@@ -1,22 +1,22 @@
 <?php
 
-namespace WeDevs\PM\Project\Models;
+namespace SL\Project\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Project\Project_Status;
-use WeDevs\PM\Common\Traits\Model_Events;
-use WeDevs\PM\Task_List\Models\Task_List;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Discussion_Board\Models\Discussion_Board;
-use WeDevs\PM\Milestone\Models\Milestone;
-use WeDevs\PM\File\Models\File;
-use WeDevs\PM\Comment\Models\Comment;
-use WeDevs\PM\Category\Models\Category;
-use WeDevs\PM\User\Models\User;
-use WeDevs\PM\Activity\Models\Activity;
-use WeDevs\PM\Settings\Models\Settings;
-use WeDevs\PM\Common\Models\Meta;
-use WeDevs\PM\Role\Models\Role;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Project\Project_Status;
+use SL\Common\Traits\Model_Events;
+use SL\Task_List\Models\Task_List;
+use SL\Task\Models\Task;
+use SL\Discussion_Board\Models\Discussion_Board;
+use SL\Milestone\Models\Milestone;
+use SL\File\Models\File;
+use SL\Comment\Models\Comment;
+use SL\Category\Models\Category;
+use SL\User\Models\User;
+use SL\Activity\Models\Carrier;
+use SL\Settings\Models\Settings;
+use SL\Common\Models\Meta;
+use SL\Role\Models\Role;
 
 class Project extends Eloquent {
 
@@ -53,7 +53,7 @@ class Project extends Eloquent {
     }
 
     public function categories() {
-        return $this->belongsToMany( 'WeDevs\PM\Category\Models\Category',
+        return $this->belongsToMany( 'SL\Category\Models\Category',
             pm_tb_prefix() . 'pm_category_project', 'project_id', 'category_id');
     }
 
@@ -64,7 +64,7 @@ class Project extends Eloquent {
         $role_id = Role::where('status', 1)->get(['id'])->toArray();
         $role_id = wp_list_pluck($role_id, 'id');
         
-        return $this->belongsToMany( 'WeDevs\PM\User\Models\User',
+        return $this->belongsToMany( 'SL\User\Models\User',
             pm_tb_prefix() . 'pm_role_user',
             'project_id',
             'user_id'
@@ -74,49 +74,49 @@ class Project extends Eloquent {
     }
 
     public function boardables() {
-        return $this->hasMany( 'WeDevs\PM\Common\Models\Boardable', 'boardable_id' )
+        return $this->hasMany( 'SL\Common\Models\Boardable', 'boardable_id' )
         ->where( 'boardable_type', 'project' );
     }
 
     public function task_lists() {
-        return $this->hasMany( 'WeDevs\PM\Task_List\Models\Task_List', 'project_id' );
+        return $this->hasMany( 'SL\Task_List\Models\Task_List', 'project_id' );
     }
 
     public function tasks() {
-        return $this->hasMany( 'WeDevs\PM\Task\Models\Task', 'project_id' );
+        return $this->hasMany( 'SL\Task\Models\Task', 'project_id' );
     }
 
     public function discussion_boards() {
-        return $this->hasMany( 'WeDevs\PM\Discussion_Board\Models\Discussion_Board', 'project_id' );
+        return $this->hasMany( 'SL\Discussion_Board\Models\Discussion_Board', 'project_id' );
     }
 
     public function milestones() {
-        return $this->hasMany( 'WeDevs\PM\Milestone\Models\Milestone', 'project_id' );
+        return $this->hasMany( 'SL\Milestone\Models\Milestone', 'project_id' );
     }
 
     public function count_milestones() {
-        return $this->hasMany( 'WeDevs\PM\Milestone\Models\Milestone', 'project_id' )
+        return $this->hasMany( 'SL\Milestone\Models\Milestone', 'project_id' )
                     ->count();
     }
 
     public function files() {
-        return $this->hasMany( 'WeDevs\PM\File\Models\File', 'project_id' );
+        return $this->hasMany( 'SL\File\Models\File', 'project_id' );
     }
 
     public function comments() {
-        return $this->hasMany( 'WeDevs\PM\Comment\Models\Comment', 'project_id' );
+        return $this->hasMany( 'SL\Comment\Models\Comment', 'project_id' );
     }
 
     public function activities() {
-        return $this->hasMany( 'WeDevs\PM\Activity\Models\Activity', 'project_id' );
+        return $this->hasMany( 'SL\Activity\Models\Carrier', 'project_id' );
     }
 
     public function settings() {
-        return $this->hasMany( 'WeDevs\PM\Settings\Models\Settings', 'project_id' );
+        return $this->hasMany( 'SL\Settings\Models\Settings', 'project_id' );
     }
 
     public function meta() {
-        return $this->hasMany( 'WeDevs\PM\Common\Models\Meta', 'project_id' );
+        return $this->hasMany( 'SL\Common\Models\Meta', 'project_id' );
     }
 
     public function managers() {
@@ -144,7 +144,7 @@ class Project extends Eloquent {
     }
 
     public function material_orders() {
-        return $this->belongsToMany('WeDevs\PM\Materials\Models\MaterialOrder',
+        return $this->belongsToMany('SL\Materials\Models\MaterialOrder',
         pm_tb_prefix() . 'pm_material_orders_projects', 'project_id', 'order_id');
     }
 }

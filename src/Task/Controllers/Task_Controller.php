@@ -1,37 +1,37 @@
 <?php
 
-namespace WeDevs\PM\Task\Controllers;
+namespace SL\Task\Controllers;
 
 use Reflection;
 use WP_REST_Request;
-use WeDevs\PM\Task\Models\Task;
+use SL\Task\Models\Task;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Task\Transformers\Task_Transformer;
-use WeDevs\PM\Task\Transformers\New_Task_Transformer;
-use WeDevs\PM\Task_List\Models\Task_List;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Common\Models\Boardable;
-use WeDevs\PM\Common\Models\Board;
-use WeDevs\PM\Common\Traits\Request_Filter;
-use WeDevs\PM\Common\Traits\Last_activity;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Task\Transformers\Task_Transformer;
+use SL\Task\Transformers\New_Task_Transformer;
+use SL\Task_List\Models\Task_List;
+use SL\Project\Models\Project;
+use SL\Common\Models\Boardable;
+use SL\Common\Models\Board;
+use SL\Common\Traits\Request_Filter;
+use SL\Common\Traits\Last_activity;
 use Carbon\Carbon;
-use WeDevs\PM\Common\Models\Assignee;
+use SL\Common\Models\Assignee;
 use Illuminate\Pagination\Paginator;
-use WeDevs\PM\Comment\Models\Comment;
-use WeDevs\PM\Task_List\Transformers\Task_List_Transformer;
-use WeDevs\PM\Task_List\Transformers\New_Task_List_Transformer;
-use WeDevs\PM\Task_List\Transformers\List_Task_Transformer;
-use WeDevs\PM\Activity\Models\Activity;
-use WeDevs\PM\Activity\Transformers\Activity_Transformer;
-use WeDevs\PM\Task_List\Controllers\Task_List_Controller as Task_List_Controller;
-use WeDevs\PM\Settings\Controllers\Task_Types_Controller;
-use WeDevs\PM\Settings\Models\Task_Type_Task;
-use WeDevs\PM\task\Helper\Task as Task_Helper;
-use WeDevs\PM\Task\Observers\Task_Observer;
+use SL\Comment\Models\Comment;
+use SL\Task_List\Transformers\Task_List_Transformer;
+use SL\Task_List\Transformers\New_Task_List_Transformer;
+use SL\Task_List\Transformers\List_Task_Transformer;
+use SL\Activity\Models\Carrier;
+use SL\Activity\Transformers\Activity_Transformer;
+use SL\Task_List\Controllers\Task_List_Controller as Task_List_Controller;
+use SL\Settings\Controllers\Task_Types_Controller;
+use SL\Settings\Models\Task_Type_Task;
+use SL\task\Helper\Task as Task_Helper;
+use SL\Task\Observers\Task_Observer;
 
 class Task_Controller {
 
@@ -1020,7 +1020,7 @@ class Task_Controller {
             return $current_page;
         });
 
-        $activities = Activity::where('resource_id', $task_id)
+        $activities = Carrier::where('resource_id', $task_id)
             ->where( 'resource_type', 'task' )
             ->orderBy( 'created_at', 'DESC' )
             ->paginate( $per_page );
@@ -1325,7 +1325,7 @@ class Task_Controller {
         $task           = $this->get_task( $task_id );
         $list_id        = $task['data']['task_list_id'];
         $task           = Task::find( $task_id );
-        $task->title    = __( 'Copy ', 'wedevs-project-manager' ) . $task->title;
+        $task->title    = __( 'Copy ', 'super-logistics' ) . $task->title;
         $project_id     = $task->project_id;
         $duplicate_task = $this->task_duplicate( $task, $list_id, $project_id );
         $new_task       = $this->get_task( $duplicate_task->id );

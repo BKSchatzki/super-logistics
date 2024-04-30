@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\PM\Project;
+namespace SL\Project;
 
 trait Project_Status {
     // Allowed project statuses and their keys

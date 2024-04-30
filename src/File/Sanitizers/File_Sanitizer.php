@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\File\Sanitizers;
+namespace SL\File\Sanitizers;
 
-use WeDevs\PM\Core\Sanitizer\Abstract_Sanitizer;
+use SL\Core\Sanitizer\Abstract_Sanitizer;
 
 class File_Sanitizer extends Abstract_Sanitizer {
 	public function filters() {

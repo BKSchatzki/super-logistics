@@ -1,17 +1,17 @@
 <?php
 
-namespace WeDevs\PM\Task_List\Transformers;
+namespace SL\Task_List\Transformers;
 
-use WeDevs\PM\Task_List\Models\Task_List;
+use SL\Task_List\Models\Task_List;
 use League\Fractal\TransformerAbstract;
-use WeDevs\PM\User\Transformers\User_Transformer;
-use WeDevs\PM\Task\Transformers\Task_Transformer;
-use WeDevs\PM\Comment\Transformers\Comment_Transformer;
-use WeDevs\PM\File\Transformers\File_Transformer;
-use WeDevs\PM\Milestone\Transformers\Milestone_Transformer;
+use SL\User\Transformers\User_Transformer;
+use SL\Task\Transformers\Task_Transformer;
+use SL\Comment\Transformers\Comment_Transformer;
+use SL\File\Transformers\File_Transformer;
+use SL\Milestone\Transformers\Milestone_Transformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Resource_Editors;
-use WeDevs\PM\Task\Models\Task;
+use SL\Common\Traits\Resource_Editors;
+use SL\Task\Models\Task;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Pagination\Paginator;
 use League\Fractal\Resource\Collection as Collection;

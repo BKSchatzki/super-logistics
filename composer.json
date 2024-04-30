@@ -1,26 +1,9 @@
 {
-    "name": "wedevsofficial/wp-project-manager",
-    "description": "A project management plugin for WordPress",
+    "name": "bigtb/super-logistics",
+    "description": "Logistics plugin to make an internal and customer facing logistics application",
     "type": "wordpress-plugin",
-    "license": "GPL-2.0+",
-    "authors": [
-        {
-            "name": "asaquzzaman",
-            "email": "joy.mishu@gmail.com",
-            "homepage": "http://mishubd.com"
-        },
-        {
-            "name"    : "Tareq Hasan",
-            "email"   : "tareq@wedevs.com",
-            "homepage": "https://tareq.co/"
-        },
-        {
-            "name": "asikur",
-            "email": "md.asikurislam@gmail.com"
-        }
-    ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=8.0",
         "league/fractal": "^0.17.0",
         "a5hleyrich/wp-background-processing": "^1.0",
         "tareq1988/wp-eloquent": "dev-master",
@@ -32,8 +15,8 @@
             "db"
         ],
         "psr-4": {
-            "WeDevs\\PM\\Core\\": "core/",
-            "WeDevs\\PM\\": "src/"
+            "SL\\Core\\": "core/",
+            "SL\\": "src/"
         }
     },
     "require-dev": {

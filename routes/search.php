@@ -1,14 +1,14 @@
 <?php
 
-use WeDevs\PM\Core\Router\Router;
-use WeDevs\PM\Core\Permissions\Authentic;
-use WeDevs\PM\Core\Permissions\Project_Manage_Capability;
+use SL\Core\Router\Router;
+use SL\Core\Permissions\Authentic;
+use SL\Core\Permissions\Project_Manage_Capability;
 
 $router    = Router::singleton();
-$authentic = 'WeDevs\PM\Core\Permissions\Authentic';
+$authentic = 'SL\Core\Permissions\Authentic';
 
-$router->get( 'search', 'WeDevs\PM\Search\Controllers\Search_Controller@search' )
+$router->get( 'search', 'SL\Search\Controllers\Search_Controller@search' )
     ->permission( [ $authentic ] );
 
-$router->get( 'admin-topbar-search', 'WeDevs\PM\Search\Controllers\Search_Controller@searchTopBar' )
+$router->get( 'admin-topbar-search', 'SL\Search\Controllers\Search_Controller@searchTopBar' )
     ->permission( [ $authentic ] );

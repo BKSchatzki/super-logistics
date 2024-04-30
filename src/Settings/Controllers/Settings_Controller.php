@@ -1,17 +1,17 @@
 <?php
 
-namespace WeDevs\PM\Settings\Controllers;
+namespace SL\Settings\Controllers;
 
 use WP_REST_Request;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
-use WeDevs\PM\Common\Traits\Request_Filter;
-use WeDevs\PM\Settings\Models\Settings;
-use WeDevs\PM\Settings\Transformers\Settings_Transformer;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Core\File_System\File_System;
-use WeDevs\PM\Settings\Helper\Settings as Helper;
+use SL\Common\Traits\Request_Filter;
+use SL\Settings\Models\Settings;
+use SL\Settings\Transformers\Settings_Transformer;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Core\File_System\File_System;
+use SL\Settings\Helper\Settings as Helper;
 
 class Settings_Controller {
 
@@ -122,7 +122,7 @@ class Settings_Controller {
         $settings->delete();
 
         $message = [
-            'message' => __('Delete settings record', 'wedevs-project-manager')
+            'message' => __('Delete settings record', 'super-logistics')
         ];
 
         return $this->get_response(false, $message);

@@ -3,20 +3,20 @@
         <div class="filter-title">
             <div>
                 <a href="#" @click.prevent="cancel()" class="icon-pm-cross"></a>
-                <span class="active-task-filter">{{__('Task Filter', 'wedevs-project-manager')}}</span>
+                <span class="active-task-filter">{{__('Task Filter', 'super-logistics')}}</span>
             </div>
         </div>
 
         <div class="search-content">
             <form @submit.prevent="actionSearch()">
                 <div class="margin-top">
-                    <div class="margin-title">{{__('Task title', 'wedevs-project-manager')}}</div>
+                    <div class="margin-title">{{__('Task title', 'super-logistics')}}</div>
                     <div>
                         <input class="title-field" type="text" v-model="searchFields.title">
                     </div>
                 </div>
                 <div class="margin-top">
-                    <div class="margin-title">{{__('Task list name', 'wedevs-project-manager')}}</div>
+                    <div class="margin-title">{{__('Task list name', 'super-logistics')}}</div>
                     
                     <div>
                         <multiselect
@@ -25,28 +25,28 @@
                             :show-labels="false"
                             :searchable="true"
                             :loading="asyncListLoading"
-                            :placeholder="__( 'Type task list name', 'wedevs-project-manager' )"
+                            :placeholder="__( 'Type task list name', 'super-logistics' )"
                             @search-change="asyncFind($event)"
                             label="title"
                             track-by="id">
-                            <span slot="noResult">{{ __( 'No task lists found.', 'wedevs-project-manager' ) }}</span>
+                            <span slot="noResult">{{ __( 'No task lists found.', 'super-logistics' ) }}</span>
 
                         </multiselect>
                     </div>
                 </div>
                 <div class="margin-top">
-                    <div class="margin-title">{{__('Status', 'wedevs-project-manager')}}</div>
+                    <div class="margin-title">{{__('Status', 'super-logistics')}}</div>
                     <div class="status-elements">
                         <a :class="'complete-btn ' + completeBoder()" @click.prevent="changeFilterStatus('complete')" href="#">
-                            {{__('Completed', 'wedevs-project-manager')}}
+                            {{__('Completed', 'super-logistics')}}
                         </a>
                         <a :class="'on-going-btn ' + onGoingBorder()" @click.prevent="changeFilterStatus('incomplete')" href="#">
-                            {{__('On-going', 'wedevs-project-manager')}}
+                            {{__('On-going', 'super-logistics')}}
                         </a>
                     </div>
                 </div>
                 <div class="margin-top">
-                    <div class="margin-title">{{__('Assigned to', 'wedevs-project-manager')}}</div>
+                    <div class="margin-title">{{__('Assigned to', 'super-logistics')}}</div>
                     <div>
                         <multiselect
                             v-model="searchFields.user"
@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="margin-top">
-                    <div class="margin-title">{{__('Due Date', 'wedevs-project-manager')}}</div>
+                    <div class="margin-title">{{__('Due Date', 'super-logistics')}}</div>
                     <div>
                         <multiselect
                             v-model="searchFields.dueDate"
@@ -75,13 +75,13 @@
                 </div>
                 <div class="action">
                     <span v-if="taskFilterSpinner" class="pm-spinner"></span>
-                    <a @click.prevent="clearFilter()" class="pm-button pm-secondary" href="#">{{__('Clear Filter', 'wedevs-project-manager')  }}</a>
-                    <a @click.prevent="cancel()" class="pm-button pm-secondary" href="#">{{__('Cancel', 'wedevs-project-manager')  }}</a>
+                    <a @click.prevent="clearFilter()" class="pm-button pm-secondary" href="#">{{__('Clear Filter', 'super-logistics')  }}</a>
+                    <a @click.prevent="cancel()" class="pm-button pm-secondary" href="#">{{__('Cancel', 'super-logistics')  }}</a>
                     <input  
                         type="submit" 
                         :class=" runningQuery ? 'submit-btn-color pm-button pm-primary filter-submit-btn' : 'pm-button pm-primary filter-submit-btn'" 
                         name="submit_todo" 
-                        :value="__('Apply Filter', 'wedevs-project-manager')">
+                        :value="__('Apply Filter', 'super-logistics')">
                     
                     <div v-if="runningQuery"  class="pm-circle-spinner"></div>
                 </div>
@@ -235,40 +235,40 @@
                     title: '',
                     user: {
                         id: 0,
-                        display_name: this.__('All', 'wedevs-project-manager')
+                        display_name: this.__('All', 'super-logistics')
                     },
                     list: {
                         id: 0,
-                        title: this.__('All', 'wedevs-project-manager')
+                        title: this.__('All', 'super-logistics')
                     },
                     dueDate: {
                         'id': '0',
-                        'title': this.__('Any', 'wedevs-project-manager'),
+                        'title': this.__('Any', 'super-logistics'),
                     },
                     status: '',
                 },
                 searchLists: [
                     {
                         id: 0,
-                        title: this.__('All', 'wedevs-project-manager')
+                        title: this.__('All', 'super-logistics')
                     }
                 ],
                 dueDates: [
                     {
                         'id': '0',
-                        'title': this.__('Any', 'wedevs-project-manager'),
+                        'title': this.__('Any', 'super-logistics'),
                     },
                     {
                         'id': 'overdue',
-                        'title': this.__('Over Due', 'wedevs-project-manager'),
+                        'title': this.__('Over Due', 'super-logistics'),
                     },
                     {
                         'id': 'today',
-                        'title': this.__('Today', 'wedevs-project-manager'),
+                        'title': this.__('Today', 'super-logistics'),
                     },
                     {
                         'id': 'week',
-                        'title': this.__('Less Than 1 week', 'wedevs-project-manager'),
+                        'title': this.__('Less Than 1 week', 'super-logistics'),
                     }
                 ],
                 asyncListLoading: false,
@@ -313,7 +313,7 @@
             setSearchLists (lists) {
                 var newLists = [{
                     id: 0,
-                    title: this.__('All', 'wedevs-project-manager')
+                    title: this.__('All', 'super-logistics')
                 }];
 
                 lists.forEach(function(list) {
@@ -385,7 +385,7 @@
                         assignees.unshift(
                             {
                                 id: 0,
-                                display_name: this.__('All', 'wedevs-project-manager')
+                                display_name: this.__('All', 'super-logistics')
                             }
                         );
                     }

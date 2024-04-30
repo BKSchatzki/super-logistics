@@ -5,7 +5,7 @@
      * @param string browse_button ID of the pickfile
      * @param string container ID of the wrapper
      */
-    window.PM_Uploader = function (browse_button, container, component) {
+    window.SL_Uploader = function (browse_button, container, component) {
         this.container = container;
         this.browse_button = browse_button;
         
@@ -28,12 +28,12 @@
             multiple_queues: false,
             urlstream_upload: true,
             file_data_name: 'files',
-            max_file_size: PM_Vars.plupload.max_file_size,
-            url: PM_Vars.plupload.url,
-            flash_swf_url: PM_Vars.plupload.flash_swf_url,
-            silverlight_xap_url: PM_Vars.plupload.silverlight_xap_url,
-            filters: PM_Vars.plupload.filters,
-            resize: PM_Vars.plupload.resize,
+            max_file_size: SL_Vars.plupload.max_file_size,
+            url: SL_Vars.plupload.url,
+            flash_swf_url: SL_Vars.plupload.flash_swf_url,
+            silverlight_xap_url: SL_Vars.plupload.silverlight_xap_url,
+            filters: SL_Vars.plupload.filters,
+            resize: SL_Vars.plupload.resize,
         });
 
         //attach event handlers
@@ -48,7 +48,7 @@
 
     };
 
-    PM_Uploader.prototype = {
+    SL_Uploader.prototype = {
 
         init: function (up, params) {
 

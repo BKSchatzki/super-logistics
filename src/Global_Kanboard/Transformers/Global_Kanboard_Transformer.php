@@ -1,14 +1,14 @@
 <?php
 
-namespace WeDevs\PM\Global_Kanboard\Transformers;
+namespace SL\Global_Kanboard\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use WeDevs\PM\User\Transformers\User_Transformer;
-use WeDevs\PM\Common\Traits\Resource_Editors;
+use SL\User\Transformers\User_Transformer;
+use SL\Common\Traits\Resource_Editors;
 use Carbon\Carbon;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Global_Kanboard\Models\Global_Kanboard;
-use WeDevs\PM\Task\Transformers\Task_Transformer;
+use SL\Task\Models\Task;
+use SL\Global_Kanboard\Models\Global_Kanboard;
+use SL\Task\Transformers\Task_Transformer;
 
 class Global_Kanboard_Transformer extends TransformerAbstract {
 

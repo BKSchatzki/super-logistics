@@ -9,7 +9,7 @@ Usage for this component
             <div class="pm-dorpdown-menu-li-content">
                 <a  href="#" class="pm-dorpdown-menu-link">
                     <i class="pm-dorpdown-menu-icon flaticon-pm-settings"></i>
-                    <span class="pm-dorpdown-menu-text">{{ __( 'Menu 1', 'wedevs-project-manager' ) }}</span>
+                    <span class="pm-dorpdown-menu-text">{{ __( 'Menu 1', 'super-logistics' ) }}</span>
                 </a>
             </div>
         </li>
@@ -18,7 +18,7 @@ Usage for this component
             <div class="pm-dorpdown-menu-li-content">
                 <a href="#" class="pm-dorpdown-menu-link">
                     <i class="logo icon-pm-task-list pm-dorpdown-menu-icon"></i>
-                    <span class="pm-dorpdown-menu-text">{{ __( 'Menu 2', 'wedevs-project-manager' ) }}</span>
+                    <span class="pm-dorpdown-menu-text">{{ __( 'Menu 2', 'super-logistics' ) }}</span>
                 </a>
             </div>
         </li>

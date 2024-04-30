@@ -10,7 +10,7 @@
  * Author: Ajimix [github.com/ajimix] and the contributors [github.com/ajimix/asana-api-php-class/contributors]
  * Version: 6.4.0
  */
-namespace WeDevs\PM\Tools\Library;
+namespace SL\Tools\Library;
 // Define some constants for later usage.
 define('ASANA_METHOD_POST', 1);
 define('ASANA_METHOD_PUT', 2);
@@ -20,7 +20,7 @@ define('ASANA_RETURN_TYPE_JSON', 1);
 define('ASANA_RETURN_TYPE_OBJECT', 2);
 define('ASANA_RETURN_TYPE_ARRAY', 3);
 
-class PM_Asana
+class SL_Asana
 {
     public $fastAPI = false; // Use Asana fast API version, currently in open beta: https://asana.com/developers/feed/asana-fast-api-open-beta
     public $newRichText = true; // Use Asana new rich text formatting: https://asana.com/developers/feed/asana-fast-api-open-beta

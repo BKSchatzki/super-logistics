@@ -16,12 +16,12 @@ class FirstCest
 		$I->fillField('pwd', 'admin');
 		$I->click('wp-submit');
 		$I->click('Project Manager');
-		$I->waitForElement('#wedevs-project-manager h3.pm-project-title', 30); 
+		$I->waitForElement('#super-logistics h3.pm-project-title', 30); 
 		$I->click('New Project');
 		$I->fillField('#project_name', 'Codeception Testing Two');
 		$I->click('#add_project');
 
-		//$I->click('#wedevs-project-manager h3.pm-project-title a');
+		//$I->click('#super-logistics h3.pm-project-title a');
 
 		// $I->wait(20);
     }
@@ -34,12 +34,12 @@ class FirstCest
 		$I->click('wp-submit');
 		
 		$I->click('Project Manager');
-		$I->waitForElement('#wedevs-project-manager h3.pm-project-title', 30); 
+		$I->waitForElement('#super-logistics h3.pm-project-title', 30); 
 		$I->click('New Project');
 		$I->fillField('#project_name', 'Codeception Testing Two');
 		$I->click('#add_project');
 
-		//$I->click('#wedevs-project-manager h3.pm-project-title a');
+		//$I->click('#super-logistics h3.pm-project-title a');
 
 		// $I->wait(20);
     }

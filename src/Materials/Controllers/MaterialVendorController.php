@@ -1,16 +1,16 @@
 <?php
-namespace WeDevs\PM\Materials\Controllers;
+namespace SL\Materials\Controllers;
 
 use Reflection;
 use WP_REST_Request;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Common\Traits\Request_Filter;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Common\Traits\Request_Filter;
 use Carbon\Carbon;
-use WeDevs\PM\Materials\Models\MaterialVendor;
-use WeDevs\PM\Materials\Transformers\MaterialVendorTransformer;
+use SL\Materials\Models\MaterialVendor;
+use SL\Materials\Transformers\MaterialVendorTransformer;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 class MaterialVendorController {

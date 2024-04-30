@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Core\Config;
+namespace SL\Core\Config;
 
-use WeDevs\PM\Core\Singletonable;
+use SL\Core\Singletonable;
 
 class Config {
     /**

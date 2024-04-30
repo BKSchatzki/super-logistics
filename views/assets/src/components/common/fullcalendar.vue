@@ -76,13 +76,13 @@
             defaultConfig() {
                 const self = this;
 
-                var hasUnderscore = PM_Vars.locale.indexOf('_');
+                var hasUnderscore = SL_Vars.locale.indexOf('_');
                 var locale = '';
 
                 if( hasUnderscore != -1 ) {
-                    locale = PM_Vars.locale.substr(0, PM_Vars.locale.indexOf('_'));
+                    locale = SL_Vars.locale.substr(0, SL_Vars.locale.indexOf('_'));
                 } else {
-                    locale = PM_Vars.locale;
+                    locale = SL_Vars.locale;
                 }
 
                 if( !locale ) {

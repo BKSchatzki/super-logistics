@@ -39,7 +39,7 @@
 <script>
     Vue.directive('pm-uploader', {
         inserted: function (el, binding, vnode) { 
-            new PM_Uploader(el, 'pm-upload-container', vnode.context );
+            new SL_Uploader(el, 'pm-upload-container', vnode.context );
         },
     });
 

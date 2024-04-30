@@ -1,10 +1,10 @@
 <?php
 
-namespace WeDevs\PM\Common\Models;
+namespace SL\Common\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
-use WeDevs\PM\User\Models\User;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
+use SL\User\Models\User;
 
 class Assignee extends Eloquent {
 
@@ -29,6 +29,6 @@ class Assignee extends Eloquent {
     ];
 
     public function assigned_user() {
-        return $this->belongsTo( 'WeDevs\PM\User\Models\User', 'assigned_to' );
+        return $this->belongsTo( 'SL\User\Models\User', 'assigned_to' );
     }
 }

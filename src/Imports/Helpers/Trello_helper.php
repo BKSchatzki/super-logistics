@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\PM\Imports\Helpers;
+namespace SL\Imports\Helpers;
 
 
 class Trello_helper {

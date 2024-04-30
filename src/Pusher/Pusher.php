@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Pusher;
+namespace SL\Pusher;
 
-use WeDevs\PM\Pusher\Core\Auth\Auth;
+use SL\Pusher\Core\Auth\Auth;
 
 class Pusher {
 
@@ -13,7 +13,7 @@ class Pusher {
     }
 
     public function filters() {
-        add_filter( 'pm_localize', 'PM_pusher_localize' );
+        add_filter( 'pm_localize', 'SL_pusher_localize' );
     }
 
     public function init() {
@@ -38,14 +38,14 @@ class Pusher {
     public function actions() {
         add_action( 'admin_enqueue_scripts', [$this, 'scripts'] );
         add_action( 'wp_enqueue_scripts', [$this, 'scripts'] );
-        add_action( 'PM_load_router_files', [$this, 'router'] );
-        add_action( 'pm_update_task_status', 'PM_pusher_update_task_status', 10, 3 );
-        add_action( 'pm_updated', 'PM_pusher_update_task' );
-        add_action( 'pm_before_assignees', 'PM_pusher_before_assignees', 10, 2 );
-        add_action( 'pm_after_new_comment', 'PM_pusher_after_new_comment', 10, 2 );
-        add_action( 'pm_after_update_comment', 'PM_pusher_after_update_comment', 10, 2 );
-        add_action( 'pm_after_new_message', 'PM_pusher_after_new_message', 10, 3 );
-        add_action( 'pm_after_update_message', 'PM_pusher_after_update_message', 10, 3 );
+        add_action( 'SL_load_router_files', [$this, 'router'] );
+        add_action( 'pm_update_task_status', 'SL_pusher_update_task_status', 10, 3 );
+        add_action( 'pm_updated', 'SL_pusher_update_task' );
+        add_action( 'pm_before_assignees', 'SL_pusher_before_assignees', 10, 2 );
+        add_action( 'pm_after_new_comment', 'SL_pusher_after_new_comment', 10, 2 );
+        add_action( 'pm_after_update_comment', 'SL_pusher_after_update_comment', 10, 2 );
+        add_action( 'pm_after_new_message', 'SL_pusher_after_new_message', 10, 3 );
+        add_action( 'pm_after_update_message', 'SL_pusher_after_update_message', 10, 3 );
     }
 
     public function router( $files ) {
@@ -79,7 +79,7 @@ class Pusher {
             'api_namespace'  => pm_api_namespace(),
         ];
 
-        wp_localize_script( 'pm-pusher-jquery', 'PM_Pusher_Vars', $localize );
+        wp_localize_script( 'pm-pusher-jquery', 'SL_Pusher_Vars', $localize );
 
         wp_enqueue_style( 'pm-pro-pusher-notification', plugins_url( 'views/assets/css/pusher.css', __FILE__ ), false, time(), 'all' );
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\PM\Settings\Controllers;
+namespace SL\Settings\Controllers;
 
 use WP_REST_Request;
 use League\Fractal;
@@ -8,11 +8,11 @@ use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use Illuminate\Pagination\Paginator;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Request_Filter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Settings\Models\Task_Types;
-use WeDevs\PM\Settings\Transformers\Task_Type_Transformer;
-use WeDevs\PM\Settings\Models\Task_Type_Task;
+use SL\Common\Traits\Request_Filter;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Settings\Models\Task_Types;
+use SL\Settings\Transformers\Task_Type_Transformer;
+use SL\Settings\Models\Task_Type_Task;
 
 class Task_Types_Controller {
 

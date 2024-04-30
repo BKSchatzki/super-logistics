@@ -1,12 +1,10 @@
 <script>
 import { sortBy } from 'lodash';
-import Badge from '@components/upgrade/badge';
 
 export default {
   props: {
     current: { type: String, default: '' }
   },
-  components: { Badge },
   computed: {
     menu() {
       let project = this.$store.state.project;
@@ -18,35 +16,35 @@ export default {
         [
           { // Task Lists
             route: { name: 'task_lists', project_id: this.project_id },
-            name: this.__( 'Task Lists', 'wedevs-project-manager'),
+            name: this.__( 'Task Lists', 'super-logistics'),
             count: project.meta.data.total_task_lists,
             class: 'to-do-list pm-sm-col-12',
             order: 1
           },
           { // Overview
             route: {name: 'pm_overview', project_id: this.project_id },
-            name: this.__( 'Overview', 'wedevs-project-manager'),
+            name: this.__( 'Overview', 'super-logistics'),
             count: '',
             class: 'overview pm-sm-col-12',
             order: 10
           },
           { // Activities
             route: { name: 'activities', project_id: this.project_id },
-            name: this.__( 'Activities', 'wedevs-project-manager'),
+            name: this.__( 'Activities', 'super-logistics'),
             count: project.meta.data.total_activities,
             class: 'activity pm-sm-col-12',
             order: 21
           },
           { // Discussions
             route: { name: 'discussions', project_id: this.project_id },
-            name: this.__( 'Discussions', 'wedevs-project-manager'),
+            name: this.__( 'Discussions', 'super-logistics'),
             count: project.meta.data.total_discussion_boards,
             class: 'message pm-sm-col-12',
             order: 3
           },
           { // Milestones
             route: { name: 'milestones', project_id: this.project_id },
-            name: this.__( 'Milestones', 'wedevs-project-manager'),
+            name: this.__( 'Milestones', 'super-logistics'),
             count: project.meta.data.total_milestones,
             class: 'milestone pm-sm-col-12',
             order: 8
@@ -60,7 +58,7 @@ export default {
           },
           { // Files
             route: { name: 'pm_files', project_id: this.project_id },
-            name: this.__( 'Files', 'wedevs-project-manager'),
+            name: this.__( 'Files', 'super-logistics'),
             count: project.meta.data.total_files,
             class: 'files pm-sm-col-12',
             order: 12
@@ -159,7 +157,7 @@ export default {
         <div class="pm-header-menu-wrap">
             <nav v-pm-header-menu-responsive v-if="menu.length" :class="(isNavCollapse) ? 'pm-project-menu menu-items-open' : 'pm-project-menu'">
               <div class="pm-nav-menu-toggle dashicons dashicons-arrow-down-alt2" @click="collapseNav()">
-                <span>{{ 'Menu', 'wedevs-project-manager' }}</span>
+                <span>{{ 'Menu', 'super-logistics' }}</span>
               </div>
               <div :class="item.badge ? 'menu-item pro-menu-item' : 'menu-item'" v-for="item in menu" :key="item.name">
                 <router-link
@@ -167,17 +165,16 @@ export default {
                   :to="{ name: item.route.name, project_id: project_id }">
                   <span :class="'logo '+setMenuIcon(item)"></span>
                   <span class="title">{{ item.name }}</span>
-                  <Badge v-if="item.badge" />
                 </router-link>
               </div>
                 <div class="menu-item more-menu-wrap" v-if="moreMenu.length">
                     <a @click.prevent="" href="#" :class="`message pm-sm-col-12 ${isMoreMenuActive(moreMenu)}`">
                         <span class="logo donw-arrow-svg"><svg viewBox="0 0 150 109" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g id="Page-1" stroke="none" stroke-width="1"  fill-rule="evenodd"> <g id="elevator"> <path d="M135.923,0 L14.618,0 C9.378,0 4.576,2.926 2.175,7.584 C-0.227,12.24 0.173,17.85 3.211,22.119 L58.595,99.941 C62.435,105.336 68.649,108.541 75.271,108.541 C81.893,108.541 88.107,105.336 91.947,99.941 L147.331,22.119 C150.369,17.849 150.769,12.24 148.367,7.584 C145.965,2.926 141.163,0 135.923,0 Z" id="Path"></path> </g> </g> </svg></span> 
                         
-                        <span>{{ __('More', 'wedevs-project-manager') }}</span>
+                        <span>{{ __('More', 'super-logistics') }}</span>
                     </a>
 
-                    <ul class="child-menu-wrap" :style="!PM_Vars.is_pro ? 'width: 135px' : ''">
+                    <ul class="child-menu-wrap" :style="!SL_Vars.is_pro ? 'width: 135px' : ''">
                         <li :class="child.badge ? 'child-item pro-menu-item' : 'child-item'" v-for="child in moreMenu" :key="child.name">
                             <router-link 
                                 :class="`${child.class} ${setActiveMenu(child)}`"
@@ -188,7 +185,6 @@ export default {
                             >
                                 <span :class="`logo ${setMenuIcon(child)}`"></span>
                                 <span class="title">{{ child.name }}</span>
-                                <Badge v-if="child.badge" />
                             </router-link>
                         </li>
                     </ul>

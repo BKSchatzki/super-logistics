@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Global_Kanboard\Controllers;
+namespace SL\Global_Kanboard\Controllers;
 
 use Reflection;
 use WP_REST_Request;
@@ -7,27 +7,27 @@ use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Common\Models\Boardable;
-use WeDevs\PM\Common\Traits\Request_Filter;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Project\Models\Project;
+use SL\Common\Models\Boardable;
+use SL\Common\Traits\Request_Filter;
 use Carbon\Carbon;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Global_Kanboard\Models\Global_Kanboard;
-use WeDevs\PM\Global_Kanboard\Transformers\Global_Kanboard_Transformer;
-use WeDevs\PM\Global_Kanboard\Models\Global_Kanboard_Boardable;
-use WeDevs\PM\Global_Kanboard\Transformers\Global_Kanboard_Task_Transformer;
+use SL\Task\Models\Task;
+use SL\Global_Kanboard\Models\Global_Kanboard;
+use SL\Global_Kanboard\Transformers\Global_Kanboard_Transformer;
+use SL\Global_Kanboard\Models\Global_Kanboard_Boardable;
+use SL\Global_Kanboard\Transformers\Global_Kanboard_Task_Transformer;
 use Illuminate\Database\Capsule\Manager as Capsule;
-use WeDevs\PM\Task\Transformers\Task_Transformer;
-use WeDevs\PM\Project\Transformers\Project_Transformer;
+use SL\Task\Transformers\Task_Transformer;
+use SL\Project\Transformers\Project_Transformer;
 use Illuminate\Pagination\Paginator;
-use WeDevs\PM\Task\Controllers\Task_Controller;
-use WeDevs\PM\Common\Models\Assignee;
-use WeDevs\PM\Task_List\Transformers\List_Task_Transformer;
-use WeDevs\PM\task\Helper\Task as Advanced_Task;
-use WeDevs\PM\Task\Helper\Task as Task_Helper;
+use SL\Task\Controllers\Task_Controller;
+use SL\Common\Models\Assignee;
+use SL\Task_List\Transformers\List_Task_Transformer;
+use SL\task\Helper\Task as Advanced_Task;
+use SL\Task\Helper\Task as Task_Helper;
 
-use WeDevs\PM\Project\Helper\Project as Project_Helper;
+use SL\Project\Helper\Project as Project_Helper;
 
 class Global_Kanboard_Controller {
 
@@ -367,7 +367,7 @@ class Global_Kanboard_Controller {
         $board_id   = $params['section_id'];
         $task_id    = $params['dragabel_task_id'];
 
-        $meta = \WeDevs\PM\Common\Models\Meta::where( 'project_id', $project_id )
+        $meta = \SL\Common\Models\Meta::where( 'project_id', $project_id )
             ->where( 'entity_type',  'kanboard' )
             ->where( 'meta_key', 'automation' )
             ->where( 'entity_id', $board_id )
@@ -461,7 +461,7 @@ class Global_Kanboard_Controller {
             $project_id = empty( $params['project_id'] ) ? 0 : intval( $params['project_id'] );
             $task_id = $params['commentable_id'];
 
-            $metas = \WeDevs\PM\Common\Models\Meta::where( 'project_id', $project_id )
+            $metas = \SL\Common\Models\Meta::where( 'project_id', $project_id )
                 ->where( 'entity_type',  'kanboard' )
                 ->where( 'meta_key', 'automation' )
                 ->get()
@@ -522,7 +522,7 @@ class Global_Kanboard_Controller {
         $project_id = $postData['project_id'];
         $column_id = $postData['board_id'];
 
-        $metas = \WeDevs\PM\Common\Models\Meta::where( 'project_id', $project_id )
+        $metas = \SL\Common\Models\Meta::where( 'project_id', $project_id )
             ->where( 'entity_type',  'kanboard' )
             ->where( 'meta_key', 'automation' )
             ->get()
@@ -706,7 +706,7 @@ class Global_Kanboard_Controller {
         }
 
 
-        $metas = \WeDevs\PM\Common\Models\Meta::where( 'project_id', $project_id )
+        $metas = \SL\Common\Models\Meta::where( 'project_id', $project_id )
             ->where( 'entity_type',  'kanboard' )
             ->where( 'meta_key', 'automation' )
             ->get()
@@ -818,7 +818,7 @@ class Global_Kanboard_Controller {
         if ( $status == 'incomplete' ) {
 
             // Finding in_progress type columna and none type column and add this task
-            $metas = \WeDevs\PM\Common\Models\Meta::where( 'project_id', $project_id )
+            $metas = \SL\Common\Models\Meta::where( 'project_id', $project_id )
                 ->where( 'entity_type',  'kanboard' )
                 ->where( 'meta_key', 'automation' )
                 ->get()
@@ -866,7 +866,7 @@ class Global_Kanboard_Controller {
         if ( $status == 'complete' ) {
 
             //When task mark done
-            $metas = \WeDevs\PM\Common\Models\Meta::where( 'project_id', $project_id )
+            $metas = \SL\Common\Models\Meta::where( 'project_id', $project_id )
                 ->where( 'entity_type',  'kanboard' )
                 ->where( 'meta_key', 'automation' )
                 ->get()

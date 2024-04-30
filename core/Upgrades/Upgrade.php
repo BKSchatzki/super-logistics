@@ -1,6 +1,6 @@
 <?php
-namespace WeDevs\PM\Core\Upgrades;
-use PM_Create_Table;
+namespace SL\Core\Upgrades;
+use SL_Create_Table;
 
 
 class Upgrade {
@@ -49,7 +49,7 @@ class Upgrade {
         $is_need_update = self::is_needs_update();
         
         if (  $is_need_update ) {
-            new PM_Create_Table;
+            new SL_Create_Table;
             (new \RoleTableSeeder())->run();
         }
     }
@@ -149,13 +149,13 @@ class Upgrade {
                     <div class="notice notice-warning">
 
                         <p>
-                            <strong><?php esc_attr_e( 'WP Project Manager Data Update Required', 'wedevs-project-manager' ); ?></strong>
-                            <?php esc_attr_e('&#8211; Please click the button below to update to the latest version.', 'wedevs-project-manager' ) ?>
+                            <strong><?php esc_attr_e( 'WP Project Manager Data Update Required', 'super-logistics' ); ?></strong>
+                            <?php esc_attr_e('&#8211; Please click the button below to update to the latest version.', 'super-logistics' ) ?>
                         </p>
                         <form action="" method="post" style="padding-bottom: 10px;" class="PmUpgradeFrom">
                             <?php wp_nonce_field( '_nonce', 'pm_nonce' ); ?>
-                            <input type="submit" class="button button-primary" name="pm_update" value="<?php esc_html_e( 'Run the Update', 'wedevs-project-manager' ); ?>">
-                            <a href="https://wedevs.com/docs/wp-project-manager/how-to-migrate-to-wp-project-manager-v2-0/?utm_source=wp-admin&utm_medium=pm-action-link&utm_campaign=pm-docs" class="button promo-btn" target="_blank"><?php esc_html_e( 'Read More', 'wedevs-project-manager' ); ?></a>
+                            <input type="submit" class="button button-primary" name="pm_update" value="<?php esc_html_e( 'Run the Update', 'super-logistics' ); ?>">
+                            <a href="https://wedevs.com/docs/wp-project-manager/how-to-migrate-to-wp-project-manager-v2-0/?utm_source=wp-admin&utm_medium=pm-action-link&utm_campaign=pm-docs" class="button promo-btn" target="_blank"><?php esc_html_e( 'Read More', 'super-logistics' ); ?></a>
                         </form>
                     </div>
                 </div>
@@ -163,7 +163,7 @@ class Upgrade {
                     jQuery('form.PmUpgradeFrom').submit(function(event){
                         //event.preventDefault();
 
-                        return confirm( '<?php esc_html_e( 'It is strongly recommended that you backup your database before proceeding. Are you sure you wish to run the updater now?', 'wedevs-project-manager' ); ?>' );
+                        return confirm( '<?php esc_html_e( 'It is strongly recommended that you backup your database before proceeding. Are you sure you wish to run the updater now?', 'super-logistics' ); ?>' );
                     });
                 </script>
             <?php

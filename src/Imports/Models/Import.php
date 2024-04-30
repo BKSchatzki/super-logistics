@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Imports\Models;
+namespace SL\Imports\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
+use SL\Core\DB_Connection\Model as Eloquent;
 
 class Import extends Eloquent {
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace WeDevs\PM\Core\Permissions;
+namespace SL\Core\Permissions;
 
-use WeDevs\PM\Core\Permissions\Abstract_Permission;
-use WeDevs\PM\Milestone\Models\Milestone;
+use SL\Core\Permissions\Abstract_Permission;
+use SL\Milestone\Models\Milestone;
 use WP_REST_Request;
 
 class Edit_Milestone extends Abstract_Permission {
@@ -27,6 +27,6 @@ class Edit_Milestone extends Abstract_Permission {
 
         }
 
-        return new \WP_Error( 'Milestone', __( "You have no permission.", "wedevs-project-manager" ) );
+        return new \WP_Error( 'Milestone', __( "You have no permission.", "super-logistics" ) );
     }
 }

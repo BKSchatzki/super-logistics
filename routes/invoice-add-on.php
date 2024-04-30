@@ -1,8 +1,8 @@
 <?php
 
-use WeDevs\PM\Core\Router\Router;
+use SL\Core\Router\Router;
 
 $router = Router::singleton();
 
-$router->get( 'all-invoices', 'WeDevs/PM/Invoice/Controllers/Invoice_Controller@show_all' )
-    ->permission( ['WeDevs\PM\Core\Permissions\Access_Project'] );
+$router->get( 'all-invoices', 'SL/Invoice/Controllers/Invoice_Controller@show_all' )
+    ->permission( ['SL\Core\Permissions\Access_Project'] );

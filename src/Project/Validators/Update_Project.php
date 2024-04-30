@@ -1,16 +1,16 @@
 <?php
 
-namespace WeDevs\PM\Project\Validators;
+namespace SL\Project\Validators;
 
-use WeDevs\PM\Core\Validator\Abstract_Validator;
+use SL\Core\Validator\Abstract_Validator;
 
 class Update_Project extends Abstract_Validator {
     public function messages() {
         return [
-            'title.required'  => __( 'Project title is required.', 'wedevs-project-manager' ),
-            'title.pm_unique' => __( 'Project title must be unique.', 'wedevs-project-manager' ),
-            'id.required'     => __( 'Project ID is required.', 'wedevs-project-manager' ),
-            'id.gtz'          => __( 'Project ID must be greater than zero', 'wedevs-project-manager' ),
+            'title.required'  => __( 'Project title is required.', 'super-logistics' ),
+            'title.pm_unique' => __( 'Project title must be unique.', 'super-logistics' ),
+            'id.required'     => __( 'Project ID is required.', 'super-logistics' ),
+            'id.gtz'          => __( 'Project ID must be greater than zero', 'super-logistics' ),
         ];
     }
 

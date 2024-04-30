@@ -1,10 +1,10 @@
 <?php
-namespace WeDevs\PM\Task_List\Helper;
+namespace SL\Task_List\Helper;
 
-use WeDevs\PM\Milestone\Helper\Milestone;
-use WeDevs\PM\task\Helper\Task;
-use WeDevs\PM\Comment\Helper\Comment;
-use WeDevs\PM\File\Helper\File;
+use SL\Milestone\Helper\Milestone;
+use SL\task\Helper\Task;
+use SL\Comment\Helper\Comment;
+use SL\File\Helper\File;
 use WP_REST_Request;
 // data: {
 // 	with: '',

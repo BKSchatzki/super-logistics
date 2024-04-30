@@ -7,7 +7,7 @@
                     @click.prevent="setActiveForm()"
                     class="pm-create-type pm-button pm-primary">
 
-                    {{ __('+ Create New Task Type', 'wedevs-project-manager') }}
+                    {{ __('+ Create New Task Type', 'super-logistics') }}
                 </a>
                 <div class="pm-clearfix"></div>
             </div>
@@ -19,9 +19,9 @@
                 <table class="pm-table table-striped table-justified">
                     <thead>
                         <tr>
-                            <th class="th-title">{{ __('Name', 'wedevs-project-manager') }}</th>
-                            <th class="th-title">{{ __('Description', 'wedevs-project-manager') }}</th>
-                            <th class="th-title">{{ __('Action', 'wedevs-project-manager') }}</th>
+                            <th class="th-title">{{ __('Name', 'super-logistics') }}</th>
+                            <th class="th-title">{{ __('Description', 'super-logistics') }}</th>
+                            <th class="th-title">{{ __('Action', 'super-logistics') }}</th>
                         </tr>
                     </thead>
 

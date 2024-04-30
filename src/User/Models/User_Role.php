@@ -1,9 +1,9 @@
 <?php
 
-namespace WeDevs\PM\User\Models;
+namespace SL\User\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Role\Models\Role;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Role\Models\Role;
 
 class User_Role extends Eloquent {
     protected $table = 'pm_role_user';
@@ -30,7 +30,7 @@ class User_Role extends Eloquent {
     }
 
     function role() {
-        return $this->hasOne( 'WeDevs\PM\Role\Models\Role', 'id', 'role_id' );
+        return $this->hasOne( 'SL\Role\Models\Role', 'id', 'role_id' );
     }
 
 }

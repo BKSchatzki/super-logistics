@@ -1,15 +1,15 @@
 <?php
 
-namespace WeDevs\PM\Activity\Controllers;
+namespace SL\Activity\Controllers;
 
 use WP_REST_Request;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Activity\Models\Activity;
-use WeDevs\PM\Activity\Transformers\Activity_Transformer;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Activity\Models\Carrier;
+use SL\Activity\Transformers\Activity_Transformer;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Capsule\Manager as DB;
 
@@ -31,10 +31,10 @@ class Activity_Controller {
         }); 
 
         if ( empty( $project_id ) ) {
-            $activities = Activity::orderBy( 'created_at', 'DESC' )
+            $activities = Carrier::orderBy( 'created_at', 'DESC' )
                 ->paginate( $per_page );
         } else {
-            $activities = Activity::where( pm_tb_prefix() .'pm_activities.project_id', $project_id )
+            $activities = Carrier::where( pm_tb_prefix() .'pm_activities.project_id', $project_id )
                 ->orderBy( pm_tb_prefix() .'pm_activities.created_at', 'desc' )
                 ->paginate( $per_page );
             

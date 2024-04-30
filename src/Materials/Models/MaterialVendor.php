@@ -1,8 +1,8 @@
 <?php
-namespace WeDevs\PM\Materials\Models;
+namespace SL\Materials\Models;
 
-use WeDevs\PM\Core\DB_Connection\Model as Eloquent;
-use WeDevs\PM\Common\Traits\Model_Events;
+use SL\Core\DB_Connection\Model as Eloquent;
+use SL\Common\Traits\Model_Events;
 use Carbon\Carbon;
 
 class MaterialVendor extends Eloquent {
@@ -19,6 +19,6 @@ class MaterialVendor extends Eloquent {
     ];
 
     public function materialOrders() {
-        return $this->hasMany('WeDevs\PM\Materials\Models\MaterialOrder', 'vendor_id');
+        return $this->hasMany('SL\Materials\Models\MaterialOrder', 'vendor_id');
     }
 }

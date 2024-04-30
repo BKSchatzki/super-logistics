@@ -1,25 +1,25 @@
 <?php 
 
-namespace WeDevs\PM\Core\Notifications;
+namespace SL\Core\Notifications;
 
 /**
 * class background email email processing
 *
 * @class    Background_Emailer
 * @version  2.0.0
-* @package  WeDevs\PM\Core
+* @package  SL\Core
 * @category Class
 * @author   weDevs
 */
-use WeDevs\PM\Core\Notifications\Emails\New_Project_Notification;
-use WeDevs\PM\Core\Notifications\Emails\Update_Project_Notification;
-use WeDevs\PM\Core\Notifications\Emails\New_Message_Notification;
-use WeDevs\PM\Core\Notifications\Emails\Update_Message_Notification;
-use WeDevs\PM\Core\Notifications\Emails\New_Comment_Notification;
-use WeDevs\PM\Core\Notifications\Emails\Update_Comment_Notification;
-use WeDevs\PM\Core\Notifications\Emails\New_Task_Notification;
-use WeDevs\PM\Core\Notifications\Emails\Update_Task_Notification;
-use WeDevs\PM\Core\Notifications\Emails\Complete_Task_Notification;
+use SL\Core\Notifications\Emails\New_Project_Notification;
+use SL\Core\Notifications\Emails\Update_Project_Notification;
+use SL\Core\Notifications\Emails\New_Message_Notification;
+use SL\Core\Notifications\Emails\Update_Message_Notification;
+use SL\Core\Notifications\Emails\New_Comment_Notification;
+use SL\Core\Notifications\Emails\Update_Comment_Notification;
+use SL\Core\Notifications\Emails\New_Task_Notification;
+use SL\Core\Notifications\Emails\Update_Task_Notification;
+use SL\Core\Notifications\Emails\Complete_Task_Notification;
 
  class Notification
  {
@@ -68,7 +68,7 @@ use WeDevs\PM\Core\Notifications\Emails\Complete_Task_Notification;
      */
     public static function queue_transactional_email() {
         ///echo 'lakjshkajsdasd'; die();
-        // if ( is_a( self::$background_emailer, 'WeDevs\PM\Core\Notifications\Background_Emailer' ) ) {
+        // if ( is_a( self::$background_emailer, 'SL\Core\Notifications\Background_Emailer' ) ) {
         //     self::$background_emailer->push_to_queue( array(
         //         'filter' => current_filter(),
         //         'args'   => func_get_args(),
@@ -109,7 +109,7 @@ use WeDevs\PM\Core\Notifications\Emails\Complete_Task_Notification;
             do_action_ref_array( current_filter() . '_notification', $args );
         } catch ( Exception $e ) {
             if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                trigger_error( esc_attr__( 'Transactional email triggered fatal error for callback ', 'wedevs-project-manager' ) . current_filter(), E_USER_WARNING );
+                trigger_error( esc_attr__( 'Transactional email triggered fatal error for callback ', 'super-logistics' ) . current_filter(), E_USER_WARNING );
             }
         }
     }

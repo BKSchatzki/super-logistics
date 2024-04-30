@@ -6,7 +6,7 @@
  * Time: 11:29 AM
  */
 
-// namespace WeDevs\PM\Tools\Helpers;
+// namespace SL\Tools\Helpers;
 
 // use Exception;
 
@@ -22,10 +22,10 @@
 //     }
 
 //     protected function define_constants() {
-//         if(! defined('PM_IMPORTER_CONTENTS_STORE')) {
-//             define('PM_IMPORTER_CONTENTS_STORE', WP_CONTENT_DIR . '/pm-import-contents');
-//             define('PM_IMPORTER_CONTENTS_DIR_PERMISSION', 0755);
-//             define('PM_IMPORTER_CONTENTS_FILE_PERMISSION', 0644);
+//         if(! defined('SL_IMPORTER_CONTENTS_STORE')) {
+//             define('SL_IMPORTER_CONTENTS_STORE', WP_CONTENT_DIR . '/pm-import-contents');
+//             define('SL_IMPORTER_CONTENTS_DIR_PERMISSION', 0755);
+//             define('SL_IMPORTER_CONTENTS_FILE_PERMISSION', 0644);
 //         }
 //     }
 
@@ -46,8 +46,8 @@
 //     }
 
 //     public function remove_root_dir() {
-//         if ( $this->fs->is_dir( PM_IMPORTER_CONTENTS_STORE ) ) {
-//             return $this->fs->rmdir( PM_IMPORTER_CONTENTS_STORE, true );
+//         if ( $this->fs->is_dir( SL_IMPORTER_CONTENTS_STORE ) ) {
+//             return $this->fs->rmdir( SL_IMPORTER_CONTENTS_STORE, true );
 //         }
 
 //         return false;
@@ -55,19 +55,19 @@
 
 //     public function make_dir() {
 //         $dirs = [
-//             PM_IMPORTER_CONTENTS_STORE,
-//             PM_IMPORTER_CONTENTS_STORE . '/data/',
-//             PM_IMPORTER_CONTENTS_STORE . '/data/trello',
-//             PM_IMPORTER_CONTENTS_STORE . '/data/asana',
-//             PM_IMPORTER_CONTENTS_STORE . '/data/acl'
+//             SL_IMPORTER_CONTENTS_STORE,
+//             SL_IMPORTER_CONTENTS_STORE . '/data/',
+//             SL_IMPORTER_CONTENTS_STORE . '/data/trello',
+//             SL_IMPORTER_CONTENTS_STORE . '/data/asana',
+//             SL_IMPORTER_CONTENTS_STORE . '/data/acl'
 //         ];
 
 //         foreach ( $dirs as $dir ) {
 //             if(!$this->fs->exists($dir)){
-//                 $created = $this->fs->mkdir( $dir, PM_IMPORTER_CONTENTS_DIR_PERMISSION );
+//                 $created = $this->fs->mkdir( $dir, SL_IMPORTER_CONTENTS_DIR_PERMISSION );
 //                 if ( ! $created ) {
 //                     throw new Exception(
-//                         sprintf( __( 'File permission error. Cannot create "%s" directory', 'wedevs-project-manager' ), $dir )
+//                         sprintf( __( 'File permission error. Cannot create "%s" directory', 'super-logistics' ), $dir )
 //                     );
 //                 }
 //             }
@@ -86,20 +86,20 @@
 //     }
 
 //     public function save_contents($filename, $contents ) {
-//         $file = PM_IMPORTER_CONTENTS_STORE . '/data/'.$filename;
+//         $file = SL_IMPORTER_CONTENTS_STORE . '/data/'.$filename;
 //         $this->make_file( $file );
 //         $json = json_encode($contents, JSON_PRETTY_PRINT);
-//         return $this->fs->put_contents($file, $json, PM_IMPORTER_CONTENTS_FILE_PERMISSION );
+//         return $this->fs->put_contents($file, $json, SL_IMPORTER_CONTENTS_FILE_PERMISSION );
 //     }
 
 //     public function copy_file( $from, $to = '' ) {
-//         $to = PM_IMPORTER_CONTENTS_STORE . $to;
+//         $to = SL_IMPORTER_CONTENTS_STORE . $to;
 
-//         return $this->fs->copy( $from, $to, true, PM_IMPORTER_CONTENTS_FILE_PERMISSION );
+//         return $this->fs->copy( $from, $to, true, SL_IMPORTER_CONTENTS_FILE_PERMISSION );
 //     }
 
 //     public function get_content( $filename ) {
-//         $file = PM_IMPORTER_CONTENTS_STORE . '/data/'.$filename;
+//         $file = SL_IMPORTER_CONTENTS_STORE . '/data/'.$filename;
 //         $json = $this->fs->get_contents( $file );
 
 //         return $json ? json_decode( $json, true ) : [];

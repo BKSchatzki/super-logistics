@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Discussion_Board\Validators;
+namespace SL\Discussion_Board\Validators;
 
-use WeDevs\PM\Core\Sanitizer\Abstract_Sanitizer;
+use SL\Core\Sanitizer\Abstract_Sanitizer;
 
 class Discussion_Board_Sanitizer extends Abstract_Sanitizer {
 	public function filters() {

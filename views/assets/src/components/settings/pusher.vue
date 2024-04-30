@@ -4,12 +4,12 @@
             <div id="pm_mails" class="group" style="">
                 <form @submit.prevent="saveEmailSettings()" method="post" action="options.php">
 
-                    <h2>{{ __( 'Pusher Settings', 'wedevs-project-manager') }}</h2>
+                    <h2>{{ __( 'Pusher Settings', 'super-logistics') }}</h2>
                     <table class="form-table">
                         <tbody>
                             <tr>
                                 <th scope="row">
-                                    <label for="pm_mails[email_from]">{{ __( 'App ID', 'wedevs-project-manager') }}</label>
+                                    <label for="pm_mails[email_from]">{{ __( 'App ID', 'super-logistics') }}</label>
                                 </th>
                                 <td>
                                     <input v-model="appId" type="text" class="regular-text" id="pm_mails[email_from]" name="pm_mails[email_from]" value="">
@@ -17,7 +17,7 @@
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <label for="pm_mails[email_from]">{{ __( 'App Key', 'wedevs-project-manager') }}</label>
+                                    <label for="pm_mails[email_from]">{{ __( 'App Key', 'super-logistics') }}</label>
                                 </th>
                                 <td>
                                     <input v-model="appKey" type="text" class="regular-text" id="pm_mails[email_from]" name="pm_mails[email_from]" value="">
@@ -25,7 +25,7 @@
                             </tr>
                              <tr>
                                 <th scope="row">
-                                    <label for="pm_mails[email_from]">{{ __( 'secret', 'wedevs-project-manager') }}</label>
+                                    <label for="pm_mails[email_from]">{{ __( 'secret', 'super-logistics') }}</label>
                                 </th>
                                 <td>
                                     <input v-model="secret" type="text" class="regular-text" id="pm_mails[email_from]" name="pm_mails[email_from]" value="">
@@ -34,7 +34,7 @@
 
                             <tr>
                                 <th scope="row">
-                                    <label for="pm_mails[email_from]">{{ __( 'Cluster', 'wedevs-project-manager') }}</label>
+                                    <label for="pm_mails[email_from]">{{ __( 'Cluster', 'super-logistics') }}</label>
                                 </th>
                                 <td>
                                     <input v-model="cluster" type="text" class="regular-text" id="pm_mails[email_from]" name="pm_mails[email_from]" value="">
@@ -66,7 +66,7 @@
                 appId: this.getSettings('pusher_app_id', ''),
                 cluster: this.getSettings('pusher_cluster', ''),
                 show_spinner: false,
-                save_change: __( 'Save Changes', 'wedevs-project-manager')
+                save_change: __( 'Save Changes', 'super-logistics')
             }
         },
 

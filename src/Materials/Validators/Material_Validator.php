@@ -1,7 +1,7 @@
 <?php
-namespace WeDevs\PM_Pro\Modules\Kanboard\Src\Validators;
+namespace SL_Pro\Modules\Kanboard\Src\Validators;
 
-use WeDevs\PM_Pro\Core\Validator\Abstract_Validator;
+use SL_Pro\Core\Validator\Abstract_Validator;
 
 Class Kanboard_Validator extends Abstract_Validator {
 

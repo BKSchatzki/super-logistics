@@ -1,12 +1,12 @@
 <?php 
 
-namespace WeDevs\PM\Core\Notifications\Emails;
+namespace SL\Core\Notifications\Emails;
 
 /**
 * Email Notification When a new project created
 */
-use WeDevs\PM\Core\Notifications\Email;
-use WeDevs\PM\Project\Models\Project;
+use SL\Core\Notifications\Email;
+use SL\Project\Models\Project;
 
 class Update_Message_Notification extends Email {
     
@@ -55,7 +55,7 @@ class Update_Message_Notification extends Email {
         }
 
         $template_name = apply_filters( 'pm_new_message_email_template_path', $this->get_template_path( '/html/update-message.php' ) );
-        $subject = sprintf( __( '[%s][%s] Update Message: %s', 'wedevs-project-manager' ), $this->get_blogname(), $project['title'] , $request['title'] );
+        $subject = sprintf( __( '[%s][%s] Update Message: %s', 'super-logistics' ), $this->get_blogname(), $project['title'] , $request['title'] );
         
         $message = $this->get_content_html( $template_name, $message );
         

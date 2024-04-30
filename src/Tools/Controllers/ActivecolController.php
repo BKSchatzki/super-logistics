@@ -6,13 +6,13 @@
  * Time: 12:14 PM
  */
 
-// namespace WeDevs\PM\Tools\Controllers;
+// namespace SL\Tools\Controllers;
 
 // use ActiveCollab\SDK\Authenticator\Cloud;
 // use ActiveCollab\SDK\Client;
 // use ActiveCollab\SDK\Token;
-// use WeDevs\PM\Tools\Helpers\FormatActiveCollab;
-// use WeDevs\PM\Tools\Helpers\ImportActivecollab;
+// use SL\Tools\Helpers\FormatActiveCollab;
+// use SL\Tools\Helpers\ImportActivecollab;
 // use WP_REST_Request;
 // use Exception;
 
@@ -113,7 +113,7 @@
 //         return array('msg' => 'Your ActiveCollab Projects are under process to import ... ');
 
 // //        $settings = pm_get_setting('activecol_credentials');
-// //        $acl = new PM_ActiveCol($settings['url'], $settings['token']);
+// //        $acl = new SL_ActiveCol($settings['url'], $settings['token']);
 // //        return $acl->getProject($projects[0]);
 
 //     }

@@ -1,13 +1,13 @@
 <?php 
 
-namespace WeDevs\PM\Core\Notifications\Emails;
+namespace SL\Core\Notifications\Emails;
 
 /**
 * Email Notification When a new project created
 */
-use WeDevs\PM\Core\Notifications\Email;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Comment\Models\Comment;
+use SL\Core\Notifications\Email;
+use SL\Project\Models\Project;
+use SL\Comment\Models\Comment;
 
 class Update_Comment_Notification extends Email {
     
@@ -48,16 +48,16 @@ class Update_Comment_Notification extends Email {
         }
         $title         = $comment->{ $request['commentable_type'] }->title;
         $template_name = apply_filters( 'pm_update_comment_email_template_path', $this->get_template_path( '/html/update-comment.php' ) );
-        $subject       = sprintf( __( '[%s][%s] Update Comment on: %s', 'wedevs-project-manager' ), $this->get_blogname(), $project->title , $title );
+        $subject       = sprintf( __( '[%s][%s] Update Comment on: %s', 'super-logistics' ), $this->get_blogname(), $project->title , $title );
         
         if( $request['commentable_type'] == 'discussion_board' ){
-            $type = __( 'Message', 'wedevs-project-manager' );
+            $type = __( 'Message', 'super-logistics' );
             $comment_link = $this->pm_link() . '#/projects/'.$project->id.'/discussions/'.$request['commentable_id'];
         }elseif ( $request['commentable_type'] == 'task_list' ) {
-            $type = __( 'Task List', 'wedevs-project-manager' );
+            $type = __( 'Task List', 'super-logistics' );
             $comment_link = $this->pm_link() . '#/projects/'.$project->id.'/task-lists/'.$request['commentable_id'];
         }else{
-            $type        = __( 'Task', 'wedevs-project-manager' );
+            $type        = __( 'Task', 'super-logistics' );
             $comment_link = $this->pm_link() . '#projects/'.$project->id. '/task-lists/tasks/' . $request['commentable_id'];
         }
 

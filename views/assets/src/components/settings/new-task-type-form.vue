@@ -3,19 +3,19 @@
         <div class="form-group-wrap">
             <div class="form-group">
                 <div class="type-wrap">
-                    <h3>{{ __('Type Name', 'wedevs-project-manager') }}</h3>
+                    <h3>{{ __('Type Name', 'super-logistics') }}</h3>
                 </div>
                 <div>
-                    <input v-model="formData.title" class="form-control" :placeholder="__( 'Type name...', 'wedevs-project-manager' )" type="text">
+                    <input v-model="formData.title" class="form-control" :placeholder="__( 'Type name...', 'super-logistics' )" type="text">
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="type-wrap">
-                    <h3>{{ __('Description', 'wedevs-project-manager') }}</h3>
+                    <h3>{{ __('Description', 'super-logistics') }}</h3>
                 </div>
                 <div>
-                    <input v-model="formData.description" class="form-control description-control" :placeholder="__( 'Description (optional)', 'wedevs-project-manager' )" type="text">
+                    <input v-model="formData.description" class="form-control description-control" :placeholder="__( 'Description (optional)', 'super-logistics' )" type="text">
                 </div>
             </div>
         </div>
@@ -23,18 +23,18 @@
         <div>
 
             <div class="type-action" v-if="formData.id">
-                <a  @click.prevent="closeEditForm()" class="pm-button pm-secondary" href="#">{{ __('Cancel', 'wedevs-project-manager') }}</a>
+                <a  @click.prevent="closeEditForm()" class="pm-button pm-secondary" href="#">{{ __('Cancel', 'super-logistics') }}</a>
                 <div class="update-button-wrap">
-                    <input :class="getUpdateButtonClass()" type="submit" :value="__('Update', 'wedevs-project-manager')">
+                    <input :class="getUpdateButtonClass()" type="submit" :value="__('Update', 'super-logistics')">
                     <div v-if="updating" class="pm-spinner-circle"></div>
                 </div>
 
             </div>
 
             <div class="type-action" v-else>
-                <a @click.prevent="closeNewTypeForm()" v-if="formVisibility.isClickNewForm" class="pm-button pm-secondary" href="#">{{ __('Cancel', 'wedevs-project-manager') }}</a>
+                <a @click.prevent="closeNewTypeForm()" v-if="formVisibility.isClickNewForm" class="pm-button pm-secondary" href="#">{{ __('Cancel', 'super-logistics') }}</a>
                 <div class="add-button-wrap">
-                    <input v-if="!formData.id" :class="getNewTypeButtonClass()" type="submit" :value="__('Create type', 'wedevs-project-manager')">
+                    <input v-if="!formData.id" :class="getNewTypeButtonClass()" type="submit" :value="__('Create type', 'super-logistics')">
                     <div v-if="adding" class="pm-spinner-circle"></div>
                 </div>
             </div>
@@ -184,7 +184,7 @@
 
             checkValidation (type) {
                 if(type.title === '') {
-                    pm.Toastr.error(__('Type name required!', 'wedevs-project-manager'));
+                    pm.Toastr.error(__('Type name required!', 'super-logistics'));
                     return false;
                 }
 

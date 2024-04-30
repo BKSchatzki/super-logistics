@@ -3,7 +3,7 @@
         <div>
             <div class="fields">
                 
-                <label v-if="!projectRequestProcessing"  class="label">{{__('Project', 'wedevs-project-manager')}}</label>
+                <label v-if="!projectRequestProcessing"  class="label">{{__('Project', 'super-logistics')}}</label>
                 
                 <pm-project-drop-down 
                     @afterGetProjects="afterGetProjects"
@@ -16,7 +16,7 @@
                 />
             
                 <div v-if="projectRequestProcessing" class="loading-animation">
-                    <div class="loading-projects-title">{{ __( 'Loading projects', 'wedevs-project-manager') }}</div>
+                    <div class="loading-projects-title">{{ __( 'Loading projects', 'super-logistics') }}</div>
                     <div class="load-spinner">
                         <div class="rect1"></div>
                         <div class="rect2"></div>
@@ -28,7 +28,7 @@
 
             
             <div class="fields list-dropdown" v-if="projectId">
-                <label v-if="selectedLists" class="label">{{__('In List', 'wedevs-project-manager')}}</label>
+                <label v-if="selectedLists" class="label">{{__('In List', 'super-logistics')}}</label>
                 <pm-list-drop-down 
                     :projectId="parseInt(projectId)"
                     @afterGetLists="afterGetLists"
@@ -39,7 +39,7 @@
                 />
 
                 <div v-if="selectedLists == ''" class="loading-animation">
-                    <div class="loading-projects-title">{{ __( 'Loading task lists', 'wedevs-project-manager') }}</div>
+                    <div class="loading-projects-title">{{ __( 'Loading task lists', 'super-logistics') }}</div>
                     <div class="load-spinner">
                         <div class="rect1"></div>
                         <div class="rect2"></div>
@@ -50,7 +50,7 @@
             </div>
             
             <div class="fields" v-if="listId && hasPermissionToCreateTask(selectedProjects)">
-                <label class="label">{{__('Task', 'wedevs-project-manager')}}</label>
+                <label class="label">{{__('Task', 'super-logistics')}}</label>
                 <pm-new-task-form  
                     :task="task" 
                     :list="list"
@@ -62,12 +62,12 @@
                         
             </div>
             <div v-if="selectedProjects && !hasPermissionToCreateTask(selectedProjects)">
-                {{ __( 'You have no permission to create task for this project', 'wedevs-project-manager' ) }}
+                {{ __( 'You have no permission to create task for this project', 'super-logistics' ) }}
             </div>  
         </div>
 
         <div v-if="!projectRequestProcessing && !hasProjects">
-            <span>{{ 'No project found!', 'wedevs-project-manager' }}</span>
+            <span>{{ 'No project found!', 'super-logistics' }}</span>
         </div>
         
     </div>
@@ -155,7 +155,7 @@
                 listId: false,
                 list: {},
                 options: {
-                    placeholder: __( 'Select a project', 'wedevs-project-manager' ),
+                    placeholder: __( 'Select a project', 'super-logistics' ),
                     searchProjects: this.findProjects
                 }
             }
@@ -180,7 +180,7 @@
             // },
 
             hasPermissionToCreateTask ( project ) {
-                // if( PM_Vars.is_pro != 1 ) {
+                // if( SL_Vars.is_pro != 1 ) {
                 //     return true;
                 // }
 
@@ -196,7 +196,7 @@
                     return true;
                 }
 
-                let current_user_id = PM_Vars.current_user.ID;
+                let current_user_id = SL_Vars.current_user.ID;
                 
                 var index = this.getIndex( project.assignees.data, current_user_id, 'id' );
 

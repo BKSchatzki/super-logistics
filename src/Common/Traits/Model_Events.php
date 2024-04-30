@@ -1,9 +1,9 @@
 <?php
 
-namespace WeDevs\PM\Common\Traits;
+namespace SL\Common\Traits;
 
-use WeDevs\PM\User\Models\User;
-use WeDevs\PM\Activity\Activity_Log;
+use SL\User\Models\User;
+use SL\Activity\Activity_Log;
 
 trait Model_Events {
 
@@ -21,10 +21,10 @@ trait Model_Events {
     }
 
     public function creator() {
-        return $this->belongsTo( 'WeDevs\PM\User\Models\User', 'created_by' );
+        return $this->belongsTo( 'SL\User\Models\User', 'created_by' );
     }
 
     public function updater() {
-        return $this->belongsTo( 'WeDevs\PM\User\Models\User', 'updated_by' );
+        return $this->belongsTo( 'SL\User\Models\User', 'updated_by' );
     }
 }

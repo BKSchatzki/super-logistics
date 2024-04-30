@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Database\Capsule\Manager as Capsule;
-use WeDevs\PM\Core\Router\Router;
-use WeDevs\PM\Core\Router\WP_Router;
-use WeDevs\PM\Core\Database\Migrater;
-use WeDevs\PM\Core\WP\Frontend;
+use SL\Core\Router\Router;
+use SL\Core\Router\WP_Router;
+use SL\Core\Database\Migrater;
+use SL\Core\WP\Frontend;
 
 function pm_load_configurations() {
     $files = glob( __DIR__ . "/../config/*.php" );
@@ -138,7 +138,7 @@ function pm_after_load_pro() {
 }
 
 function pm_init_tracker() {
-    $client = new Appsero\Client( 'd6e3df28-610b-4315-840d-df0b2b02f4fe', 'WP Project Manager', PM_FILE );
+    $client = new Appsero\Client( 'd6e3df28-610b-4315-840d-df0b2b02f4fe', 'WP Project Manager', SL_FILE );
 
     $insights = $client->insights();
 
@@ -151,7 +151,7 @@ function pm_init_tracker() {
                 'tasks'     => pm_total_task_list(),
                 'message'   => pm_total_message(),
                 'milestone' => pm_total_milestone(),
-                'is_pro'    => class_exists('WeDevs\PM_Pro\Core\WP\Frontend') ? 'yes' : 'no'
+                'is_pro'    => class_exists('SL_Pro\Core\WP\Frontend') ? 'yes' : 'no'
             ];
         } );
     }

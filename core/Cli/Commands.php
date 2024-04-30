@@ -1,17 +1,17 @@
 <?php
-namespace WeDevs\PM\Core\Cli;
+namespace SL\Core\Cli;
 
-use WeDevs\PM\Core\Cli\Cli;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Task_List\Models\Task_List;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Common\Models\Boardable;
-use WeDevs\PM\Activity\Models\Activity;
-use WeDevs\PM\Project\Controllers\Project_Controller;
-use WeDevs\PM\Category\Controllers\Category_Controller as Category;
-use WeDevs\PM\Task_List\Controllers\Task_List_Controller;
-use WeDevs\PM\Task\Controllers\Task_Controller;
-use WeDevs\PM\Milestone\Controllers\Milestone_Controller;
+use SL\Core\Cli\Cli;
+use SL\Project\Models\Project;
+use SL\Task_List\Models\Task_List;
+use SL\Task\Models\Task;
+use SL\Common\Models\Boardable;
+use SL\Activity\Models\Carrier;
+use SL\Project\Controllers\Project_Controller;
+use SL\Category\Controllers\Category_Controller as Category;
+use SL\Task_List\Controllers\Task_List_Controller;
+use SL\Task\Controllers\Task_Controller;
+use SL\Milestone\Controllers\Milestone_Controller;
 /**
  * Accounting CLI class
  */

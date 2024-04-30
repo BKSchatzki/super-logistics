@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Core\Sanitizer;
+namespace SL\Core\Sanitizer;
 
-use WeDevs\PM\Core\Sanitizer\Sanitizer;
+use SL\Core\Sanitizer\Sanitizer;
 use WP_REST_Request;
 
 abstract class Abstract_Sanitizer implements Sanitizer {
