@@ -3,7 +3,7 @@
         
         <form class="new-task-form"  id="newtaskform">
             <div >
-                <input id="task-title" type="text" placeholder="<?php esc_attr_e( 'Task title', 'wedevs-project-manager' ); ?>">
+                <input id="task-title" type="text" placeholder="<?php esc_attr_e( 'Task title', 'super-logistics' ); ?>">
                 
             </div>
             <div class="select-project"></div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\PM\Core\Exceptions;
+namespace SL\Core\Exceptions;
 
 use Exception;
 

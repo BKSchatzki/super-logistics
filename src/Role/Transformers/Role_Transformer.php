@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Role\Transformers;
+namespace SL\Role\Transformers;
 
-use WeDevs\PM\Role\Models\Role;
+use SL\Role\Models\Role;
 use League\Fractal\TransformerAbstract;
 
 class Role_Transformer extends TransformerAbstract {

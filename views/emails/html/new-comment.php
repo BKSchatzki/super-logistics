@@ -33,7 +33,7 @@
                                     <h1 style="margin: 0 0 7px; font-weight: bold; font-size: 18px; color: #000000; letter-spacing: 0.16px; line-height: 22px;">
                                         <?php
                                             echo esc_html( ucfirst( $creator['data']['display_name'] ) );
-                                            esc_html_e( ' commented on ', 'wedevs-project-manager' );
+                                            esc_html_e( ' commented on ', 'super-logistics' );
                                             echo esc_html( strtolower( $commnetable_type ) );
                                         ?>
                                     </h1>
@@ -47,7 +47,7 @@
                                         href="<?php echo esc_url( $comment_link ); ?>"
                                         target="_blank"
                                     >
-                                        <?php esc_html_e( 'View this comment', 'wedevs-project-manager' ); ?>
+                                        <?php esc_html_e( 'View this comment', 'super-logistics' ); ?>
                                     </a>
                                 </div>
                             </td>
@@ -73,7 +73,7 @@
                         <tr>
                             <td>
                                 <p style="font-size: 16px; line-height: 30px; margin: 0; color: #7E8690;">
-                                    <?php esc_html_e( 'Created at', 'wedevs-project-manager' ) ?>
+                                    <?php esc_html_e( 'Created at', 'super-logistics' ) ?>
                                 </p>
                                 <h2 style="font-size: 16px; color: #000; margin: 0; font-weight: 400;">
                                      <?php $comment_date = empty( $created_at ) ? '&#x02013;&#x02013;' : pm_date_format( esc_html( $created_at ) ); ?>
@@ -86,7 +86,7 @@
                         <tr>
                             <td>
                                 <p style="font-size: 16px; line-height: 30px; margin: 0; color: #7E8690;">
-                                    <span><?php esc_html_e( 'Comment', 'wedevs-project-manager' ); ?></span>
+                                    <span><?php esc_html_e( 'Comment', 'super-logistics' ); ?></span>
                                 </p>
                                 <div style="padding: 5px 15px; background: #edeef45e; border: 1px solid #f2f2f2; border-radius: 5px; margin-bottom: 30px; line-height: 26px; margin-top: 10px;">
                                     <?php echo wp_kses_data( $content ); ?>
@@ -113,7 +113,7 @@
                                     href="<?php echo esc_url( $comment_link ); ?>"
                                     target="_blank"
                                 >
-                                    <?php esc_html_e( 'Reply', 'wedevs-project-manager'); ?>
+                                    <?php esc_html_e( 'Reply', 'super-logistics'); ?>
                                 </a>
                             </td>
                         </tr>

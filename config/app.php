@@ -3,7 +3,7 @@
 return [
     'name'        => 'Advanced WP PM',
     'slug'        => 'pm',
-    'version'     => '2.6.15',
+    'version'     => '1.0.0',
     'api'     	  => '2',
     'db_version'  => '2.5',
     'text_domain' => 'pm',

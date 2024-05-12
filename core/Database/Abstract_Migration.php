@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Core\Database;
+namespace SL\Core\Database;
 
-use WeDevs\PM\Core\Database\Migration;
+use SL\Core\Database\Migration;
 
 abstract class Abstract_Migration implements Migration {
     public function run() {

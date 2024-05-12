@@ -1,7 +1,7 @@
 <?php
-namespace WeDevs\PM\Core\Upgrades;
+namespace SL\Core\Upgrades;
 
-use WeDevs\PM\Task\Models\Task;
+use SL\Task\Models\Task;
 use WP_Background_Process;
 
 /**

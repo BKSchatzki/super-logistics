@@ -1,12 +1,12 @@
 <?php
-namespace WeDevs\PM\Core\Admin_Notice;
+namespace SL\Core\Admin_Notice;
 
 class Admin_Notice {
 
 	function __construct() {
 		add_action( 'admin_notices', [$this, 'pm_pro_notice_2_1_0'] );
 
-		if ( class_exists('WeDevs_CPM_Pro') ) {
+		if ( class_exists('WeDevs_CSL_Pro') ) {
 			add_action( 'admin_notices', [$this, 'pm_pro_notice'] );
 		}
 	}
@@ -30,19 +30,19 @@ class Admin_Notice {
                             <td class="message-container">
                                 <p style="font-size: 13px">
 				                    <strong class="highlight-text" style="font-size: 18px; display:block; margin-bottom:8px">
-				                    	<?php esc_html_e( 'UPDATE REQUIRED', 'wedevs-project-manager' ); ?>
+				                    	<?php esc_html_e( 'UPDATE REQUIRED', 'super-logistics' ); ?>
 				                    </strong>
-				                    <?php esc_html_e( 'WP Project Manager Pro is not working because you are using an old version of WP Project Manager Pro. Please update', 'wedevs-project-manager'); ?>
+				                    <?php esc_html_e( 'WP Project Manager Pro is not working because you are using an old version of WP Project Manager Pro. Please update', 'super-logistics'); ?>
 				                    <strong>
-					                    <?php esc_html_e( 'WP Project Manager Pro', 'wedevs-project-manager'); ?>
+					                    <?php esc_html_e( 'WP Project Manager Pro', 'super-logistics'); ?>
 
-					                    <?php esc_html_e( 'to >= v2.0.12', 'wedevs-project-manager') ?>
+					                    <?php esc_html_e( 'to >= v2.0.12', 'super-logistics') ?>
 				                	</strong>
 
-				                    <?php esc_html_e( 'to work with the latest version of WP Project Manager', 'wedevs-project-manager'); ?>
+				                    <?php esc_html_e( 'to work with the latest version of WP Project Manager', 'super-logistics'); ?>
 				                </p>
                             </td>
-                            <td><a href="https://wedevs.com/account/downloads/" class="button button-primary promo-btn" target="_blank"><?php esc_html_e( 'Update WP Project Manager Pro Now', 'wedevs-project-manager' ); ?></a></td>
+                            <td><a href="https://wedevs.com/account/downloads/" class="button button-primary promo-btn" target="_blank"><?php esc_html_e( 'Update WP Project Manager Pro Now', 'super-logistics' ); ?></a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -168,8 +168,8 @@ class Admin_Notice {
 	}
 
 	public function pm_pro_notice() {
-		$offer  = __( '<h2>WP Project Manager Pro required version 2.0 or above.</span></h2>', "wedevs-project-manager" );
-        $offer .= __( '<p>To migrate version 2.0, Please read mmigration docs </p>', 'wedevs-project-manager' );
+		$offer  = __( '<h2>WP Project Manager Pro required version 2.0 or above.</span></h2>', "super-logistics" );
+        $offer .= __( '<p>To migrate version 2.0, Please read mmigration docs </p>', 'super-logistics' );
 
         $offer_msg = sprintf( '%s', $offer );
 		 ?>
@@ -178,7 +178,7 @@ class Admin_Notice {
                 <img class="pm-logo" src="<?php echo esc_url(config('frontend.url') . 'views/assets/images/pm-icon.png'); ?>" alt="">
                 <div class="pm-offer-msg-wrap"><?php echo esc_html($offer_msg); ?></div>
                 <span class="dashicons dashicons-megaphone"></span>
-                <a href="https://wedevs.com/docs/wp-project-manager/how-to-migrate-to-wp-project-manager-v2-0/?utm_source=wp-admin&utm_medium=pm-action-link&utm_campaign=pm-docs" class="button button-primary promo-btn" target="_blank"><?php esc_html_e( 'Read Docs', 'wedevs-project-manager' ); ?></a>
+                <a href="https://wedevs.com/docs/wp-project-manager/how-to-migrate-to-wp-project-manager-v2-0/?utm_source=wp-admin&utm_medium=pm-action-link&utm_campaign=pm-docs" class="button button-primary promo-btn" target="_blank"><?php esc_html_e( 'Read Docs', 'super-logistics' ); ?></a>
             </div>
 
             <style>

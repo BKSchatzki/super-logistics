@@ -1,13 +1,13 @@
 (function($){
     "use strict";
 
-    var PM_Global = {
+    var SL_Global = {
         pm_search_request(term, callback) {
             jQuery.ajax({
                 beforeSend (xhr) {
-                    xhr.setRequestHeader("X-WP-Nonce", PM_Global_Vars.permission);
+                    xhr.setRequestHeader("X-WP-Nonce", SL_Global_Vars.permission);
                 },
-                url: `${PM_Global_Vars.api_base_url}${PM_Global_Vars.api_namespace}/admin-topbar-search`,
+                url: `${SL_Global_Vars.api_base_url}${SL_Global_Vars.api_namespace}/admin-topbar-search`,
                 data: {
                     query: term,
                     model: 'project',
@@ -23,7 +23,7 @@
         setPermalink (url) {
             url = url.replace(/([^:]\/)\/+/g, "$1");
 
-            if ( !PM_Global_Vars.permalinkStructure ) {
+            if ( !SL_Global_Vars.permalinkStructure ) {
                 var matchCount = 0;
                 
                 url = url.replace(/\?/g, function (match) {
@@ -65,7 +65,7 @@
                     break;
             }
             if (url) {
-                return PM_Global_Vars.project_page + url;
+                return SL_Global_Vars.project_page + url;
             }
             return url;
         },
@@ -73,9 +73,9 @@
         pm_get_projects (callback) {
             jQuery.ajax({
                 beforeSend (xhr) {
-                    xhr.setRequestHeader("X-WP-Nonce", PM_Global_Vars.permission);
+                    xhr.setRequestHeader("X-WP-Nonce", SL_Global_Vars.permission);
                 },
-                url: PM_Global.setPermalink( `${PM_Global_Vars.api_base_url}${PM_Global_Vars.api_namespace}/projects?project_transform=false&per_page=all` ),
+                url: SL_Global.setPermalink( `${SL_Global_Vars.api_base_url}${SL_Global_Vars.api_namespace}/projects?project_transform=false&per_page=all` ),
                 data: {
                 },
                 success (res) {
@@ -90,10 +90,10 @@
         pm_create_task (data, callback) {
             jQuery.ajax({
                 beforeSend (xhr) {
-                    xhr.setRequestHeader("X-WP-Nonce", PM_Global_Vars.permission);
+                    xhr.setRequestHeader("X-WP-Nonce", SL_Global_Vars.permission);
                 },
                 method: 'POST',
-                url: PM_Global.setPermalink( `${PM_Global_Vars.api_base_url}${PM_Global_Vars.api_namespace}/projects/${data.project_id}/tasks` ),
+                url: SL_Global.setPermalink( `${SL_Global_Vars.api_base_url}${SL_Global_Vars.api_namespace}/projects/${data.project_id}/tasks` ),
                 data: data,
                 success (res) {
 
@@ -214,7 +214,7 @@
                     return;
                 }
                 else if (!req.term.trim() && !availableTags.length) {
-                    PM_Global.pm_search_request('', function (response) {
+                    SL_Global.pm_search_request('', function (response) {
                         availableTags = response;
                         res(response);
                         $( self ).removeClass( 'pm-sspinner' );
@@ -232,7 +232,7 @@
                         $( self ).removeClass( 'pm-sspinner' );
                     }
 
-                    PM_Global.pm_search_request(req.term, function (response) {
+                    SL_Global.pm_search_request(req.term, function (response) {
                         availableTags = response;
                         res(response);
                         // console.log(response);
@@ -256,7 +256,7 @@
                 } );
             },
             select (event, ui) {
-                let url = PM_Global.pm_result_item_url(ui.item);
+                let url = SL_Global.pm_result_item_url(ui.item);
                 if (url) {
                     location.href = url;
                     element.css('display', 'none').removeClass('active');
@@ -278,7 +278,7 @@
             return $('<li>')
                 .data("ui-autocomplete-item", item)
                 .append("<span class='icon-pm-incomplete'></span>")
-                .append("<a href='"+PM_Global.pm_result_item_url(item)+"'>" + item.title + "</a>")
+                .append("<a href='"+SL_Global.pm_result_item_url(item)+"'>" + item.title + "</a>")
                 .appendTo(ul);
 
         };
@@ -293,7 +293,7 @@
         $('#wp-admin-bar-pm_create_task a').bind('click', function(e) {
             e.preventDefault();
             open_task_form()
-            PM_Global.pm_get_projects(function (res) {
+            SL_Global.pm_get_projects(function (res) {
                 let html = '';
 
                 html +="<select name='project' id='project' >";

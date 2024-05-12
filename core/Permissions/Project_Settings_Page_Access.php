@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Core\Permissions;
+namespace SL\Core\Permissions;
 
-use WeDevs\PM\Core\Permissions\Abstract_Permission;
+use SL\Core\Permissions\Abstract_Permission;
 use WP_REST_Request;
 
 class Project_Settings_Page_Access extends Abstract_Permission {
@@ -12,7 +12,7 @@ class Project_Settings_Page_Access extends Abstract_Permission {
         $project_id = $this->request->get_param( 'project_id' );
 
         if ( empty( $user_id ) || empty( $project_id ) ) {
-            return new \WP_Error( 'project', __( "You have no permission.", "wedevs-project-manager" ) );
+            return new \WP_Error( 'project', __( "You have no permission.", "super-logistics" ) );
         }
 
         if ( pm_user_can_access( pm_manager_cap_slug() ) )  {
@@ -23,6 +23,6 @@ class Project_Settings_Page_Access extends Abstract_Permission {
             return true;
         }
         
-        return new \WP_Error( 'project', __( "You have no permission.", "wedevs-project-manager" ) );
+        return new \WP_Error( 'project', __( "You have no permission.", "super-logistics" ) );
     }
 }

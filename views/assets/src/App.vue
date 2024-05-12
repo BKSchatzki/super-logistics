@@ -1,31 +1,24 @@
 <template>
-    <div class="wedevs-pm-wrap wrap wp-core-ui pm pm-page-wrapper" id="wedevs-project-manager">
+    <div class="wedevs-pm-wrap wrap wp-core-ui pm pm-page-wrapper" id="super-logistics">
         <h1 style="display: none;"></h1>
         
-        <do-action hook="pm-before-router-view"></do-action>
-        <router-view></router-view>
+        <do-action hook="sl-before-router-view"></do-action>
+        <frontend-menu>
+          <router-view></router-view>
+        </frontend-menu>
         <do-action hook="addons-component"></do-action>
-        
-        <div class="pm-global-projects-wrap">
-            <new-task-form v-if="taskForm" @disableTaskForm="closeTaskForm"></new-task-form>
-        </div>
-
-        <pop-up v-if="!PM_Vars.is_pro" />
     </div>
 </template>
 <style>
-
 </style>
 <script>
-    import Popup from '@components/upgrade/popup';
     import do_action from '@components/common/do-action.vue';
-    import NewTaskForm from '@components/my-tasks/new-task.vue';
+    import FrontendMenu from '@components/frontend/Menu.vue';
 
     export default {
         components: {
-            'pop-up': Popup,
             'do-action': do_action,
-            'new-task-form': NewTaskForm
+            FrontendMenu
         },
         
         created () {
@@ -78,7 +71,7 @@
             registerModule () {
                 let self = this;
 
-                weDevsPmModules.forEach(function(module) {
+                appModules.forEach(function(module) {
                     let store = require('./components/'+module.path+'/store.js');
                     self.registerStore(module.name, store.default );
                 });
@@ -96,7 +89,7 @@
 
         data () {
             return {
-                is_pro: PM_Vars.is_pro,
+                is_pro: SL_Vars.is_pro,
                 users: [],
                 taskForm: false,
                 ctrlDown: false, 

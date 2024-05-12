@@ -1,13 +1,13 @@
 <?php
 
-namespace WeDevs\PM\Role\Validators;
+namespace SL\Role\Validators;
 
-use WeDevs\PM\Core\Validator\Abstract_Validator;
+use SL\Core\Validator\Abstract_Validator;
 
 class Create_Role extends Abstract_Validator {
     public function messages() {
         return [
-            'title.required' => __( 'Role title is required.', 'wedevs-project-manager' ),
+            'title.required' => __( 'Role title is required.', 'super-logistics' ),
         ];
     }
 

@@ -1,6 +1,6 @@
 == Changelog ==
 
-= v2.6.15 - Mar 29, 2024 =
+= v1.0.0 - Mar 29, 2024 =
 
 **Fix:** New project's user creation issue.
 
@@ -304,7 +304,7 @@
 * **Fix** User can remove administrator from manage capability permission.
 * **Fix** Inbox task list does not appear at the top of the task lists.
 * **Fix** compact(): undefined index variable problem for php 7.3
-* **Fix** Text domain 'pm' to 'wedevs-project-manager'.
+* **Fix** Text domain 'pm' to 'super-logistics'.
 * **Fix** Task lists menu is not activating while clicking pagination.
 
 = v2.2.1 - Jun 14, 2019 =

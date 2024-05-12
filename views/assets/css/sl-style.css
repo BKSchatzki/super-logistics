@@ -1,0 +1,6 @@
+#sl-image-preview {
+    background-image: url("../images/placeholders/generic-box.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}

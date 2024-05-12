@@ -1,9 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Common\Traits;
+namespace SL\Common\Traits;
 
-use WeDevs\PM\User\Models\User;
-use WeDevs\PM\Activity\Activity_Log;
+use SL\User\Models\User;
 
 trait Model_Events {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\PM\Core\Database;
+namespace SL\Core\Database;
 
 use Reflection;
 

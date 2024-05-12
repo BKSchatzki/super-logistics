@@ -1,16 +1,16 @@
 <?php
 
-namespace WeDevs\PM\User\Transformers;
+namespace SL\User\Transformers;
 
 use League\Fractal\TransformerAbstract;
 
-use WeDevs\PM\User\Models\User;
-use WeDevs\PM\User\Models\User_Role;
+use SL\User\Models\User;
+use SL\User\Models\User_Role;
 
 
-use WeDevs\PM\My_Task\Transformers\Project_Transformer;
-use WeDevs\PM\Role\Transformers\Role_Transformer;
-use WeDevs\PM\Task\Transformers\Task_Transformer;
+use SL\My_Task\Transformers\Project_Transformer;
+use SL\Role\Transformers\Role_Transformer;
+use SL\Task\Transformers\Task_Transformer;
 use Carbon\Carbon;
 
 class User_Transformer extends TransformerAbstract {
@@ -263,31 +263,6 @@ class User_Transformer extends TransformerAbstract {
         $projects = $item->projects;
 
         return $this->collection( $projects, new Project_Transformer );
-    }
-
-    public function includeActivities( User $item ) {
-
-        $project_ids = User_Role::where( 'user_id', $item->ID )->get(['project_id'])->toArray();
-        $project_ids = wp_list_pluck( $project_ids, 'project_id' );
-
-        $page = isset( $_GET['mytask_activities_page'] ) ? $_GET['mytask_activities_page'] : 1;
-        $per_page = isset( $_GET['mytask_activities_per_page'] ) ? $_GET['mytask_activities_per_page'] : 15;
-
-        Paginator::currentPageResolver(function () use ($page) {
-            return $page;
-        });
-
-        $activities = $item->activities()
-            ->whereIn( 'project_id', $project_ids )
-            ->orderBy( 'created_at', 'DESC' )
-            ->paginate( $per_page, ['*'] );
-
-        $activities_collection = $activities->getCollection();
-        $resource = $this->collection( $activities_collection, new Activity_Transformer );
-
-        $resource->setPaginator( new IlluminatePaginatorAdapter( $activities ) );
-
-        return $resource;
     }
 
     public function includeGraph ( User $item ) {

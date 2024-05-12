@@ -1,9 +1,9 @@
 <?php
 
-namespace WeDevs\PM\Core\Permissions;
+namespace SL\Core\Permissions;
 
-use WeDevs\PM\Core\Permissions\Abstract_Permission;
-use WeDevs\PM\Task_List\Models\Task_List;
+use SL\Core\Permissions\Abstract_Permission;
+use SL\Task_List\Models\Task_List;
 use WP_REST_Request;
 
 class Edit_Task_List extends Abstract_Permission {
@@ -27,6 +27,6 @@ class Edit_Task_List extends Abstract_Permission {
 
         }
 
-        return new \WP_Error( 'TaskList', __( "You have no permission.", "wedevs-project-manager" ) );
+        return new \WP_Error( 'TaskList', __( "You have no permission.", "super-logistics" ) );
     }
 }

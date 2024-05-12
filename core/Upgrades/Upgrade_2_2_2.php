@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Core\Upgrades;
+namespace SL\Core\Upgrades;
 
 /**
  *   Upgrade project manager 2.2.2

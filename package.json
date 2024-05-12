@@ -1,13 +1,13 @@
 {
   "name": "pmapi",
-  "version": "2.6.15",
+  "version": "1.0.0",
   "description": "Front-end package manager for project manager",
   "main": "index.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "start": "webpack --progress --colors --watch",
+    "start": "webpack --progress --watch",
     "build": "cross-env NODE_ENV=production webpack --progress ",
     "release": "webpack --progress --colors grunt zip",
     "makepot": "wpvuei18n makepot",

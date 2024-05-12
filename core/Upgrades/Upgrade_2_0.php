@@ -1,22 +1,7 @@
 <?php
-namespace WeDevs\PM\Core\Upgrades;
 use WP_Background_Process;
 use WP_Query;
-use WeDevs\PM\Project\Models\Project;
-use WeDevs\PM\Task\Models\Task;
-use WeDevs\PM\Role\Models\Role;
-use WeDevs\PM\User\Models\User_Role;
-use WeDevs\PM\Milestone\Models\Milestone;
-use WeDevs\PM\Common\Models\Meta;
-use WeDevs\PM\Common\Models\Board;
-use WeDevs\PM\Common\Models\Boardable;
-use WeDevs\PM\Common\Models\Assignee;
-use WeDevs\PM\File\Models\File;
-use WeDevs\PM\Comment\Models\Comment;
-use WeDevs\PM\Settings\Models\Settings;
-use WeDevs\PM\Category\Models\Category;
-use WeDevs\PM\Activity\Models\Activity;
-use PM_Create_Table;
+use SL_Create_Table;
 
 /**
 *   Upgrade project manager 2.0     
@@ -261,7 +246,7 @@ class Upgrade_2_0 extends WP_Background_Process
                     
                         jQuery.ajax({
                             type: 'POST',
-                            url: PM_Vars.api_base_url + 'pm/v2/settings/notice',
+                            url: SL_Vars.api_base_url + 'pm/v2/settings/notice',
                             data: {
                                 action: 'pm_migration_notice',
                             }
@@ -357,7 +342,7 @@ class Upgrade_2_0 extends WP_Background_Process
      * @return [type] [description]
      */
     public function upgrade_init ( ) {
-        new PM_Create_Table;
+        new SL_Create_Table;
         (new \RoleTableSeeder())->run();
         //create pro table 
         $this->create_gantt_chart_table();
@@ -1534,7 +1519,7 @@ class Upgrade_2_0 extends WP_Background_Process
     }
 
     function created_activity( $activity, $resource_id, $resource_type, $meta, $newProjectId ) {
-        $this->save_object( new Activity, [
+        $this->save_object( new Carrier, [
             'actor_id'      => $activity['user_id'],
             'action'        => 'cpm_migration',
             'action_type'   => 'migrated',

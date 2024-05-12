@@ -1,10 +1,10 @@
 <?php
-namespace WeDevs\PM\Core\User_Profile;
+namespace SL\Core\User_Profile;
 
 /**
  * Loads PM users admin area
  *
- * @package WeDevs\PM
+ * @package SL
  * @subpackage Administration
  */
 class Profile_Update {
@@ -12,7 +12,7 @@ class Profile_Update {
     /**
      * The PM users admin loader
      *
-     * @package WeDevs\PM
+     * @package SL
      * @subpackage Administration
      */
     public function __construct() {
@@ -53,7 +53,7 @@ class Profile_Update {
 
         ?>
 
-        <h3><?php esc_html_e( 'WP Project Manager', 'wedevs-project-manager' ); ?></h3>
+        <h3><?php esc_html_e( 'WP Project Manager', 'super-logistics' ); ?></h3>
 
         <?php
 
@@ -80,13 +80,13 @@ class Profile_Update {
         <table class="form-table">
             <tbody>
                 <tr>
-                    <th><?php esc_html_e( 'Capability', 'wedevs-project-manager' ); ?></th>
+                    <th><?php esc_html_e( 'Capability', 'super-logistics' ); ?></th>
 
                     <td>
                         <fieldset>
                             <select name="pm_capability">
                                 <option value="">
-                                    <?php echo esc_html_e( '— No capability for this user —', 'wedevs-project-manager' ); ?>
+                                    <?php echo esc_html_e( '— No capability for this user —', 'super-logistics' ); ?>
                                 </option>
                                 <?php
                                     foreach ( pm_access_capabilities() as $cap_key => $label ) {

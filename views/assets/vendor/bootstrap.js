@@ -1,39 +1,39 @@
 window.pm = {};
-const PmMixin = {};
+const appMixin = {};
 const PmProMixin = {};
 const PmProComment = {};
-const weDevs_PM_Routers = [];
-const weDevs_PM_Components = [];
-const weDevsPMChildrenRouter = {};
-const weDevsPmModules = [];
+const appRoutes = [];
+const appCommonComponents = [];
+const ChildrenRouter = {};
+const appModules = [];
 const weDevsPmProModules = [];
 const weDevsPmProAddonModules = [];
 const WeDevsfilters = {};
 var pmProjects = [];
 
-function weDevsPMRegisterChildrenRoute (parentRouteName, routes) {
+function registerChildRoute (parentRouteName, routes) {
 
 	routes.forEach(function(route) {
-		if (weDevsPMChildrenRouter.hasOwnProperty(parentRouteName)  ) {
-			weDevsPMChildrenRouter[parentRouteName].push(route);
+		if (ChildrenRouter.hasOwnProperty(parentRouteName)  ) {
+			ChildrenRouter[parentRouteName].push(route);
 		} else {
-			weDevsPMChildrenRouter[parentRouteName] = [route];
+			ChildrenRouter[parentRouteName] = [route];
 		}
 	});
 };
 
-function wedevsPMGetRegisterChildrenRoute(parentRouteName, prevRoute) {
+function getRegisteredChildRoutes(parentRouteName, prevRoute) {
 	var prevRoute = prevRoute || [];
 
-	if (weDevsPMChildrenRouter.hasOwnProperty(parentRouteName)  ) {
-		return prevRoute.concat(weDevsPMChildrenRouter[parentRouteName]);
+	if (ChildrenRouter.hasOwnProperty(parentRouteName)  ) {
+		return prevRoute.concat(ChildrenRouter[parentRouteName]);
 	}
 
 	return prevRoute;
 }
 
-function weDevsPmRegisterModule(module, path) {
-	weDevsPmModules.push(
+function registerModule(module, path) {
+	appModules.push(
 		{
 			'name': module,
 			'path': path
@@ -150,7 +150,7 @@ function pmGetIndex( itemList, id, slug) {
     return index;
 }
 function pmUserCan(cap, project, user) {
-    user    = user || PM_Vars.current_user;
+    user    = user || SL_Vars.current_user;
 
     if ( pmHasManageCapability() ) {
         return true;
@@ -206,7 +206,7 @@ function pmGetRoleCaps (project, role) {
 }
 
 function pmGetRole (project, user) {
-    user    = user || PM_Vars.current_user;
+    user    = user || SL_Vars.current_user;
 
     var default_project = {
         assignees: {
@@ -227,7 +227,7 @@ function pmGetRole (project, user) {
 }
 
 function pmIsUserInProject (project, user) {
-    var user    = user || PM_Vars.current_user;
+    var user    = user || SL_Vars.current_user;
     var user_id = user.ID;
     var default_project = {
         assignees: {
@@ -246,7 +246,7 @@ function pmIsUserInProject (project, user) {
 }
 
 function pmIsManager (project, user) {
-    user = user || PM_Vars.current_user;
+    user = user || SL_Vars.current_user;
 
     if( pmHasManageCapability() ) {
         return true;
@@ -280,7 +280,7 @@ function pmIsManager (project, user) {
 }
 
 function pmHasManageCapability () {
-    if( pmUserCanAccess(PM_Vars.manager_cap_slug) ) {
+    if( pmUserCanAccess(SL_Vars.manager_cap_slug) ) {
         return true;
     }
    
@@ -296,7 +296,7 @@ function pmHasCreateCapability () {
 }
 
 function pmUserCanAccess( pagSlug ) {
-    let user = PM_Vars.current_user;
+    let user = SL_Vars.current_user;
     
     if ( user.allcaps['manage_options'] === true ) {
         return true;

@@ -3,7 +3,7 @@
 
         <div class="metabox-holder">
             <div id="pm_general" class="group" style="">
-                <h2>{{ __( 'Users Map to Github & Bitbucket', 'wedevs-project-manager') }}</h2>
+                <h2>{{ __( 'Users Map to Github & Bitbucket', 'super-logistics') }}</h2>
                 <select  @change="getProjectUser()">
                     <option value="">Select</option>
                     <option v-for="project in projects" :value="JSON.stringify(project.assignees.data)">{{ project.title }}</option>
@@ -45,7 +45,7 @@
     export default {
         data () {
             return {
-                save_changes: __( 'Save Changes', 'wedevs-project-manager'),
+                save_changes: __( 'Save Changes', 'super-logistics'),
                 show_spinner: false,
                 users : [],
                 projects : [],

@@ -9,6 +9,8 @@
 | into the script here so that we do not have to worry about the
 | loading of any our classes "manually". Feels great to relax.
 |
+| All the initialization logic for the frontend is located in Core/WP/Frontend.php
+|
 */
 global $wedevs_pm_pro;
 

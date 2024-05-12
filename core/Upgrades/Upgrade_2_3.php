@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\PM\Core\Upgrades;
+namespace SL\Core\Upgrades;
 
 use WP_Background_Process;
 
@@ -157,7 +157,7 @@ class Upgrade_2_3 extends WP_Background_Process {
                         
                         jQuery.ajax({
                             type: 'POST',
-                            url: PM_Vars.api_base_url +'pm/v2/settings/notice',
+                            url: SL_Vars.api_base_url +'pm/v2/settings/notice',
                             data: {
                                 action: 'pm_migration_notice_2_3',
                             }
@@ -553,17 +553,8 @@ class Upgrade_2_3 extends WP_Background_Process {
         global $wpdb;
 
         $tb_projects = $wpdb->prefix . 'pm_projects';
-        $tb_settings = $wpdb->prefix . 'pm_settings';
         $tb_role_projects = $wpdb->prefix . 'pm_role_project';
         $tb_role_project_cap = $wpdb->prefix . 'pm_role_project_capabilities';
-
-        $query = "SELECT pj.id, st.value FROM {$wpdb->prefix}pm_projects as pj
-            LEFT JOIN {$wpdb->prefix}pm_settings as st ON st.project_id=pj.id
-            WHERE st.key='capabilities'";
-
-        $results = $wpdb->get_results( $wpdb->prepare( "SELECT pj.id, st.value FROM {$wpdb->prefix}pm_projects as pj
-            LEFT JOIN {$wpdb->prefix}pm_settings as st ON st.project_id=pj.id
-            WHERE st.key='capabilities'" ) );
         
         $new_reslts = [];
 

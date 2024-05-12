@@ -31,7 +31,7 @@
                             <td>
                                 <div style="margin-left: 10px;">
                                     <h1 style="margin: 0 0 7px; font-weight: bold; font-size: 18px; color: #000000; letter-spacing: 0.16px; line-height: 22px;">
-                                        <?php echo esc_html( ucfirst( $creator['data']['display_name'] ) ); ?> <?php esc_html_e( 'start a new discussion', 'wedevs-project-manager' ); ?>
+                                        <?php echo esc_html( ucfirst( $creator['data']['display_name'] ) ); ?> <?php esc_html_e( 'start a new discussion', 'super-logistics' ); ?>
                                     </h1>
                                     <a
                                         style="
@@ -44,7 +44,7 @@
                                         href="<?php echo esc_url( $link . '#/projects/' . $project_id . '/discussions/' . $id ); ?>"
                                         target="_blank"
                                     >
-                                        <?php esc_html_e( 'View this discussion', 'wedevs-project-manager' ); ?>
+                                        <?php esc_html_e( 'View this discussion', 'super-logistics' ); ?>
                                     </a>
                                 </div>
                             </td>
@@ -57,7 +57,7 @@
                     <table>
                         <tr>
                             <td>
-                                <p style="font-size: 16px; line-height: 30px; margin: 0; color: #7E8690;"><?php esc_html_e( 'Discussion', 'wedevs-project-manager' ); ?></p>
+                                <p style="font-size: 16px; line-height: 30px; margin: 0; color: #7E8690;"><?php esc_html_e( 'Discussion', 'super-logistics' ); ?></p>
                                 <h2 style="font-size: 18px; color: #000; margin: 0;"><?php echo esc_html( $title ); ?></h2>
                                 &nbsp;
                             </td>
@@ -66,7 +66,7 @@
                         <tr>
                             <td>
                                 <p style="font-size: 16px; line-height: 30px; margin: 0; color: #7E8690;">
-                                    <?php esc_html_e( 'Created at', 'wedevs-project-manager' ) ?>
+                                    <?php esc_html_e( 'Created at', 'super-logistics' ) ?>
                                 </p>
                                 <h2 style="font-size: 16px; color: #000; margin: 0; font-weight: 400;">
                                      <?php $discussion_date = empty( $created_at['date'] ) ? '&#x02013;&#x02013;' : pm_date_format( esc_html( $created_at['date'] ) ); ?>
@@ -79,7 +79,7 @@
                         <tr>
                             <td>
                                 <p style="font-size: 16px; line-height: 30px; margin: 0; color: #7E8690;">
-                                    <span><?php esc_html_e( 'Details', 'wedevs-project-manager' ); ?></span>
+                                    <span><?php esc_html_e( 'Details', 'super-logistics' ); ?></span>
                                 </p>
                                 <div style="padding: 5px 15px; background: #edeef45e; border: 1px solid #f2f2f2; border-radius: 5px; margin-bottom: 30px; line-height: 26px; margin-top: 10px;">
                                     <?php echo wp_kses_data( $description ); ?>
@@ -106,7 +106,7 @@
                                     href="<?php echo esc_url( $link . '#/projects/' . $project_id . '/discussions/' . $id ); ?>"
                                     target="_blank"
                                 >
-                                    <?php esc_html_e( 'View Discussion', 'wedevs-project-manager'); ?>
+                                    <?php esc_html_e( 'View Discussion', 'super-logistics'); ?>
                                 </a>
                             </td>
                         </tr>
@@ -118,7 +118,7 @@
                 <td style="padding: 0 50px 50px;">
                     <div>
                         <h2 style="font-size: 20px; color: #000000; letter-spacing: 0.18px; line-height: 30px; margin-bottom: 15px;">
-                            <?php esc_html_e( 'Discussion Members', 'wedevs-project-manager'); ?>
+                            <?php esc_html_e( 'Discussion Members', 'super-logistics'); ?>
                         </h2>
                         <span style="margin: 0; padding: 0; list-style: none; display: inline-block;">
 

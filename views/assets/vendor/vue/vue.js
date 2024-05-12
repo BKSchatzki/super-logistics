@@ -7631,7 +7631,7 @@ var patch = createPatchFunction({ nodeOps: nodeOps, modules: modules });
 
 /**
  * Not type checking this file because flow doesn't like attaching
- * properties to Elements.
+ * properties to MenuElements.
  */
 
 /* istanbul ignore if */
@@ -8399,7 +8399,7 @@ var isUnaryTag = makeMap(
   'link,meta,param,source,track,wbr'
 );
 
-// Elements that you can, intentionally, leave open
+// MenuElements that you can, intentionally, leave open
 // (and which close themselves)
 var canBeLeftOpenTag = makeMap(
   'colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr,source'
@@ -8444,7 +8444,7 @@ var IS_REGEX_CAPTURING_BROKEN = false;
   IS_REGEX_CAPTURING_BROKEN = g === '';
 });
 
-// Special Elements (can contain anything)
+// Special MenuElements (can contain anything)
 var isPlainTextElement = makeMap('script,style,textarea', true);
 var reCache = {};
 

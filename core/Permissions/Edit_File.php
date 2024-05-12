@@ -1,9 +1,9 @@
 <?php
 
-namespace WeDevs\PM\Core\Permissions;
+namespace SL\Core\Permissions;
 
-use WeDevs\PM\Core\Permissions\Abstract_Permission;
-use WeDevs\PM\File\Models\File;
+use SL\Core\Permissions\Abstract_Permission;
+use SL\File\Models\File;
 use WP_REST_Request;
 
 class Edit_File extends Abstract_Permission {
@@ -26,6 +26,6 @@ class Edit_File extends Abstract_Permission {
 
         }
 
-        return new \WP_Error( 'File', __( "You have no permission.", "wedevs-project-manager" ) );
+        return new \WP_Error( 'File', __( "You have no permission.", "super-logistics" ) );
     }
 }

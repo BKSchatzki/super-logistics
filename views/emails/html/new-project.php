@@ -31,9 +31,9 @@
                             <td>
                                 <div style="margin-left: 10px;">
                                     <h1 style="margin: 0 0 7px; font-weight: bold; font-size: 18px; color: #000000; letter-spacing: 0.16px; line-height: 22px;">
-                                        <?php echo esc_html( ucfirst( $creator['data']['display_name'] ) ); ?> <?php esc_html_e( 'assigned a project to you', 'wedevs-project-manager' ); ?>
+                                        <?php echo esc_html( ucfirst( $creator['data']['display_name'] ) ); ?> <?php esc_html_e( 'assigned a project to you', 'super-logistics' ); ?>
                                     </h1>
-                                    <a style="text-decoration: none; font-size: 15px; color: #0676D4; letter-spacing: 0.14px; line-height: 22px;" href="<?php echo esc_url( $link . '#/projects/' . $id . '/task-lists/' ); ?>" target="_blank"><?php esc_html_e( 'View this project', 'wedevs-project-manager' ); ?></a> 
+                                    <a style="text-decoration: none; font-size: 15px; color: #0676D4; letter-spacing: 0.14px; line-height: 22px;" href="<?php echo esc_url( $link . '#/projects/' . $id . '/task-lists/' ); ?>" target="_blank"><?php esc_html_e( 'View this project', 'super-logistics' ); ?></a> 
                                 </div>
                             </td>
                         </tr>
@@ -45,7 +45,7 @@
                     <table>
                         <tr>
                             <td>
-                                <p style="font-size: 16px; line-height: 30px; margin: 0; color: #7E8690;"><?php esc_html_e( 'Project', 'wedevs-project-manager' ); ?></p>
+                                <p style="font-size: 16px; line-height: 30px; margin: 0; color: #7E8690;"><?php esc_html_e( 'Project', 'super-logistics' ); ?></p>
                                 <h2 style="font-size: 18px; color: #000; margin: 0;"><?php echo esc_html( $title ); ?></h2>
                                 &nbsp;
                             </td>
@@ -54,7 +54,7 @@
                         <tr>
                             <td>
                                 <p style="font-size: 16px; line-height: 30px; margin: 0; color: #7E8690;">
-                                    <?php esc_html_e( 'Created at', 'wedevs-project-manager' ) ?>
+                                    <?php esc_html_e( 'Created at', 'super-logistics' ) ?>
                                 </p>
                                 <h2 style="font-size: 16px; color: #000; margin: 0; font-weight: 400;">
                                      <?php $project_date = empty( $created_at['date'] ) ? '&#x02013;&#x02013;' : pm_date_format( esc_html( $created_at['date'] ) ); ?>
@@ -74,15 +74,15 @@
                                         <?php
                                             printf(
                                                 '%s "%s" %s %s',
-                                                esc_html_e( 'You are assigned a project', 'wedevs-project-manager' ),
+                                                esc_html_e( 'You are assigned a project', 'super-logistics' ),
                                                 esc_html( $title ),
-                                                esc_html_e( 'by', 'wedevs-project-manager' ),
+                                                esc_html_e( 'by', 'super-logistics' ),
                                                 esc_attr( $creator['data']['display_name'] )
                                             );
                                         ?>
                                     </div>
                                     <div>
-                                        <?php esc_html_e( 'You can see the project by going here: ', 'wedevs-project-manager'  ); ?>
+                                        <?php esc_html_e( 'You can see the project by going here: ', 'super-logistics'  ); ?>
                                         <a style="text-decoration: none; font-size: 15px; color: #0676D4; letter-spacing: 0.14px; line-height: 22px;" href="<?php echo esc_url( $link . '#/projects/' . $id . '/task-lists/' ); ?>" target="_blank"><?php echo esc_html_e( $title ); ?></a> 
                                     </div>
 
@@ -93,7 +93,7 @@
                         <tr>
                             <td>
                                 <a style="text-decoration: none; color: #0676D4; display: inline-block; padding: 9px 24px; font-size: 15px; color: #FFFFFF; letter-spacing: 0.14px; line-height: 30px; transition: opacity .2s; background: #7D60FF; border-radius: 3px;" href="<?php echo esc_url($link.'#/projects/'.$id . '/task-lists/' ); ?>" target="_blank">
-                                    <?php esc_html_e( 'View Project', 'wedevs-project-manager'); ?>
+                                    <?php esc_html_e( 'View Project', 'super-logistics'); ?>
                                 </a>
                             </td>
                         </tr>
@@ -105,7 +105,7 @@
                 <td style="padding: 0 50px 50px;">
                     <div>
                         <h2 style="font-size: 20px; color: #000000; letter-spacing: 0.18px; line-height: 30px; margin-bottom: 15px;">
-                            <?php esc_html_e( 'Project Assignes', 'wedevs-project-manager'); ?>
+                            <?php esc_html_e( 'Project Assignes', 'super-logistics'); ?>
                         </h2>
                         <span style="margin: 0; padding: 0; list-style: none; display: inline-block;">
                             <?php foreach( $assignees['data'] as $assign ): ?>

@@ -15,11 +15,11 @@ return [
         'dependency' => false,
         'path'       => $view_path . '/assets/css/nprogress/nprogress.css',
     ],
-    'pm-fontawesome' => [
-        'id'         => 'pm-fontawesome',
-        'url'        => plugin_dir_url( dirname( __FILE__ ) ) . 'views/assets/css/fontawesome/font-awesome.min.css',
+    'fontawesome' => [
+        'id'         => 'fontawesome',
+        'url'        => plugin_dir_url( dirname( __FILE__ ) ) . 'views/assets/css/fontawesome/css/all.min.css',
         'dependency' => false,
-        'path'       => $view_path . '/assets/css/fontawesome/font-awesome.min.css',
+        'path'       => $view_path . '/assets/css/fontawesome/css/all.min.css',
     ],
     'pm-toastr' => [
         'id'         => 'pm-toastr',
@@ -86,11 +86,17 @@ return [
         'dependency' => false,
         'path'       => $view_path . '/assets/css/scheduler/scheduler.min.css',
     ],
-    'pm-new-style' => [
-        'id'         => 'pm-new-style',
-        'url'        => plugin_dir_url( dirname( __FILE__ ) ) . 'views/assets/css/pm-style.css',
+    'bootstrap' => [
+        'id'         => 'bootstrap',
+        'url'        => plugin_dir_url( dirname( __FILE__ ) ) . 'views/assets/css/bootstrap.min.css',
         'dependency' => false,
-        'path'       => $view_path . '/assets/css/pm-style.css',
+        'path'       => $view_path . '/assets/css/bootstrap.min.css',
+    ],
+    'sl-style' => [
+        'id'         => 'sl-style',
+        'url'        => plugin_dir_url( dirname( __FILE__ ) ) . 'views/assets/css/sl-style.css',
+        'dependency' => false,
+        'path'       => $view_path . '/assets/css/sl-style.css',
     ],
     'pm-badge-styles' => [
         'id'         => 'pm-badge-styles',
@@ -101,7 +107,7 @@ return [
     'pm-pro-styles' => [
         'id'         => 'pm-pro-styles',
         'url'        => plugin_dir_url( dirname( __FILE__ ) ) . 'core/Pro/assets/pro-styles.css',
-        'dependency' => [ 'pm-new-style' ],
+        'dependency' => [ 'bootstrap' ],
         'path'       => dirname (__FILE__) . '/../core/Pro/assets/pro-styles.css',
     ],
     'swiffy-slider' => [
@@ -137,7 +143,7 @@ return [
         'dependency' => [
             'pm-vue-multiselect',
             'pm-nprogress',
-            'pm-fontawesome',
+            'fontawesome',
             'pm-toastr',
             'pm-jquery-ui',
             'pm-fullcalendar',
@@ -150,7 +156,8 @@ return [
             'pm-scheduler',
             'pm-daterangepicker',
             'pm-const-style',
-            'pm-new-style',
+            'bootstrap',
+            'sl-style',
             'pm-slicknav'
         ]
     ],

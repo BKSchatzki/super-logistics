@@ -1,7 +1,6 @@
 <?php
 
-namespace WeDevs\PM\Core\DB_Connection;
-use WeDevs\PM\Activity\Activity_Log;
+namespace SL\Core\DB_Connection;
 use WeDevs\ORM\Eloquent\Database;
 
 /**
@@ -97,32 +96,17 @@ class Model extends \WeDevs\ORM\Eloquent\Model {
                 }
                 break;
 
-            case 'created': 
-                do_action( 'pm_created', $this );
-                Activity_Log::entry( $this, 'created' );
-                break;
-
             case 'updating':
                 if ( in_array('updated_by', $fillable, true) ) {
                     $this->updated_by = $user->ID;
                 }
                 break;
 
-            case 'updated':
-                do_action( 'pm_updated', $this );
-                Activity_Log::entry( $this, 'updated' );
-                break;
 
             case 'deleted':
 
                 do_action( 'pm_deleted', $this );
                 //Activity_Log::entry( $this, 'deleted' );
-                break;
-
-            case 'deleting':
-
-                do_action( 'pm_deleting', $this );
-                Activity_Log::entry( $this, 'deleting' );
                 break;
         }
         //Do not remove this line

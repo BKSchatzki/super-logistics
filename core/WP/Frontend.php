@@ -1,26 +1,19 @@
 <?php
 
-namespace WeDevs\PM\Core\WP;
+namespace SL\Core\WP;
 
-use WeDevs\PM\Core\WP\Menu;
-use WeDevs\PM\Core\Pro\Menu as Pro_Menu;
-use WeDevs\PM\Core\Upgrades\Upgrade;
-use WeDevs\PM\Core\Notifications\Notification;
-use WeDevs\PM\Core\WP\Register_Scripts;
-use WeDevs\PM\Core\WP\Enqueue_Scripts as Enqueue_Scripts;
-use WeDevs\PM\Core\File_System\File_System as File_System;
-use WeDevs\PM\Core\Cli\Commands;
-use WeDevs\PM\Core\Promotions\Promotions;
-use WeDevs\PM\Core\Promotions\Offers;
+use SL\Core\WP\Menu;
+use SL\Core\Upgrades\Upgrade;
+use SL\Core\WP\Register_Scripts;
+use SL\Core\WP\Enqueue_Scripts as Enqueue_Scripts;
+use SL\Core\File_System\File_System as File_System;
+use SL\Core\Promotions\Promotions;
+use SL\Core\Promotions\Offers;
 
-use WeDevs\PM\Core\Installer\Installer;
-use PM_Create_Table;
-//use WeDevs\PM\Tools\Helpers\ImportActivecollab;
-use WeDevs\PM\Tools\Helpers\ImportTrello;
-//use WeDevs\PM\Tools\Helpers\ImportAsana;
-use WeDevs\PM\Core\Admin_Notice\Admin_Notice;
-use WeDevs\PM\Pusher\Pusher;
-use WeDevs\PM\Core\User_Profile\Profile_Update;
+use SL\Core\Installer\Installer;
+use SL_Create_Table;
+use SL\Core\Admin_Notice\Admin_Notice;
+use SL\Core\User_Profile\Profile_Update;
 
 
 class Frontend {
@@ -44,7 +37,7 @@ class Frontend {
         $this->init_filters();
 
         //Execute only plugin install time
-        register_activation_hook( PM_FILE, array( $this, 'install' ) );
+        register_activation_hook( SL_FILE, array( $this, 'install' ) );
     }
 
     public function install() {
@@ -71,16 +64,15 @@ class Frontend {
     public function init_actions() {
         add_action( 'plugins_loaded', array( $this, 'seed' ), 10 );
         add_action( 'admin_menu', array( new Menu, 'admin_menu' ) );
-        add_action( 'pm_menu_before_load_scripts', array( new Pro_Menu, 'admin_menu' ) );
         add_action( 'wp_ajax_pm_ajax_upload', array ( new File_System, 'ajax_upload_file' ) );
-        add_action( 'init', array ( 'WeDevs\PM\Core\Notifications\Notification' , 'init_transactional_emails' ) );
+        add_action( 'init', array( $this, 'shortcode_instantiate' ) );
         add_action( 'admin_enqueue_scripts', array ( $this, 'register_scripts' ) );
         add_action( 'wp_enqueue_scripts', array ( $this, 'register_scripts' ) );
         add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
         add_action( 'plugins_loaded', array( $this, 'pm_content_filter' ) );
         add_action( 'plugins_loaded', array( $this, 'pm_content_filter_url' ) );
-        add_filter( 'plugin_action_links_' . PM_BASENAME , array( $this, 'plugin_action_links' ) );
-        add_filter( 'in_plugin_update_message-' . PM_BASENAME , array( $this, 'upgrade_notice' ), 10, 2 );
+        add_filter( 'plugin_action_links_' . SL_BASENAME , array( $this, 'plugin_action_links' ) );
+        add_filter( 'in_plugin_update_message-' . SL_BASENAME , array( $this, 'upgrade_notice' ), 10, 2 );
         add_action( 'admin_footer', array( $this, 'switch_project_html' ) );
         add_action( 'admin_init', array( $this, 'redirect_after_activate' ) );
         add_action( 'admin_bar_menu', array( $this, 'pm_toolbar_search_button' ), 999);
@@ -121,7 +113,7 @@ class Frontend {
     function hide_plugin_form_admin_network( $plugins ) {
         if ( is_network_admin() ) {
             foreach ( $plugins as $key => $plugin ) {
-                if ( $plugin['TextDomain'] == 'wedevs-project-manager' ) {
+                if ( $plugin['TextDomain'] == 'super-logistics' ) {
                     unset( $plugins[$key] );
                 }
 
@@ -139,7 +131,11 @@ class Frontend {
     }
 
     function load_plugin_textdomain() {
-        load_plugin_textdomain( 'wedevs-project-manager', false, config('frontend.basename') . '/languages/' );
+        load_plugin_textdomain( 'super-logistics', false, config('frontend.basename') . '/languages/' );
+    }
+
+    public function shortcode_instantiate() {
+        Shortcodes::init();
     }
 
     public function includes() {
@@ -169,22 +165,22 @@ class Frontend {
     function custom_deactivation_reason( $reasons ) {
         $reasons[] = array(
             'id'          => 'temporary_deactivation',
-            'text'        => __( 'Temporary deactivation', 'wedevs-project-manager' ),
-            'placeholder' => __( 'Are you facing any problem?', 'wedevs-project-manager' ),
+            'text'        => __( 'Temporary deactivation', 'super-logistics' ),
+            'placeholder' => __( 'Are you facing any problem?', 'super-logistics' ),
             'icon'        => '<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 512 512" width="23" height="23" viewBox="0 0 512 512"><path fill="#3B86FF"  stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="30" d="M192.75,385.15C119.47,359.14,67,289.2,67,207c0-104.38,84.62-189,189-189s189,84.62,189,189c0,82.2-52.47,152.14-125.75,178.15"/><polyline fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="30" points="252 216 252 495 315 432 252 495 189 432"/></svg>'
         );
 
         $reasons[] = array(
             'id'          => 'found_error',
-            'text'        => __( 'Found an Error', 'wedevs-project-manager' ),
-            'placeholder' => __( 'Please tell us more about the error. We\'ll reach you with the possible solution.', 'wedevs-project-manager' ),
+            'text'        => __( 'Found an Error', 'super-logistics' ),
+            'placeholder' => __( 'Please tell us more about the error. We\'ll reach you with the possible solution.', 'super-logistics' ),
             'icon'        => '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="23" height="23" viewBox="0 0 32 32" fill="#3B86FF"><path d="M16 0C7.164 0 0 7.164 0 16s7.164 16 16 16 16-7.164 16-16S24.836 0 16 0zm0 30C8.28 30 2 23.72 2 16S8.28 2 16 2s14 6.28 14 14-6.28 14-14 14zm0-24a2 2 0 0 0-2 2v10a2 2 0 0 0 4 0V8a2 2 0 0 0-2-2zm-2 17.968a2 2 1080 1 0 4 0 2 2 1080 1 0-4 0z"/></svg>',
         );
 
         $reasons[] = array(
             'id'          => 'not_documented',
-            'text'        => __( 'No proper documentation', 'wedevs-project-manager' ),
-            'placeholder' => __( 'Could you tell us a bit more?', 'wedevs-project-manager' ),
+            'text'        => __( 'No proper documentation', 'super-logistics' ),
+            'placeholder' => __( 'Could you tell us a bit more?', 'super-logistics' ),
             'icon'        => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="17" viewBox="0 0 24 17"><g fill="none"><g fill="#3B86FF"><path d="M19.4 0C19.7 0.6 19.8 1.3 19.8 2 19.8 3.2 19.4 4.4 18.5 5.3 17.6 6.2 16.5 6.7 15.2 6.7 15.2 6.7 15.2 6.7 15.2 6.7 14 6.7 12.9 6.2 12 5.3 11.2 4.4 10.7 3.3 10.7 2 10.7 1.3 10.8 0.6 11.1 0L7.6 0 7 0 6.5 0 6.5 5.7C6.3 5.6 5.9 5.3 5.6 5.1 5 4.6 4.3 4.3 3.5 4.3 3.5 4.3 3.5 4.3 3.4 4.3 1.6 4.4 0 5.9 0 7.9 0 8.6 0.2 9.2 0.5 9.7 1.1 10.8 2.2 11.5 3.5 11.5 4.3 11.5 5 11.2 5.6 10.8 6 10.5 6.3 10.3 6.5 10.2L6.5 10.2 6.5 17 6.5 17 7 17 7.6 17 22.5 17C23.3 17 24 16.3 24 15.5L24 0 19.4 0Z"/></g></g></svg>',
         );
 
@@ -225,7 +221,7 @@ class Frontend {
         // Adds every 5 minutes to the existing schedules.
         $schedules[ 'pm_schedule' ] = array(
             'interval' => MINUTE_IN_SECONDS * 1,
-            'display'  => sprintf( __( 'Every %d Minutes PM schedule', 'wedevs-project-manager' ), 1 ),
+            'display'  => sprintf( __( 'Every %d Minutes PM schedule', 'super-logistics' ), 1 ),
         );
 
         return $schedules;
@@ -243,16 +239,8 @@ class Frontend {
      * @return void
      */
     public function instantiate() {
-        Notification::init_transactional_emails();
-        new Upgrade();
-        new Offers();
         new Profile_Update();
-        //new Promotions();
-        //new ImportTrello();
-        //new ImportAsana();
-        //new ImportActivecollab();
         new Admin_Notice();
-        new Pusher();
     }
 
     public function register_scripts() {
@@ -271,11 +259,11 @@ class Frontend {
         global $wedevs_pm_pro;
 
         if ( !$wedevs_pm_pro  ) {
-            $links[] = '<a href="https://wedevs.com/wp-project-manager-pro/pricing/?utm_source=freeplugin&utm_medium=pm-action-link&utm_campaign=pm-pro-prompt" style="color: #389e38;font-weight: bold;" target="_blank">' . __( 'Get Pro', 'wedevs-project-manager' ) . '</a>';
+            $links[] = '<a href="https://wedevs.com/wp-project-manager-pro/pricing/?utm_source=freeplugin&utm_medium=pm-action-link&utm_campaign=pm-pro-prompt" style="color: #389e38;font-weight: bold;" target="_blank">' . __( 'Get Pro', 'super-logistics' ) . '</a>';
         }
 
-        $links[] = '<a href="' . admin_url( 'admin.php?page=pm_projects#/settings' ) . '">' . __( 'Settings', 'wedevs-project-manager' ) . '</a>';
-        $links[] = '<a href="https://wedevs.com/docs/wp-project-manager/?utm_source=wp-admin&utm_medium=pm-action-link&utm_campaign=pm-docs" target="_blank">' . __( 'Documentation', 'wedevs-project-manager' ) . '</a>';
+        $links[] = '<a href="' . admin_url( 'admin.php?page=pm_projects#/settings' ) . '">' . __( 'Settings', 'super-logistics' ) . '</a>';
+        $links[] = '<a href="https://wedevs.com/docs/wp-project-manager/?utm_source=wp-admin&utm_medium=pm-action-link&utm_campaign=pm-docs" target="_blank">' . __( 'Documentation', 'super-logistics' ) . '</a>';
 
         return $links;
     }
@@ -298,7 +286,7 @@ class Frontend {
     public function switch_project_html() {
         wp_enqueue_script( 'pmglobal' );
         wp_enqueue_style( 'pmglobal' );
-        wp_localize_script( 'pmglobal', 'PM_Global_Vars',[
+        wp_localize_script( 'pmglobal', 'SL_Global_Vars',[
             'rest_url'           => home_url() .'/'.rest_get_url_prefix(),
             'project_page'       => pm_get_project_page(),
             'permission'         => wp_create_nonce('wp_rest'),
@@ -322,7 +310,7 @@ class Frontend {
                 'href'      => '#',
                 'parent' => 'top-secondary',
                 'meta'  => [
-                    'title' => __('Create New Task', 'wedevs-project-manager'),
+                    'title' => __('Create New Task', 'super-logistics'),
                 ]
 
             ]
@@ -335,7 +323,7 @@ class Frontend {
                 'href'      => '#',
                 'parent' => 'new-content',
                 'meta'  => [
-                    'title' => __('Create New Task', 'wedevs-project-manager'),
+                    'title' => __('Create New Task', 'super-logistics'),
                 ]
 
             ]
@@ -351,7 +339,7 @@ class Frontend {
                 'href'      => '#',
                 'parent' => 'top-secondary',
                 'meta'  => [
-                    'title' => __('Jump to a project', 'wedevs-project-manager'),
+                    'title' => __('Jump to a project', 'super-logistics'),
                 ]
 
             ]

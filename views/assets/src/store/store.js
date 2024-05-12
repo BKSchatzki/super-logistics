@@ -1,49 +1,12 @@
 export default new pm.Vuex.Store({ 
     state: {
-        allTasks: [],
-        manageCapability:[],
-        is_need_fetch_view_type: true,
-        // project state
-        projectLoaded : false,
-        projectOverviewLoaded: false,
-        projectDiscussLoaded: false,
-        projectTaskListLoaded: false,
-        projectTaskLoaded: false,
-        projectMilestoneLoaded: false,
-        projectFileLoaded: false,
-        projectActivityLoaded: false,
-        isFetchCategories: false,
-        projects: [],
-        project: {},
-        projectMeta: {},
-        project_users: [],
-        // categories state
-        categories: [],
-        categoryMeta: {},
-        // Global Kanban state
-        globalKanban_columns: [],
-        globalKanban_boardables: {},
-        // Material Orders state
-        materialOrders: [],
-        materialVendors: [],
-        users: [],
-        currentUser: {},
-        // Profitability
-        invoices: [],
-        materialCosts: 0,
-        laborCosts: 0,
-        // more
-        is_single_task: false,
-        roles: [],
-        milestones: [],
-        milestones_load: false,
-        is_project_form_active: false,
-        projects_meta: {},
-        pagination: {},
-        listView: 'list',
-        dropDownProjects: [],
-        dropDownTaskTypes: [],
-        taskCreateFormLists: [],
+        transactions: [],
+        transaction: {},
+        carriers: [],
+        shippers: [],
+        receivers: [],
+        exhibitors: [],
+
         
         getIndex: function ( itemList, id, slug) {
             var index = false;

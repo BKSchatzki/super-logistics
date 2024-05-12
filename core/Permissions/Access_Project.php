@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\PM\Core\Permissions;
+namespace SL\Core\Permissions;
 
-use WeDevs\PM\Core\Permissions\Abstract_Permission;
+use SL\Core\Permissions\Abstract_Permission;
 use WP_REST_Request;
 
 class Access_Project extends Abstract_Permission {
@@ -25,6 +25,6 @@ class Access_Project extends Abstract_Permission {
             return true;
         }
 
-        return new \WP_Error( 'project', __( "You have no permission.", "wedevs-project-manager" ) );
+        return new \WP_Error( 'project', __( "You have no permission.", "super-logistics" ) );
     }
 }

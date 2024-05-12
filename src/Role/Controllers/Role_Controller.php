@@ -1,16 +1,16 @@
 <?php
 
-namespace WeDevs\PM\Role\Controllers;
+namespace SL\Role\Controllers;
 
 use WP_REST_Request;
 use League\Fractal;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use WeDevs\PM\Common\Traits\Transformer_Manager;
-use WeDevs\PM\Role\Models\Role;
-use WeDevs\PM\Role\Transformers\Role_Transformer;
-use WeDevs\PM\Common\Traits\Request_Filter;
+use SL\Common\Traits\Transformer_Manager;
+use SL\Role\Models\Role;
+use SL\Role\Transformers\Role_Transformer;
+use SL\Common\Traits\Request_Filter;
 
 class Role_Controller {
     use Transformer_Manager, Request_Filter;
