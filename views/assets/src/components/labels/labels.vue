@@ -1,9 +1,4 @@
 <script>
-import LabelsMixin from "@components/transaction-lookup/mixin";
-
-export default {
-  mixins: [LabelsMixin],
-}
 </script>
 
 <template>

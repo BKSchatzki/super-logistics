@@ -11,6 +11,14 @@ export default {
     },
     label: {
       type: String,
+    },
+    width: {
+      type: Number,
+      default: null
+    },
+    required: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -20,12 +28,15 @@ export default {
       });
       return this.label || field;
     },
+    wide: function() {
+      return (this.width === null) ? '' : `-${this.width}`;
+    },
     inputValue: {
       get() {
         return this.value;
       },
-      set() {
-        this.$emit('input', this.inputValue);
+      set(newValue) {
+        this.$emit('input', newValue);
       }
     }
   },
@@ -34,14 +45,20 @@ export default {
 </script>
 
 <template>
-  <div class="sl-field col">
-    <label class="col-form-label" :for="field">{{ title }}</label>
-    <input class="form-control sl-input" v-model="inputValue" :id="field" type="text">
+  <div :class="`btb-field col${wide}`">
+    <label
+        class="col-form-label"
+        :for="field">
+      {{ title }}
+    </label>
+    <input
+        class="form-control btb-input"
+        v-model="inputValue"
+        :id="field"
+        type="text"
+        :required="required">
   </div>
 </template>
 
 <style scoped lang="less">
-.sl-input {
-  max-width: 125px;
-}
 </style>

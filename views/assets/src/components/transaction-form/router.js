@@ -7,7 +7,7 @@ registerChildRoute('project_root',
             component: TransactionForm,
             name: 'input',
             meta: {
-              label: 'Data Entry',
+              label: 'Data Input/Entry',
               order: 1
             }
         }

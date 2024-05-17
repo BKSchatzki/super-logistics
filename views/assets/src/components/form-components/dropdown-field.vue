@@ -1,5 +1,10 @@
 <script>
+import addNewForm from "@components/form-components/add-new-form.vue";
+
 export default {
+  components: {
+    addNewForm
+  },
   props: {
     field: {
       type: String,
@@ -16,9 +21,9 @@ export default {
       type: Array,
       required: true
     },
-    addNew: {
-      type: Boolean,
-      default: false
+    addNewFn: {
+      type: Function,
+      default: null
     }
   },
   computed: {
@@ -41,24 +46,23 @@ export default {
 </script>
 
 <template>
-  <div class="sl-field col">
+  <div class="btb-field col">
     <label class="col-form-label" :for="field">{{ title }}</label>
-    <select class="form-control sl-input" :id="field" v-model="selectedValue">
+    <select class="form-control btb-input" :id="field" v-model="selectedValue">
       <option value="">Select</option>
       <option v-for="choice in choices" :value="choice[0]">
         {{ choice[1] }}
       </option>
     </select>
-    <button v-if="addNew" class="add-new fa-solid fa-circle-plus" ></button>
+    <add-new-form
+        v-if="addNewFn"
+        :add-new-fn="addNewFn"
+        :field="field"></add-new-form>
   </div>
 </template>
 
 <style scoped lang="less">
-.add-new {
-  color: #0d66c2;
-  border: none;
-}
-.sl-input {
+.btb-input {
   width: 100%;
   max-width: 125px;
 }

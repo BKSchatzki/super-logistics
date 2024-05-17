@@ -21,6 +21,38 @@ export default {
             };
             self.httpRequest(request_data);
         },
+        addClient(formFill) {
+            this.addEntity(formFill, 1)
+        },
+        addCarrier(formFill) {
+            this.addEntity(formFill, 2)
+        },
+        addExhibitor(formFill) {
+            this.addEntity(formFill, 3)
+        },
+        addShipper(formFill) {
+            this.addEntity(formFill, 4)
+        },
+        addEntity(formFill, type) {
+            // Adds a new Entity (Client, Carrier, Entity, Shipper) to the database
+            const data = { type, ...formFill }
+            console.log("data: ", data);
+            const self = this;
+            const request_data = {
+                type: 'POST',
+                url: self.base_url + 'sl/v1/entity/',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    console.log('Entity added:', res);
+                },
+                error: function (res) {
+                    console.error('Failed add new entity to database:', res);
+                }
+            };
+            self.httpRequest(request_data);
+        },
         updateProjectBoardable(from_board_id, project_id, to_board_id) {
             const self = this;
             const request_data = {

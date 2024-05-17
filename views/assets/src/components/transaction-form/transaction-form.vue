@@ -1,10 +1,10 @@
 <script>
-import InputMixin from "@components/transaction-lookup/mixin";
-import ItemsSection from "@components/form-components/items-section.vue";
-import TransactionSection from "@components/form-components/transaction-section.vue";
+import ItemsSection from "@components/transaction-form/items-section.vue";
+import TransactionSection from "@components/transaction-form/transaction-section.vue";
 import TextField from "@components/form-components/text-field.vue";
 import DropdownField from "@components/form-components/dropdown-field.vue";
 import ImageField from "@components/form-components/image-field.vue";
+import TransactionMixin from "@components/transaction-form/mixin.js";
 
 export default {
   components: {
@@ -121,21 +121,21 @@ export default {
       }
     })
   },
-  mixins: [InputMixin],
+  mixins: [TransactionMixin],
 }
 </script>
 
 <template>
-  <form class="sl">
+  <form class="btb" @submit.prevent>
     <h3 class="mb-2">New Transaction</h3>
     <hr>
-    <div class="sl-body">
-      <div class="sl-transaction-central">
+    <div class="btb-body">
+      <div class="btb-transaction-central">
         <TransactionSection :transaction="transaction"/>
-        <ItemsSection :items="items" :weight="weight"/>
+        <ItemsSection :items="items" :weight="weight" :special-handling="true"/>
       </div>
-      <div class="sl-transaction-adjacent ms-4">
-        <div class="sl-image-notes">
+      <div class="btb-transaction-adjacent ms-4">
+        <div class="btb-image-notes">
           <div class="mb-2">
             <h4>Image</h4>
           </div>
@@ -152,25 +152,25 @@ export default {
 </template>
 
 <style lang="less">
-.sl {
+.btb {
   width: 100%;
 }
 h3, h4 {
   font-family: "Roboto", sans-serif;
   color: #82878d;
 }
-.sl-body {
+.btb-body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
-.sl-transaction-central {
+.btb-transaction-central {
   flex: 3;
 }
-.sl-transaction-adjacent {
+.btb-transaction-adjacent {
   flex: 1;
 }
-.sl-field {
+.btb-field {
   display: flex;
   width: 200px;
   justify-content: space-between;

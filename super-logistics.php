@@ -27,7 +27,4 @@ define( 'SL_FILE', __FILE__ );
 define( 'SL_BASENAME', plugin_basename(__FILE__) );
 define( 'SL_PLUGIN_ASSEST', plugins_url( 'views/assets', __FILE__ ) );
 
-add_shortcode( 'super_logistics_external', 'showExternalInterface');
-add_shortcode( 'super_logistics_internal', 'showInternalInterface');
-
 require __DIR__.'/bootstrap/start.php';

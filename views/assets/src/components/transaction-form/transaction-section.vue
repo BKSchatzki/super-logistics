@@ -2,8 +2,10 @@
 
 import TextField from "@components/form-components/text-field.vue";
 import DropdownField from "@components/form-components/dropdown-field.vue";
+import TransactionMixin from "@components/transaction-form/mixin.js";
 
 export default {
+  mixins: [TransactionMixin],
   props: {
     transaction: {
       type: Object,
@@ -51,31 +53,27 @@ export default {
 
 <template>
   <div>
-    <div class="sl-transaction-header mb-2">
+    <div class="btb-transaction-header mb-2">
       <h4>Transaction Details</h4>
     </div>
-    <div class="sl-transaction-body">
+    <div class="btb-transaction-body">
       <div class="row">
-        <DropdownField field="client" :choices="clientChoices" :add-new="true" v-model="transaction.client"/>
-        <TextField field="city" v-model="transaction.city"/>
+        <DropdownField field="client" :choices="clientChoices" :add-new-fn="addClient" v-model="transaction.client"/>
         <TextField field="shipment"  v-model="transaction.shipment"/>
         <DropdownField field="freight" :choices="freightTypeChoices" v-model="transaction.freightType"/>
       </div>
       <div class="row">
-        <DropdownField field="carrier" :choices="carrierChoices" :add-new="true"  v-model="transaction.carrier"/>
-        <TextField field="state"  v-model="transaction.state"/>
+        <DropdownField field="carrier" :choices="carrierChoices" :add-new-fn="addCarrier"  v-model="transaction.carrier"/>
         <TextField field="tracking"  v-model="transaction.tracking"/>
         <TextField field="pallet" v-model="transaction.pallet"/>
       </div>
       <div class="row">
-        <DropdownField field="shipper" :choices="shipperChoices" :add-new="true"  v-model="transaction.shipper"/>
-        <TextField field="zip"  v-model="transaction.zip"/>
+        <DropdownField field="shipper" :choices="shipperChoices" :add-new-fn="addExhibitor"  v-model="transaction.shipper"/>
         <TextField field="zone"  v-model="transaction.zone"/>
         <TextField field="receiver" v-model="transaction.receiver"/>
       </div>
       <div class="row">
-        <DropdownField field="exhibitor" :choices="exhibitorChoices" :add-new="true"  v-model="transaction.exhibitor"/>
-        <div class="col"></div>
+        <DropdownField field="exhibitor" :choices="exhibitorChoices" :add-new-fn="addShipper"  v-model="transaction.exhibitor"/>
         <TextField field="color"  v-model="transaction.color"/>
         <TextField field="trailer" v-model="transaction.trailer"/>
       </div>

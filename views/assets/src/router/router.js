@@ -1,4 +1,3 @@
-import '@components/transaction-lookup/router';
 import '@components/transaction-form/router';
 import '@components/labels/router';
 import Empty from '@components/root/init.vue';

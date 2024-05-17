@@ -14,7 +14,7 @@ Vue.config.devtools = true;
 /**
  * Project template render
  */
-var SL_Vue = {
+const SL_Vue = {
     el: `#${SL_Vars.id}`,
     store,
     router,

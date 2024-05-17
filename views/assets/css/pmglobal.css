@@ -4,7 +4,7 @@
     display: none;
     top: 0;
     left: 0;
-    z-index: 99999;
+    z-index: 9999;
 }
 .pmswitchproject .icon-pm-navigation {
     color: #c8c7c7;

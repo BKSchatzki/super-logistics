@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'name'        => 'Advanced WP PM',
-    'slug'        => 'pm',
+    'name'        => 'Super Logistics',
+    'slug'        => 'sl',
     'version'     => '1.0.0',
-    'api'     	  => '2',
+    'api'     	  => '1',
     'db_version'  => '2.5',
     'text_domain' => 'pm',
     'comment_per_page' => 200,
