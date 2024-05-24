@@ -3,7 +3,6 @@
 namespace SL\Entity\Models;
 
 use SL\Core\DB_Connection\Model as Eloquent;
-use SL\User\Models\User;
 
 class Entity extends Eloquent {
     protected $table = 'sl_entities';
@@ -20,11 +19,29 @@ class Entity extends Eloquent {
     ];
     public $timestamps = false;
 
-    public function transactions():object {
-        return $this->hasMany('Transaction', 'entity_id');
+    private static string $transModel = 'SL\Transaction\Models\Transaction';
+
+    public function clientTrans():object {
+        return $this->hasMany(self::$transModel, 'client_id');
+    }
+
+    public function carrierTrans():object {
+        return $this->hasMany(self::$transModel, 'carrier_id');
+    }
+
+    public function shipperTrans():object {
+        return $this->hasMany(self::$transModel, 'shipper_id');
+    }
+
+    public function exhibitorTrans():object {
+        return $this->hasMany(self::$transModel, 'shipper_id');
     }
 
     public function users():object {
         return $this->belongsToMany('User', 'sl_entity_users', 'entity_id', 'user_id');
+    }
+
+    public function show():object {
+        return $this->hasOne('SL\Show\Models\Show', 'entity_id');
     }
 }

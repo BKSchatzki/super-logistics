@@ -1,81 +1,99 @@
 <script>
 
-import TextField from "@components/form-components/text-field.vue";
+import SimpleField from "@components/form-components/simple-field.vue";
 import DropdownField from "@components/form-components/dropdown-field.vue";
 import TransactionMixin from "@components/transaction-form/mixin.js";
 
 export default {
   mixins: [TransactionMixin],
+  components: {
+    SimpleField,
+    DropdownField
+  },
   props: {
-    transaction: {
+    trans: {
       type: Object,
       required: true
     }
   },
-  components: {
-    TextField,
-    DropdownField
+  computed: {
+    shows(){
+      return this.$store.state.shows
+    },
+    zones(){
+      return this.getPlaces(1);
+    },
+    colors(){
+      return this.getPlaces(2);
+    },
+    clients(){
+      return this.$store.state.clients
+    },
+    carriers(){
+      return this.$store.state.carriers
+    },
+    shippers(){
+      return this.$store.state.shippers
+    },
+    exhibitors(){
+      return this.$store.state.exhibitors
+    },
   },
   data() {
-    return ({
-      clientChoices: [
-        [1, "Kurt Russell"],
-        [2, "Russell Brand"],
-        [3, "Russell Crowe"]
-      ],
-      carrierChoices: [
-        [1, "FedEx"],
-        [2, "Old Dominion"],
-        [3, "UPS"]
-      ],
-      shipperChoices: [
-        [1, "ThinkSTG"],
-        [2, "ITS Logistics"],
-        [3, "The Spacing Guild"],
-        [4, "Echo"],
-      ],
-      exhibitorChoices: [
-        [1, "Echo"],
-        [2, "Napster"],
-        [3, "Nvidia"],
-        [4, "The Smashing Pumpkins"],
-      ],
-      freightTypeChoices: [
-        [1, "LTL"],
-        [2, "FTL"],
-        [3, "Small Pack"]
-      ],
-    });
+    return {
+      freightTypes: [
+        {name: "LTL", id: 1},
+        {name: "FTL", id: 2},
+        {name: "SmallPkgs", id: 3},
+      ]
+    }
+  },
+  methods: {
+    getPlaces(type){
+      const showID = this.trans.show ?? false;
+      if (!showID) return [];
+      const places = this.shows.find(s => s.id === showID).places;
+      return places.filter(p => parseInt(p.type) === type);
+    }
+  },
+  created() {
+    this.getRelevantShows();
+    this.getClients();
+    this.getCarriers();
+    this.getShippers();
+    this.getExhibitors();
   }
-
 }
 </script>
 
 <template>
   <div>
     <div class="btb-transaction-header mb-2">
-      <h4>Transaction Details</h4>
+      <h4>Details</h4>
     </div>
     <div class="btb-transaction-body">
       <div class="row">
-        <DropdownField field="client" :choices="clientChoices" :add-new-fn="addClient" v-model="transaction.client"/>
-        <TextField field="shipment"  v-model="transaction.shipment"/>
-        <DropdownField field="freight" :choices="freightTypeChoices" v-model="transaction.freightType"/>
+        <DropdownField :choices="shows" :add-new-fn="addShow" v-model="trans.show" field="show" :is-show="true" :required="true"/>
       </div>
       <div class="row">
-        <DropdownField field="carrier" :choices="carrierChoices" :add-new-fn="addCarrier"  v-model="transaction.carrier"/>
-        <TextField field="tracking"  v-model="transaction.tracking"/>
-        <TextField field="pallet" v-model="transaction.pallet"/>
+        <DropdownField field="client" :choices="clients" :add-new-fn="addClient" v-model="trans.client" :required="true"/>
+        <SimpleField type="text" field="shipment"  v-model="trans.shipment"/>
+        <DropdownField field="freight" :choices="freightTypes" v-model="trans.freightType"/>
       </div>
       <div class="row">
-        <DropdownField field="shipper" :choices="shipperChoices" :add-new-fn="addExhibitor"  v-model="transaction.shipper"/>
-        <TextField field="zone"  v-model="transaction.zone"/>
-        <TextField field="receiver" v-model="transaction.receiver"/>
+        <DropdownField field="carrier" :choices="carriers" :add-new-fn="addCarrier"  v-model="trans.carrier"/>
+        <SimpleField type="text" field="tracking"  v-model="trans.tracking"/>
+        <SimpleField type="text" field="pallet" v-model="trans.pallet"/>
       </div>
       <div class="row">
-        <DropdownField field="exhibitor" :choices="exhibitorChoices" :add-new-fn="addShipper"  v-model="transaction.exhibitor"/>
-        <TextField field="color"  v-model="transaction.color"/>
-        <TextField field="trailer" v-model="transaction.trailer"/>
+        <DropdownField field="shipper" :choices="shippers" :add-new-fn="addExhibitor"  v-model="trans.shipper" :required="true"/>
+        <DropdownField field="zone"  v-model="trans.zone" :choices="zones"/>
+        <SimpleField type="text" field="receiver" v-model="trans.receiver"/>
+      </div>
+      <div class="row">
+        <DropdownField field="exhibitor" :choices="exhibitors" :add-new-fn="addShipper"  v-model="trans.exhibitor"/>
+        <DropdownField field="color"  v-model="trans.color" :choices="colors"/>
+        <SimpleField type="text" field="trailer" v-model="trans.trailer"/>
       </div>
     </div>
   </div>

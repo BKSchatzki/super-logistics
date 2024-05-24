@@ -1,6 +1,11 @@
 <script>
+
 export default {
   props: {
+    type: {
+      type: String,
+      required: true
+    },
     field: {
       type: String,
       required: true
@@ -47,18 +52,16 @@ export default {
 <template>
   <div :class="`btb-field col${wide}`">
     <label
-        class="col-form-label"
-        :for="field">
-      {{ title }}
+        class="col-form-label me-2"
+        :for="`${field}-field`">
+      {{ title }}{{ required ? '*' : ''}}
     </label>
     <input
         class="form-control btb-input"
         v-model="inputValue"
-        :id="field"
-        type="text"
+        :id="`${field}-field`"
+        :type="type"
         :required="required">
   </div>
 </template>
 
-<style scoped lang="less">
-</style>

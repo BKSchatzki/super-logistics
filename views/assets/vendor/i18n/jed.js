@@ -716,7 +716,7 @@ parse: function parse(input) {
         if (typeof action === 'undefined' || !action.length || !action[0]) {
 
             if (!recovering) {
-                // Report error
+                // Reports error
                 expected = [];
                 for (p in table[state]) if (this.terminals_[p] && p > 2) {
                     expected.push("'"+this.terminals_[p]+"'");

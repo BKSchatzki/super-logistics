@@ -19,11 +19,27 @@ export default {
     },
     choices: {
       type: Array,
-      required: true
+      required: true,
+      validator: function(array) {
+        return array.every(item =>
+            typeof item === 'object' &&
+            item !== null &&
+            'id' in item &&
+            'name' in item
+        );
+      }
     },
     addNewFn: {
       type: Function,
       default: null
+    },
+    isShow: {
+      type: Boolean,
+      default: false
+    },
+    required: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -47,23 +63,23 @@ export default {
 
 <template>
   <div class="btb-field col">
-    <label class="col-form-label" :for="field">{{ title }}</label>
-    <select class="form-control btb-input" :id="field" v-model="selectedValue">
+    <label class="col-form-label me-2" :for="field">
+      {{ title }}{{ required ? '*' : ''}}
+    </label>
+    <select class="form-control" :id="field" v-model="selectedValue">
       <option value="">Select</option>
-      <option v-for="choice in choices" :value="choice[0]">
-        {{ choice[1] }}
+      <option v-for="choice in choices" :value="choice.id">
+        {{ choice.name }}
       </option>
     </select>
     <add-new-form
         v-if="addNewFn"
         :add-new-fn="addNewFn"
-        :field="field"></add-new-form>
+        :field="field"
+        :is-show="isShow"
+        :required="required"></add-new-form>
   </div>
 </template>
 
 <style scoped lang="less">
-.btb-input {
-  width: 100%;
-  max-width: 125px;
-}
 </style>

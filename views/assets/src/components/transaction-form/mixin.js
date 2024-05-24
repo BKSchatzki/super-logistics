@@ -5,18 +5,52 @@ export default {
         }
     },
     methods: {
-        addTransaction(transaction) {
-            // Adds a new Transaction to the database
+        createFormData(formFill) {
+            console.log('formFill: ', formFill);
+            const formData = new FormData();
+            Object.entries(formFill).forEach(([key, value]) => {
+                if (typeof value === 'object' && !(value instanceof File)) {
+                    value = JSON.stringify(value);
+                }
+                formData.append(key, value);
+            });
+            return formData;
+        },
+        addTransaction(transaction, items) {
+            const formData = new FormData();
+            formData.append('transaction', JSON.stringify(transaction));
+            formData.append('items', JSON.stringify(items));
+            console.log("formData: ", formData);
             const self = this;
             const request_data = {
                 type: 'POST',
                 url: self.base_url + 'sl/v1/transactions/',
-                data: transaction,
+                data: formData,
+                processData: false,
+                contentType: false,
                 success: function (res) {
                     console.log('Transaction added:', res);
                 },
                 error: function (res) {
-                    console.error('Failed to set project as boardable:', res);
+                    console.error('Failed to add new transaction:', res);
+                }
+            };
+            self.httpRequest(request_data);
+        },
+        addShow(formFill) {
+            const self = this;
+            const formData = this.createFormData(formFill);
+            const request_data = {
+                type: 'POST',
+                url: self.base_url + 'sl/v1/shows/',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    console.log('Show added:', res);
+                },
+                error: function (res) {
+                    console.error('Failed to add new show:', res);
                 }
             };
             self.httpRequest(request_data);
@@ -34,14 +68,13 @@ export default {
             this.addEntity(formFill, 4)
         },
         addEntity(formFill, type) {
-            // Adds a new Entity (Client, Carrier, Entity, Shipper) to the database
-            const data = { type, ...formFill }
-            console.log("data: ", data);
             const self = this;
+            const formData = this.createFormData(formFill);
+            formData.append('type', type);
             const request_data = {
                 type: 'POST',
-                url: self.base_url + 'sl/v1/entity/',
-                data: data,
+                url: self.base_url + 'sl/v1/entities/',
+                data: formData,
                 processData: false,
                 contentType: false,
                 success: function (res) {
@@ -53,80 +86,54 @@ export default {
             };
             self.httpRequest(request_data);
         },
-        updateProjectBoardable(from_board_id, project_id, to_board_id) {
+        getRelevantShows() {
             const self = this;
-            const request_data = {
-                type: 'PUT',
-                url: self.base_url + 'pm/v2/global-kanboard/boardable',
-                data: {from_board_id, project_id, to_board_id},
-                error: function (res) {
-                    console.error('Failed to update project as boardable:', res);
-                }
-            };
-            self.httpRequest(request_data);
-        },
-        removeProjectBoardable(board_id, project_id) {
-            // Removes Project from pm_boardables table in the database
-            // Not to be confused for use as addProjectBoardable or updateProjectBoardable
-            const self = this;
-            const request_data = {
-                type: 'DELETE',
-                url: self.base_url + 'pm/v2/global-kanboard/' + board_id + '/boardable/' + project_id,
-                success: function (res) {
-                    self.getProjectBoardables(board_id);
+            self.httpRequest({
+                type: 'GET',
+                url: self.base_url + 'sl/v1/shows/relevant',
+                success: function(res) {
+                    console.log("Relevant shows: ", res.data);
+                    self.$store.commit('setShows', res.data);
                 },
-                error: function (res) {
-                    console.error('Failed to remove project as boardable:', res);
+                error: function(err) {
+                    console.error('Failed to get shows:', err);
                 }
+            });
+        },
+        getClients() {
+            this.getEntities(1)
+            .then(clients => this.$store.commit('setClients', clients));
+        },
+        getCarriers() {
+            this.getEntities(2)
+            .then(carriers => this.$store.commit('setCarriers', carriers));
+        },
+        getExhibitors() {
+            this.getEntities(3)
+                .then(exhibitors => this.$store.commit('setExhibitors', exhibitors));
+        },
+        getShippers() {
+            this.getEntities(4)
+                .then(shippers => this.$store.commit('setShippers', shippers));
+        },
+        getEntities(type) {
+            const self = this;
+            const request_data = {
+                type: 'GET',
+                url: self.base_url + `sl/v1/entities?type=${type}`,
             };
-            self.httpRequest(request_data);
+            return new Promise((resolve, reject) => {
+                self.httpRequest({
+                    ...request_data,
+                    success: function(res) {
+                        resolve(res.data);
+                    },
+                    error: function(err) {
+                        console.error('Failed to get entities:', err);
+                        reject(err);
+                    }
+                });
+            });
         },
-        addBoard(title) {
-          const self = this;
-          const request_data = {
-            type: 'POST',
-            url: self.base_url + 'pm/v2/global-kanboard',
-            data: { title },
-            success: function (res) {
-              self.getGlobalKanban();
-            },
-            error: function (res) {
-              console.error('Failed to add board:', res);
-            }
-          };
-          self.httpRequest(request_data);
-        },
-        deleteBoard(board_id) {
-          const self = this;
-          const request_data = {
-            type: 'DELETE',
-            url: self.base_url + 'pm/v2/global-kanboard/' + board_id,
-            success: function (res) {
-              console.log("board deleted");
-              self.getGlobalKanban();
-            },
-            error: function (res) {
-              console.error('Failed to delete board:', res);
-            }
-          };
-          self.httpRequest(request_data);
-        },
-        updateBoardOrder(updated_boards) {
-          const self = this;
-
-          for (let i = 0; i < updated_boards.length; i++) {
-            updated_boards[i].order = i;
-          }
-
-          const request_data = {
-            type: 'PUT',
-            url: self.base_url + 'pm/v2/global-kanboard/',
-            data: { updated_boards },
-            error: function (res) {
-              console.error('Failed to update board order:', res);
-            }
-          };
-          self.httpRequest(request_data);
-        }
     }
 }

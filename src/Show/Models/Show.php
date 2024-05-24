@@ -8,15 +8,23 @@ class Show extends Eloquent {
     protected $table = 'sl_shows';
     protected $fillable = [
         'name',
-        'logo_path',
-        'address',
-        'city',
-        'state',
-        'zip',
+        'entity_id',
+        'date_start',
+        'date_end',
+        'date_expiry',
         'floor_plan_path'
     ];
+    public $timestamps = false;
 
-    public function transactions() {
-        return $this->hasMany('Transaction', 'show_id');
+    public function places():object {
+        return $this->hasMany('SL\Show\Models\ShowPlace', 'show_id');
+    }
+
+    public function transactions():object {
+        return $this->hasMany('SL\Transaction\Models\Transaction', 'show_id');
+    }
+
+    public function entity():object {
+        return $this->belongsTo('SL\Entity\Models\Entity', 'entity_id');
     }
 }

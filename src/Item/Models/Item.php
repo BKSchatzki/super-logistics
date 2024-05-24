@@ -15,4 +15,8 @@ class Item extends Eloquent {
         'total_weight',
         'notes'
     ];
+
+    public function transaction() {
+        return $this->belongsTo( 'SL\Transaction\Models\Transaction' );
+    }
 }

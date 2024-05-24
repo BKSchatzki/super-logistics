@@ -2,9 +2,11 @@ export default new pm.Vuex.Store({
     state: {
         transactions: [],
         transaction: {},
+        items: [],
+        shows: [],
         carriers: [],
         shippers: [],
-        receivers: [],
+        clients: [],
         exhibitors: [],
 
         
@@ -30,79 +32,21 @@ export default new pm.Vuex.Store({
     },
 
     mutations: {
-        setAllTasks (state, tasks) {
-            state.allTasks = tasks;
+        // Super Logistics mutations
+        setClients (state, clients) {
+            state.clients = clients;
         },
-        updateShowDescription( state, status ) {
-            status = status || false;
-
-            state.showDescription = status;
+        setCarriers (state, carriers) {
+            state.carriers = carriers;
         },
-        afterDeleteProjectCount (state, project) {
-            if (typeof project.project === 'undefined') {
-                return;
-            }
-            if(project.project.status == 'incomplete') {
-                state.projects_meta.total_incomplete = parseInt(state.projects_meta.total_incomplete) - 1;
-            } else {
-               state.projects_meta.total_complete = parseInt(state.projects_meta.total_complete) - 1;
-            }
+        setExhibitors (state, exhibitors) {
+            state.exhibitors = exhibitors;
         },
-        updateListViewType(state, view) {
- 
-            if(
-                state.projectMeta.hasOwnProperty('list_view_type')
-                    &&
-                state.projectMeta.list_view_type
-            ) {
-                state.projectMeta.list_view_type.meta_value = view;
-            } else {
-
-                state.projectMeta['list_view_type']= {
-                    meta_value: view
-                }
-            }
+        setShippers (state, shippers) {
+            state.shippers = shippers;
         },
-        isSigleTask (state, status) {
-            state.is_single_task = status;
-        },
-        // Global Kanban mutations
-        setGK_columns (state, columns) {
-            if (columns !== undefined) {
-                state.globalKanban_columns = columns;
-            }
-        },
-        setGK_boardables (state, boardables) {
-            if (boardables !== undefined) {
-                if (Object.keys(state.globalKanban_boardables).length === 0) {
-                    state.globalKanban_boardables = boardables;
-                } else {
-                    state.globalKanban_boardables = Object.assign({}, state.globalKanban_boardables, boardables);
-                }
-            }
-        },
-        // Material Orders mutations
-        setMaterialOrders (state, orders) {
-            state.materialOrders = orders;
-        },
-        setMaterialVendors (state, vendors) {
-            state.materialVendors = vendors;
-        },
-        setUsers (state, users) {
-            state.users = users;
-        },
-        setCurrentUser (state, user) {
-            state.currentUser = user;
-        },
-        // Profitability
-        setMaterialCosts (state, material_costs) {
-          state.materialCosts = material_costs;
-        },
-        setLaborCosts (state, labor_costs) {
-          state.laborCosts = labor_costs;
-        },
-        setInvoices (state, invoices) {
-          state.invoices = invoices;
+        setShows (state, shows) {
+            state.shows = shows;
         },
         // Project mutations
         setProjects (state, projects) {

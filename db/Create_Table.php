@@ -8,6 +8,7 @@ class SL_Create_Table {
         $this->create_sl_entities();
         $this->create_sl_roles();
         $this->create_sl_shows();
+        $this->create_sl_show_places();
         $this->create_sl_transactions();
         $this->create_sl_updates();
         $this->create_sl_notes();
@@ -54,7 +55,7 @@ class SL_Create_Table {
 			  `title` VARCHAR(255) NOT NULL,
 			  `slug` VARCHAR(255) NOT NULL,
 			  `description` text,
-			  `status` tinyINT(2) unsigned NOT NULL DEFAULT '1',
+			  `status` tinyINT(2) UNSIGNED NOT NULL DEFAULT '1',
 			  `created_by` INT(11) UNSIGNED DEFAULT NULL,
 			  `updated_by` INT(11) UNSIGNED DEFAULT NULL,
 			  `created_at` timestamp NULL DEFAULT NULL,
@@ -70,16 +71,30 @@ class SL_Create_Table {
         $table_name = $wpdb->prefix . 'sl_shows';
 
         $sql = "CREATE TABLE IF NOT EXISTS  {$table_name} (
-          `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-          `name` VARCHAR(255) NOT NULL,
-          `logo_path` VARCHAR(255) NULL,
-          `date` date NOT NULL,
-          `address` VARCHAR(255) NOT NULL,
-          `city` VARCHAR(255) NULL,
-          `state` VARCHAR(255) NULL,
-          `zip` VARCHAR(255) NULL,
-          `floor_plan_path` VARCHAR(255) NULL,
-          PRIMARY KEY (`id`)
+            `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+            `entity_id` INT(11) UNSIGNED NULL,
+            `date_start` DATE NOT NULL,
+            `date_end` DATE NULL,
+            `date_expiry` DATE NULL,
+            `floor_plan_path` VARCHAR(255) NULL,
+            PRIMARY KEY (`id`),
+            FOREIGN KEY (`entity_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE CASCADE
+        ) DEFAULT CHARSET=utf8";
+
+        dbDelta($sql);
+    }
+
+    private function create_sl_show_places():void {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'sl_show_places';
+
+        $sql = "CREATE TABLE IF NOT EXISTS  {$table_name} (
+            `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+            `show_id` INT(11) UNSIGNED NOT NULL,
+            `type` VARCHAR(255) NOT NULL,
+            `name` VARCHAR(255) NOT NULL,
+            PRIMARY KEY (`id`),
+            FOREIGN KEY (`show_id`) REFERENCES {$wpdb->prefix}sl_shows(`id`) ON DELETE CASCADE
         ) DEFAULT CHARSET=utf8";
 
         dbDelta($sql);
@@ -91,20 +106,25 @@ class SL_Create_Table {
 
         $sql = "CREATE TABLE IF NOT EXISTS  {$table_name} (
           `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-          `exhibitor_id` INT(11) UNSIGNED NOT NULL,
-          `carrier_id` INT(11) UNSIGNED NOT NULL,
-          `shipper_id` INT(11) UNSIGNED NOT NULL,
           `show_id` INT(11) UNSIGNED NOT NULL,
-          `zone` VARCHAR(255) NOT NULL,
-          `color` VARCHAR(255) NOT NULL,
-          `billable_weight` INT(11) NOT NULL,
-          `pallet_no` INT(11) NOT NULL,
-          `freight_type` INT(11) NOT NULL,
+          `client_id` INT(11) UNSIGNED NOT NULL,
+          `carrier_id` INT(11) UNSIGNED NULL,
+          `shipper_id` INT(11) UNSIGNED NULL,
+          `exhibitor_id` INT(11) UNSIGNED NOT NULL,
+          `shipment` VARCHAR(255) NULL,
+          `zone` INT(11) UNSIGNED NULL,
+          `color` INT(11) UNSIGNED NULL,
+          `billable_weight` INT(11) NULL,
+          `pallet_no` INT(11) NULL,
+          `freight_type` INT(11) NULL,
           PRIMARY KEY (`id`),
-          FOREIGN KEY (`exhibitor_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE RESTRICT,
+          FOREIGN KEY (`show_id`) REFERENCES {$wpdb->prefix}sl_shows(`id`) ON DELETE RESTRICT
+          FOREIGN KEY (`client_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE RESTRICT,
           FOREIGN KEY (`carrier_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE RESTRICT,
           FOREIGN KEY (`shipper_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE RESTRICT,
-          FOREIGN KEY (`show_id`) REFERENCES {$wpdb->prefix}sl_shows(`id`) ON DELETE RESTRICT
+          FOREIGN KEY (`exhibitor_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE RESTRICT,
+          FOREIGN KEY (`zone`) REFERENCES {$wpdb->prefix}sl_show_places(`id`) ON DELETE RESTRICT,
+          FOREIGN KEY (`color`) REFERENCES {$wpdb->prefix}sl_show_places(`id`) ON DELETE RESTRICT,
         ) DEFAULT CHARSET=utf8";
 
         dbDelta($sql);
