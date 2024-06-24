@@ -25,7 +25,7 @@ class EntityController
         return $this->get_response($resource);
     }
 
-    public function store(WP_REST_Request $request): array
+    public function store(): array
     {// This function is formData in order to handle the image file upload
         $logo_path = isset($_FILES['logoFile']) ? self::handleImageUpload($_FILES['logoFile']) : '';
 

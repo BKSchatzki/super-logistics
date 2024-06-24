@@ -24,6 +24,10 @@ export default {
     required: {
       type: Boolean,
       default: false
+    },
+    readOnly: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -45,23 +49,29 @@ export default {
       }
     }
   },
-
 }
 </script>
 
 <template>
   <div :class="`btb-field col${wide}`">
-    <label
+    <label v-if="!readOnly"
         class="col-form-label me-2"
         :for="`${field}-field`">
       {{ title }}{{ required ? '*' : ''}}
     </label>
-    <input
+    <input v-if="!readOnly"
         class="form-control btb-input"
         v-model="inputValue"
         :id="`${field}-field`"
         :type="type"
         :required="required">
+    <p v-if="readOnly" class="col-form-label me-2 text-secondary">
+      {{ title }}
+    </p>
+    <p v-if="readOnly" class="col mb-0 form-control text-break fw-bold"
+       :id="`${label}-info`">
+      {{ value }}
+    </p>
   </div>
 </template>
 

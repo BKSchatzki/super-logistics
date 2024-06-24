@@ -6,6 +6,8 @@ import Mixin from '@helpers/mixin/mixin'
 import App from './App.vue'
 import '@helpers/common-components'
 import menuFix from '@helpers/menu-fix';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 window.pmBus = new Vue();
 

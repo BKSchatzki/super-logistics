@@ -13,6 +13,7 @@ class ShowTransformer extends TransformerAbstract
     {
         return [
             'id' => (int)$item->id,
+            'client_id' => (int)$item->client_id,
             'name' => $item->entity->name,
             'date_start' => $item->date_start,
             'date_end' => $item->date_end ?? '',

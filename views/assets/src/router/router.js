@@ -1,5 +1,6 @@
-import '@components/transaction-form/router';
-import '@components/labels/router';
+import '@components/data-input/router';
+import '@components/qr-scanner/router';
+import '@components/client/router';
 import Empty from '@components/root/init.vue';
 
 appRoutes.push({

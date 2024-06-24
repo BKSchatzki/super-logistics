@@ -11,14 +11,16 @@ class Update extends Eloquent {
         'user_id',
         'type',
         'datetime',
-        'image_path'
+        'image_path',
+        'note'
     ];
+    public $timestamps = false;
 
-    public function transaction() {
+    public function transaction(): object {
         return $this->belongsTo('Transaction', 'transaction_id');
     }
 
-    public function user() {
+    public function user(): object {
         return $this->belongsTo('User', 'user_id');
     }
 }

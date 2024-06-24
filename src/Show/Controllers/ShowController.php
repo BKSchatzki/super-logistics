@@ -23,6 +23,7 @@ class ShowController {
             'date_start' => sanitize_text_field($_POST['dateStart']),
             'date_end' => sanitize_text_field($_POST['dateEnd']),
             'date_expiry' => sanitize_text_field($_POST['dateExpiry']),
+            'client_id' => sanitize_text_field($_POST['clientID']),
             'floor_plan_path' => $floor_plan_path
         ];
 

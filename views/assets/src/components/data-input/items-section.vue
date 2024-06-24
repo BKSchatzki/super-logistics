@@ -9,25 +9,38 @@ export default {
       type: Object,
       required: true
     },
-    specialHandling: {
+    readOnly: {
       type: Boolean,
-      required: true
-    },
+      default: false
+    }
   },
   data () {
     return {
-      complex: false
+      complex: false,
+      weight: 0,
+      typeKey: {
+        3 : "crates",
+        2 : "cartons",
+        4 : "skids",
+        5 : "fiberCases",
+        6 : "carpets",
+        7 : "misc"
+      }
     }
   },
   computed: {
     totalPieces() {
-      return Object.values(this.items).reduce((acc, item) => acc + parseInt(item.pieces), 0);
+      return Object.values(this.items).reduce((acc, item) => acc + parseInt(item.pcs), 0);
     },
     totalBols() {
       return Object.values(this.items).reduce((acc, item) => acc + parseInt(item.bols), 0);
     },
     totalWeight() {
-      return Object.values(this.items).reduce((acc, item) => acc + parseInt(item.weight), 0);
+      if (this.complex) {
+        return Object.values(this.items).reduce((acc, item) => acc + parseInt(item.weight), 0);
+      } else {
+        return this.weight;
+      }
     },
     billableWeight() {
       return Math.ceil(this.totalWeight / 100) * 100;
@@ -38,7 +51,8 @@ export default {
   },
   methods: {
     handleUpdate(item) {
-      this.items[item.type] = item;
+      const type = this.typeKey[item.type]
+      this.items[type] = item;
       this.$emit('update-items', this.items);
     },
     toggleForm() {
@@ -47,6 +61,14 @@ export default {
       btn.classList.toggle('btn-secondary');
       btn.classList.toggle('btn-outline-secondary');
     }
+  },
+  watch: {
+    billableWeight() {
+      this.$emit('update-billable-weight', this.billableWeight);
+    }
+  },
+  created() {
+    this.complex = this.readOnly;
   }
 }
 </script>
@@ -55,53 +77,43 @@ export default {
   <div class="sl-transaction-items my-2">
     <div class="sl-transaction-items-header mb-2">
       <h4 class="mb-0">Items</h4>
-      <button id="toggle-complex" class="btn btn-sm btn-outline-secondary ms-2" @click="toggleForm">{{ btnText }}</button>
-      <div class="form-check align-middle ms-2">
-        <input class="form-check-input mt-1" type="checkbox" v-model="specialHandling" id="special-handling">
-        <label class="form-check-label align-middle" for="special-handling">
-          Special Handling
-        </label>
-      </div>
+      <button v-if="!readOnly" id="toggle-complex" class="btn btn-sm btn-outline-secondary ms-2" @click="toggleForm">{{ btnText }}</button>
     </div>
-    <div v-if="!complex" aria-describedby="Enter the peices of each item type.">
+    <div v-if="!complex" aria-describedby="Enter the pieces of each item type.">
       <div class="sl-items-header">
         <div class="sl-item-label-box"><label class="ms-2" for="crates" >Crates</label></div>
         <div class="sl-item-label-box"><label class="ms-2" for="cartons" >Cartons</label></div>
-        <div class="sl-item-label-box"><label class="ms-2" for="pieces" >Skids</label></div>
+        <div class="sl-item-label-box"><label class="ms-2" for="pcs" >Skids</label></div>
         <div class="sl-item-label-box"><label class="ms-2" for="fiberCases" >Fiber Cases</label></div>
         <div class="sl-item-label-box"><label class="ms-2" for="carpets" >Carpets</label></div>
         <div class="sl-item-label-box"><label class="ms-2" for="misc" >Misc</label></div>
         <div class="sl-item-label-box"><label class="ms-2" for="" >Total Pcs</label></div>
-        <div class="sl-item-label-box"><label class="ms-2" for="totalWeight" >Weight</label></div>
-        <div class="sl-item-label-box"><label class="ms-2" for="" >Billable Wgt</label></div>
       </div>
       <div class="input-group mb-1">
-        <input class="form-control" id="crates" type="number" v-model="items['crates'].pieces" />
-        <input class="form-control" id="cartons" type="number" v-model="items['cartons'].pieces" />
-        <input class="form-control" id="pieces" type="number" v-model="items['skids'].pieces" />
-        <input class="form-control" id="fiberCases" type="number" v-model="items['fiberCases'].pieces" />
-        <input class="form-control" id="carpets" type="number" v-model="items['carpets'].pieces" />
-        <input class="form-control" id="misc" type="number" v-model="items['misc'].pieces" />
+        <input class="form-control" id="crates" type="number" v-model="items['crates'].pcs" />
+        <input class="form-control" id="cartons" type="number" v-model="items['cartons'].pcs" />
+        <input class="form-control" id="pcs" type="number" v-model="items['skids'].pcs" />
+        <input class="form-control" id="fiberCases" type="number" v-model="items['fiberCases'].pcs" />
+        <input class="form-control" id="carpets" type="number" v-model="items['carpets'].pcs" />
+        <input class="form-control" id="misc" type="number" v-model="items['misc'].pcs" />
         <input class="form-control" id="totalPieces" type="number" v-model="totalPieces" disabled />
-        <input class="form-control" id="totalWeight" type="number" v-model="totalWeight" />
-        <input class="form-control" id="billableWeight" type="number" v-model="billableWeight" disabled />
       </div>
     </div>
     <div v-if="complex" aria-describedby="A table form to record item details for the transaction.">
         <div class="row">
-          <div class="sl-items-spacer"></div>
-          <div class="col"># Pieces</div>
-          <div class="col">BOL Count</div>
-          <div class="col">Item Weight</div>
-          <div class="col">Notes</div>
-          <div class="col">Indiv. Tracking</div>
+          <div class="col text-center"></div>
+          <div class="col text-center"># Pieces</div>
+          <div class="col text-center">BOL Count</div>
+          <div class="col text-center">Item Weight</div>
+          <div class="col text-center">Notes</div>
+          <div class="col text-center">Indiv. Tracking</div>
         </div>
-        <ItemFields :init-item="items['crates']" @update-item="handleUpdate" />
-        <ItemFields :init-item="items['cartons']" @update-item="handleUpdate" />
-        <ItemFields :init-item="items['skids']" @update-item="handleUpdate" />
-        <ItemFields :init-item="items['fiberCases']" @update-item="handleUpdate" />
-        <ItemFields :init-item="items['carpets']" @update-item="handleUpdate" />
-        <ItemFields :init-item="items['misc']" @update-item="handleUpdate" />
+        <ItemFields :read-only="readOnly" :init-item="items['crates']" @update-item="handleUpdate" />
+        <ItemFields :read-only="readOnly" :init-item="items['cartons']" @update-item="handleUpdate" />
+        <ItemFields :read-only="readOnly" :init-item="items['skids']" @update-item="handleUpdate" />
+        <ItemFields :read-only="readOnly" :init-item="items['fiberCases']" @update-item="handleUpdate" />
+        <ItemFields :read-only="readOnly" :init-item="items['carpets']" @update-item="handleUpdate" />
+        <ItemFields :read-only="readOnly" :init-item="items['misc']" @update-item="handleUpdate" />
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text sl-item-label-complex">Totals</span>
           <input class="form-control" type="number" v-model="totalPieces" disabled />

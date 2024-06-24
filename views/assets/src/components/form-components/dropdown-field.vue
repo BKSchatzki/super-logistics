@@ -1,10 +1,6 @@
 <script>
-import addNewForm from "@components/form-components/add-new-form.vue";
 
 export default {
-  components: {
-    addNewForm
-  },
   props: {
     field: {
       type: String,
@@ -19,25 +15,17 @@ export default {
     },
     choices: {
       type: Array,
-      required: true,
-      validator: function(array) {
-        return array.every(item =>
-            typeof item === 'object' &&
-            item !== null &&
-            'id' in item &&
-            'name' in item
-        );
-      }
-    },
-    addNewFn: {
-      type: Function,
-      default: null
+      required: true
     },
     isShow: {
       type: Boolean,
       default: false
     },
     required: {
+      type: Boolean,
+      default: false
+    },
+    readOnly: {
       type: Boolean,
       default: false
     }
@@ -56,30 +44,36 @@ export default {
       set(value) {
         this.$emit('input', value);
       }
+    },
+    rootClass() {
+      return this.readOnly ? 'text-nowrap mb-2' : '';
+    },
+    infoValue() {
+      const theRightChoice = this.choices.find(c => c.id === parseInt(this.value));
+      return theRightChoice ? theRightChoice.name : 'Select';
     }
   }
 }
 </script>
 
 <template>
-  <div class="btb-field col">
-    <label class="col-form-label me-2" :for="field">
+  <div :class="`col d-flex align-items-center ${rootClass}`">
+    <label v-if="!readOnly" class="col-form-label me-2" :for="field">
       {{ title }}{{ required ? '*' : ''}}
     </label>
-    <select class="form-control" :id="field" v-model="selectedValue">
+    <select v-if="!readOnly" class="form-control" :id="field" v-model="selectedValue">
       <option value="">Select</option>
       <option v-for="choice in choices" :value="choice.id">
         {{ choice.name }}
       </option>
     </select>
-    <add-new-form
-        v-if="addNewFn"
-        :add-new-fn="addNewFn"
-        :field="field"
-        :is-show="isShow"
-        :required="required"></add-new-form>
+    <slot v-if="!readOnly" name="add-new"></slot>
+    <p v-if="readOnly" class="col-form-label me-2 text-secondary">
+      {{ title }}
+    </p>
+    <p v-if="readOnly" class="col mb-0 form-control text-break fw-bold"
+       :id="`${label}-info`">
+      {{ infoValue }}
+    </p>
   </div>
 </template>
-
-<style scoped lang="less">
-</style>

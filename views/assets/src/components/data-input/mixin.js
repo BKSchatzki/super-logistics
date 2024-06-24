@@ -6,7 +6,6 @@ export default {
     },
     methods: {
         createFormData(formFill) {
-            console.log('formFill: ', formFill);
             const formData = new FormData();
             Object.entries(formFill).forEach(([key, value]) => {
                 if (typeof value === 'object' && !(value instanceof File)) {
@@ -16,11 +15,9 @@ export default {
             });
             return formData;
         },
-        addTransaction(transaction, items) {
-            const formData = new FormData();
-            formData.append('transaction', JSON.stringify(transaction));
-            formData.append('items', JSON.stringify(items));
-            console.log("formData: ", formData);
+        addTransaction(transaction) {
+            const formData = this.createFormData({ transaction });
+            formData.append('image', transaction.image_path);
             const self = this;
             const request_data = {
                 type: 'POST',
@@ -37,6 +34,41 @@ export default {
             };
             self.httpRequest(request_data);
         },
+        updateTransaction(transaction) {
+            const formData = this.createFormData({ transaction });
+            formData.append('image', transaction.image_path);
+            const self = this;
+            const request_data = {
+                type: 'POST',
+                url: self.base_url + 'sl/v1/transactions/update',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    console.log('Transaction updated:', res);
+                },
+                error: function (res) {
+                    console.error('Failed to update transaction:', res);
+                }
+            };
+            self.httpRequest(request_data);
+        },
+        deleteTransaction(transaction_id) {
+            const self = this;
+            const request_data = {
+                type: 'DELETE',
+                url: self.base_url + `sl/v1/transactions/${transaction_id}`,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    console.log('Transaction updated:', res);
+                },
+                error: function (res) {
+                    console.error('Failed to update transaction:', res);
+                }
+            };
+            self.httpRequest(request_data);
+        },
         addShow(formFill) {
             const self = this;
             const formData = this.createFormData(formFill);
@@ -47,7 +79,7 @@ export default {
                 processData: false,
                 contentType: false,
                 success: function (res) {
-                    console.log('Show added:', res);
+                    self.getRelevantShows();
                 },
                 error: function (res) {
                     console.error('Failed to add new show:', res);
@@ -56,16 +88,16 @@ export default {
             self.httpRequest(request_data);
         },
         addClient(formFill) {
-            this.addEntity(formFill, 1)
+            this.addEntity(formFill, 1).then(() => this.getClients());
         },
         addCarrier(formFill) {
-            this.addEntity(formFill, 2)
-        },
-        addExhibitor(formFill) {
-            this.addEntity(formFill, 3)
+            this.addEntity(formFill, 2).then(() => this.getCarriers());
         },
         addShipper(formFill) {
-            this.addEntity(formFill, 4)
+            this.addEntity(formFill, 3).then(() => this.getShippers());
+        },
+        addExhibitor(formFill) {
+            this.addEntity(formFill, 4).then(() => this.getExhibitors());
         },
         addEntity(formFill, type) {
             const self = this;
@@ -78,21 +110,19 @@ export default {
                 processData: false,
                 contentType: false,
                 success: function (res) {
-                    console.log('Entity added:', res);
                 },
                 error: function (res) {
                     console.error('Failed add new entity to database:', res);
                 }
             };
-            self.httpRequest(request_data);
+            return self.httpRequest(request_data);
         },
         getRelevantShows() {
             const self = this;
             self.httpRequest({
                 type: 'GET',
-                url: self.base_url + 'sl/v1/shows/relevant',
+                url: self.base_url + `sl/v1/shows/relevant?client_id=`,
                 success: function(res) {
-                    console.log("Relevant shows: ", res.data);
                     self.$store.commit('setShows', res.data);
                 },
                 error: function(err) {
@@ -108,13 +138,13 @@ export default {
             this.getEntities(2)
             .then(carriers => this.$store.commit('setCarriers', carriers));
         },
-        getExhibitors() {
-            this.getEntities(3)
-                .then(exhibitors => this.$store.commit('setExhibitors', exhibitors));
-        },
         getShippers() {
-            this.getEntities(4)
+            this.getEntities(3)
                 .then(shippers => this.$store.commit('setShippers', shippers));
+        },
+        getExhibitors() {
+            this.getEntities(4)
+                .then(exhibitors => this.$store.commit('setExhibitors', exhibitors));
         },
         getEntities(type) {
             const self = this;
@@ -135,5 +165,11 @@ export default {
                 });
             });
         },
+        filePathToUrl(filePath) {
+            const baseUrl = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + '/';
+            const serverRoot = '/var/www/html/';
+            const relativePath = filePath.replace(serverRoot, '');
+            return baseUrl + relativePath;
+        }
     }
 }

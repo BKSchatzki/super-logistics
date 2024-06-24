@@ -11,7 +11,6 @@ class SL_Create_Table {
         $this->create_sl_show_places();
         $this->create_sl_transactions();
         $this->create_sl_updates();
-        $this->create_sl_notes();
         $this->create_sl_items();
         $this->create_sl_entity_users();
         $this->create_sl_trailers();
@@ -73,12 +72,14 @@ class SL_Create_Table {
         $sql = "CREATE TABLE IF NOT EXISTS  {$table_name} (
             `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
             `entity_id` INT(11) UNSIGNED NULL,
+            `client_id` INT(11) UNSIGNED NULL,
             `date_start` DATE NOT NULL,
             `date_end` DATE NULL,
             `date_expiry` DATE NULL,
             `floor_plan_path` VARCHAR(255) NULL,
             PRIMARY KEY (`id`),
-            FOREIGN KEY (`entity_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE CASCADE
+            FOREIGN KEY (`entity_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE CASCADE,
+            FOREIGN KEY (`client_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE CASCADE
         ) DEFAULT CHARSET=utf8";
 
         dbDelta($sql);
@@ -112,19 +113,20 @@ class SL_Create_Table {
           `shipper_id` INT(11) UNSIGNED NULL,
           `exhibitor_id` INT(11) UNSIGNED NOT NULL,
           `shipment` VARCHAR(255) NULL,
-          `zone` INT(11) UNSIGNED NULL,
-          `color` INT(11) UNSIGNED NULL,
+          `tracking` VARCHAR(255) NULL,
+          `place` INT(11) UNSIGNED NULL,
           `billable_weight` INT(11) NULL,
           `pallet_no` INT(11) NULL,
+          `receiver` VARCHAR(255) NULL,
+          `trailer` INT(11) NULL,
           `freight_type` INT(11) NULL,
           PRIMARY KEY (`id`),
-          FOREIGN KEY (`show_id`) REFERENCES {$wpdb->prefix}sl_shows(`id`) ON DELETE RESTRICT
+          FOREIGN KEY (`show_id`) REFERENCES {$wpdb->prefix}sl_shows(`id`) ON DELETE RESTRICT,
           FOREIGN KEY (`client_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE RESTRICT,
           FOREIGN KEY (`carrier_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE RESTRICT,
           FOREIGN KEY (`shipper_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE RESTRICT,
           FOREIGN KEY (`exhibitor_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE RESTRICT,
-          FOREIGN KEY (`zone`) REFERENCES {$wpdb->prefix}sl_show_places(`id`) ON DELETE RESTRICT,
-          FOREIGN KEY (`color`) REFERENCES {$wpdb->prefix}sl_show_places(`id`) ON DELETE RESTRICT,
+          FOREIGN KEY (`place`) REFERENCES {$wpdb->prefix}sl_show_places(`id`) ON DELETE RESTRICT
         ) DEFAULT CHARSET=utf8";
 
         dbDelta($sql);
@@ -141,27 +143,10 @@ class SL_Create_Table {
           `type` INT(11) NOT NULL,
           `datetime` DATETIME NOT NULL,
           `image_path` VARCHAR(255) NOT NULL,
+          `note` VARCHAR(255) NOT NULL,
           PRIMARY KEY (`id`),
           FOREIGN KEY (`transaction_id`) REFERENCES {$wpdb->prefix}sl_transactions(`id`) ON DELETE CASCADE,
           FOREIGN KEY (`user_id`) REFERENCES {$wpdb->prefix}users(`ID`) ON DELETE RESTRICT
-        ) DEFAULT CHARSET=utf8";
-
-        dbDelta($sql);
-    }
-
-    private function create_sl_notes():void {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'sl_notes';
-
-        $sql = "CREATE TABLE IF NOT EXISTS  {$table_name} (
-          `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-          `user_id` BIGINT(20) UNSIGNED NOT NULL,
-          `transaction_id` INT(11) UNSIGNED NOT NULL,
-          `note` VARCHAR(255) NOT NULL,
-          `datetime` DATETIME NOT NULL,
-          PRIMARY KEY (`id`),
-          FOREIGN KEY (`user_id`) REFERENCES {$wpdb->prefix}users(`ID`) ON DELETE RESTRICT,
-          FOREIGN KEY (`transaction_id`) REFERENCES {$wpdb->prefix}sl_transactions(`id`) ON DELETE CASCADE
         ) DEFAULT CHARSET=utf8";
 
         dbDelta($sql);
@@ -176,10 +161,10 @@ class SL_Create_Table {
           `transaction_id` INT(11) UNSIGNED NOT NULL,
           `type` INT(11) NOT NULL,
           `pcs` INT(11) NOT NULL,
-          `bol_count` INT(11) NOT NULL,
+          `bol_count` INT(11) NULL,
           `weight` INT(11) NOT NULL,
-          `special` tinyINT(1) NOT NULL,
-          `notes` VARCHAR(255) NOT NULL,
+          `special` tinyINT(1) NULL,
+          `notes` VARCHAR(255) NULL,
           PRIMARY KEY (`id`),
           FOREIGN KEY (`transaction_id`) REFERENCES {$wpdb->prefix}sl_transactions(`id`) ON DELETE CASCADE
         ) DEFAULT CHARSET=utf8";

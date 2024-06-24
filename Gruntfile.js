@@ -83,7 +83,7 @@ module.exports = function(grunt) {
             main: {
                 options: {
                     mode: 'zip',
-                    archive: './build/advanced-wp-pm-v' + pkg.version + '.zip'
+                    archive: './build/super-logistics-v' + pkg.version + '.zip'
                 },
                 expand: true,
                 cwd: 'build/',

@@ -15,61 +15,55 @@ class Transaction extends Eloquent
         'shipper_id',
         'exhibitor_id',
         'shipment',
-        'zone',
-        'color',
+        'tracking',
+        'place',
         'billable_weight',
         'pallet_no',
+        'trailer',
+        'receiver',
         'freight_type'
     ];
     public $timestamps = false;
 
     public function show(): object
     {
-        return $this->belongsTo('Show', 'show_id');
+        return $this->belongsTo('SL\Show\Models\Show', 'show_id');
     }
+
+    private static string $entityModel = 'SL\Entity\Models\Entity';
 
     public function client(): object
     {
-        return $this->belongsTo('Entity', 'client_id');
+        return $this->belongsTo(self::$entityModel, 'client_id');
     }
 
     public function carrier(): object
     {
-        return $this->belongsTo('Entity', 'carrier_id');
+        return $this->belongsTo(self::$entityModel, 'carrier_id');
     }
 
     public function shipper(): object
     {
-        return $this->belongsTo('Entity', 'shipper_id');
+        return $this->belongsTo(self::$entityModel, 'shipper_id');
     }
 
     public function exhibitor(): object
     {
-        return $this->belongsTo('Entity', 'exhibitor_id');
+        return $this->belongsTo(self::$entityModel, 'exhibitor_id');
     }
 
-    public function zone(): object
+    public function showPlace(): object
     {
-        return $this->belongsTo('ShowPlace', 'zone');
+        return $this->belongsTo('SL\Show\Models\ShowPlace', 'place');
     }
 
-    public function color(): object
+    public function items(): object
     {
-        return $this->belongsTo('ShowPlace', 'zone');
+        return $this->hasMany('SL\Item\Models\Item', 'transaction_id');
     }
 
-    public function notes()
+    public function updates(): object
     {
-        return $this->hasMany('Note', 'transaction_id');
-    }
-
-    public function items()
-    {
-        return $this->hasMany(Item::class);
-    }
-
-    public function shipments(): object
-    {
-        return $this->hasMany('Shipment', 'transaction_id');
+        return $this->hasMany('SL\Update\Models\Update', 'transaction_id');
     }
 }

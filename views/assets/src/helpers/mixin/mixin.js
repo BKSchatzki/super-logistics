@@ -25,6 +25,20 @@ export default {
 
     methods: {
 
+        getCurrentUserRoles() {
+            const self = this;
+            const request_data = {
+                type: 'GET',
+                url: self.base_url + 'sl/v1/current-user',
+                success: function (res) {
+                    self.$store.commit('setUser', res.data);
+                },
+                error: function (res) {
+                    console.error('Failed to get current user roles:', res);
+                }
+            };
+            self.httpRequest(request_data);
+        },
         isArchivePage () {
             return this.$route.name == 'task_lists_archive' || this.$route.name == 'task_lists_archive_pagination'
         },

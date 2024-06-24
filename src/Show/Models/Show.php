@@ -9,6 +9,7 @@ class Show extends Eloquent {
     protected $fillable = [
         'name',
         'entity_id',
+        'client_id',
         'date_start',
         'date_end',
         'date_expiry',

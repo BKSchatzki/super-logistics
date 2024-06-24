@@ -8,8 +8,10 @@ export default new pm.Vuex.Store({
         shippers: [],
         clients: [],
         exhibitors: [],
-
-        
+        labelPDF: '',
+        user: {},
+        clientId: 0,
+        update: false,
         getIndex: function ( itemList, id, slug) {
             var index = false;
 
@@ -33,6 +35,12 @@ export default new pm.Vuex.Store({
 
     mutations: {
         // Super Logistics mutations
+        setTransactions (state, transactions) {
+            state.transactions = transactions;
+        },
+        setTransaction (state, transaction) {
+            state.transaction = transaction;
+        },
         setClients (state, clients) {
             state.clients = clients;
         },
@@ -47,6 +55,18 @@ export default new pm.Vuex.Store({
         },
         setShows (state, shows) {
             state.shows = shows;
+        },
+        setLabelPDF (state, labelPDF) {
+            state.labelPDF = labelPDF;
+        },
+        setUser(state, user) {
+            state.user = user;
+        },
+        setClientId(state, clientId) {
+            state.clientId = clientId;
+        },
+        setUpdate(state, update) {
+            state.update = update;
         },
         // Project mutations
         setProjects (state, projects) {

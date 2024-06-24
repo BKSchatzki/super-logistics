@@ -12,9 +12,10 @@ class Item extends Eloquent {
         'type',
         'pcs',
         'bol_count',
-        'total_weight',
+        'weight',
         'notes'
     ];
+    public $timestamps = false;
 
     public function transaction() {
         return $this->belongsTo( 'SL\Transaction\Models\Transaction' );

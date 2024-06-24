@@ -1,10 +1,10 @@
-import TransactionForm from '@components/transaction-form/transaction-form.vue'
+import DataInput from '@components/data-input/data-input.vue'
 
 registerChildRoute('project_root',
     [
         {
             path: 'input',
-            component: TransactionForm,
+            component: DataInput,
             name: 'input',
             meta: {
               label: 'Data Input/Entry',

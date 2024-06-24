@@ -30,3 +30,6 @@ $router->get( 'user-all-projects', 'SL/User/Controllers/User_Controller@get_user
 
 $router->get( 'current-user', 'SL/User/Controllers/User_Controller@showCurrent' )
     ->permission($permission);
+
+$router->get( 'client', 'SL/User/Controllers/User_Controller@client' )
+    ->permission($permission);

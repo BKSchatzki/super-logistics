@@ -1,9 +1,10 @@
 <script>
 import SimpleField from "@components/form-components/simple-field.vue";
 import MultiCreateField from "@components/form-components/multi-create-field.vue";
+import DropdownField from "@components/form-components/dropdown-field.vue";
 
 export default {
-  components: {MultiCreateField, SimpleField},
+  components: {DropdownField, MultiCreateField, SimpleField},
   props: {
     field: {
       type: String,
@@ -16,15 +17,24 @@ export default {
     isShow: {
       type: Boolean,
       default: false
+    },
+    clients: {
+      type: Array,
+      required: false,
+      validator: function(array) {
+        return array.every(item =>
+            typeof item === 'object' &&
+            item !== null &&
+            'id' in item &&
+            'name' in item
+        );
+      }
     }
   },
   computed: {
-    zones() {
+    places() {
       return this.places.filter(p => p.type === 1);
     },
-    colors() {
-      return this.places.filter(p => p.type === 2);
-    }
   },
   data() {
     return ({
@@ -33,6 +43,7 @@ export default {
       dateStart: null,
       dateEnd: null,
       dateExpiry: null,
+      clientID: "",
       places: [],
       phone: "",
       email: "",
@@ -46,19 +57,20 @@ export default {
   },
   methods: {
     clearForm() {
-      this.name = "";
-      this.dateStart = null;
-      this.dateEnd = null;
-      this.dateExpiry = null;
-      this.places = [];
-      this.phone = "";
-      this.email = "";
-      this.address = "";
-      this.city = "";
-      this.state = "";
-      this.zip = "";
-      this.floorPlanFile = null;
-      this.logoFile = null;
+      this.name = "",
+      this.dateStart = null,
+      this.dateEnd = null,
+      this.dateExpiry = null,
+      this.clientID = "",
+      this.places = [],
+      this.phone = "",
+      this.email = "",
+      this.address = "",
+      this.city = "",
+      this.state = "",
+      this.zip = "",
+      this.floorPlanFile = null,
+      this.logoFile = null
     },
     toggleForm() {
       this.open = !this.open;
@@ -85,6 +97,7 @@ export default {
         dateStart: this.dateStart,
         dateEnd: this.dateEnd,
         dateExpiry: this.dateExpiry,
+        clientID: this.clientID,
         places: this.places,
         phone: this.phone,
         email: this.email,
@@ -105,6 +118,10 @@ export default {
     handleKeydown(e) {
       if (e.key === 'Enter') {
         e.preventDefault();
+        if (e.target === '#Zone-Color-field') {
+          this.addPlace(e.target.value, 1);
+          e.target.value = '';
+        }
       }
     }
   },
@@ -132,16 +149,12 @@ export default {
             <simple-field type="date" v-model="dateExpiry" field="expires"/>
           </div>
           <div v-if="isShow" class="mb-3 row">
+            <dropdown-field :choices="clients" v-model="clientID" field="client" required="true"/>
             <multi-create-field
-                field="zone"
+                field="Zone-Color"
                 :add-place="(name) => addPlace(name, 1)"
                 :remove-place="(name) => removePlace(name, 1)"
-                :places="zones"/>
-            <multi-create-field
-                field="color"
-                :add-place="(name) => addPlace(name, 2)"
-                :remove-place="(name) => removePlace(name, 2)"
-                :places="colors"/>
+                :places="places"/>
           </div>
           <div class="mb-3 row">
             <simple-field type="text" v-model="name" field="name" :required="true"/>
@@ -177,7 +190,9 @@ export default {
         </div>
       </div>
     </div>
-    <button type="button" class="add-new fa-solid fa-circle-plus ms-2" @click="toggleForm"></button>
+    <button type="button" class="btn btn-sm" @click="toggleForm">
+      <span class="fa-solid fa-circle-plus "></span>
+    </button>
   </div>
 </template>
 

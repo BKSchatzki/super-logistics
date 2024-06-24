@@ -101,7 +101,7 @@ class User_Transformer extends TransformerAbstract {
         //pmpr( $request_uri ); die();
         $project_id = $this->project_id;
         if ( !$project_id ) {
-            $roles = $user->roles->unique( 'id' )->all();
+            $roles = $user->roles->all();
         } else {
             $roles = $user->roles->filter( function( $role ) use ( $project_id ) {
                 return $role['pivot']['project_id'] == $project_id;

@@ -11,6 +11,7 @@ use SL\Common\Traits\Transformer_Manager;
 use SL\Common\Traits\Request_Filter;
 use SL\User\Models\User;
 use SL\User\Transformers\User_Transformer;
+use SL\User\Transformers\WPUser_Transformer;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Pagination\Paginator;
 use SL\User\Models\User_Role;
@@ -55,11 +56,10 @@ class User_Controller {
 
     public function showCurrent() {
         $current_user = wp_get_current_user();
-        $current_user = User::find( $current_user->ID );
 
         if ( $current_user->exists() ) {
             // The user is logged in
-            $resource = new Item( $current_user, new User_Transformer );
+            $resource = new Item( $current_user, new WPUser_Transformer );
             return $this->get_response( $resource );
         } else {
             // The user is not logged in
@@ -227,5 +227,19 @@ class User_Controller {
         }
 
         wp_send_json_success( $users );
+    }
+
+    public function client()
+    {
+        global $wpdb;
+
+        $user = wp_get_current_user();
+        $user_id = $user->ID;
+
+        $table_name = $wpdb->prefix . 'sl_entity_users';
+        $query = $wpdb->prepare("SELECT * FROM $table_name WHERE user_id = %d", $user_id);
+        $result = $wpdb->get_row($query);
+        $result = new Item( $result, new WPUser_Transformer );
+        return $this->get_response( $result );
     }
 }
