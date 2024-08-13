@@ -10,6 +10,8 @@ class Show extends Eloquent {
         'name',
         'entity_id',
         'client_id',
+        'min_carat_weight',
+        'carat_weight_inc',
         'date_start',
         'date_end',
         'date_expiry',

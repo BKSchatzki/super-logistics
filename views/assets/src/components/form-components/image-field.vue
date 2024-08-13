@@ -31,6 +31,13 @@ export default {
       }
     },
   },
+  watch: {
+    value() {
+      if (!this.value) {
+        this.previewSrc = '';
+      }
+    }
+  }
 };
 </script>
 

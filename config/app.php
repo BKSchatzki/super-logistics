@@ -3,7 +3,7 @@
 return [
     'name'        => 'Super Logistics',
     'slug'        => 'sl',
-    'version'     => '1.0.0',
+    'version'     => '1.0.1',
     'api'     	  => '1',
     'db_version'  => '2.5',
     'text_domain' => 'pm',

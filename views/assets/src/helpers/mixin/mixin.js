@@ -24,7 +24,16 @@ export default {
     },
 
     methods: {
-
+        createFormData(formFill) {
+            const formData = new FormData();
+            Object.entries(formFill).forEach(([key, value]) => {
+                if (typeof value === 'object' && !(value instanceof File)) {
+                    value = JSON.stringify(value);
+                }
+                formData.append(key, value);
+            });
+            return formData;
+        },
         getCurrentUserRoles() {
             const self = this;
             const request_data = {

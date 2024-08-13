@@ -3,12 +3,14 @@ export default new pm.Vuex.Store({
         transactions: [],
         transaction: {},
         items: [],
+        selectedShow: {},
         shows: [],
         carriers: [],
         shippers: [],
         clients: [],
         exhibitors: [],
         labelPDF: '',
+        users: [],
         user: {},
         clientId: 0,
         update: false,
@@ -53,11 +55,16 @@ export default new pm.Vuex.Store({
         setShippers (state, shippers) {
             state.shippers = shippers;
         },
+        setSelectedShow (state, show) {
+            state.selectedShow = show;
+        },
         setShows (state, shows) {
             state.shows = shows;
         },
         setLabelPDF (state, labelPDF) {
-            state.labelPDF = labelPDF;
+            state.labelPDF = labelPDF;},
+        setUsers (state, users) {
+            state.users = users;
         },
         setUser(state, user) {
             state.user = user;

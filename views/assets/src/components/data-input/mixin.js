@@ -5,16 +5,6 @@ export default {
         }
     },
     methods: {
-        createFormData(formFill) {
-            const formData = new FormData();
-            Object.entries(formFill).forEach(([key, value]) => {
-                if (typeof value === 'object' && !(value instanceof File)) {
-                    value = JSON.stringify(value);
-                }
-                formData.append(key, value);
-            });
-            return formData;
-        },
         addTransaction(transaction) {
             const formData = this.createFormData({ transaction });
             formData.append('image', transaction.image_path);
@@ -53,6 +43,22 @@ export default {
             };
             self.httpRequest(request_data);
         },
+        removeNote(updateID) {
+            const self = this;
+            const request_data = {
+                type: 'DELETE',
+                url: self.base_url + 'sl/v1/transactions/update/note/' + updateID,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    console.log('Transaction updated:', res);
+                },
+                error: function (res) {
+                    console.error('Failed to update transaction:', res);
+                }
+            };
+            self.httpRequest(request_data);
+        },
         deleteTransaction(transaction_id) {
             const self = this;
             const request_data = {
@@ -62,6 +68,22 @@ export default {
                 contentType: false,
                 success: function (res) {
                     console.log('Transaction updated:', res);
+                },
+                error: function (res) {
+                    console.error('Failed to update transaction:', res);
+                }
+            };
+            self.httpRequest(request_data);
+        },
+        addNote(note, transaction_id) {
+            const self = this;
+            const request_data = {
+                type: 'POST',
+                url: self.base_url + 'sl/v1/transactions/notes',
+                data: { note, transaction_id },
+                success: function (res) {
+                    console.log('Transaction updated:', res);
+
                 },
                 error: function (res) {
                     console.error('Failed to update transaction:', res);

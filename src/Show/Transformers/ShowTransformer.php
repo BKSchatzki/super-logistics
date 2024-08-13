@@ -16,6 +16,8 @@ class ShowTransformer extends TransformerAbstract
             'client_id' => (int)$item->client_id,
             'name' => $item->entity->name,
             'date_start' => $item->date_start,
+            'min_carat_weight' => $item->min_carat_weight,
+            'carat_weight_inc' => $item->carat_weight_inc,
             'date_end' => $item->date_end ?? '',
             'date_expiry' => $item->date_expiry ?? '',
             'places' => $item->places->map(function($place) {

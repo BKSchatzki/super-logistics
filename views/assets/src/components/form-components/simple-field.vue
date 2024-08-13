@@ -28,6 +28,10 @@ export default {
     readOnly: {
       type: Boolean,
       default: false
+    },
+    xlLabel: {
+      type: Boolean,
+      required: false
     }
   },
   computed: {
@@ -55,16 +59,17 @@ export default {
 <template>
   <div :class="`btb-field col${wide}`">
     <label v-if="!readOnly"
-        class="col-form-label me-2"
-        :for="`${field}-field`">
+           class="col-form-label me-2"
+           :for="`${field}-field`"
+           :style="{ whiteSpace: 'nowrap', overflow: 'visible', textOverflow: 'ellipsis' }">
       {{ title }}{{ required ? '*' : ''}}
     </label>
     <input v-if="!readOnly"
-        class="form-control btb-input"
-        v-model="inputValue"
-        :id="`${field}-field`"
-        :type="type"
-        :required="required">
+           class="form-control"
+           v-model="inputValue"
+           :id="`${field}-field`"
+           :type="type"
+           :required="required">
     <p v-if="readOnly" class="col-form-label me-2 text-secondary">
       {{ title }}
     </p>

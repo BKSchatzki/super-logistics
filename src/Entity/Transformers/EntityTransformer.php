@@ -21,6 +21,7 @@ class EntityTransformer extends TransformerAbstract
             'city' => $item->city,
             'state' => $item->state,
             'zip' => $item->zip,
+            'code' => $item->code,
             'logo_path' => $item->logo_path
         ];
     }

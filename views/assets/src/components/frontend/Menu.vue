@@ -5,13 +5,26 @@ export default {
   components: {
     NavBar,
   },
+  data () {
+    return {
+      initialLoad: true
+    }
+  },
+  computed: {
+    user() {
+      return this.$store.state.user
+    }
+  },
+  created() {
+    this.getCurrentUserRoles();
+  }
 };
 </script>
 
 <template>
 <div class="sl-interface">
   <div class="sli-header">
-    <NavBar />
+    <NavBar :user="user"/>
   </div>
   <div class="sl-main">
     <slot/>

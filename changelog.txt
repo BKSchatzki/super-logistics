@@ -1,6 +1,6 @@
 == Changelog ==
 
-= v1.0.0 - Mar 29, 2024 =
+= v1.0.1 - Mar 29, 2024 =
 
 **Fix:** New project's user creation issue.
 

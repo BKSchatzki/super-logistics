@@ -28,7 +28,8 @@ export default {
     return {
       localOpen: true,
       updating: false,
-      notesOpen: false
+      notesOpen: false,
+      deleteScreen: false
     };
   },
   computed: {
@@ -62,6 +63,9 @@ export default {
         this.localOpen = !this.localOpen;
       }
     },
+    toggleDelete() {
+      this.deleteScreen = !this.deleteScreen;
+    },
     deleteTrans() {
       this.deleteTransaction(this.trans.id);
       this.$emit('closeView');
@@ -90,31 +94,36 @@ export default {
     if (this.parentOpen !== null) {
       this.localOpen = this.parentOpen;
     }
+    this.getUsers();
   }
 };
 </script>
 
 <template>
   <div class="btb-modal container-fluid" v-if="computedOpen" @click="toggleForm" tabindex="-1" :aria-labelledby="`View Selected transaction`">
-    <div class="btb-modal-content container" @click.stop>
+    <div v-if="!deleteScreen" class="btb-modal-content container" @click.stop>
       <div class="d-flex justify-content-between align-items-center mb-2">
         <h4>View Transaction</h4>
         <button @click="toggleForm" type="button" class="btn btn-close" aria-label="Close"></button>
       </div>
       <div>
-        <transaction-form :init-trans="trans" :read-only="!updating"/>
-        <div v-if="notesOpen">
-          <textarea id="noteField" class="form-control" rows="3" placeholder="Add a note"></textarea>
-          <button type="button" class="btn btn-md btn-primary" @click="addNote">Post Note</button>
-        </div>
+        <transaction-form :init-trans="trans" :read-only="!updating" @update="toggleUpdating"/>
         <div v-if="admin" class="g-2 mt-3">
           <button type="button" class="btn btn-md btn-primary" @click="printLabels">Make Labels</button>
           <button type="button" class="btn btn-md btn-primary" @click="toggleUpdating">{{updating ? "Cancel Update" : "Update"}}</button>
-          <button type="button" class="btn btn-md btn-danger" @click="deleteTrans">Delete</button>
+          <button type="button" class="btn btn-md btn-danger" @click="toggleDelete">Delete</button>
         </div>
-        <div v-if="!admin" class="g-2 mt-3">
-          <button type="button" class="btn btn-md btn-primary" @click="toggleNotes">{{ notesOpen ? 'Cancel Note' : 'Add Note' }}</button>
-        </div>
+      </div>
+    </div>
+    <div v-if="deleteScreen" class="btb-modal-content container" @click.stop>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h4>Delete Transaction</h4>
+        <button @click="toggleDelete" type="button" class="btn btn-close" aria-label="Close"></button>
+      </div>
+      <div>
+        <p>Are you sure you want to delete this transaction?</p>
+        <button type="button" class="btn btn-md btn-danger" @click="deleteTrans">Delete</button>
+        <button type="button" class="btn btn-md btn-secondary" @click="toggleDelete">Cancel</button>
       </div>
     </div>
   </div>

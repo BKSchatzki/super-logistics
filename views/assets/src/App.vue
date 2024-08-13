@@ -9,8 +9,10 @@
         <do-action hook="addons-component"></do-action>
     </div>
 </template>
+
 <style>
 </style>
+
 <script>
     import do_action from '@components/common/do-action.vue';
     import FrontendMenu from '@components/frontend/Menu.vue';

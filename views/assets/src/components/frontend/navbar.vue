@@ -1,16 +1,16 @@
 <script>
 
 export default {
+  props: {
+    user: {
+      type: Object,
+      required: true
+    }
+  },
   computed: {
     routes: function() {
       return getRegisteredChildRoutes('project_root')
-    },
-    user() {
-      return this.$store.state.user ? this.$store.state.user : {roles: []};
     }
-  },
-  created() {
-    this.getCurrentUserRoles();
   }
 }
 </script>
@@ -23,7 +23,7 @@ export default {
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul v-if="user.roles" class="navbar-nav me-auto mb-2 mb-lg-0">
           <li v-if="!user.roles.includes('subscriber')" key="input" class="nav-item">
             <router-link :to="{ name: 'input' }" class="nav-link">
               Transactions
@@ -37,6 +37,11 @@ export default {
           <li v-if="user.roles.includes('subscriber')" key="client" class="nav-item">
             <router-link :to="{ name: 'client' }" class="nav-link">
               Client Home
+            </router-link>
+          </li>
+          <li key="settings" class="nav-item">
+            <router-link :to="{ name: 'settings' }" class="nav-link">
+              Settings
             </router-link>
           </li>
         </ul>

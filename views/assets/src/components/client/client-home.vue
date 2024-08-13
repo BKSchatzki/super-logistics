@@ -52,7 +52,11 @@ export default {
     <div class="d-flex justify-content-between align-items-center mb-2">
       <h3>Client Transactions</h3>
     </div>
-    <lookup-table :lookupResults="lookupResults"/>
+    <lookup-table v-if="client_id" :lookupResults="lookupResults"/>
+    <div v-else>
+      <b>It seems you're not registered.</b>
+      <p>Go to the settings page to enter your client code and register to see your transactions.</p>
+    </div>
   </div>
 </template>
 

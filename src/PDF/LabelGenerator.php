@@ -20,21 +20,17 @@ class LabelGenerator
         for ($i = 0; $i < $totalItems; $i++) {
             $pdf->AddPage();
             $this->setStaticContent($pdf, $transaction);
-            $pdf->SetXY(140, 115);
-            $pdf->Cell(30, 10, 'PIECE #', 0, 0, 'C');
-            $pdf->SetXY(115, 120);
-            $pdf->SetFont('helvetica', 'B', 120);
+            $pdf->SetXY(30, 85);
+            $pdf->SetFont('helvetica', 'B', 22);
             $pdf->Cell(30, 10, ($i + 1), 0, 0, 'C');
-            $pdf->SetXY(142, 153);
-            $pdf->SetFont('helvetica', '', 80);
-            $pdf->Cell(30, 10, '/', 0, 0, 'C');
-            $pdf->SetXY(160, 170);
-            $pdf->SetFont('helvetica', 'B', 60);
+            $pdf->SetXY(56, 85);
+            $pdf->SetFont('helvetica', '', 22);
+            $pdf->Cell(10, 10, '/', 0, 0, 'C');
+            $pdf->SetXY(60, 85);
+            $pdf->SetFont('helvetica', 'B', 22);
             $pdf->Cell(30, 10, $totalItems, 0, 0, 'C');
             $pdf->SetFont('helvetica', '', 15);
         }
-        $pdf->AddPage();
-
         return $pdf->Output('sample.pdf', 'S');
     }
 
@@ -61,35 +57,52 @@ class LabelGenerator
     }
 
     private function setStaticContent($pdf, $transaction):void {
-        // Show Logo
-        $this->placeImageOrBust($pdf, $transaction->show->entity, 'Show:', 25, 20);
-        // Client Logo
-        $this->placeImageOrBust($pdf, $transaction->client, 'Client:', 125, 20);
-        // Shipper Name and Address
-        $pdf->SetXY(40, 50);
-        $pdf->Cell(30, 10, 'SHIPPER', 0, 0, 'C');
-        $this->makeAddressTable($pdf, $transaction->shipper, 15, 70);
-        // Show Information
-        $pdf->SetXY(40, 160);
-        $pdf->Cell(30, 10, 'DELIVER TO', 0, 0, 'C');
-        $this->makeAddressTable($pdf, $transaction->show->entity, 15, 180);
-        // QR Code
+
+        $transaction = json_decode($transaction);
         $qrCodeData = [
             'trans_id' => $transaction->id,
             'show_id' => $transaction->show_id,
             'client_id' => $transaction->client_id,
-            'show_place_id' => $transaction->show_place_id,
+            'show_place_id' => $transaction->show_place->id,
             'shipper_id' => $transaction->shipper_id,
         ];
         $qrCodeData = json_encode($qrCodeData);
-        $pdf->write2DBarcode($qrCodeData, 'QRCODE,H', 130, 55, 50, 50, null, 'N');
+        $pdf->write2DBarcode($qrCodeData, 'QRCODE,H', 37, 10, 30, 30, null, 'N');
+        // Exhibitor
+        $this->placeLabel($pdf, 12, 45, 'Exhibitor: ');
+        $this->placeContent($pdf, 32, 45, $transaction->exhibitor->name);
+        // Client
+        $this->placeLabel($pdf, 12, 55, 'Client: ');
+        $this->placeContent($pdf, 32, 55, $transaction->client->name);
+        // Shipment
+        $this->placeLabel($pdf, 12, 65, 'Shipment: ');
+        $this->placeContent($pdf, 32, 65, $transaction->shipment);
         // Zone
-        $pdf->SetXY(140, 205);
-        $pdf->Cell(30, 10, 'ZONE', 0, 0, 'C');
-        $pdf->SetXY(110, 220);
-        $pdf->SetFont('helvetica', 'B', 50);
-        $pdf->MultiCell(80, 50, $transaction->showPlace->name, 0, 'C', 0, 0);
+        $this->placeLabel($pdf, 12, 75, 'Zone: ');
+        $this->placeContent($pdf, 32, 75, $transaction->show_place->name, 0, 0, 'C');
+        // Pieces (leave a space here)
+        $this->placeLabel($pdf, 12, 85, 'Piece #: ');
+        // Pallet + Weight
+        $this->placeLabel($pdf, 12, 95, 'Pallet: ');
+        $this->placeContent($pdf, 32, 95, $transaction->pallet_no, 0, 0, 'C');
+        // Receiver
+        $this->placeLabel($pdf, 12, 105, 'Receiver: ');
+        $this->placeContent($pdf, 32, 105, $transaction->receiver, 0, 0, 'C');
+        // Carrier
+        $this->placeLabel($pdf, 12, 115, 'Carrier: ');
+        $this->placeContent($pdf, 32, 115, $transaction->carrier->name, 0, 0, 'C');
+    }
+
+    private function placeLabel($pdf, $x, $y, $label) {
+        $pdf->SetXY($x, $y);
         $pdf->SetFont('helvetica', '', 15);
+        $pdf->Cell(20, 10, $label, 0, 0, 'R');
+    }
+
+    private function placeContent($pdf, $x, $y, $content) {
+        $pdf->SetXY($x, $y);
+        $pdf->SetFont('helvetica', 'B', 22);
+        $pdf->MultiCell(150, 50, $content, 0, 'L', 0, 0);
     }
 
     private function placeImageOrBust($pdf, $entity, $fallbackLabel, $x = 10, $y = 10): void {
