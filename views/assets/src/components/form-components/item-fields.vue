@@ -22,7 +22,7 @@ export default {
       },
       type: this.initItem.type,
       pcs: this.initItem.pcs,
-      bols: this.initItem.bols,
+      bol_count: this.initItem.bol_count,
       weight: this.initItem.weight,
       notes: this.initItem.notes,
       tracking: this.initItem.tracking
@@ -39,7 +39,7 @@ export default {
         label: this.label,
         type: this.type,
         pcs: this.pcs,
-        bols: this.bols,
+        bol_count: this.bol_count,
         weight: this.weight,
         notes: this.notes,
         tracking: this.tracking
@@ -50,14 +50,23 @@ export default {
       let words = str.split(/(?=[A-Z])/);
       words = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
       return words.join(' ');
+    },
+    setToInit() {
+      this.type = this.initItem.type;
+      this.pcs = this.initItem.pcs;
+      this.bol_count = this.initItem.bol_count;
+      this.weight = this.initItem.weight;
+      this.notes = this.initItem.notes;
+      this.tracking = this.initItem.tracking;
     }
   },
   watch: {
     pcs() { this.emitUpdate(); },
-    bols() { this.emitUpdate(); },
+    bol_count() { this.emitUpdate(); },
     weight() { this.emitUpdate(); },
     notes() { this.emitUpdate(); },
-    tracking() { this.emitUpdate(); }
+    tracking() { this.emitUpdate(); },
+    initItem() { this.setToInit(); }
   }
 }
 </script>
@@ -65,11 +74,11 @@ export default {
 <template>
   <div class="input-group input-group-sm mb-1">
     <span class="input-group-text sl-item-label-complex">{{ label }}</span>
-    <input class="form-control" type="number" v-model="pcs" :disabled="readOnly"/>
-    <input class="form-control" type="number" v-model="bols" :disabled="readOnly"/>
-    <input class="form-control" type="number" v-model="weight" :disabled="readOnly"/>
-    <input class="form-control sl-items-note" type="text" v-model="notes" :disabled="readOnly"/>
-    <input class="form-control" type="text" v-model="tracking" :disabled="readOnly"/>
+    <input class="form-control" type="number" v-model="pcs" :readonly="readOnly"/>
+    <input class="form-control" type="number" v-model="bol_count" :readonly="readOnly"/>
+    <input class="form-control" type="number" v-model="weight" :readonly="readOnly"/>
+    <input class="form-control sl-items-note" type="text" v-model="notes" :readonly="readOnly"/>
+    <input class="form-control" type="text" v-model="tracking" :readonly="readOnly"/>
   </div>
 </template>
 

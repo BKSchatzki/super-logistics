@@ -7,6 +7,7 @@ export default {
     methods: {
         getLabels(trans_id) {
             const self = this;
+            console.log("Getting labels");
             self.httpRequest({
                 type: 'GET',
                 url: self.base_url + `sl/v1/transactions/labels?trans_id=${trans_id}`,
@@ -25,6 +26,21 @@ export default {
                 type: 'GET',
                 url: self.base_url + 'sl/v1/transactions?' + queryString,
                 success: function(res) {
+                    const typeKey = {
+                        3 : "crates",
+                        2 : "cartons",
+                        4 : "skids",
+                        5 : "fiberCases",
+                        6 : "carpets",
+                        7 : "misc"
+                    };
+                    let itemsObj = {};
+                    for (let item of res.data.items) {
+                        const key = typeKey[item.type];
+                        itemsObj[key] = item;
+                        itemsObj[key].label = self.toNormalCase(key);
+                    }
+                    res.data.items = itemsObj;
                     self.$store.commit('setTransaction', res.data);
                 },
                 error: function(err) {
@@ -126,6 +142,34 @@ export default {
                 }
             };
             self.httpRequest(request_data);
+        },
+        toNormalCase(str) {
+            let result;
+
+            if (str.includes('_')) {
+                // Handle snake_case
+                result = str.replace(/_/g, ' ');
+                result = result.replace(/\b\w/g, l => l.toUpperCase());
+            } else {
+                // Handle camelCase
+                result = str.replace(/([a-z])([A-Z])/g, "$1 $2");
+                result = result.charAt(0).toUpperCase() + result.slice(1);
+            }
+
+            return result;
+        },
+        getUsers() {
+            const self = this;
+            self.httpRequest({
+                type: 'GET',
+                url: self.base_url + 'sl/v1/users',
+                success: function(res) {
+                    self.$store.commit('setUsers', res.data);
+                },
+                error: function(err) {
+                    console.error('Failed to get users:', err);
+                }
+            });
         }
     }
 }

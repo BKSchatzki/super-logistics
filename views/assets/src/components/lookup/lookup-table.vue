@@ -1,7 +1,9 @@
 <script>
 import LookupRow from '@components/lookup/lookup-row.vue';
+import LookupMixin from '@components/lookup/mixin';
 
 export default {
+  mixins: [LookupMixin],
   props: {
     lookupResults: {
       type: Array,
@@ -15,7 +17,10 @@ export default {
     toggleResults() {
       this.lookupResults = [];
     }
-  }
+  },
+  created() {
+    this.getUsers();
+  },
 }
 </script>
 

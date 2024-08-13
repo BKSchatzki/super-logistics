@@ -15,6 +15,7 @@ class Entity extends Eloquent {
         'city',
         'state',
         'zip',
+        'code',
         'logo_path'
     ];
     public $timestamps = false;
@@ -38,7 +39,7 @@ class Entity extends Eloquent {
     }
 
     public function users():object {
-        return $this->belongsToMany('User', 'sl_entity_users', 'entity_id', 'user_id');
+        return $this->belongsToMany('SL\User\Models\User', pm_tb_prefix() . 'sl_entity_users', 'entity_id', 'user_id');
     }
 
     public function show():object {

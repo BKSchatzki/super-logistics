@@ -43,6 +43,8 @@ export default {
       dateStart: null,
       dateEnd: null,
       dateExpiry: null,
+      minCaratWeight: null,
+      caratWeightInc: null,
       clientID: "",
       places: [],
       phone: "",
@@ -61,6 +63,8 @@ export default {
       this.dateStart = null,
       this.dateEnd = null,
       this.dateExpiry = null,
+      this.minCaratWeight = null,
+      this.caratWeightInc = null,
       this.clientID = "",
       this.places = [],
       this.phone = "",
@@ -89,7 +93,6 @@ export default {
     },
     getFloorPlanFile(e) {
       this.floorPlanFile = e.target.files[0];
-      console.log("floorPlanFile: ", typeof(this.floorPlanFile));
     },
     submit() {
       this.addNewFn({
@@ -97,6 +100,8 @@ export default {
         dateStart: this.dateStart,
         dateEnd: this.dateEnd,
         dateExpiry: this.dateExpiry,
+        minCaratWeight: this.minCaratWeight,
+        caratWeightInc: this.caratWeightInc,
         clientID: this.clientID,
         places: this.places,
         phone: this.phone,
@@ -171,16 +176,32 @@ export default {
             <simple-field type="text" v-model="state" field="state"/>
             <simple-field type="text" v-model="zip" field="zip"/>
           </div>
-          <div v-if="isShow" class="mb-3 row">
-            <div class="col btb-field">
-              <label for="formFile" class="form-label">Floor Plan</label>
-              <input v-on:change="getFloorPlanFile" class="form-control" type="file" id="formFile">
-            </div>
-          </div>
           <div class="mb-3 row">
-            <div class="col btb-field">
-              <label for="formFile" class="form-label">Logo</label>
-              <input v-on:change="getLogoFile" class="form-control" type="file" id="formFile">
+            <div class="col">
+              <div v-if="isShow" class="mb-3 row">
+                <div class="col btb-field">
+                  <label for="formFile" class="form-label">Floor Plan</label>
+                  <input v-on:change="getFloorPlanFile" class="form-control" type="file" id="formFile">
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <div class="col btb-field">
+                  <label for="formFile" class="form-label me-2">Logo</label>
+                  <input v-on:change="getLogoFile" class="form-control" type="file" id="formFile">
+                </div>
+              </div>
+            </div>
+            <div v-if="isShow" class="col">
+              <div class="row mb-3">
+                <div class="col">
+                  <simple-field v-model="minCaratWeight" field="Minimum Billable Weight" type="number"></simple-field>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col">
+                  <simple-field v-model="caratWeightInc" field="Billable Weight Increments" type="number"></simple-field>
+                </div>
+              </div>
             </div>
           </div>
           <div>

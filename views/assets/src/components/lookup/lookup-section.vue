@@ -11,17 +11,18 @@ export default {
     },
     form: {
       type: Object,
-      required: true
+      required: false
     }
   },
   data() {
     return ({
       open: false,
+      results: []
     })
   },
   computed: {
     lookupResults() {
-      return this.$store.state.transactions;
+      return this.$store.state.transactions
     },
     update() {
       return this.$store.state.update;
@@ -48,6 +49,7 @@ export default {
   watch: {
     lookup: function (newVal) {
       if (newVal === true) {
+        console.log('searchQueries: ', this.form)
         this.getResults();
       }
     }

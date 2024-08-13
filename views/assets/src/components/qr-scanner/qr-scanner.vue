@@ -17,6 +17,11 @@ export default {
       decodedContent: null
     };
   },
+  provide() {
+    return {
+      admin: true
+    }
+  },
   computed : {
     foundTrans() {
       return this.$store.state.transaction;

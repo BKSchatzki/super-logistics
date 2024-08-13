@@ -57,7 +57,9 @@ export default {
     getPlaces(type) {
       const showID = this.trans.show_id ?? false;
       if (!showID) return [];
-      if (this.shows.find(s => s.id === showID)) {
+      const selectedShow = this.shows.find(s => s.id === showID);
+      if (selectedShow) {
+        this.$store.commit('setSelectedShow', selectedShow)
         const places = this.shows.find(s => s.id === showID).places;
         return places.filter(p => parseInt(p.type) === type);
       }
@@ -65,10 +67,7 @@ export default {
     },
     getClientShows(clientID){
       const shows = this.$store.state.shows;
-      console.log("All shows: ", shows);
-      const clientShows = shows.filter(s => s.client_id === clientID);
-      console.log("All client shows: ", clientShows);
-      return clientShows;
+      return shows.filter(s => s.client_id === clientID);
     }
   },
   created() {

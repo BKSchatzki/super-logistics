@@ -12,6 +12,7 @@ use SL\Common\Traits\Request_Filter;
 use SL\Transaction\Transformers\TransactionTransformer;
 use SL\PDF\LabelGenerator;
 use SL\PDF\Transformers\LabelTransformer;
+use SL\Update\Models\Update;
 
 class TransactionController {
     use Transformer_Manager, Request_Filter;
@@ -25,7 +26,7 @@ class TransactionController {
     }
 
     public function get( WP_REST_Request $request ): array {
-        $transaction = Transaction::with(['show', 'client', 'carrier', 'shipper', 'exhibitor', 'updates'])->find($request->get_param('id'));
+        $transaction = Transaction::with(['show', 'client', 'carrier', 'shipper', 'exhibitor', 'updates', 'items'])->find($request->get_param('id'));
         $resource = new Item($transaction, new TransactionTransformer);
 
         return $this->get_response( $resource );
@@ -142,7 +143,6 @@ class TransactionController {
         // Create a new LabelGenerator and generate the PDF content
         $labelGenerator = new LabelGenerator();
         $pdf = $labelGenerator->generate($t);
-
         // Encode the PDF content to base64
         $pdfBase64 = base64_encode($pdf);
 
@@ -171,7 +171,7 @@ class TransactionController {
         return $this->get_response($resource);
     }
 
-    private static function handleImageUpload($file):string {
+    private static function handleImageUpload($file): string {
         // Define overrides
         $overrides = array(
             'test_form' => false,
@@ -190,7 +190,17 @@ class TransactionController {
             return new WP_Error('upload_failed', $upload['error'], array('status' => 500));
         }
 
-        // File upload successful
-        return $upload['file'];
+        // File upload successful, get file URL
+        $upload_dir = wp_upload_dir();
+        $url = $upload_dir['url'] . '/' . basename($upload['file']);
+        $base_url = trailingslashit($upload_dir['baseurl']);
+        return 'wp-content/uploads/' . str_replace($base_url, '', $url);
+    }
+
+    public function removeNote(WP_REST_Request $request): array {
+        $update_id = $request->get_param('update_id');
+        $update = Update::find($update_id);
+        $update->update(['note' => '']);
+        return $this->get_response([]);
     }
 }

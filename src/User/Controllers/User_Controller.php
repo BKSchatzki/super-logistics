@@ -22,24 +22,12 @@ class User_Controller {
     public function index( WP_REST_Request $request ) {
         $id    = $request->get_param( 'id' );
 
-        $per_page   = $request->get_param( 'per_page' );
-        $per_page   = $per_page ? $per_page : 15;
-
-        $page       = $request->get_param( 'page' );
-        $page       = $page ? $page : 1;
-
-        Paginator::currentPageResolver(function () use ($page) {
-            return $page;
-        });
         if ( $id && is_array( $id ) ) {
             $users = User::find( $id );
             $resource = new Collection( $users, new User_Transformer );
         } else {
-            $users = User::paginate( $per_page );
-            $user_collection = $users->getCollection();
-            $resource = new Collection( $user_collection, new User_Transformer );
-
-            $resource->setPaginator( new IlluminatePaginatorAdapter( $users ) );
+            $users = User::all();
+            $resource = new Collection( $users, new User_Transformer );
         }
 
 

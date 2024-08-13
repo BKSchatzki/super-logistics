@@ -48,6 +48,28 @@ class EntityController
         return $this->get_response($resource);
     }
 
+    public function updateCode(): bool {
+        $entity = Entity::find($_POST['entity_id']);
+        $entity->code = $_POST['code'];
+        $entity->save();
+
+        return true;
+    }
+
+    public function registerUser(): bool {
+        $entity = Entity::where('code', $_POST['code'])->first();
+        if (!$entity) {
+            return false; // Or handle the error as needed
+        }
+        $currentUser = wp_get_current_user();
+        if (!$currentUser || $currentUser->ID == 0) {
+            return false; // Or handle the error as needed
+        }
+        $entity->users()->attach($currentUser->ID);
+
+        return true;
+    }
+
     private static function handleImageUpload($file):string {
         // Define overrides
         $overrides = array(

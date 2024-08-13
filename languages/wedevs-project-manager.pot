@@ -2,7 +2,7 @@
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Super Logistics 1.0.0\n"
+"Project-Id-Version: Super Logistics 1.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/super-logistics\n"
 "POT-Creation-Date: 2024-04-27 03:26:25+00:00\n"
 "MIME-Version: 1.0\n"

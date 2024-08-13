@@ -38,7 +38,6 @@ export default {
   watch: {
     user() {
       if (this.user.roles.includes("subscriber")) {
-        console.log("Redirecting to client home");
         this.$router.push({ name: "client" });
       }
     }
@@ -48,9 +47,8 @@ export default {
 
 <template>
   <div>
-    <transaction-form :add-entry="addEntry" :clear-transaction="clearTransaction" @trigger-lookup="triggerLookup"
-                  :update-billable-weight="updateBillableWeight" :update-items="updateItems"/>
-    <lookup-section :lookup="lookup" :form="transaction"></lookup-section>
+    <transaction-form @trigger-lookup="triggerLookup" />
+    <lookup-section :form="searchQueries" :lookup="lookup"></lookup-section>
   </div>
 </template>
 
@@ -62,7 +60,6 @@ h3, h4 {
 
 .btb-field {
   display: flex;
-  width: 200px;
   justify-content: space-between;
   align-items: center;
 }

@@ -13,8 +13,9 @@ class Item extends Eloquent {
         'pcs',
         'bol_count',
         'weight',
-        'notes'
-    ];
+        'notes',
+        'tracking',
+        ];
     public $timestamps = false;
 
     public function transaction() {

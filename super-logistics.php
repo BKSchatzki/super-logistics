@@ -4,7 +4,7 @@
  * Description: Logistics plugin which creates internal and customer facing logistics app.
  * Author: BigTB
  * Author URI: https://bigtb.com
- * Version: 1.0.0
+ * Version: 1.0.1
  * Text Domain: super-logistics
  * Domain Path: /languages
  * License: GPL2

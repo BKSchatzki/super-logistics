@@ -37,6 +37,7 @@ class SL_Create_Table {
             `zip` VARCHAR(255) NULL,
             `phone` VARCHAR(255) NULL,
             `email` VARCHAR(255) NULL,
+            `code` VARCHAR(255) NULL,
             `logo_path` VARCHAR(255) NULL,
             PRIMARY KEY (`id`)
         ) DEFAULT CHARSET=utf8";
@@ -73,6 +74,8 @@ class SL_Create_Table {
             `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
             `entity_id` INT(11) UNSIGNED NULL,
             `client_id` INT(11) UNSIGNED NULL,
+            `min_carat_weight` INT(11) UNSIGNED NULL,
+            `carat_weight_inc` INT(11) UNSIGNED NULL,
             `date_start` DATE NOT NULL,
             `date_end` DATE NULL,
             `date_expiry` DATE NULL,
@@ -165,6 +168,7 @@ class SL_Create_Table {
           `weight` INT(11) NOT NULL,
           `special` tinyINT(1) NULL,
           `notes` VARCHAR(255) NULL,
+          `tracking` VARCHAR(255) NULL,
           PRIMARY KEY (`id`),
           FOREIGN KEY (`transaction_id`) REFERENCES {$wpdb->prefix}sl_transactions(`id`) ON DELETE CASCADE
         ) DEFAULT CHARSET=utf8";
