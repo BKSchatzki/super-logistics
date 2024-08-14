@@ -8,6 +8,8 @@ import '@helpers/common-components'
 import menuFix from '@helpers/menu-fix';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'quasar/dist/quasar.min.css'
+import Quasar from "quasar";
 
 window.pmBus = new Vue();
 

@@ -34,6 +34,11 @@ export default {
               Scanner
             </router-link>
           </li>
+          <li v-if="!user.roles.includes('subscriber')" key="reports" class="nav-item">
+            <router-link :to="{ name: 'reports' }" class="nav-link">
+              Reports
+            </router-link>
+          </li>
           <li v-if="user.roles.includes('subscriber')" key="client" class="nav-item">
             <router-link :to="{ name: 'client' }" class="nav-link">
               Client Home

@@ -1,5 +1,6 @@
 import '@components/data-input/router';
 import '@components/qr-scanner/router';
+import '@components/reports/router';
 import '@components/client/router';
 import '@components/settings/router';
 
