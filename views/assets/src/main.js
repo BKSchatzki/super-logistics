@@ -12,7 +12,6 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 window.pmBus = new Vue();
 
 Vue.config.devtools = true;
-Vue.use(ElementUI, { locale });
 
 const SL_Vue = {
     el: `#${SL_Vars.id}`,

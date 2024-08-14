@@ -1,5 +1,6 @@
 <script>
 import reportModal from "@components/reports/report-modal.vue";
+import reportMixin from "@components/reports/mixin";
 
 export default {
   components: {reportModal},
@@ -8,9 +9,11 @@ export default {
       trailerNum: ''
     }
   },
+  mixins: [reportMixin],
   methods: {
     viewReport() {
       console.log(this.trailerNum);
+      this.viewTrailerManifest(this.trailerNum);
     }
   }
 }

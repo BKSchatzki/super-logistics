@@ -45,13 +45,13 @@ export default {
       console.log(newVal);
       let str = newVal;
       if (str.length === 2 && oldVal.length !== 3) {
-        this.dateInput += '/';
+        this.dateRange += '/';
       }
       if (str.length === 5 && oldVal.length !== 6) {
-        this.dateInput += '/';
+        this.dateRange += '/';
       }
       if (str.length > 10) {
-        this.dateInput = str.slice(0, 10);
+        this.dateRange = str.slice(0, 10);
       }
     }
   }
