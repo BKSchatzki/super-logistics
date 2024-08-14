@@ -7,6 +7,11 @@ import PalletManInterface from "@components/reports/pallet-man-interface.vue";
 
 export default {
   components: {TrailerManInterface, showReportInterface, PalletManInterface},
+  data() {
+    return {
+      dateRange: null
+    }
+  }
 }
 </script>
 

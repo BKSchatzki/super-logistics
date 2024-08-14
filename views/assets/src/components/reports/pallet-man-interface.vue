@@ -17,7 +17,7 @@ export default {
 </script>
 
 <template>
-  <report-modal title="Pallet Manifest" :viewFunc="viewReport">
+  <report-modal modal-i-d="pallet-manifest" title="Pallet Manifest" :viewFunc="viewReport">
     <label for="pallet-manifest-input">Pallet Number:</label>
     <input id="pallet-manifest-input" type="text" v-model="palletNum"/>
   </report-modal>

@@ -1,9 +1,8 @@
 <script>
 import reportModal from "@components/reports/report-modal.vue";
-import SimpleField from "@components/form-components/simple-field.vue";
 
 export default {
-  components: {SimpleField, reportModal},
+  components: {reportModal},
   data() {
     return {
       trailerNum: ''
@@ -18,7 +17,7 @@ export default {
 </script>
 
 <template>
-  <report-modal title="Trailer Manifest" :viewFunc="viewReport">
+  <report-modal modal-i-d="trailer-manifest" title="Trailer Manifest" :viewFunc="viewReport">
     <label for="trailer-manifest-input">Trailer Number:</label>
     <input id="trailer-manifest-input" type="text" v-model="trailerNum"/>
   </report-modal>

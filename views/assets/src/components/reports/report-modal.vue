@@ -8,21 +8,25 @@ export default {
     viewFunc: {
       type: Function,
       required: true
+    },
+    modalID: {
+      type: String,
+      required: true
     }
   }
 }
 </script>
 
 <template>
-  <div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reportInterfaceModal">
+  <div class="mb-3">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#${modalID}`">
       {{ title }}
     </button>
-    <div class="modal fade" id="reportInterfaceModal" tabindex="-1" aria-labelledby="reportInterfaceModalLabel" aria-hidden="true">
+    <div class="modal fade" :id="`${modalID}`" tabindex="-1" :aria-labelledby="`#${modalID}Label`" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="reportInterfaceModalLabel">{{ title }}</h1>
+            <h1 class="modal-title fs-5" :id="`${modalID}Label`">{{ title }}</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">

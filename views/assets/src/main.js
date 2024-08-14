@@ -1,9 +1,9 @@
 import '@helpers/less/pm-style.less'
 import router from '@router/router'
 import store from '@store/store'
-import '@directives/directive'
 import Mixin from '@helpers/mixin/mixin'
 import App from './App.vue'
+import '@directives/directive'
 import '@helpers/common-components'
 import menuFix from '@helpers/menu-fix';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,10 +12,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 window.pmBus = new Vue();
 
 Vue.config.devtools = true;
+Vue.use(ElementUI, { locale });
 
-/**
- * Project template render
- */
 const SL_Vue = {
     el: `#${SL_Vars.id}`,
     store,
