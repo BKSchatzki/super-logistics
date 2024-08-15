@@ -11,7 +11,7 @@ use SL\Common\Traits\Transformer_Manager;
 use SL\Common\Traits\Request_Filter;
 use SL\Transaction\Transformers\TransactionTransformer;
 use SL\PDF\LabelGenerator;
-use SL\PDF\Transformers\LabelTransformer;
+use SL\PDF\Transformers\PDFTransformer;
 use SL\Update\Models\Update;
 
 class TransactionController {
@@ -146,7 +146,7 @@ class TransactionController {
         // Encode the PDF content to base64
         $pdfBase64 = base64_encode($pdf);
 
-        $res = new Item(['pdf' => $pdfBase64], new LabelTransformer());
+        $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
         return $this->get_response($res);

@@ -4,7 +4,7 @@
 namespace SL\PDF\Transformers;
 use League\Fractal\TransformerAbstract;
 
-class LabelTransformer extends TransformerAbstract
+class PDFTransformer extends TransformerAbstract
 {
     public function transform($item)
     {

@@ -9,7 +9,7 @@ export default {
                 processData: false,
                 contentType: false,
                 success: function (res) {
-                    console.log('Transaction updated:', res);
+                    console.log('Trailer Manifest Route Works:', res);
                 },
                 error: function (res) {
                     console.error('Failed to update transaction:', res);

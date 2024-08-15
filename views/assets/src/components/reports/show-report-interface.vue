@@ -1,8 +1,9 @@
 <script>
 import reportModal from "@components/reports/report-modal.vue";
+import SimpleField from "@components/form-components/simple-field.vue";
 
 export default {
-  components: {reportModal},
+  components: {SimpleField, reportModal},
   data() {
     return {
       dateRange: null,
@@ -61,7 +62,7 @@ export default {
 <template>
   <report-modal modal-i-d="show-report" title="Show Report" :viewFunc="viewReport">
     <label for="show-report-input">Dates:</label>
-    <input type="text" v-model="dateRange" placeholder="MM/DD/YYYY">
+    <simple-field type="date" v-model="dateRange" field="start" :required="true"/>
   </report-modal>
 </template>
 
