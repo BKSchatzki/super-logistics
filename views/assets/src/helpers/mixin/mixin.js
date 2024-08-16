@@ -51,12 +51,10 @@ export default {
         isArchivePage () {
             return this.$route.name == 'task_lists_archive' || this.$route.name == 'task_lists_archive_pagination'
         },
-
         classnames ( classAttrs ) {
             return classnames( classAttrs );
 
         },
-
         cutString(string, length, dot){
             var output = "";
             output = string.substring(0, parseInt(length));
@@ -65,7 +63,6 @@ export default {
             }
             return output;
         },
-
         hasTaskStartField () {
             if (!SL_Vars.is_pro) {
                 return false;
@@ -75,25 +72,21 @@ export default {
            
            return status == 'on' || status === true ? true : false;
         },
-
         is_array(items) {
             if(Object.prototype.toString.call(items) == '[object Array]' ) {
                 return true;
             }
         },
-
         is_object(items) {
             if(Object.prototype.toString.call(items) == '[object Object]' ) {
                 return true;
             }
         },
-
         isValidDate(date) {
             date = pm.Moment(new Date(date));
 
             return date.isValid()
         },
-
         secondsToHms (d) {
             d = Number(d);
             var h = Math.floor(d / 3600);
@@ -106,7 +99,6 @@ export default {
                 'second': s
             }
         },
-
         hexToRgb(hex) {
             // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
             var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -121,7 +113,6 @@ export default {
                 2: parseInt(result[3], 16)
             } : null;
         },
-
         getTextColor (rgb) {
 
             if(typeof rgb !== 'object') {
@@ -143,11 +134,9 @@ export default {
             }
 
         },
-
         getInboxId () {
             return this.$store.state.project.list_inbox;
         },
-
         getUniqueRandomNumber() {
             var random = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                 var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -163,7 +152,6 @@ export default {
             this.getUniqueRandomNumber();
 
         },
-
         enableDisable (key, status) {
             status = status || '';
 
@@ -173,7 +161,6 @@ export default {
                 this[key] = status;
             }
         },
-
         __(text, domain) {
             return __(text, domain);
         },
@@ -1515,6 +1502,28 @@ export default {
             
             return false;
         },
+
+        getPDFUrl(base64PDF) {
+            // Decode the base64 string to binary data
+            let binaryData = atob(base64PDF);
+
+            // Convert the binary data to a byte array
+            let byteArray = new Uint8Array(binaryData.length);
+            for (let i = 0; i < binaryData.length; i++) {
+                byteArray[i] = binaryData.charCodeAt(i);
+            }
+
+            // Create a blob from the byte array
+            let blob = new Blob([byteArray], {type: 'application/pdf'});
+
+            return URL.createObjectURL(blob);
+        },
+        downloadPdf(pdfurl) {
+            let link = document.createElement('a');
+            link.href = pdfurl;
+            link.target = '_blank';
+            link.click();
+        }
     }
 };
 

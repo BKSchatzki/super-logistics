@@ -1,9 +1,12 @@
+import MainMixin from '@helpers/mixin/mixin';
+
 export default {
     data () {
         return {
 
         }
     },
+    mixins: [MainMixin],
     methods: {
         getLabels(trans_id) {
             const self = this;
@@ -12,7 +15,7 @@ export default {
                 type: 'GET',
                 url: self.base_url + `sl/v1/transactions/labels?trans_id=${trans_id}`,
                 success: function(res) {
-                    self.$store.commit('setLabelPDF', self.getPDFUrl(res.data.pdf));
+                    self.$store.commit('setLoadedPDF', self.getPDFUrl(res.data.pdf));
                 },
                 error: function(err) {
                     console.error('Failed to get labels:', err);
@@ -103,21 +106,6 @@ export default {
             }
             queryString = queryString.slice(0, -1);
             return queryString;
-        },
-        getPDFUrl(base64PDF) {
-            // Decode the base64 string to binary data
-            let binaryData = atob(base64PDF);
-
-            // Convert the binary data to a byte array
-            let byteArray = new Uint8Array(binaryData.length);
-            for (let i = 0; i < binaryData.length; i++) {
-                byteArray[i] = binaryData.charCodeAt(i);
-            }
-
-            // Create a blob from the byte array
-            let blob = new Blob([byteArray], {type: 'application/pdf'});
-
-            return URL.createObjectURL(blob);
         },
         filePathToUrl(filePath) {
             const baseUrl = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + '/';

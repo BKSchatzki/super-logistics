@@ -34,7 +34,7 @@ export default {
   },
   computed: {
     pdfurl() {
-      return this.$store.state.labelPDF;
+      return this.$store.state.loadedPDF;
     },
     computedOpen() {
       return this.parentOpen !== null ? this.parentOpen : this.localOpen;
@@ -47,14 +47,6 @@ export default {
     },
     toggleUpdating() {
       this.updating = !this.updating;
-    },
-    downloadPdf() {
-      if (this.pdfurl !== '') {
-        let link = document.createElement('a');
-        link.href = this.pdfurl;
-        link.target = '_blank';
-        link.click();
-      }
     },
     toggleForm() {
       if (this.parentOpen !== null) {
@@ -87,7 +79,9 @@ export default {
       }
     },
     pdfurl() {
-      this.downloadPdf();
+      if (this.pdfurl !== '') {
+        this.downloadPdf(this.pdfurl)
+      }
     }
   },
   created() {

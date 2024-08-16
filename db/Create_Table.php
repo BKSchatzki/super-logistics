@@ -15,6 +15,7 @@ class SL_Create_Table {
         $this->create_sl_entity_users();
         $this->create_sl_trailers();
         $this->create_sl_shipments();
+        $this->create_role_user_table();
     }
 
     private function prefix() {
@@ -123,6 +124,8 @@ class SL_Create_Table {
           `receiver` VARCHAR(255) NULL,
           `trailer` INT(11) NULL,
           `freight_type` INT(11) NULL,
+          `created_at` TIMESTAMP NULL DEFAULT NULL,
+          `updated_at` TIMESTAMP NULL DEFAULT NULL,
           PRIMARY KEY (`id`),
           FOREIGN KEY (`show_id`) REFERENCES {$wpdb->prefix}sl_shows(`id`) ON DELETE RESTRICT,
           FOREIGN KEY (`client_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE RESTRICT,
@@ -221,6 +224,27 @@ class SL_Create_Table {
           FOREIGN KEY (`transaction_id`) REFERENCES {$wpdb->prefix}sl_transactions(`id`) ON DELETE CASCADE,
           FOREIGN KEY (`trailer_id`) REFERENCES {$wpdb->prefix}sl_trailers(`id`) ON DELETE RESTRICT
         ) DEFAULT CHARSET=utf8";
+
+        dbDelta($sql);
+    }
+
+    public function create_role_user_table()
+    {
+        global $wpdb;
+        $table_name = $this->prefix() . 'pm_role_user';
+
+        $sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
+			  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			  `user_id` int(11) UNSIGNED NOT NULL,
+			  `role_id` int(11) UNSIGNED NOT NULL,
+			  `project_id` int(11) UNSIGNED DEFAULT NULL,
+			  `assigned_by` int(11) UNSIGNED NOT NULL,
+			  PRIMARY KEY (`id`),
+			  KEY `project_id` (`project_id`),
+			  KEY `role_id` (`role_id`),
+			  KEY `user_id` (`user_id`),
+			  KEY `assigned_by` (`assigned_by`)
+			) DEFAULT CHARSET=utf8";
 
         dbDelta($sql);
     }

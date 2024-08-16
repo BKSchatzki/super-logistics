@@ -23,7 +23,7 @@ class Transaction extends Eloquent
         'receiver',
         'freight_type'
     ];
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function show(): object
     {

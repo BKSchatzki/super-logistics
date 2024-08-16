@@ -1,19 +1,33 @@
 <script>
 import reportModal from "@components/reports/report-modal.vue";
 import reportMixin from "@components/reports/mixin";
+import mainMixin from "@helpers/mixin/mixin";
 
 export default {
   components: {reportModal},
+  mixins: [mainMixin, reportMixin],
   data() {
     return {
       trailerNum: ''
     }
   },
-  mixins: [reportMixin],
+  computed: {
+    pdfurl() {
+      return this.$store.state.loadedPDF;
+    }
+  },
   methods: {
     viewReport() {
       console.log(this.trailerNum);
       this.viewTrailerManifest(this.trailerNum);
+    }
+  },
+  watch: {
+    pdfurl() {
+      console.log("this.pdfurl: ", this.pdfurl);
+      if (this.pdfurl !== '') {
+        this.downloadPdf(this.pdfurl);
+      }
     }
   }
 }

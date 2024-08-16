@@ -9,7 +9,7 @@ export default new pm.Vuex.Store({
         shippers: [],
         clients: [],
         exhibitors: [],
-        labelPDF: '',
+        loadedPDF: '',
         users: [],
         user: {},
         clientId: 0,
@@ -61,8 +61,8 @@ export default new pm.Vuex.Store({
         setShows (state, shows) {
             state.shows = shows;
         },
-        setLabelPDF (state, labelPDF) {
-            state.labelPDF = labelPDF;},
+        setLoadedPDF (state, loadedPDF) {
+            state.loadedPDF = loadedPDF;},
         setUsers (state, users) {
             state.users = users;
         },

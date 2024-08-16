@@ -8,11 +8,12 @@ export default {
                 url: self.base_url + `sl/v1/reports/trailer-manifest?${params.toString()}`,
                 processData: false,
                 contentType: false,
-                success: function (res) {
-                    console.log('Trailer Manifest Route Works:', res);
+                success: function(res) {
+                    console.log('Trailer Manifest loaded:', res.data.pdf);
+                    self.$store.commit('setLoadedPDF', self.getPDFUrl(res.data.pdf));
                 },
                 error: function (res) {
-                    console.error('Failed to update transaction:', res);
+                    console.error('Failed load Trailer Manifest:', res);
                 }
             };
             self.httpRequest(request_data);
@@ -25,11 +26,30 @@ export default {
                 url: self.base_url + `sl/v1/reports/pallet-manifest?${params.toString()}`,
                 processData: false,
                 contentType: false,
-                success: function (res) {
-                    console.log('Transaction updated:', res);
+                success: function(res) {
+                    console.log('Pallet Manifest loaded:', res.data.pdf);
+                    self.$store.commit('setLoadedPDF', self.getPDFUrl(res.data.pdf));
                 },
                 error: function (res) {
-                    console.error('Failed to update transaction:', res);
+                    console.error('Failed load Pallet Manifest:', res);
+                }
+            };
+            self.httpRequest(request_data);
+        },
+        viewShowReport(startDate, endDate) {
+            const params = new URLSearchParams({palletNum});
+            const self = this;
+            const request_data = {
+                type: 'GET',
+                url: self.base_url + `sl/v1/reports/pallet-manifest?${params.toString()}`,
+                processData: false,
+                contentType: false,
+                success: function(res) {
+                    console.log('Pallet Manifest loaded:', res.data.pdf);
+                    self.$store.commit('setLoadedPDF', self.getPDFUrl(res.data.pdf));
+                },
+                error: function (res) {
+                    console.error('Failed load Pallet Manifest:', res);
                 }
             };
             self.httpRequest(request_data);
