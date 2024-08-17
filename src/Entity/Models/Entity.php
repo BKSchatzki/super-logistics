@@ -15,7 +15,6 @@ class Entity extends Eloquent {
         'city',
         'state',
         'zip',
-        'code',
         'logo_path'
     ];
     public $timestamps = false;
@@ -44,5 +43,11 @@ class Entity extends Eloquent {
 
     public function show():object {
         return $this->hasOne('SL\Show\Models\Show', 'entity_id');
+    }
+
+    public function codes():object {
+        return $this->belongsToMany('SL\Show\Models\Show', pm_tb_prefix() . 'sl_user_codes', 'entity_id', 'show_id')
+                    ->withPivot('code')
+                    ->withTimestamps();
     }
 }

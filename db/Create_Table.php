@@ -9,6 +9,7 @@ class SL_Create_Table {
         $this->create_sl_roles();
         $this->create_sl_shows();
         $this->create_sl_show_places();
+        $this->create_sl_user_codes();
         $this->create_sl_transactions();
         $this->create_sl_updates();
         $this->create_sl_items();
@@ -38,7 +39,6 @@ class SL_Create_Table {
             `zip` VARCHAR(255) NULL,
             `phone` VARCHAR(255) NULL,
             `email` VARCHAR(255) NULL,
-            `code` VARCHAR(255) NULL,
             `logo_path` VARCHAR(255) NULL,
             PRIMARY KEY (`id`)
         ) DEFAULT CHARSET=utf8";
@@ -100,6 +100,26 @@ class SL_Create_Table {
             `name` VARCHAR(255) NOT NULL,
             PRIMARY KEY (`id`),
             FOREIGN KEY (`show_id`) REFERENCES {$wpdb->prefix}sl_shows(`id`) ON DELETE CASCADE
+        ) DEFAULT CHARSET=utf8";
+
+        dbDelta($sql);
+    }
+
+    private function create_sl_user_codes():void {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'sl_user_codes';
+
+        $sql = "CREATE TABLE IF NOT EXISTS  {$table_name} (
+            `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+            `entity_id` INT(11) UNSIGNED NOT NULL,
+            `show_id` INT(11) UNSIGNED NOT NULL,
+            `code` VARCHAR(255) NOT NULL,
+            `created_at` timestamp NULL DEFAULT NULL,
+            `updated_at` timestamp NULL DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            FOREIGN KEY (`entity_id`) REFERENCES {$wpdb->prefix}sl_entities(`id`) ON DELETE CASCADE,
+            FOREIGN KEY (`show_id`) REFERENCES {$wpdb->prefix}sl_shows(`id`) ON DELETE CASCADE,
+            UNIQUE (`entity_id`, `show_id`)
         ) DEFAULT CHARSET=utf8";
 
         dbDelta($sql);

@@ -7,6 +7,7 @@ export default {
   data() {
     return {
       newComboEntityID: '',
+      newComboShowID: '',
       newCode: '',
       registerCode: ''
     }
@@ -14,6 +15,9 @@ export default {
   computed: {
     clients() {
       return this.$store.state.clients;
+    },
+    shows() {
+      return this.$store.state.shows;
     },
     clientCodes() {
       return this.clients.filter(c => c.code);
@@ -27,8 +31,7 @@ export default {
   },
   methods: {
     update(e) {
-      console.log(e);
-      this.updateClient(this.newComboEntityID, this.newCode);
+      this.updateClient(this.newComboEntityID, this.newComboShowID, this.newCode);
       setTimeout(() => {
         this.getClients();
       }, 2000);
@@ -41,7 +44,9 @@ export default {
   },
   created() {
     this.getClients();
+    this.getClientCodes();
     this.getCurrentUserRoles();
+    this.getRelevantShows();
   },
 }
 </script>
@@ -64,6 +69,7 @@ export default {
       <thead>
         <tr>
           <th scope="col">Client</th>
+          <th scope="col">Show</th>
           <th scope="col">Code</th>
         </tr>
       </thead>
@@ -81,6 +87,12 @@ export default {
             <select v-model="newComboEntityID">
               <option value="">Select a Client</option>
               <option v-for="entity in clients" :value="entity.id">{{ entity.name }}</option>
+            </select>
+          </td>
+          <td>
+            <select v-model="newComboShowID">
+              <option value="">Select a Show</option>
+              <option v-for="s in shows" :value="s.id">{{ s.name }}</option>
             </select>
           </td>
           <td>

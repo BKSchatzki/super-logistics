@@ -48,12 +48,27 @@ class EntityController
         return $this->get_response($resource);
     }
 
-    public function updateCode(): bool {
-        $entity = Entity::find($_POST['entity_id']);
-        $entity->code = $_POST['code'];
+    public function updateCode(WP_REST_Request $request): bool {
+        $entity_id = $request->get_param('entity_id');
+        $show_id = $request->get_param('show_id');
+        $code = $request->get_param('code');
+
+        $entity = Entity::find($entity_id);
+        $entity->codes()->attach($show_id, ['code' => $code]);
         $entity->save();
 
         return true;
+    }
+
+    public function getCodes(WP_REST_Request $request): array
+    {
+        // Fetch all entities with their related codes
+        $entities = Entity::with('codes')->get();
+
+        // Transform and return the entities and their related codes
+        $resource = new Collection($entities, new EntityTransformer);
+
+        return $this->get_response($resource);
     }
 
     public function registerUser(): bool {

@@ -5,8 +5,8 @@ export default{
         }
     },
     methods: {
-        updateClient(entity_id, code) {
-            const data = this.createFormData({entity_id, code})
+        updateClient(entity_id, show_id, code) {
+            const data = this.createFormData({entity_id, show_id, code})
             const self = this;
             const request_data = {
                 type: 'POST',
@@ -41,6 +41,21 @@ export default{
             };
             self.httpRequest(request_data);
         },
+        getClientCodes() {
+            const self = this;
+            const request_data = {
+                type: 'GET',
+                url: self.base_url + 'sl/v1/entities/codes',
+                success: function (res) {
+                    console.log("Client codes successfully retrieved: ", res);
+                    self.$store.commit('setClientCodes', res);
+                },
+                error: function (res) {
+                    console.error('Failed to get client codes: ', res);
+                }
+            };
+            self.httpRequest(request_data);
+        }
     }
 }
 

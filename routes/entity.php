@@ -10,4 +10,6 @@ $router->post('entities', 'SL/Entity/Controllers/EntityController@store');
 
 $router->post('entities/code', 'SL/Entity/Controllers/EntityController@updateCode');
 
+$router->get('entities/codes', 'SL/Entity/Controllers/EntityController@getCodes');
+
 $router->post('entities/register', 'SL/Entity/Controllers/EntityController@registerUser');
