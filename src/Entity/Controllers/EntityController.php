@@ -54,8 +54,7 @@ class EntityController
         $code = $request->get_param('code');
 
         $entity = Entity::find($entity_id);
-        $entity->codes()->attach($show_id, ['code' => $code]);
-        $entity->save();
+        $entity->codes()->syncWithoutDetaching([$show_id => ['code' => $code]]);
 
         return true;
     }
@@ -63,7 +62,7 @@ class EntityController
     public function getCodes(WP_REST_Request $request): array
     {
         // Fetch all entities with their related codes
-        $entities = Entity::with('codes')->get();
+        $entities = Entity::with('codes.entity')->get();
 
         // Transform and return the entities and their related codes
         $resource = new Collection($entities, new EntityTransformer);
@@ -72,14 +71,21 @@ class EntityController
     }
 
     public function registerUser(): bool {
-        $entity = Entity::where('code', $_POST['code'])->first();
+        $code = $_POST['code'];
+
+        $entity = Entity::whereHas('codes', function ($query) use ($code) {
+            $query->where('code', $code);
+        })->first();
+
         if (!$entity) {
             return false; // Or handle the error as needed
         }
+
         $currentUser = wp_get_current_user();
         if (!$currentUser || $currentUser->ID == 0) {
             return false; // Or handle the error as needed
         }
+
         $entity->users()->attach($currentUser->ID);
 
         return true;

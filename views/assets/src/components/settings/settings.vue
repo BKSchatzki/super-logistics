@@ -19,8 +19,20 @@ export default {
     shows() {
       return this.$store.state.shows;
     },
-    clientCodes() {
-      return this.clients.filter(c => c.code);
+    codes() {
+      let allCodes = [];
+      this.clients.forEach(client => {
+        if (client.codes.length !== 0) {
+          client.codes.forEach(code => {
+            allCodes.push({
+              ...code,
+              entity_id: client.id,
+              entity_name: client.name,
+            });
+          });
+        }
+      });
+      return allCodes;
     },
     user() {
       return this.$store.state.user;
@@ -39,6 +51,7 @@ export default {
     },
     clear() {
       this.newComboEntityID = '';
+      this.newComboShowID = '';
       this.newCode = '';
     }
   },
@@ -74,12 +87,15 @@ export default {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="codeCombo in clientCodes">
-          <th scope="row" :id="`entity-${codeCombo.id}`">
-            {{ codeCombo.name }}
-          </th>
+        <tr v-for="c in codes">
           <td>
-            <input type="text" v-model="codeCombo.code"/>
+            {{ c.entity_name }}
+          </td>
+          <td>
+            {{ c.show_name }}
+          </td>
+          <td>
+            {{ c.code }}
           </td>
         </tr>
         <tr>
