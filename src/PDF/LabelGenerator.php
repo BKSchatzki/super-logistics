@@ -31,6 +31,8 @@ class LabelGenerator
             $pdf->Cell(30, 10, $totalItems, 0, 0, 'C');
             $pdf->SetFont('helvetica', '', 15);
         }
+
+        $pdf->deletePage($pdf->getNumPages());
         return $pdf->Output('sample.pdf', 'S');
     }
 

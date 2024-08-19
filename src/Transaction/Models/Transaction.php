@@ -21,7 +21,8 @@ class Transaction extends Eloquent
         'pallet_no',
         'trailer',
         'receiver',
-        'freight_type'
+        'freight_type',
+        'status'
     ];
     public $timestamps = true;
 

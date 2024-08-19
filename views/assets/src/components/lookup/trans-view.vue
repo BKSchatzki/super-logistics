@@ -59,7 +59,7 @@ export default {
       this.deleteScreen = !this.deleteScreen;
     },
     deleteTrans() {
-      this.deleteTransaction(this.trans.id);
+      this.trashTransaction(this.trans.id);
       this.$emit('closeView');
     },
     toggleNotes() {

@@ -36,12 +36,12 @@ export default {
             };
             self.httpRequest(request_data);
         },
-        viewShowReport(startDate, endDate) {
-            const params = new URLSearchParams({palletNum});
+        viewShowReport(client_id, show_id, start_date, end_date) {
+            const params = new URLSearchParams({client_id, show_id, start_date, end_date});
             const self = this;
             const request_data = {
                 type: 'GET',
-                url: self.base_url + `sl/v1/reports/pallet-manifest?${params.toString()}`,
+                url: self.base_url + `sl/v1/reports/show-report?${params.toString()}`,
                 processData: false,
                 contentType: false,
                 success: function(res) {

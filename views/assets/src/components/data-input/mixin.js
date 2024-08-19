@@ -59,7 +59,7 @@ export default {
             };
             self.httpRequest(request_data);
         },
-        deleteTransaction(transaction_id) {
+        trashTransaction(transaction_id) {
             const self = this;
             const request_data = {
                 type: 'DELETE',
@@ -68,6 +68,7 @@ export default {
                 contentType: false,
                 success: function (res) {
                     console.log('Transaction updated:', res);
+                    self.$store.commit('removeTransaction', transaction_id)
                 },
                 error: function (res) {
                     console.error('Failed to update transaction:', res);

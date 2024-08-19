@@ -14,7 +14,7 @@ $router->post( 'transactions/update', 'SL/Transaction/Controllers/TransactionCon
 
 $router->delete( 'transactions/update/note/{update_id}', 'SL/Transaction/Controllers/TransactionController@removeNote' );
 
-$router->delete( 'transactions/{id}', 'SL/Transaction/Controllers/TransactionController@delete' );
+$router->delete( 'transactions/{id}', 'SL/Transaction/Controllers/TransactionController@trash' );
 
 $router->get( 'transactions/labels', 'SL/Transaction/Controllers/TransactionController@createLabels' );
 

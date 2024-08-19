@@ -144,6 +144,7 @@ class SL_Create_Table {
           `receiver` VARCHAR(255) NULL,
           `trailer` INT(11) NULL,
           `freight_type` INT(11) NULL,
+          `status` INT(1) UNSIGNED NULL DEFAULT 1,
           `created_at` TIMESTAMP NULL DEFAULT NULL,
           `updated_at` TIMESTAMP NULL DEFAULT NULL,
           PRIMARY KEY (`id`),

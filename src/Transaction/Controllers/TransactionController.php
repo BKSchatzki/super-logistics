@@ -18,7 +18,8 @@ class TransactionController {
     use Transformer_Manager, Request_Filter;
 
     public function index( WP_REST_Request $request ): array {
-        $transactions = Transaction::paginate( $this->get_per_page() );
+        $transactions = Transaction::where('status', '<>', 0)
+            ->paginate($this->get_per_page());
         $resource = new Collection($transactions, new TransactionTransformer);
         $resource->setPaginator(new IlluminatePaginatorAdapter($transactions));
 
@@ -54,7 +55,6 @@ class TransactionController {
             $transaction->items()->create($data);
         }
         $transaction->updates()->create($update_data);
-
         $transaction->save();
         $resource = new Item($transaction, new TransactionTransformer);
 
@@ -98,6 +98,14 @@ class TransactionController {
         return $this->get_response($resource);
     }
 
+    public function trash(WP_REST_Request $request): array {
+        $transaction = Transaction::find($request->get_param('id'));
+        $transaction->status = 0;
+        $transaction->save();
+
+        return $this->get_response([]);
+    }
+
     public function delete(WP_REST_Request $request): array {
         $transaction = Transaction::find($request->get_param('id'));
         $transaction->delete();
@@ -117,7 +125,8 @@ class TransactionController {
             'place' => $request->get_param('place'),
             'billable_weight' => $request->get_param('billable_weight'),
             'pallet_no' => $request->get_param('pallet_no'),
-            'freight_type' => $request->get_param('freight_type')
+            'freight_type' => $request->get_param('freight_type'),
+            'status' => 1,
         ];
 
         // Start a new query

@@ -40,6 +40,10 @@ export default new pm.Vuex.Store({
         setTransactions (state, transactions) {
             state.transactions = transactions;
         },
+        removeTransaction(state, transaction_id) {
+            const index = state.transactions.findIndex(x => x.id === transaction_id);
+            state.transactions.splice(index, 1);
+        },
         setTransaction (state, transaction) {
             state.transaction = transaction;
         },

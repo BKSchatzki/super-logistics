@@ -47,7 +47,6 @@ export default{
                 type: 'GET',
                 url: self.base_url + 'sl/v1/entities/codes',
                 success: function (res) {
-                    console.log("Client codes successfully retrieved: ", res);
                     self.$store.commit('setClientCodes', res);
                 },
                 error: function (res) {
