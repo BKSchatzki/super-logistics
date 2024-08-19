@@ -75,7 +75,7 @@ class SLPDF extends TCPDF {
             $this->SetXY(10, 10);
             $this->SetFont('helvetica', 'B', 10);
             $this->Cell(32, 10, 'Show Report', 1, 0, 'C');
-            $this->Cell(32, 10, $this->detail['show_name'], 1, 0, 'C');
+            $this->Cell(52, 10, $this->detail['show_name'], 1, 0, 'C');
             $this->Cell(32, 10, $this->detail['start_date'], 1, 0, 'C');
             $this->Cell(32, 10, $this->detail['end_date'], 1, 0, 'C');
             $this->Ln();

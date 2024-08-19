@@ -45,11 +45,11 @@ export default {
                 processData: false,
                 contentType: false,
                 success: function(res) {
-                    console.log('Pallet Manifest loaded:', res.data.pdf);
+                    console.log('Show Report loaded:', res.data.pdf);
                     self.$store.commit('setLoadedPDF', self.getPDFUrl(res.data.pdf));
                 },
                 error: function (res) {
-                    console.error('Failed load Pallet Manifest:', res);
+                    console.error('Failed load Show Report:', res);
                 }
             };
             self.httpRequest(request_data);
