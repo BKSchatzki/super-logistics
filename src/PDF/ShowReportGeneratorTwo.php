@@ -2,9 +2,7 @@
 
 namespace SL\PDF;
 
-use SL\PDF\SLPDF;
-
-class ShowReportGenerator
+class ShowReportGeneratorTwo
 {
     public $itemsKey = [
         2 => 'carton',
@@ -70,6 +68,10 @@ class ShowReportGenerator
             $pdf->Cell(10, 6, substr($t->receiver, 0, 12), 1, 0, 'C');
             $pdf->Cell(10, 6, substr($t->trailer, 0, 12), 1, 0, 'C');
             $pdf->Cell(22, 6, $t->created_at, 1, 0, 'C');
+            $pdf->Ln();
+            $pdf->Cell(212, 6, ' ' . $t->shipper->city . ',  ' . $t->shipper->state . ',  ' . $t->shipper->zip, 1, 0, 'L');
+            $pdf->Cell(20, 6, substr($t->updates[0]->user->display_name, 0, 12), 1, 0, 'C');
+            $pdf->Cell(22, 6, substr($t->updates[0]->datetime, 0, 12), 1, 0, 'C');
             $pdf->Ln();
         }
         return $pdf->Output('sample.pdf', 'S');
@@ -286,7 +288,7 @@ class ShowReportGenerator
     {
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('ThinkSTG');
-        $pdf->SetTitle('Show Report');
+        $pdf->SetTitle('Show Report Two');
     }
 
     private function configPDF($pdf): void

@@ -9,3 +9,5 @@ $router->get( 'reports/trailer-manifest', 'SL/Report/Controllers/ReportsControll
 $router->get( 'reports/pallet-manifest', 'SL/Report/Controllers/ReportsController@getPalletManifest' );
 
 $router->get( 'reports/show-report', 'SL/Report/Controllers/ReportsController@getShowReport' );
+
+$router->get( 'reports/show-report-two', 'SL/Report/Controllers/ReportsController@getShowReportTwo' );

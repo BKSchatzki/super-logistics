@@ -54,5 +54,23 @@ export default {
             };
             self.httpRequest(request_data);
         },
+        viewShowReportTwo(client_id, show_id, start_date, end_date) {
+            const params = new URLSearchParams({client_id, show_id, start_date, end_date});
+            const self = this;
+            const request_data = {
+                type: 'GET',
+                url: self.base_url + `sl/v1/reports/show-report-two?${params.toString()}`,
+                processData: false,
+                contentType: false,
+                success: function(res) {
+                    console.log('Show Report loaded:', res.data.pdf);
+                    self.$store.commit('setLoadedPDF', self.getPDFUrl(res.data.pdf));
+                },
+                error: function (res) {
+                    console.error('Failed load Show Report:', res);
+                }
+            };
+            self.httpRequest(request_data);
+        },
     }
 }

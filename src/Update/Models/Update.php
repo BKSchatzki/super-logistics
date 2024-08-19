@@ -17,10 +17,10 @@ class Update extends Eloquent {
     public $timestamps = false;
 
     public function transaction(): object {
-        return $this->belongsTo('Transaction', 'transaction_id');
+        return $this->belongsTo('SL\Transaction\Models\Transaction', 'transaction_id');
     }
 
     public function user(): object {
-        return $this->belongsTo('User', 'user_id');
+        return $this->belongsTo('\SL\User\Models\User', 'user_id');
     }
 }
