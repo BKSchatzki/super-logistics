@@ -46,21 +46,18 @@ export default {
     pHeight() {
       return this.subscriber ? '170px' : '200px';
     },
-    notes() {
-      return this.updates;
-    }
   },
   methods: {
     postNote() {
       this.addNote(this.noteValue, this.transactionId);
       this.addingNote = false;
+      this.$emit('input', '');
     },
     toggleNote() {
       this.addingNote = !this.addingNote;
     }
   },
   created() {
-    this.$emit('input', '');
     this.getCurrentUserRoles();
   }
 }

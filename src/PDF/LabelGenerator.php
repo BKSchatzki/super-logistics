@@ -20,16 +20,16 @@ class LabelGenerator
         for ($i = 0; $i < $totalItems; $i++) {
             $pdf->AddPage();
             $this->setStaticContent($pdf, $transaction);
-            $pdf->SetXY(30, 85);
-            $pdf->SetFont('helvetica', 'B', 22);
-            $pdf->Cell(30, 10, ($i + 1), 0, 0, 'C');
-            $pdf->SetXY(56, 85);
-            $pdf->SetFont('helvetica', '', 22);
+            $pdf->SetXY(65, 61);
+            $pdf->SetFont('helvetica', 'B', 14);
+            $pdf->Cell(30, 10, ($i + 1), 0, 0, 'R');
+            $pdf->SetXY(76, 61);
+            $pdf->SetFont('helvetica', '', 14);
             $pdf->Cell(10, 10, '/', 0, 0, 'C');
-            $pdf->SetXY(60, 85);
-            $pdf->SetFont('helvetica', 'B', 22);
-            $pdf->Cell(30, 10, $totalItems, 0, 0, 'C');
-            $pdf->SetFont('helvetica', '', 15);
+            $pdf->SetXY(70, 61);
+            $pdf->SetFont('helvetica', 'B', 14);
+            $pdf->Cell(30, 10, $totalItems, 0, 0, 'L');
+            $pdf->SetFont('helvetica', '', 13);
         }
 
         $pdf->deletePage($pdf->getNumPages());
@@ -51,14 +51,15 @@ class LabelGenerator
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         // Set auto page breaks
-        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+        $pdf->SetAutoPageBreak(true, 0);
 
         // Set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $pdf->SetFont('helvetica', '', 15);
     }
 
-    private function setStaticContent($pdf, $transaction):void {
+    private function setStaticContent($pdf, $transaction):void
+    {
 
         $transaction = json_decode($transaction);
         $qrCodeData = [
@@ -69,42 +70,45 @@ class LabelGenerator
             'shipper_id' => $transaction->shipper_id,
         ];
         $qrCodeData = json_encode($qrCodeData);
-        $pdf->write2DBarcode($qrCodeData, 'QRCODE,H', 37, 10, 30, 30, null, 'N');
+        $pdf->write2DBarcode($qrCodeData, 'QRCODE,H', 10, 37, 30, 30, null, 'N');
         // Exhibitor
-        $this->placeLabel($pdf, 12, 45, 'Exhibitor: ');
-        $this->placeContent($pdf, 32, 45, $transaction->exhibitor->name);
+        $this->placeLabel($pdf, 50, 5, 'Exhibitor: ');
+        $this->placeContent($pdf, 70, 7, $transaction->exhibitor->name);
         // Client
-        $this->placeLabel($pdf, 12, 55, 'Client: ');
-        $this->placeContent($pdf, 32, 55, $transaction->client->name);
+        $this->placeLabel($pdf, 50, 21, 'Client: ');
+        $this->placeContent($pdf, 70, 23, $transaction->client->name);
         // Shipment
-        $this->placeLabel($pdf, 12, 65, 'Shipment: ');
-        $this->placeContent($pdf, 32, 65, $transaction->shipment);
+        $this->placeLabel($pdf, 50, 37, 'Shipment: ');
+        $this->placeContent($pdf, 70, 39, $transaction->shipment);
         // Zone
-        $this->placeLabel($pdf, 12, 75, 'Zone: ');
-        $this->placeContent($pdf, 32, 75, $transaction->show_place->name, 0, 0, 'C');
+        $this->placeLabel($pdf, 50, 45, 'Zone: ');
+        $this->placeContent($pdf, 70, 47, $transaction->show_place->name, 0, 0, 'C');
+        // Booth
+        $this->placeLabel($pdf, 50, 53, 'Booth: ');
+        $this->placeContent($pdf, 70, 55, $transaction->booth, 0, 0, 'C');
         // Pieces (leave a space here)
-        $this->placeLabel($pdf, 12, 85, 'Piece #: ');
+        $this->placeLabel($pdf, 50, 61, 'Piece #: ');
         // Pallet + Weight
-        $this->placeLabel($pdf, 12, 95, 'Pallet: ');
-        $this->placeContent($pdf, 32, 95, $transaction->pallet_no, 0, 0, 'C');
+        $this->placeLabel($pdf, 50, 69, 'Pallet: ');
+        $this->placeContent($pdf, 70, 71, $transaction->pallet_no, 0, 0, 'C');
         // Receiver
-        $this->placeLabel($pdf, 12, 105, 'Receiver: ');
-        $this->placeContent($pdf, 32, 105, $transaction->receiver, 0, 0, 'C');
+        $this->placeLabel($pdf, 50, 77, 'Receiver: ');
+        $this->placeContent($pdf, 70, 79, $transaction->receiver, 0, 0, 'C');
         // Carrier
-        $this->placeLabel($pdf, 12, 115, 'Carrier: ');
-        $this->placeContent($pdf, 32, 115, $transaction->carrier->name, 0, 0, 'C');
+        $this->placeLabel($pdf, 50, 85, 'Carrier: ');
+        $this->placeContent($pdf, 70, 87, $transaction->carrier->name, 0, 0, 'C');
     }
 
     private function placeLabel($pdf, $x, $y, $label) {
         $pdf->SetXY($x, $y);
-        $pdf->SetFont('helvetica', '', 15);
+        $pdf->SetFont('helvetica', '', 13);
         $pdf->Cell(20, 10, $label, 0, 0, 'R');
     }
 
     private function placeContent($pdf, $x, $y, $content) {
         $pdf->SetXY($x, $y);
-        $pdf->SetFont('helvetica', 'B', 22);
-        $pdf->MultiCell(150, 50, $content, 0, 'L', 0, 0);
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->MultiCell(80, 50, $content, 0, 'L', 0, 0);
     }
 
     private function placeImageOrBust($pdf, $entity, $fallbackLabel, $x = 10, $y = 10): void {

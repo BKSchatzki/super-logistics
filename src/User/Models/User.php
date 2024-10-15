@@ -26,21 +26,17 @@ class User extends Eloquent {
 
     protected $dates = ['user_registered'];
 
-    public function getTable() {
-        return $this->getConnection()->db->users;
-    }
-
     public function roles() {
-        return $this->belongsToMany( 'SL\Role\Models\Role', pm_tb_prefix() . 'pm_role_user', 'user_id', 'role_id' )
+        return $this->belongsToMany( 'SL\Role\Models\Role', 'pm_role_user', 'user_id', 'role_id' )
             ->withPivot('project_id', 'role_id');
     }
 
     public function projects() {
-        return $this->belongsToMany( 'SL\Project\Models\Project', pm_tb_prefix() . 'pm_role_user', 'user_id', 'project_id' );
+        return $this->belongsToMany( 'SL\Project\Models\Project', 'pm_role_user', 'user_id', 'project_id' );
     }
 
     public function tasks() {
-        return $this->belongsToMany( 'SL\Task\Models\Task', pm_tb_prefix() . 'pm_assignees','assigned_to', 'task_id' );
+        return $this->belongsToMany( 'SL\Task\Models\Task', 'pm_assignees','assigned_to', 'task_id' );
     }
 
     public function activities () {

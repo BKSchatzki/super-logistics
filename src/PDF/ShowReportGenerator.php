@@ -56,6 +56,7 @@ class ShowReportGenerator
             $pdf->Cell(15, 6, substr($t->client->name, 0, 12), 1, 0, 'C');
             $pdf->Cell(15, 6, substr($t->shipment, 0, 12),1, 0, 'C');
             $pdf->Cell(15, 6, substr($t->showPlace->name, 0, 12), 1, 0, 'C');
+            $pdf->Cell(10, 6, substr($t->booth, 0, 12), 1, 0, 'C');
             $pdf->Cell(8, 6, $items['crate']->pcs ?? 0, 1, 0, 'C');
             $pdf->Cell(8, 6, $items['carton']->pcs ?? 0, 1, 0, 'C');
             $pdf->Cell(8, 6, $items['skid']->pcs ?? 0, 1, 0, 'C');
@@ -256,6 +257,7 @@ class ShowReportGenerator
         $pdf->Cell(15, 6, 'Client', 1, 0, 'C');
         $pdf->Cell(15, 6, 'Shipment', 1, 0, 'C');
         $pdf->Cell(15, 6, 'Zone', 1, 0, 'C');
+        $pdf->Cell(10, 6, 'Booth', 1, 0, 'C');
         $pdf->Cell(8, 6, 'Crate', 1, 0, 'C');
         $pdf->Cell(8, 6, 'Carton', 1, 0, 'C');
         $pdf->Cell(8, 6, 'Skid', 1, 0, 'C');

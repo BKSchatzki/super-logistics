@@ -17,6 +17,7 @@ class Show extends Eloquent {
         'date_expiry',
         'floor_plan_path'
     ];
+
     public $timestamps = false;
 
     public function places():object {

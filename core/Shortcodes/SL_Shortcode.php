@@ -22,7 +22,7 @@ class SL_Shortcode {
 	 * Output the shortcode.
      * @param array $atts
      */
-	public static function output( $atts = array() ) {
+	public static function output(array $atts) {
         if ( ! is_user_logged_in() ) {
             wp_login_form( array( 'echo' => true ) );
 
@@ -32,6 +32,11 @@ class SL_Shortcode {
 		self::scripts();
 
 	}
+
+    public static function public_output() {
+        echo pm_public_root_element();
+        self::scripts();
+    }
 
 	public static function scripts() {
         wp_enqueue_script(

@@ -1,14 +1,14 @@
 <?php
 
 namespace SL\Core\DB_Connection;
-use WeDevs\ORM\Eloquent\Database;
+use Illuminate\Database\Eloquent;
 
 /**
  * Class Model
  *
  * @package WeDevs\ERP\Framework
  */
-class Model extends \WeDevs\ORM\Eloquent\Model {
+class Model extends Eloquent\Model {
 
     protected static $pmFireEvent = true;
 

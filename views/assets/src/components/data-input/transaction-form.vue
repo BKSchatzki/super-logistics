@@ -16,6 +16,10 @@ export default {
     readOnly: {
       type: Boolean,
       default: false
+    },
+    qrGen: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -29,6 +33,7 @@ export default {
         shipment: "",
         tracking: "",
         place: "",
+        booth: "",
         freight_type: "",
         pallet_no: "",
         receiver: "",
@@ -99,10 +104,15 @@ export default {
   computed: {
     items() {
       return this.transaction.items;
+    },
+    existingTrans() {
+      const exists =  this.initTrans && this.initTrans.id;
+      return !!exists;
     }
   },
   methods: {
     addEntry() {
+      this.$emit('submit');
       this.addTransaction(this.transaction)
       this.clearTransaction()
     },
@@ -117,6 +127,7 @@ export default {
         shipment: "",
         tracking: "",
         place: "",
+        booth: "",
         freight_type: "",
         pallet_no: "",
         receiver: "",
@@ -205,12 +216,14 @@ export default {
       if (this.initTrans && this.initTrans.updates) {
         const sortedUpdates = this.initTrans.updates.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
         const mostRecentUpdate = sortedUpdates[0];
-        return mostRecentUpdate ? this.filePathToUrl(mostRecentUpdate.image_path) : "";
+        const updateImage = mostRecentUpdate ? mostRecentUpdate.image_path : "";
+        if (updateImage && updateImage !== "") {
+          this.transaction.image_path = updateImage;
+        }
       }
       return "";
     },
     setInitData() {
-      console.log("transaction: ", this.transaction);
       try {
         this.transaction.id = this.initTrans.id;
         this.transaction.show_id = this.initTrans.show_id;
@@ -221,10 +234,13 @@ export default {
         this.transaction.shipment = this.initTrans.shipment;
         this.transaction.tracking = this.initTrans.tracking;
         this.transaction.place = this.initTrans.place;
+        this.transaction.booth = this.initTrans.booth;
         this.transaction.freight_type = this.initTrans.freight_type;
         this.transaction.pallet_no = this.initTrans.pallet_no;
         this.transaction.receiver = this.initTrans.receiver;
         this.transaction.trailer = this.initTrans.trailer;
+        this.transaction.note = this.initTrans.note ?? '';
+        this.transaction.image_path = this.initTrans.image_path ?? '';
         this.transaction.billable_weight = this.initTrans.billable_weight;
         this.transaction.updates = this.initTrans.updates;
         this.transaction.items.crates.label = this.initTrans.items.crates.label;
@@ -272,18 +288,23 @@ export default {
       } catch(e) {
         console.log("Got a little tripped up loading transaction info: ", e);
       }
+    },
+    generateExtLabel() {
+      this.getExtLabel(this.transaction);
     }
   },
   created() {
-    this.transaction.image_path = this.getImage();
     if (this.initTrans) {
+      console.log("Init Trans: ", this.initTrans);
       this.setInitData();
     }
+    this.getImage();
+    console.log("image_path: ", this.transaction.image_path);
   },
   watch: {
     initTrans() {
       this.setInitData();
-      this.transaction.image_path = this.getImage();
+      this.getImage();
     }
   }
 }
@@ -294,16 +315,17 @@ export default {
     <form class="btb" @submit.prevent>
       <div class="row">
         <div class="col">
-          <ImageField :read-only="readOnly" v-model="transaction.image_path"/>
+          <ImageField :read-only="readOnly"
+                      v-model="transaction.image_path"/>
         </div>
         <div class="col">
-          <notes-field :read-only="readOnly" :updates="transaction.updates" v-model="transaction.note" :transaction-id="transaction.id"/>
+          <notes-field :read-only="readOnly" :updates="transaction.updates"
+                       v-model="transaction.note" :transaction-id="transaction.id"/>
         </div>
       </div>
       <div class="row">
         <transaction-section :read-only="readOnly"
-                             :trans="transaction"
-        />
+                             :trans="transaction"/>
       </div>
       <div class="row">
         <items-section :read-only="readOnly"
@@ -314,10 +336,13 @@ export default {
         />
       </div>
       <div v-if="!readOnly" class="mt-2 g-2">
-        <button v-if="!initTrans" @click="clearTransaction" class="btn btn-secondary btn-large mt-2">Cancel</button>
-        <button v-if="!initTrans" @click="addEntry" class="btn btn-primary btn-large mt-2">Submit</button>
-        <button v-if="!initTrans" @click="triggerLookup" class="btn btn-primary btn-large mt-2">Lookup</button>
-        <button v-if="initTrans" @click="updateTrans" class="btn btn-primary btn-large mt-2">Update</button>
+        <template v-if="!qrGen">
+          <button @click="clearTransaction" class="btn btn-secondary btn-large mt-2">Cancel</button>
+          <button v-if="!existingTrans" @click="addEntry" class="btn btn-primary btn-large mt-2">Submit</button>
+          <button v-if="!initTrans" @click="triggerLookup" class="btn btn-primary btn-large mt-2">Lookup</button>
+          <button v-if="existingTrans" @click="updateTrans" class="btn btn-primary btn-large mt-2">Update</button>
+        </template>
+        <button v-if="qrGen" @click="generateExtLabel" class="btn btn-primary btn-large mt-2">Generate QR Code</button>
       </div>
     </form>
   </div>

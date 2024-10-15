@@ -76,6 +76,7 @@ function pm_load_routes() {
 }
 
 function pm_load_orm() {
+
     $capsule = new Capsule;
     $config_db = pm_config('db');
     $status = $capsule->addConnection( $config_db );

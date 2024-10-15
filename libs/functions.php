@@ -1027,6 +1027,15 @@ function pm_root_element() {
     $id = pm_root_element_id();
     return apply_filters( 'pm_root_element', '<div id="'. $id .'"></div>' );
 }
+/**
+ * Get HTML wrap
+ *
+ * @return string
+ */
+function pm_public_root_element() {
+    $id = 'super_logistics_public';
+    return apply_filters( 'pm_root_element', '<div id="'. $id .'"></div>' );
+}
 
 /**
  * Get HTML wrap id

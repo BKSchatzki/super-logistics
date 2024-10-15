@@ -38,7 +38,7 @@ class Entity extends Eloquent {
     }
 
     public function users():object {
-        return $this->belongsToMany('SL\User\Models\User', pm_tb_prefix() . 'sl_entity_users', 'entity_id', 'user_id');
+        return $this->belongsToMany('SL\User\Models\User', 'sl_entity_users', 'entity_id', 'user_id');
     }
 
     public function show():object {
@@ -46,7 +46,7 @@ class Entity extends Eloquent {
     }
 
     public function codes():object {
-        return $this->belongsToMany('SL\Show\Models\Show', pm_tb_prefix() . 'sl_user_codes', 'entity_id', 'show_id')
+        return $this->belongsToMany('SL\Show\Models\Show', 'sl_user_codes', 'entity_id', 'show_id')
                     ->withPivot('code')
                     ->withTimestamps();
     }

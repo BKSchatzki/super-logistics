@@ -17,6 +17,7 @@ class Transaction extends Eloquent
         'shipment',
         'tracking',
         'place',
+        'booth',
         'billable_weight',
         'pallet_no',
         'trailer',

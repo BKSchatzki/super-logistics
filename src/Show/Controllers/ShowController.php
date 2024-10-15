@@ -13,32 +13,38 @@ use SL\Show\Transformers\ShowTransformer;
 class ShowController {
     use Transformer_Manager, Request_Filter;
 
-    public function store():array {
+    public function store(WP_REST_Request $request): array {
 
         // Store images first
-        $logo_path = isset($_FILES['logoFile']) ? self::handleImageUpload($_FILES['logoFile']) : '';
-        $floor_plan_path = isset($_FILES['floorPlanFile']) ? self::handleImageUpload($_FILES['floorPlanFile']) : '';
+        $logoFile = $request->get_file_params()['logoFile'] ?? null;
+        $floorPlanFile = $request->get_file_params()['floorPlanFile'] ?? null;
 
+        $logo_path = $logoFile ? self::handleImageUpload($logoFile) : '';
+        $floor_plan_path = $floorPlanFile ? self::handleImageUpload($floorPlanFile) : '';
+
+        // Use get_param() to retrieve each input field, handle empty/null values as needed
         $show_data = [
-            'date_start' => sanitize_text_field($_POST['dateStart']),
-            'date_end' => sanitize_text_field($_POST['dateEnd']),
-            'date_expiry' => sanitize_text_field($_POST['dateExpiry']),
-            'min_carat_weight' => sanitize_text_field($_POST['minCaratWeight']),
-            'carat_weight_inc' => sanitize_text_field($_POST['caratWeightInc']),
-            'client_id' => sanitize_text_field($_POST['clientID']),
-            'floor_plan_path' => $floor_plan_path
+            'date_start' => sanitize_text_field($request->get_param('dateStart')),
+            'date_end' => sanitize_text_field($request->get_param('dateEnd')) == 'null' ?
+                null : sanitize_text_field($request->get_param('dateEnd')),
+            'date_expiry' => sanitize_text_field($request->get_param('dateExpiry')) == 'null' ?
+                null : sanitize_text_field($request->get_param('dateExpiry')),
+            'min_carat_weight' => sanitize_text_field($request->get_param('minCaratWeight')),
+            'carat_weight_inc' => sanitize_text_field($request->get_param('caratWeightInc')),
+            'client_id' => sanitize_text_field($request->get_param('clientID')),
+            'floor_plan_path' => $floor_plan_path,
         ];
 
         $entity_data = [
-            'name' => sanitize_text_field($_POST['name']),
-            'type' => 5,
-            'address' => sanitize_text_field($_POST['address']),
-            'city' => sanitize_text_field($_POST['city']),
-            'state' => sanitize_text_field($_POST['state']),
-            'zip' => sanitize_text_field($_POST['zip']),
-            'phone' => sanitize_text_field($_POST['phone']),
-            'email' => sanitize_email($_POST['email']),
-            'logo_path' => $logo_path
+            'name' => sanitize_text_field($request->get_param('name')),
+            'type' => 5,  // Static value
+            'address' => sanitize_text_field($request->get_param('address')),
+            'city' => sanitize_text_field($request->get_param('city')),
+            'state' => sanitize_text_field($request->get_param('state')),
+            'zip' => sanitize_text_field($request->get_param('zip')),
+            'phone' => sanitize_text_field($request->get_param('phone')),
+            'email' => sanitize_email($request->get_param('email')),
+            'logo_path' => $logo_path,
         ];
 
         $show = Show::create($show_data);

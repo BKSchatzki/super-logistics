@@ -89,13 +89,8 @@ export default {
               :add-new-fn="addClient"
               field="client"></add-new-form>
         </DropdownField>
-        <DropdownField :read-only="readOnly" field="carrier" :choices="carriers" :add-new-fn="addCarrier"  v-model="trans.carrier_id">
-          <add-new-form
-              slot="add-new"
-              :add-new-fn="addCarrier"
-              field="carrier"></add-new-form>
-        </DropdownField>
-        <DropdownField :read-only="readOnly" field="freight" :choices="freightTypes" v-model="trans.freight_type"/>
+        <div class="col"></div>
+        <div class="col"></div>
       </div>
       <div class="row">
         <DropdownField :read-only="readOnly" field="show" :choices="shows" v-model="trans.show_id" :is-show="true" :required="true">
@@ -105,7 +100,7 @@ export default {
               :clients="clients"></add-new-form>
         </DropdownField>
         <SimpleField :read-only="readOnly" type="text" field="shipment"  v-model="trans.shipment"/>
-        <SimpleField :read-only="readOnly" type="text" field="pallet" v-model="trans.pallet_no"/>
+        <DropdownField :read-only="readOnly" field="freight" :choices="freightTypes" v-model="trans.freight_type"/>
       </div>
       <div class="row">
         <DropdownField :read-only="readOnly" field="shipper" :choices="shippers" :add-new-fn="addShipper"  v-model="trans.shipper_id" :required="true">
@@ -115,7 +110,7 @@ export default {
               field="shipper"></add-new-form>
         </DropdownField>
         <SimpleField :read-only="readOnly" type="text" field="tracking"  v-model="trans.tracking"/>
-        <SimpleField :read-only="readOnly" type="text" field="receiver" v-model="trans.receiver"/>
+        <SimpleField :read-only="readOnly" type="text" field="pallet" v-model="trans.pallet_no"/>
       </div>
       <div class="row">
         <DropdownField :read-only="readOnly" field="exhibitor" :choices="exhibitors" :add-new-fn="addExhibitor"  v-model="trans.exhibitor_id">
@@ -125,6 +120,16 @@ export default {
               field="exhibitor"></add-new-form>
         </DropdownField>
         <DropdownField :read-only="readOnly" field="Zone/Color"  v-model="trans.place" :choices="places"/>
+        <SimpleField :read-only="readOnly" type="text" field="receiver" v-model="trans.receiver"/>
+      </div>
+      <div class="row">
+        <DropdownField :read-only="readOnly" field="carrier" :choices="carriers" :add-new-fn="addCarrier"  v-model="trans.carrier_id">
+          <add-new-form
+              slot="add-new"
+              :add-new-fn="addCarrier"
+              field="carrier"></add-new-form>
+        </DropdownField>
+        <SimpleField :read-only="readOnly" type="text" field="booth" v-model="trans.booth"/>
         <SimpleField :read-only="readOnly" type="text" field="trailer" v-model="trans.trailer"/>
       </div>
     </div>

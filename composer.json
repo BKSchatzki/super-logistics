@@ -6,10 +6,11 @@
         "php": ">=8.0",
         "league/fractal": "^0.17.0",
         "a5hleyrich/wp-background-processing": "^1.0",
-        "tareq1988/wp-eloquent": "dev-master",
         "appsero/client": "^1.2",
         "simshaun/recurr": "^4.0",
-        "tecnickcom/tcpdf": "^6.7"
+        "tecnickcom/tcpdf": "^6.7",
+        "illuminate/database": "^10.0",
+        "illuminate/events": "^10.0"
     },
     "autoload": {
         "classmap": [

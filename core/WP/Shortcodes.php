@@ -18,6 +18,7 @@ class Shortcodes {
 		}
 
         add_shortcode( 'super-logistics', __CLASS__ . '::shortcode' );
+        add_shortcode( 'super-logistics-public', __CLASS__ . '::public_shortcode');
 	}
 
 	/**
@@ -55,6 +56,20 @@ class Shortcodes {
 	public static function shortcode( $atts ) {
 		return self::shortcode_wrapper(
 			array( 'SL\\Core\\Shortcodes\\SL_Shortcode', 'output' ),
+			$atts
+		);
+	}
+
+	/**
+	 * shortcode for external users.
+	 *
+	 * @param mixed $atts
+	 *
+	 * @return string
+	 */
+	public static function public_shortcode( $atts ) {
+		return self::shortcode_wrapper(
+			array( 'SL\\Core\\Shortcodes\\SL_Shortcode', 'public_output' ),
 			$atts
 		);
 	}

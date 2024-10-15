@@ -8,7 +8,7 @@ class SLPDF extends TCPDF {
     private $show_report = false;
     private $detail = '';
 
-    public function __construct($orientation = 'P', $unit = 'mm', $format = array(102, 152), $report = null, $detail = '',$unicode = true, $encoding = 'UTF-8', $diskcache = false, $pdfa = false) {
+    public function __construct($orientation = 'L', $unit = 'mm', $format = array(102, 152), $report = null, $detail = '',$unicode = true, $encoding = 'UTF-8', $diskcache = false, $pdfa = false) {
         parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
 
         switch ($report) {
@@ -39,13 +39,14 @@ class SLPDF extends TCPDF {
             $this->SetFont('helvetica', 'B', 8);
             $this->Cell(15, 6, 'Rec ID', 1, 0, 'C');
             $this->Cell(25, 6, 'Exhibitor', 1, 0, 'C');
-            $this->Cell(25, 6, 'Carrier', 1, 0, 'C');
-            $this->Cell(25, 6, 'Tracking', 1, 0, 'C');
+            $this->Cell(15, 6, 'Carrier', 1, 0, 'C');
+            $this->Cell(30, 6, 'Tracking', 1, 0, 'C');
             $this->Cell(25, 6, 'Zone', 1, 0, 'C');
-            $this->Cell(20, 6, 'Total Pcs', 1, 0, 'C');
-            $this->Cell(35, 6, 'Remarks / Notes ???', 1, 0, 'C');
+            $this->Cell(15, 6, 'Booth', 1, 0, 'C');
+            $this->Cell(15, 6, 'Tot. Pcs', 1, 0, 'C');
+            $this->Cell(45, 6, 'Remarks / Notes ???', 1, 0, 'C');
             $this->Cell(25, 6, 'Shipment', 1, 0, 'C');
-            $this->Cell(25, 6, 'Trailer', 1, 0, 'C');
+            $this->Cell(15, 6, 'Trailer', 1, 0, 'C');
             $this->Cell(25, 6, 'Date Received', 1, 0, 'C');
             $this->Ln();
         }
@@ -60,14 +61,15 @@ class SLPDF extends TCPDF {
             $this->SetFont('helvetica', 'B', 8);
             $this->Cell(15, 6, 'Rec ID', 1, 0, 'C');
             $this->Cell(25, 6, 'Exhibitor', 1, 0, 'C');
-            $this->Cell(25, 6, 'Carrier', 1, 0, 'C');
-            $this->Cell(25, 6, 'Tracking', 1, 0, 'C');
+            $this->Cell(15, 6, 'Carrier', 1, 0, 'C');
+            $this->Cell(30, 6, 'Tracking', 1, 0, 'C');
             $this->Cell(25, 6, 'Zone', 1, 0, 'C');
-            $this->Cell(20, 6, 'Total Pcs', 1, 0, 'C');
-            $this->Cell(35, 6, 'Remarks / Notes ???', 1, 0, 'C');
+            $this->Cell(15, 6, 'Booth', 1, 0, 'C');
+            $this->Cell(15, 6, 'Tot Pcs', 1, 0, 'C');
+            $this->Cell(45, 6, 'Remarks / Notes ???', 1, 0, 'C');
             $this->Cell(25, 6, 'Shipment', 1, 0, 'C');
-            $this->Cell(20, 6, 'Pallet', 1, 0, 'C');
-            $this->Cell(20, 6, 'Trailer', 1, 0, 'C');
+            $this->Cell(15, 6, 'Pallet', 1, 0, 'C');
+            $this->Cell(15, 6, 'Trailer', 1, 0, 'C');
             $this->Cell(25, 6, 'Date Received', 1, 0, 'C');
             $this->Ln();
         }
@@ -79,33 +81,6 @@ class SLPDF extends TCPDF {
             $this->Cell(32, 10, $this->detail['start_date'], 1, 0, 'C');
             $this->Cell(32, 10, $this->detail['end_date'], 1, 0, 'C');
             $this->Ln();
-
-//            if ($this->getAliasNumPage() !== 1)
-//            $this->SetXY(10, 20);
-//            $this->SetFont('helvetica', 'B', 8);
-//            $this->Cell(15, 6, 'Rec ID', 1, 0, 'C');
-//            $this->Cell(20, 6, 'Shipper', 1, 0, 'C');
-//            $this->Cell(20, 6, 'Exhibitor', 1, 0, 'C');
-//            $this->Cell(20, 6, 'Carrier', 1, 0, 'C');
-//            $this->Cell(20, 6, 'Tracking', 1, 0, 'C');
-//            $this->Cell(20, 6, 'Client', 1, 0, 'C');
-//            $this->Cell(20, 6, 'Shipment', 1, 0, 'C');
-//            $this->Cell(20, 6, 'Zone', 1, 0, 'C');
-//            $this->Cell(10, 6, 'Crate', 1, 0, 'C');
-//            $this->Cell(10, 6, 'Carton', 1, 0, 'C');
-//            $this->Cell(10, 6, 'Skid', 1, 0, 'C');
-//            $this->Cell(10, 6, 'Fbr Cse', 1, 0, 'C');
-//            $this->Cell(10, 6, 'Carpet', 1, 0, 'C');
-//            $this->Cell(10, 6, 'Misc', 1, 0, 'C');
-//            $this->Cell(10, 6, 'Total Pcs', 1, 0, 'C');
-//            $this->Cell(10, 6, 'Weight', 1, 0, 'C');
-//            $this->Cell(20, 6, 'Bill. Weight', 1, 0, 'C');
-//            $this->Cell(30, 6, 'Remarks / Notes ???', 1, 0, 'C');
-//            $this->Cell(15, 6, 'Shipment', 1, 0, 'C');
-//            $this->Cell(15, 6, 'Receiver', 1, 0, 'C');
-//            $this->Cell(15, 6, 'Trailer', 1, 0, 'C');
-//            $this->Cell(15, 6, 'Date', 1, 0, 'C');
-//            $this->Ln();
         }
     }
 

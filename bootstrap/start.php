@@ -22,6 +22,7 @@ pm_user_tracking();
 pm_view();
 pm_load_routes();
 pm_register_routes();
+pm_load_orm();
 
 do_action( 'pm_loaded' );
 

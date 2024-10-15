@@ -22,14 +22,15 @@ class PalletManifestGenerator
             $pdf->SetFont('helvetica', '', 8);
             $pdf->Cell(15, 6, $t->id, 1);
             $pdf->Cell(25, 6, substr($t->exhibitor->name, 0, 15), 1);
-            $pdf->Cell(25, 6, substr($t->carrier->name, 0, 15), 1);
-            $pdf->Cell(25, 6, substr($t->tracking, 0, 15), 1);
+            $pdf->Cell(15, 6, substr($t->carrier->name, 0, 15), 1);
+            $pdf->Cell(30, 6, substr($t->tracking, 0, 15), 1);
             $pdf->Cell(25, 6, substr($t->showPlace->name, 0, 15), 1);
-            $pdf->Cell(20, 6, self::countItems($t), 1);
-            $pdf->Cell(35, 6, self::getNotes($t), 1);
+            $pdf->Cell(15, 6, substr($t->booth, 0, 15), 1);
+            $pdf->Cell(15, 6, self::countItems($t), 1);
+            $pdf->Cell(45, 6, substr(self::getNotes($t), 0, 30), 1);
             $pdf->Cell(25, 6, substr($t->shipment, 0, 15), 1);
-            $pdf->Cell(20, 6, substr($t->pallet_no, 0, 15), 1);
-            $pdf->Cell(20, 6, substr($t->trailer, 0, 15), 1);
+            $pdf->Cell(15, 6, substr($t->pallet_no, 0, 15), 1);
+            $pdf->Cell(15, 6, substr($t->trailer, 0, 15), 1);
             $pdf->Cell(25, 6, \Carbon\Carbon::parse($t->created_at)->format('m/d/y'), 1);
             $pdf->Ln();
         }

@@ -20,3 +20,5 @@ $router->get( 'transactions/labels', 'SL/Transaction/Controllers/TransactionCont
 
 $router->post( 'transactions/notes', 'SL/Transaction/Controllers/TransactionController@storeNote' );
 
+$router->POST('transactions/external/qr', 'SL/Transaction/Controllers/TransactionController@createExternalLabel');
+

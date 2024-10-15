@@ -86,6 +86,7 @@ class Enqueue_Scripts {
 			'date_format'                      => get_option( 'date_format' ),
 			'time_format'                      => get_option( 'time_format' ),
 			'id'                               => pm_root_element_id(),
+            'public_id'                        => 'super_logistics_public',
 			'can_add_user_project_create_time' => pm_can_create_user_at_project_create_time(),
 			'locale'                           => get_locale(),
 			'estimationType'                   => pm_get_estimation_type(),

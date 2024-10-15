@@ -32,43 +32,6 @@
             });
         },
 
-        mounted: function () {
-            window.addEventListener('keydown', e => {
-                let keycode = e.keyCode || e.which;
-                if ( keycode === this.shiftkey && !this.otherkey ){
-                    this.shiftDown = true;
-                    this.otherkey = false;
-                } else if (!this.cpressed && this.shiftDown && keycode === this.eKey && !this.otherkey ) {
-                    e.preventDefault();
-                    this.cpressed = true;
-                    this.otherkey = false;
-                    this.openTaskForm();
-                } else if(this.cpressed && this.shiftDown && keycode === this.eKey ) {
-                    e.preventDefault();
-                    this.cpressed = false;
-                    this.otherkey = false;
-                    this.closeTaskForm();
-                } else {
-                    this.otherkey = true;
-                }
-
-                if ( keycode === this.escKey ) {
-                    this.epressed = false;
-                    this.shiftDown = false;
-                    this.otherkey = false;
-                    this.closeTaskForm();
-                }
-            });
-
-            window.addEventListener('keyup', e => {
-                let keycode = e.keyCode || e.which;
-                this.otherkey = false;
-                if ( keycode === this.shiftkey ) {
-                    this.shiftDown = false;
-                }
-            });
-        },
-
         methods: {
             registerModule () {
                 let self = this;
@@ -77,15 +40,6 @@
                     let store = require('./components/'+module.path+'/store.js');
                     self.registerStore(module.name, store.default );
                 });
-            },
-            closeTaskForm () {
-                this.taskForm  = false;
-                this.epressed  = false;
-                this.shiftDown = false;
-                this.otherkey  = false;
-            },
-            openTaskForm () {
-                this.taskForm = true;
             }
         },
 

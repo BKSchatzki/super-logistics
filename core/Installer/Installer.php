@@ -8,8 +8,6 @@ class Installer {
 
  	public function do_install() {
  		new SL_Create_Table();
-        (new \RoleTableSeeder())->run();
-
         $was_installed_before = get_option( 'pm_db_version', false );
 
         if ( ! $was_installed_before ) {

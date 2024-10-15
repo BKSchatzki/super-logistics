@@ -139,6 +139,7 @@ class SL_Create_Table {
           `shipment` VARCHAR(255) NULL,
           `tracking` VARCHAR(255) NULL,
           `place` INT(11) UNSIGNED NULL,
+          `booth` VARCHAR(255) NULL,
           `billable_weight` INT(11) NULL,
           `pallet_no` INT(11) NULL,
           `receiver` VARCHAR(255) NULL,
@@ -170,7 +171,7 @@ class SL_Create_Table {
           `type` INT(11) NOT NULL,
           `datetime` DATETIME NOT NULL,
           `image_path` VARCHAR(255) NOT NULL,
-          `note` VARCHAR(255) NOT NULL,
+          `note` VARCHAR(255) NULL,
           PRIMARY KEY (`id`),
           FOREIGN KEY (`transaction_id`) REFERENCES {$wpdb->prefix}sl_transactions(`id`) ON DELETE CASCADE,
           FOREIGN KEY (`user_id`) REFERENCES {$wpdb->prefix}users(`ID`) ON DELETE RESTRICT

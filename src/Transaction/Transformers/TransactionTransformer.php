@@ -28,6 +28,7 @@ class TransactionTransformer extends TransformerAbstract
             'state' => $item->shipper->state ?? null,
             'zip' => $item->shipper->zip ?? null,
             'place' => $item->place,
+            'booth' => $item->booth,
             'shipment' => $item->shipment,
             'trailer' => $item->trailer,
             'receiver' => $item->receiver,

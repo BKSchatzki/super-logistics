@@ -16,7 +16,7 @@ export default {
   },
   data () {
     return {
-      complex: false,
+      complex: true,
       weight: 0,
       typeKey: {
         3 : "crates",

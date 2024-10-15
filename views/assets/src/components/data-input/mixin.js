@@ -1,4 +1,7 @@
+import MainMixin from '@helpers/mixin/mixin';
+
 export default {
+    mixins: [MainMixin],
     data () {
         return {
 
@@ -193,6 +196,24 @@ export default {
             const serverRoot = '/var/www/html/';
             const relativePath = filePath.replace(serverRoot, '');
             return baseUrl + relativePath;
+        },
+        getExtLabel(txn) {
+            const formData = this.createFormData({ txn });
+            formData.append('image', txn.image_path);
+            const self = this;
+            self.httpRequest({
+                type: 'POST',
+                url: self.base_url + `sl/v1/transactions/external/qr`,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(res) {
+                    self.$store.commit('setLoadedPDF', self.getPDFUrl(res.data.pdf));
+                },
+                error: function(err) {
+                    console.error('Failed to get labels:', err);
+                }
+            });
         }
     }
 }

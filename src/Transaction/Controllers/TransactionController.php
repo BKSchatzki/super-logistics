@@ -2,6 +2,7 @@
 
 namespace SL\Transaction\Controllers;
 
+use SL\PDF\ExternalLabelGenerator;
 use SL\Transaction\Models\Transaction;
 use WP_REST_Request;
 use League\Fractal\Resource\Item as Item;
@@ -44,7 +45,9 @@ class TransactionController {
             'datetime' => date('Y-m-d H:i:s'),
         ];
 
-        if (isset($_FILES['image'])) {
+        if ($transaction_data['image_path'] && $transaction_data['image_path'] !== '') {
+            $update_data['image_path'] = $transaction_data['image_path'];
+        } elseif (isset($_FILES['image'])) {
             $update_data['image_path'] = self::handleImageUpload($_FILES['image']);
         } else {
             $update_data['image_path'] = '';
@@ -123,6 +126,7 @@ class TransactionController {
             'exhibitor_id' => $request->get_param('exhibitor_id'),
             'shipment' => $request->get_param('shipment'),
             'place' => $request->get_param('place'),
+            'booth' => $request->get_param('booth'),
             'billable_weight' => $request->get_param('billable_weight'),
             'pallet_no' => $request->get_param('pallet_no'),
             'freight_type' => $request->get_param('freight_type'),
@@ -152,6 +156,27 @@ class TransactionController {
         // Create a new LabelGenerator and generate the PDF content
         $labelGenerator = new LabelGenerator();
         $pdf = $labelGenerator->generate($t);
+        // Encode the PDF content to base64
+        $pdfBase64 = base64_encode($pdf);
+
+        $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
+
+        // Return the response
+        return $this->get_response($res);
+    }
+
+    public function createExternalLabel(WP_REST_Request $request): array
+    {
+        $transaction_data = json_decode($request->get_param('txn'), true);
+
+        if (isset($_FILES['image'])) {
+            $transaction_data['image_path'] = self::handleImageUpload($_FILES['image']);
+        } else {
+            $transaction_data['image_path'] = '';
+        }
+
+        $labelGenerator = new ExternalLabelGenerator();
+        $pdf = $labelGenerator->generate($transaction_data);
         // Encode the PDF content to base64
         $pdfBase64 = base64_encode($pdf);
 
@@ -202,8 +227,9 @@ class TransactionController {
         // File upload successful, get file URL
         $upload_dir = wp_upload_dir();
         $url = $upload_dir['url'] . '/' . basename($upload['file']);
-        $base_url = trailingslashit($upload_dir['baseurl']);
-        return 'wp-content/uploads/' . str_replace($base_url, '', $url);
+
+        // Return absolute URL instead of relative path
+        return $url;
     }
 
     public function removeNote(WP_REST_Request $request): array {
