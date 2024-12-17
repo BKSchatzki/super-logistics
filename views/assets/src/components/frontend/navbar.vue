@@ -10,7 +10,7 @@ export default {
   computed: {
     routes: function() {
       return getRegisteredChildRoutes('project_root')
-    }
+    },
   }
 }
 </script>
@@ -47,6 +47,11 @@ export default {
           <li key="settings" class="nav-item">
             <router-link :to="{ name: 'settings' }" class="nav-link">
               Settings
+            </router-link>
+          </li>
+          <li key="user-management" class="nav-item">
+            <router-link :to="{ name: 'user-management' }" class="nav-link">
+              User Management
             </router-link>
           </li>
         </ul>

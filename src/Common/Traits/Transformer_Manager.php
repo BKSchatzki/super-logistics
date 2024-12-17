@@ -8,7 +8,7 @@ use League\Fractal\Serializer\DataArraySerializer;
 
 trait Transformer_Manager {
 
-    public function get_response( $resource, $extra = [] ) {
+    public function get_response( $resource, $extra = [] ): array {
         $manager = new Manager();
         $manager->setSerializer( new DataArraySerializer() );
 

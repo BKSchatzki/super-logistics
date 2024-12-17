@@ -12,11 +12,17 @@ export default {
   },
   computed: {
     user() {
+      console.log("User in Menu Component: ", this.$store.state.user);
       return this.$store.state.user
     }
   },
   created() {
-    this.getCurrentUserRoles();
+    this.getCurrentUser();
+  },
+  watch: {
+    user() {
+      console.log("User updated in Menu Component: ", this.user);
+    }
   }
 };
 </script>

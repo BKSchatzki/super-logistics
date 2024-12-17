@@ -24,6 +24,7 @@ plugins.push( extractCss );
 
 module.exports =[ 
     {
+        mode: 'production', //necessary for WordPress functionality,
         entry: {
             'assets/js/pm': './views/assets/src/start.js',
             'assets/js/library': './views/assets/src/helpers/library.js',

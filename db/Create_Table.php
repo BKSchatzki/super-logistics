@@ -33,7 +33,7 @@ class SL_Create_Table {
             `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
             `name` VARCHAR(255) NOT NULL,
             `type` INT(11) NOT NULL,
-            `address` VARCHAR(255) NOT NULL,
+            `address` VARCHAR(255) NULL,
             `city` VARCHAR(255) NULL,
             `state` VARCHAR(255) NULL,
             `zip` VARCHAR(255) NULL,

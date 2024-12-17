@@ -58,7 +58,7 @@ export default {
   created() {
     this.getClients();
     this.getClientCodes();
-    this.getCurrentUserRoles();
+    this.getCurrentUser();
     this.getRelevantShows();
   },
 }

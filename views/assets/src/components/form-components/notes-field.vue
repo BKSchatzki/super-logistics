@@ -58,7 +58,7 @@ export default {
     }
   },
   created() {
-    this.getCurrentUserRoles();
+    this.getCurrentUser();
   }
 }
 </script>

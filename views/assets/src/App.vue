@@ -1,7 +1,5 @@
 <template>
     <div class="wedevs-pm-wrap wrap wp-core-ui pm pm-page-wrapper" id="super-logistics">
-        <h1 style="display: none;"></h1>
-        
         <do-action hook="sl-before-router-view"></do-action>
         <frontend-menu>
           <router-view></router-view>

@@ -33,7 +33,7 @@ export default {
     }
   },
   created() {
-    this.getCurrentUserRoles();
+    this.getCurrentUser();
   },
   watch: {
     user() {

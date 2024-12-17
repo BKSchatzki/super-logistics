@@ -7,29 +7,32 @@ $router = Router::singleton();
 
 $permission = ['SL\Core\Permissions\Authentic'];
 
-$router->get( 'users', 'SL/User/Controllers/User_Controller@index' )
+$router->get( 'users', 'SL/User/Controllers/UserController@index' )
     ->permission($permission);
 
-$router->post( 'users', 'SL/User/Controllers/User_Controller@store' )
+$router->post( 'users', 'SL/User/Controllers/UserController@store' )
     ->permission($permission);
 
-$router->get( 'users/{id}', 'SL/User/Controllers/User_Controller@show' )
+$router->get( 'app-users', 'SL/User/Controllers/UserController@showAppUsers' )
     ->permission($permission);
 
-$router->get( 'users/search', 'SL/User/Controllers/User_Controller@search' )
+$router->get( 'users/{id}', 'SL/User/Controllers/UserController@show' )
     ->permission($permission);
 
-$router->put( 'users/{user_id}/roles', 'SL/User/Controllers/User_Controller@update_role' )
+$router->get( 'users/search', 'SL/User/Controllers/UserController@search' )
     ->permission($permission);
 
-$router->post( 'save_users_map_name', 'SL/User/Controllers/User_Controller@save_users_map_name' )
+$router->put( 'users/{user_id}/roles', 'SL/User/Controllers/UserController@update_role' )
     ->permission($permission);
 
-$router->get( 'user-all-projects', 'SL/User/Controllers/User_Controller@get_user_all_projects' )
+$router->post( 'save_users_map_name', 'SL/User/Controllers/UserController@save_users_map_name' )
     ->permission($permission);
 
-$router->get( 'current-user', 'SL/User/Controllers/User_Controller@showCurrent' )
+$router->get( 'user-all-projects', 'SL/User/Controllers/UserController@get_user_all_projects' )
     ->permission($permission);
 
-$router->get( 'client', 'SL/User/Controllers/User_Controller@client' )
+$router->get( 'current-user', 'SL/User/Controllers/UserController@showCurrent' )
+    ->permission($permission);
+
+$router->get( 'client', 'SL/User/Controllers/UserController@client' )
     ->permission($permission);

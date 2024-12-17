@@ -89,6 +89,7 @@
     "moment": "^2.19.1",
     "moment-timezone": "^0.5.13",
     "nprogress": "^0.2.0",
+    "primevue": "^2.10.4",
     "toastr": "^2.1.2",
     "underscore": "^1.10.2",
     "v-autocomplete": "^1.8.2",

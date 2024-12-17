@@ -299,7 +299,6 @@ export default {
       this.setInitData();
     }
     this.getImage();
-    console.log("image_path: ", this.transaction.image_path);
   },
   watch: {
     initTrans() {

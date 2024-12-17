@@ -1,14 +1,13 @@
-import Url from '@wordpress/url';
 import classnames from 'classnames';
 
 export default {
 
-    data () {
+    data() {
         return {
             //base_url: SL_Vars.base_url +'/'+ SL_Vars.rest_api_prefix,
             base_url: SL_Vars.api_base_url,
             permalinkStructure: SL_Vars.permalinkStructure,
-            project_id: typeof this.$route === 'undefined'? false : parseInt( this.$route.params.project_id ),
+            project_id: typeof this.$route === 'undefined' ? false : parseInt(this.$route.params.project_id),
             current_user: SL_Vars.current_user,
             avatar_url: SL_Vars.avatar_url,
             text: SL_Vars.text,
@@ -19,7 +18,7 @@ export default {
         }
     },
 
-    created () {
+    created() {
         setLocaleData(SL_Vars.language.pm);
     },
 
@@ -34,51 +33,52 @@ export default {
             });
             return formData;
         },
-        getCurrentUserRoles() {
+        getCurrentUser() {
             const self = this;
             const request_data = {
                 type: 'GET',
                 url: self.base_url + 'sl/v1/current-user',
-                success: function (res) {
+                success: (res)=> {
+                    console.log("From request in mixin: ", res.data);
                     self.$store.commit('setUser', res.data);
                 },
-                error: function (res) {
-                    console.error('Failed to get current user roles:', res);
+                error: (res) => {
+                    console.error('Failed to get current user:', res);
                 }
             };
             self.httpRequest(request_data);
         },
-        isArchivePage () {
+        isArchivePage() {
             return this.$route.name == 'task_lists_archive' || this.$route.name == 'task_lists_archive_pagination'
         },
-        classnames ( classAttrs ) {
-            return classnames( classAttrs );
+        classnames(classAttrs) {
+            return classnames(classAttrs);
 
         },
-        cutString(string, length, dot){
+        cutString(string, length, dot) {
             var output = "";
             output = string.substring(0, parseInt(length));
-            if(dot && string.length > length){
+            if (dot && string.length > length) {
                 output += "...";
             }
             return output;
         },
-        hasTaskStartField () {
+        hasTaskStartField() {
             if (!SL_Vars.is_pro) {
                 return false;
             }
 
-           let status = this.getSettings('task_start_field', false);
-           
-           return status == 'on' || status === true ? true : false;
+            let status = this.getSettings('task_start_field', false);
+
+            return status == 'on' || status === true ? true : false;
         },
         is_array(items) {
-            if(Object.prototype.toString.call(items) == '[object Array]' ) {
+            if (Object.prototype.toString.call(items) == '[object Array]') {
                 return true;
             }
         },
         is_object(items) {
-            if(Object.prototype.toString.call(items) == '[object Object]' ) {
+            if (Object.prototype.toString.call(items) == '[object Object]') {
                 return true;
             }
         },
@@ -87,7 +87,7 @@ export default {
 
             return date.isValid()
         },
-        secondsToHms (d) {
+        secondsToHms(d) {
             d = Number(d);
             var h = Math.floor(d / 3600);
             var m = Math.floor(d % 3600 / 60);
@@ -102,7 +102,7 @@ export default {
         hexToRgb(hex) {
             // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
             var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-            hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+            hex = hex.replace(shorthandRegex, function (m, r, g, b) {
                 return r + r + g + g + b + b;
             });
 
@@ -113,37 +113,37 @@ export default {
                 2: parseInt(result[3], 16)
             } : null;
         },
-        getTextColor (rgb) {
+        getTextColor(rgb) {
 
-            if(typeof rgb !== 'object') {
+            if (typeof rgb !== 'object') {
                 rgb = this.hexToRgb(rgb);
             }
-            if(rgb === null) {
+            if (rgb === null) {
                 return '';
             }
-            var c = 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';
+            var c = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
 
             //http://www.w3.org/TR/AERT#color-contrast
 
-            var o = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) /1000);
+            var o = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
 
-            if(o > 185) {
+            if (o > 185) {
                 return '#848484';
             } else {
                 return '#fff';
             }
 
         },
-        getInboxId () {
+        getInboxId() {
             return this.$store.state.project.list_inbox;
         },
         getUniqueRandomNumber() {
-            var random = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var random = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                 var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
             })
-            
-            if(this.randomNumber.indexOf(random) === -1) {
+
+            if (this.randomNumber.indexOf(random) === -1) {
                 this.randomNumber.push(random);
 
                 return random;
@@ -152,10 +152,10 @@ export default {
             this.getUniqueRandomNumber();
 
         },
-        enableDisable (key, status) {
+        enableDisable(key, status) {
             status = status || '';
 
-            if(status == '') {
+            if (status == '') {
                 this[key] = this[key] ? false : true;
             } else {
                 this[key] = status;
@@ -167,28 +167,28 @@ export default {
 
         sprintf: sprintf,
 
-        user_can (cap) {
-            return pmUserCan( cap, this.$store.state.project );
+        user_can(cap) {
+            return pmUserCan(cap, this.$store.state.project);
         },
 
-        userCanAccess (slug) {
+        userCanAccess(slug) {
             return pmUserCanAccess(slug);
         },
 
-        is_user_in_project () {
-            return pmIsUserInProject( this.$store.state.project );
+        is_user_in_project() {
+            return pmIsUserInProject(this.$store.state.project);
         },
 
-        is_manager (project) {
+        is_manager(project) {
             var project = project || this.$store.state.project;
             return pmIsManager(project);
         },
 
-        has_manage_capability () {
+        has_manage_capability() {
             return pmHasManageCapability();
         },
 
-        has_create_capability () {
+        has_create_capability() {
             return pmHasCreateCapability();
         },
 
@@ -205,7 +205,7 @@ export default {
             return results;
         },
 
-        can_edit_comment (commnet) {
+        can_edit_comment(commnet) {
             var user = SL_Vars.current_user;
             if (commnet.commentable_type == 'task_activity') {
                 return false;
@@ -213,23 +213,23 @@ export default {
             if (this.is_manager()) {
                 return true;
             }
-            if ( commnet.creator.data.id == user.ID ){
+            if (commnet.creator.data.id == user.ID) {
                 return true;
             }
 
             return false;
         },
 
-        pad2 (number) {
-           return (number < 10 ? '0' : '') + number;
+        pad2(number) {
+            return (number < 10 ? '0' : '') + number;
         },
 
-        stringToTime (seconds) {
-            var numhours = Math.floor(seconds /  3600);
+        stringToTime(seconds) {
+            var numhours = Math.floor(seconds / 3600);
 
-            var numminutes = Math.floor((seconds  % 3600) / 60);
+            var numminutes = Math.floor((seconds % 3600) / 60);
 
-            var numseconds = (seconds  % 3600) % 60;
+            var numseconds = (seconds % 3600) % 60;
 
             return {
                 'hours': this.pad2(numhours),
@@ -238,8 +238,8 @@ export default {
             }
         },
 
-        getFullDate (date) {
-            if ( !date ) {
+        getFullDate(date) {
+            if (!date) {
                 return;
             }
             date = new Date(date.replace(/-/g, "/"));
@@ -247,8 +247,8 @@ export default {
             return pm.Moment(date).format('dddd, MMMM D YYYY, H:mm:ss');
         },
 
-        getFullDateCustom (date) {
-            if ( !date ) {
+        getFullDateCustom(date) {
+            if (!date) {
                 return;
             }
             date = new Date(date.replace(/-/g, "/"));
@@ -256,8 +256,8 @@ export default {
             return pm.Moment(date).format('dddd, MMMM D YYYY');
         },
 
-        relativeDate (date) {
-            if ( !date ) {
+        relativeDate(date) {
+            if (!date) {
                 return;
             }
             //getTimezoneOffset
@@ -273,9 +273,9 @@ export default {
          *
          * @return string
          */
-        shortDateFormat ( date ) {
+        shortDateFormat(date) {
 
-            if ( !date ) {
+            if (!date) {
                 return;
             }
 
@@ -284,22 +284,22 @@ export default {
 
             var format = 'DD MMM';
 
-            return pm.Moment( date ).format( String( format ) );
+            return pm.Moment(date).format(String(format));
         },
 
-        shortTimeFormat ( date ) {
-            if ( !date ) {
+        shortTimeFormat(date) {
+            if (!date) {
                 return;
             }
 
             date = new Date(date.replace(/-/g, "/"));
             var format = 'hh:mm a';
 
-            return pm.Moment( date ).format( String( format ) );
+            return pm.Moment(date).format(String(format));
         },
 
-        ucfirst (word) {
-            if(word == '' || typeof word == 'undefined') {
+        ucfirst(word) {
+            if (word == '' || typeof word == 'undefined') {
                 return '';
             }
 
@@ -308,7 +308,7 @@ export default {
 
 
         dateTimeFormat(date) {
-            if ( !date ) {
+            if (!date) {
                 return;
             }
 
@@ -324,9 +324,9 @@ export default {
          *
          * @return string
          */
-        pmDateFormat( date, formate ) {
+        pmDateFormat(date, formate) {
             var formate = formate || 'MMM D';
-            if ( !date ) {
+            if (!date) {
                 return;
             }
 
@@ -334,7 +334,7 @@ export default {
             return pm.Moment(date).format(formate);
         },
 
-        isEmpty (mixedVar) {
+        isEmpty(mixedVar) {
 
             var undef
             var key
@@ -342,16 +342,16 @@ export default {
             var len
             var emptyValues = [undef, null, false, 0, '', '0']
 
-            if( mixedVar === '' ) {
+            if (mixedVar === '') {
                 return true;
             }
 
-            if( ! this.is_object( mixedVar ) && !this.is_array( mixedVar ) ) {
-                if ( isNaN( mixedVar ) ) {
+            if (!this.is_object(mixedVar) && !this.is_array(mixedVar)) {
+                if (isNaN(mixedVar)) {
                     return true;
                 }
             }
-           
+
 
             for (i = 0, len = emptyValues.length; i < len; i++) {
                 if (mixedVar === emptyValues[i]) {
@@ -361,7 +361,7 @@ export default {
 
             if (typeof mixedVar === 'object') {
                 for (key in mixedVar) {
-                    if ( mixedVar.hasOwnProperty(key) ) {
+                    if (mixedVar.hasOwnProperty(key)) {
                         return false
                     }
                 }
@@ -377,8 +377,8 @@ export default {
          *
          * @return string
          */
-        taskDateFormat ( date ) {
-            if ( !date ) {
+        taskDateFormat(date) {
+            if (!date) {
                 return;
             }
 
@@ -393,28 +393,28 @@ export default {
          *
          * @return string
          */
-        dateISO8601Format ( date ) {
-          return pm.Moment( date ).format();
+        dateISO8601Format(date) {
+            return pm.Moment(date).format();
         },
 
-        getSettings (key, pre_define, objKey ) {
+        getSettings(key, pre_define, objKey) {
 
-            var pre_define  = typeof pre_define == 'undefined' ? false : pre_define,
+            var pre_define = typeof pre_define == 'undefined' ? false : pre_define,
                 objKey = typeof objKey == 'undefined' ? false : objKey,
-                settings  = SL_Vars.settings;
+                settings = SL_Vars.settings;
 
             if (objKey) {
-                if ( typeof SL_Vars.settings[objKey] === 'undefined' ) {
+                if (typeof SL_Vars.settings[objKey] === 'undefined') {
                     return pre_define;
                 }
-                if ( typeof SL_Vars.settings[objKey][key] === 'undefined' ){
+                if (typeof SL_Vars.settings[objKey][key] === 'undefined') {
                     return pre_define;
                 }
 
 
-                if ( SL_Vars.settings[objKey][key] === "true" ){
+                if (SL_Vars.settings[objKey][key] === "true") {
                     return true;
-                } else if ( SL_Vars.settings[objKey][key] === "false" ){
+                } else if (SL_Vars.settings[objKey][key] === "false") {
                     return false;
                 } else {
                     return SL_Vars.settings[objKey][key];
@@ -422,13 +422,13 @@ export default {
             }
 
 
-            if ( typeof SL_Vars.settings[key] == 'undefined' ) {
+            if (typeof SL_Vars.settings[key] == 'undefined') {
                 return pre_define;
             }
 
-            if ( SL_Vars.settings[key] == "true" ){
+            if (SL_Vars.settings[key] == "true") {
                 return true;
-            } else if ( SL_Vars.settings[key] == "false" ){
+            } else if (SL_Vars.settings[key] == "false") {
                 return false;
             } else {
                 return SL_Vars.settings[key];
@@ -436,29 +436,29 @@ export default {
 
         },
 
-        dataURLtoFile (dataurl, filename) {
+        dataURLtoFile(dataurl, filename) {
             var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
                 bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-            while(n--){
+            while (n--) {
                 u8arr[n] = bstr.charCodeAt(n);
             }
-            return new File([u8arr], filename, {type:mime});
+            return new File([u8arr], filename, {type: mime});
         },
 
-        httpRequest (property) {
+        httpRequest(property) {
 
-            if ( property.url ) {
-                property.url = this.setPermalink( property.url );
+            if (property.url) {
+                property.url = this.setPermalink(property.url);
             }
-            
-            var before = function( xhr ) {
+
+            var before = function (xhr) {
                 xhr.setRequestHeader("Authorization_name", btoa('mslweiew')); //btoa js encoding base64_encode
                 xhr.setRequestHeader("Authorization_password", btoa('1$%#$8sgf&*FBI')); //atob js decode base64_decode
 
                 xhr.setRequestHeader("X-WP-Nonce", SL_Vars.permission);
             };
 
-            if(typeof property.data == 'undefined') {
+            if (typeof property.data == 'undefined') {
                 property.data = {
                     is_admin: SL_Vars.is_admin
                 }
@@ -470,22 +470,22 @@ export default {
             return jQuery.ajax(property);
         },
 
-        setPermalink (url) {
+        setPermalink(url) {
             url = url.replace(/([^:]\/)\/+/g, "$1");
 
-            if ( !this.permalinkStructure ) {
+            if (!this.permalinkStructure) {
                 var matchCount = 0;
-                
+
                 url = url.replace(/\?/g, function (match) {
                     matchCount++;
-                    return matchCount>1 ? "&" : match; 
+                    return matchCount > 1 ? "&" : match;
                 });
             }
 
             return url;
         },
 
-        registerStore (module_name, store) {
+        registerStore(module_name, store) {
             if (typeof store === 'undefined') {
                 return false;
             }
@@ -514,49 +514,49 @@ export default {
          * @param  {[Object]} args data with callback
          * @return {viod}      [description]
          */
-        newProject (args) {
+        newProject(args) {
             const self = this,
-            pre_define = {
-                data: {
-                    title : '',
-                    categories : '',
-                    description: '',
-                    notify_users: '',
-                    assignees: '',
-                    status: 'incomplete'
+                pre_define = {
+                    data: {
+                        title: '',
+                        categories: '',
+                        description: '',
+                        notify_users: '',
+                        assignees: '',
+                        status: 'incomplete'
+                    }
                 }
-            }
-            const argsComplete = pm_apply_filters( 'before_project_save', jQuery.extend(true, pre_define, args ) );
+            const argsComplete = pm_apply_filters('before_project_save', jQuery.extend(true, pre_define, args));
             const request = {
                 type: 'POST',
                 url: this.base_url + 'pm/v2/projects/',
                 data: argsComplete.data,
-                success (res) {
-                    jQuery( "#pm-project-dialog" ).dialog('destroy');
+                success(res) {
+                    jQuery("#pm-project-dialog").dialog('destroy');
                     self.$root.$store.commit('newProject', res.data);
                     self.showHideProjectForm(false);
                     self.resetSelectedUsers();
                     pm.Toastr.success(res.message);
 
-                    if(typeof argsComplete.callback === 'function'){
+                    if (typeof argsComplete.callback === 'function') {
                         argsComplete.callback(res);
                     }
                 },
 
-                error (res) {
-                    if ( res.status == 400 ) {
+                error(res) {
+                    if (res.status == 400) {
                         var params = res.responseJSON.data.params;
-                        for ( var obj in params ){
+                        for (var obj in params) {
                             pm.Toastr.error(params[obj][0]);
                         }
                     }
-                    if (res.status == 500 ) {
-                        res.responseJSON.message.map( function( value, index ) {
+                    if (res.status == 500) {
+                        res.responseJSON.message.map(function (value, index) {
                             pm.Toastr.error(value);
                         });
                     }
 
-                    if(typeof argsComplete.callback === 'function'){
+                    if (typeof argsComplete.callback === 'function') {
                         argsComplete.callback(res);
                     }
 
@@ -566,10 +566,10 @@ export default {
             this.httpRequest(request);
         },
 
-        formatUsers (users) {
+        formatUsers(users) {
             var format_users = [];
 
-            users.map(function(user, index) {
+            users.map(function (user, index) {
                 format_users.push({
                     'user_id': user.id,
                     'role_id': user.roles.data[0].id
@@ -579,46 +579,46 @@ export default {
             return format_users;
         },
 
-        updateProject (args) {
+        updateProject(args) {
             var self = this,
-            pre_define = {
-              data: {
-                status: 'incomplete'
-              },
-              callback: false,
-            },
-            args = jQuery.extend(true, pre_define, args );
-            args = pm_apply_filters( 'before_project_save', args );
+                pre_define = {
+                    data: {
+                        status: 'incomplete'
+                    },
+                    callback: false,
+                },
+                args = jQuery.extend(true, pre_define, args);
+            args = pm_apply_filters('before_project_save', args);
             var request = {
                 type: 'POST',
-                url: this.base_url + 'pm/v2/projects/'+ args.data.id+'/update',
+                url: this.base_url + 'pm/v2/projects/' + args.data.id + '/update',
                 data: args.data,
-                success (res) {
+                success(res) {
 
                     self.$root.$store.commit('updateProject', res.data);
                     pm.Toastr.success(res.message);
                     self.showHideProjectForm(false);
-                    jQuery( "#pm-project-dialog" ).dialog("close");
+                    jQuery("#pm-project-dialog").dialog("close");
                     self.resetSelectedUsers();
                     self.$store.commit('updateProjectMeta', 'total_activities');
-                    if(typeof args.callback === 'function'){
+                    if (typeof args.callback === 'function') {
                         args.callback.call(self, res);
                     }
                 },
 
-                error (res) {
-                    if ( res.status == 400 ) {
+                error(res) {
+                    if (res.status == 400) {
                         var params = res.responseJSON.data.params;
-                        for ( var obj in params ){
+                        for (var obj in params) {
                             pm.Toastr.error(params[obj][0]);
                         }
                     }
-                    if (res.status == 500 ) {
-                        res.responseJSON.message.map( function( value, index ) {
+                    if (res.status == 500) {
+                        res.responseJSON.message.map(function (value, index) {
                             pm.Toastr.error(value);
                         });
                     }
-                    if(typeof args.callback === 'function'){
+                    if (typeof args.callback === 'function') {
                         args.callback.call(self, res);
                     }
                 }
@@ -627,81 +627,81 @@ export default {
             this.httpRequest(request);
         },
 
-        resetSelectedUsers () {
+        resetSelectedUsers() {
             this.$root.$store.commit('resetSelectedUsers');
         },
 
-        getProjects ( args ) {
+        getProjects(args) {
 
             var self = this;
-            var pre_define ={
-                conditions : {
+            var pre_define = {
+                conditions: {
                     status: '',
                     project_transform: true,
                     per_page: this.getSettings('project_per_page', 10),
-                    page : this.setCurrentPageNumber(),
+                    page: this.setCurrentPageNumber(),
                     category: typeof this.$route.query.category !== 'undefined' ? this.$route.query.category : '',
                 }
             }
 
-            var  args = jQuery.extend(true, pre_define, args );
+            var args = jQuery.extend(true, pre_define, args);
 
-            var conditions = pm_apply_filters( 'before_get_project', args.conditions );
+            var conditions = pm_apply_filters('before_get_project', args.conditions);
             conditions = self.generateConditions(conditions);
 
             var request_data = {
-                url: self.base_url + 'pm/v2/projects?'+conditions,
+                url: self.base_url + 'pm/v2/projects?' + conditions,
                 data: args.conditions,
-                success (res) {
+                success(res) {
 
-                    res.data.map(function(project) {
+                    res.data.map(function (project) {
                         self.addProjectMeta(project);
                     });
 
                     self.$store.commit('setProjects', {'projects': res.data});
-                    self.$store.commit('setProjectsMeta', res.meta );
+                    self.$store.commit('setProjectsMeta', res.meta);
 
                     pm.NProgress.done();
                     // self.loading = false;
 
-                    if(typeof args.callback != 'undefined'){
+                    if (typeof args.callback != 'undefined') {
                         args.callback(res.data);
                     }
                 }
             };
-            
+
             self.httpRequest(request_data);
         },
 
-        searchProjects ( args ) {
+        searchProjects(args) {
 
             var self = this;
-            var pre_define ={
-                conditions : {
+            var pre_define = {
+                conditions: {
                     status: '',
                     project_transform: true,
                     per_page: this.getSettings('project_per_page', 10),
-                    page : this.setCurrentPageNumber(),
+                    page: this.setCurrentPageNumber(),
                     category: typeof this.$route.query.category !== 'undefined' ? this.$route.query.category : '',
                 }
             }
 
-            var  args = jQuery.extend(true, pre_define, args );
+            var args = jQuery.extend(true, pre_define, args);
 
-            var conditions = pm_apply_filters( 'before_get_project', args.conditions );
+            var conditions = pm_apply_filters('before_get_project', args.conditions);
             conditions = self.generateConditions(conditions);
 
             var request_data = {
-                url: self.base_url + 'pm/v2/projects/search?'+conditions,
+                url: self.base_url + 'pm/v2/projects/search?' + conditions,
                 data: args.conditions,
-                success (res) {
+                success(res) {
 
-                    res.data.map(function(project) {
+                    res.data.map(function (project) {
                         self.addProjectMeta(project);
                     });
 
 
-                    if(typeof args.callback != 'undefined'){
+                    if (typeof args.callback != 'undefined') {
                         args.callback(res.data);
                     }
                 }
@@ -710,38 +710,36 @@ export default {
             self.httpRequest(request_data);
         },
 
-        setCurrentPageNumber () {
+        setCurrentPageNumber() {
             var current_page_number = this.$route.params.current_page_number ? this.$route.params.current_page_number : 1;
             this.current_page_number = current_page_number;
             return current_page_number;
         },
 
-        getProject ( args ) {
+        getProject(args) {
             var self = this;
-            var pre_define ={
-                conditions : {
-
-                },
+            var pre_define = {
+                conditions: {},
                 project_id: this.project_id,
                 callback: false
             }
 
-            var  args = jQuery.extend(true, pre_define, args );
+            var args = jQuery.extend(true, pre_define, args);
             var conditions = self.generateConditions(args.conditions);
 
-            if ( typeof args.project_id === 'undefined' ) {
+            if (typeof args.project_id === 'undefined') {
                 return;
             }
 
             self.httpRequest({
-                url:self.base_url + 'pm/v2/projects/'+ args.project_id + '?' + conditions ,
-                success (res) {
-                    if (typeof args.callback === 'function' ) {
+                url: self.base_url + 'pm/v2/projects/' + args.project_id + '?' + conditions,
+                success(res) {
+                    if (typeof args.callback === 'function') {
                         args.callback.call(self, res);
                     }
                 },
-                error (res) {
-                    if (res.status === 404){
+                error(res) {
+                    if (res.status === 404) {
                         pm.Toastr.success(res.responseJSON.message);
 
                     }
@@ -754,57 +752,51 @@ export default {
 
         },
 
-        getUsers ( args ) {
+        getUsers(args) {
             var self = this;
-            var pre_define ={
-                data: {
-                },
-                conditions : {
-
-                },
+            var pre_define = {
+                data: {},
+                conditions: {},
                 callback: false
             }
 
-            var  args = jQuery.extend(true, pre_define, args );
+            var args = jQuery.extend(true, pre_define, args);
             var conditions = self.generateConditions(args.conditions);
 
-            if (typeof args.data.id === 'undefined' ){
-                return ;
+            if (typeof args.data.id === 'undefined') {
+                return;
             }
 
             self.httpRequest({
-                url: self.base_url + 'pm/v2/users/?' + conditions ,
+                url: self.base_url + 'pm/v2/users/?' + conditions,
                 data: args.data,
-                success (res) {
-                    if (typeof args.callback === 'function' ) {
+                success(res) {
+                    if (typeof args.callback === 'function') {
                         args.callback.call(self, res);
                     }
                 }
             });
         },
 
-        getUser ( args ) {
+        getUser(args) {
             var self = this;
-            var pre_define ={
-                data: {
-                },
-                conditions : {
-
-                },
+            var pre_define = {
+                data: {},
+                conditions: {},
                 callback: false
             }
 
-            var  args = jQuery.extend(true, pre_define, args );
+            var args = jQuery.extend(true, pre_define, args);
             var conditions = self.generateConditions(args.conditions);
 
-            if (typeof args.data.user_id === 'undefined' ){
-                return ;
+            if (typeof args.data.user_id === 'undefined') {
+                return;
             }
 
             self.httpRequest({
-                url: self.base_url + 'pm/v2/users/'+ args.data.user_id + '?' + conditions ,
-                success (res) {
-                    if (typeof args.callback === 'function' ) {
+                url: self.base_url + 'pm/v2/users/' + args.data.user_id + '?' + conditions,
+                success(res) {
+                    if (typeof args.callback === 'function') {
                         args.callback.call(self, res);
                     }
                 }
@@ -813,22 +805,19 @@ export default {
 
         get_search_user(args) {
             var self = this;
-            var pre_define ={
-                data: {
-                },
-                conditions : {
-
-                },
+            var pre_define = {
+                data: {},
+                conditions: {},
                 callback: false
             }
 
-            var  args = jQuery.extend(true, pre_define, args );
+            var args = jQuery.extend(true, pre_define, args);
             var conditions = self.generateConditions(args.conditions);
 
             var request = {
-                url: self.base_url + 'pm/v2/users/search?' + conditions ,
-                success (res) {
-                    if (typeof args.callback === 'function' ) {
+                url: self.base_url + 'pm/v2/users/search?' + conditions,
+                success(res) {
+                    if (typeof args.callback === 'function') {
                         args.callback.call(self, res);
                     }
                 }
@@ -837,9 +826,9 @@ export default {
             return self.httpRequest(request);
         },
 
-        getGloabalProject (project_id){
-            var args ={
-                callback (res) {
+        getGloabalProject(project_id) {
+            var args = {
+                callback(res) {
                     this.addProjectMeta(res.data);
                     this.$root.$store.commit('setProject', res.data);
                     this.$root.$store.commit('setProjectMeta', res.meta);
@@ -854,7 +843,7 @@ export default {
             this.$root.$store.state.project_switch = false;
             var project = this.$root.$store.state.project;
 
-            if ( ! project.hasOwnProperty('id') || project.id !== this.project_id ) {
+            if (!project.hasOwnProperty('id') || project.id !== this.project_id) {
                 this.$root.$store.commit('setDefaultLoaded');
                 this.getProject(args);
             } else {
@@ -863,21 +852,21 @@ export default {
 
         },
 
-        addProjectMeta (project) {
-            project.edit_mode     = false;
+        addProjectMeta(project) {
+            project.edit_mode = false;
             project.settings_hide = false;
         },
 
-        getProjectCategories (callback) {
+        getProjectCategories(callback) {
             var callback = callback || false;
             var self = this;
             var page = 0;
 
             var categories = self.$root.$store.state.categories;
-            if (typeof self.$root.$store.state.categoryMeta.pagination !== 'undefined' ) {
+            if (typeof self.$root.$store.state.categoryMeta.pagination !== 'undefined') {
                 page = self.$root.$store.state.categoryMeta.pagination.total_pages;
             }
-            if ( categories.length &&  page == 1 ) {
+            if (categories.length && page == 1) {
                 if (callback) {
                     //callback(categories);
                 }
@@ -891,7 +880,7 @@ export default {
 
             this.httpRequest({
                 url: self.base_url + 'pm/v2/categories?' + conditions,
-                success (res) {
+                success(res) {
                     self.$root.$store.commit('setCategories', res.data);
                     self.$root.$store.commit('setCategoryMeta', res.meta);
 
@@ -902,13 +891,13 @@ export default {
             });
         },
 
-        getRoles (callback) {
+        getRoles(callback) {
             var callback = callback || false;
             var self = this;
 
             var roles = self.$root.$store.state.roles;
 
-            if ( roles.length ) {
+            if (roles.length) {
                 if (callback) {
                     callback(roles);
                 }
@@ -917,7 +906,7 @@ export default {
 
             self.httpRequest({
                 url: self.base_url + 'pm/v2/roles',
-                success (res) {
+                success(res) {
                     self.$root.$store.commit('setRoles', res.data);
 
                     if (callback) {
@@ -935,10 +924,10 @@ export default {
          *
          * @return  int
          */
-        getIndex  ( itemList, id, slug) {
+        getIndex(itemList, id, slug) {
             var index = false;
 
-            jQuery.each(itemList, function(key, item) {
+            jQuery.each(itemList, function (key, item) {
                 if (item[slug] == id) {
                     index = key;
                 }
@@ -947,17 +936,17 @@ export default {
             return index;
         },
 
-        showHideProjectForm (status) {
+        showHideProjectForm(status) {
             this.$store.commit('showHideProjectForm', status);
         },
 
-        deleteFile (file_id, callback) {
+        deleteFile(file_id, callback) {
             var self = this;
 
             self.httpRequest({
-                url: self.base_url + 'pm/v2/projects/'+self.project_id+'/files/' + file_id+'/delete',
+                url: self.base_url + 'pm/v2/projects/' + self.project_id + '/files/' + file_id + '/delete',
                 type: 'POST',
-                success (res) {
+                success(res) {
 
 
                     if (typeof callback !== 'undefined') {
@@ -968,41 +957,41 @@ export default {
         },
 
 
-        userTaskProfileUrl ( user_id ) {
-            return this.myTaskRedirect( user_id );
+        userTaskProfileUrl(user_id) {
+            return this.myTaskRedirect(user_id);
         },
 
         /**
          * Set extra element in httpRequest query
          */
-        getQueryParams (add_query) {
+        getQueryParams(add_query) {
 
             var self = this,
                 query_str = '';
 
-             jQuery.each(add_query, function(key, val) {
+            jQuery.each(add_query, function (key, val) {
 
                 if (Array.isArray(val)) {
 
-                    val.map(function(el, index) {
-                        query_str = query_str + key +'='+ el + '&';
+                    val.map(function (el, index) {
+                        query_str = query_str + key + '=' + el + '&';
                     });
                 } else {
-                    query_str = query_str + key +'='+ val + '&';
+                    query_str = query_str + key + '=' + val + '&';
                 }
 
             });
 
 
-            jQuery.each(this.$route.query, function(key, val) {
+            jQuery.each(this.$route.query, function (key, val) {
 
                 if (Array.isArray(val)) {
 
-                    val.map(function(el, index) {
-                        query_str = query_str + key +'='+ el + '&';
+                    val.map(function (el, index) {
+                        query_str = query_str + key + '=' + el + '&';
                     });
                 } else {
-                    query_str = query_str + key +'='+ val + '&';
+                    query_str = query_str + key + '=' + val + '&';
                 }
 
             });
@@ -1015,16 +1004,16 @@ export default {
         /**
          * Set extra element in this.$route.query
          */
-        setQuery (add_query) {
+        setQuery(add_query) {
             var self = this,
                 route_query = {};
 
 
-            jQuery.each(self.$route.query, function(key, val) {
+            jQuery.each(self.$route.query, function (key, val) {
                 if (Array.isArray(val)) {
                     route_query[key] = [];
 
-                    val.map(function(el, index) {
+                    val.map(function (el, index) {
                         route_query[key].push(el);
                     });
 
@@ -1034,7 +1023,7 @@ export default {
 
             });
 
-            jQuery.each(add_query, function(key, val) {
+            jQuery.each(add_query, function (key, val) {
                 if (val) {
                     route_query[key] = [val];
                 } else {
@@ -1053,21 +1042,21 @@ export default {
          *
          * @return string
          */
-        pmDateISO8601Format ( date, time ) {
-            var date = new Date(date +' '+ time);
+        pmDateISO8601Format(date, time) {
+            var date = new Date(date + ' ' + time);
 
-            return pm.Moment( date).format();
+            return pm.Moment(date).format();
         },
 
-        deleteProject (id, project) {
-            if ( ! confirm( this.__( 'Are you sure to delete this project?', 'super-logistics') ) ) {
+        deleteProject(id, project) {
+            if (!confirm(this.__('Are you sure to delete this project?', 'super-logistics'))) {
                 return;
             }
             var self = this;
             var request_data = {
-                url: self.base_url + 'pm/v2/projects/' + id+'/delete',
+                url: self.base_url + 'pm/v2/projects/' + id + '/delete',
                 type: 'POST',
-                success (res) {
+                success(res) {
                     self.$store.commit('afterDeleteProject', id);
                     self.$store.commit('afterDeleteProjectCount', {project: project});
                     pm.Toastr.success(res.message);
@@ -1094,52 +1083,52 @@ export default {
             self.httpRequest(request_data);
         },
 
-        addUserMeta (user) {
-            if(!user.roles.data.length) {
+        addUserMeta(user) {
+            if (!user.roles.data.length) {
                 user.roles = {
                     data: [{
                         description: "Co-Worker for project manager",
-                        id:2,
-                        title:"Co-Worker"
+                        id: 2,
+                        title: "Co-Worker"
                     }]
                 }
             }
         },
 
-        projects_view_class (){
-            return this.$store.state.projects_view === 'grid_view' ? 'pm-project-grid': 'pm-project-list'
+        projects_view_class() {
+            return this.$store.state.projects_view === 'grid_view' ? 'pm-project-grid' : 'pm-project-list'
         },
 
-        generateConditions (conditions) {
+        generateConditions(conditions) {
             var query = '';
 
             if (jQuery.isEmptyObject(conditions)) {
                 return ''
             }
 
-            jQuery.each(conditions, function(condition, key) {
-                if(condition){
-                    query = query + condition +'='+ key +'&';
+            jQuery.each(conditions, function (condition, key) {
+                if (condition) {
+                    query = query + condition + '=' + key + '&';
                 }
             });
 
             return query.slice(0, -1);
         },
 
-        generatequeryString (conditions) {
+        generatequeryString(conditions) {
             var query = '';
 
             if (jQuery.isEmptyObject(conditions)) {
                 return ''
             }
 
-            jQuery.each(conditions, function(condition, key) {
-                if( condition ){
-                    if( typeof key == 'string' )
-                        query = query + condition +'='+ key +'&';
-                    if ( typeof key == 'object' ) {
-                        jQuery.each(key, function(index, el) {
-                             query = query + condition +'[]='+ el +'&';
+            jQuery.each(conditions, function (condition, key) {
+                if (condition) {
+                    if (typeof key == 'string')
+                        query = query + condition + '=' + key + '&';
+                    if (typeof key == 'object') {
+                        jQuery.each(key, function (index, el) {
+                            query = query + condition + '[]=' + el + '&';
                         });
                     }
                 }
@@ -1153,35 +1142,35 @@ export default {
          * @param  {Function} callback [optional]
          * @return {[type]}            [milestone]
          */
-        getGlobalMilestones (callback) {
-          var self = this,
-          milestones = this.$root.$store.state.milestones,
-          milestones_load = self.$root.$store.state.milestones_load;
+        getGlobalMilestones(callback) {
+            var self = this,
+                milestones = this.$root.$store.state.milestones,
+                milestones_load = self.$root.$store.state.milestones_load;
 
-          if(milestones_load){
-            if(typeof callback === 'function' ){
-                callback.call(self, milestones);
-            }
-            return milestones;
-          }else {
-            var request = {
-                data: {
-                    status: 1
-                },
-                url: self.base_url + 'pm/v2/projects/'+self.project_id+'/milestones',
-                success (res) {
-                    self.$root.$store.commit( 'setMilestones', res.data );
-
-                    if (typeof callback === 'function') {
-                    callback.call( self, res.data);
-                    }
+            if (milestones_load) {
+                if (typeof callback === 'function') {
+                    callback.call(self, milestones);
                 }
-            };
-            self.httpRequest(request);
-          }
+                return milestones;
+            } else {
+                var request = {
+                    data: {
+                        status: 1
+                    },
+                    url: self.base_url + 'pm/v2/projects/' + self.project_id + '/milestones',
+                    success(res) {
+                        self.$root.$store.commit('setMilestones', res.data);
+
+                        if (typeof callback === 'function') {
+                            callback.call(self, res.data);
+                        }
+                    }
+                };
+                self.httpRequest(request);
+            }
         },
 
-        loadingStart (id, args) {
+        loadingStart(id, args) {
             var pre_define = {
                 // loading text
                 text: '',
@@ -1201,31 +1190,31 @@ export default {
             };
             var args = jQuery.extend(true, pre_define, args);
 
-            jQuery('#'+id).preloader(args);
+            jQuery('#' + id).preloader(args);
         },
 
-        loadingStop (id) {
-            jQuery('#'+id).preloader('remove');
+        loadingStop(id) {
+            jQuery('#' + id).preloader('remove');
         },
 
-        arrayDiffer ( arr1, arr2 ) {
-            var diff =[];
+        arrayDiffer(arr1, arr2) {
+            var diff = [];
             arr1.forEach(function (arr) {
-                if( arr2.indexOf( arr) > -1 ){
+                if (arr2.indexOf(arr) > -1) {
                     diff.push(arr);
                 }
             });
             return diff;
         },
 
-        saveSettings (settings, project_id, callback, id) {
-            var settings   = this.formatSettings(settings);
+        saveSettings(settings, project_id, callback, id) {
+            var settings = this.formatSettings(settings);
             var project_id = project_id || false;
-            var self       = this;
+            var self = this;
             id = id || false;
 
             var url = project_id
-                ? self.base_url + 'pm/v2/projects/'+project_id+'/settings'
+                ? self.base_url + 'pm/v2/projects/' + project_id + '/settings'
                 : self.base_url + 'pm/v2/settings';
 
             var request = {
@@ -1235,7 +1224,7 @@ export default {
                     id: id
                 },
                 type: 'POST',
-                success (res) {
+                success(res) {
                     pm.Toastr.success(res.message);
                     if (typeof callback !== 'undefined') {
                         callback(res.data);
@@ -1246,15 +1235,15 @@ export default {
             self.httpRequest(request);
         },
 
-        saveTrelloImportedData (formDataObj,cred,urlString,callback) {
+        saveTrelloImportedData(formDataObj, cred, urlString, callback) {
             var self = this;
-            var url = self.base_url + 'pm/v2/'+ urlString;
+            var url = self.base_url + 'pm/v2/' + urlString;
 
             var request = {
                 url: url,
-                xhr: function() {
+                xhr: function () {
                     var xhr = new window.XMLHttpRequest();
-                    xhr.addEventListener("progress", function(evt) {
+                    xhr.addEventListener("progress", function (evt) {
                         if (evt.lengthComputable) {
 
                         }
@@ -1263,9 +1252,9 @@ export default {
                 },
                 data: formDataObj,
                 type: 'POST',
-                success (res) {
+                success(res) {
                     if (typeof callback !== 'undefined') {
-                        callback(res,cred);
+                        callback(res, cred);
                     }
                 }
             };
@@ -1273,12 +1262,12 @@ export default {
             self.httpRequest(request);
         },
 
-        deleteProjectSettings (id, args) {
-            var self  = this;
+        deleteProjectSettings(id, args) {
+            var self = this;
 
             args = args || {};
 
-            var url = self.base_url + 'pm/v2/projects/'+this.project_id+'/delete/'+id+'/settings'
+            var url = self.base_url + 'pm/v2/projects/' + this.project_id + '/delete/' + id + '/settings'
 
             var request = {
                 url: url,
@@ -1286,7 +1275,7 @@ export default {
                     id: id
                 },
                 type: 'POST',
-                success (res) {
+                success(res) {
                     //pm.Toastr.success(res.message);
                     if (typeof args.callback !== 'undefined') {
                         args.callback(res.data);
@@ -1297,10 +1286,10 @@ export default {
             self.httpRequest(request);
         },
 
-        formatSettings (settings) {
+        formatSettings(settings) {
             var data = [];
 
-            jQuery.each(settings, function(name, value) {
+            jQuery.each(settings, function (name, value) {
                 data.push({
                     key: name,
                     value: value
@@ -1310,7 +1299,7 @@ export default {
             return data;
         },
 
-        canShowMyTaskRedirect (userid) {
+        canShowMyTaskRedirect(userid) {
             var current_user = SL_Vars.current_user.ID;
             if (this.has_manage_capability()) {
                 return true;
@@ -1322,22 +1311,22 @@ export default {
             return false;
         },
 
-        fileDownload (fileId) {
-            let url = this.base_url + '/pm/v2/projects/'+this.project_id+'/files/'+fileId+'/users/'+SL_Vars.current_user.ID+'/download';
-                url = this.setPermalink( url );
-            
+        fileDownload(fileId) {
+            let url = this.base_url + '/pm/v2/projects/' + this.project_id + '/files/' + fileId + '/users/' + SL_Vars.current_user.ID + '/download';
+            url = this.setPermalink(url);
+
             window.location.href = url;
         },
 
         getDownloadUrl(fileId, project_id) {
             project_id = project_id || this.project_id;
-            let url = this.base_url + '/pm/v2/projects/'+ project_id +'/files/'+fileId+'/users/'+SL_Vars.current_user.ID+'/download';
-            url = this.setPermalink( url );
+            let url = this.base_url + '/pm/v2/projects/' + project_id + '/files/' + fileId + '/users/' + SL_Vars.current_user.ID + '/download';
+            url = this.setPermalink(url);
 
             return url;
         },
 
-        copy (text) {
+        copy(text) {
             var $temp = $("<input>");
             $("body").append($temp);
             $temp.val(text).select();
@@ -1345,11 +1334,11 @@ export default {
             $temp.remove();
         },
 
-        deleteSettings (key, pre_define ) {
-            var pre_define   = pre_define || false,
-                settings  = SL_Vars.settings;
+        deleteSettings(key, pre_define) {
+            var pre_define = pre_define || false,
+                settings = SL_Vars.settings;
 
-            if ( typeof SL_Vars.settings[key] === 'undefined' ) {
+            if (typeof SL_Vars.settings[key] === 'undefined') {
                 return pre_define;
             }
 
@@ -1363,13 +1352,13 @@ export default {
         /**
          * Close popup by checking popper
          */
-         closePopper(){
-             jQuery('body').trigger('click');
-             this.$emit('disableProjectForm', false)
+        closePopper() {
+            jQuery('body').trigger('click');
+            this.$emit('disableProjectForm', false)
         },
 
-        exportCsvFile (xhr, response) {
-            if ( 'html/csv' === xhr.getResponseHeader('Content-type') ) {
+        exportCsvFile(xhr, response) {
+            if ('html/csv' === xhr.getResponseHeader('Content-type')) {
                 var filename = "";
                 var disposition = xhr.getResponseHeader('Content-Disposition');
                 if (disposition && disposition.indexOf('attachment') !== -1) {
@@ -1380,7 +1369,7 @@ export default {
                     }
                 }
                 var type = xhr.getResponseHeader('Content-Type');
-                var blob = typeof File === 'function' ? new File([response], filename, { type: type }) : new Blob([response], { type: type });
+                var blob = typeof File === 'function' ? new File([response], filename, {type: type}) : new Blob([response], {type: type});
                 if (typeof window.navigator.msSaveBlob !== 'undefined') {
                     // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
                     window.navigator.msSaveBlob(blob, filename);
@@ -1409,23 +1398,23 @@ export default {
             }
         },
 
-        can_edit_task (task) {
+        can_edit_task(task) {
             var user = SL_Vars.current_user;
-            
+
             if (this.is_manager()) {
                 return true;
             }
-            
-            if ( this.userCanAccess(SL_Vars.manager_cap_slug) ) {
+
+            if (this.userCanAccess(SL_Vars.manager_cap_slug)) {
                 return true;
             }
 
             let creatorId = task.creator.data.id ? task.creator.data.id : 0;
-            
-            if ( parseInt(creatorId) == parseInt(user.ID) ){
+
+            if (parseInt(creatorId) == parseInt(user.ID)) {
                 return true;
             }
-            
+
             return false;
         },
 

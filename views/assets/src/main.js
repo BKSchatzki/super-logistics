@@ -1,19 +1,22 @@
-import '@helpers/less/pm-style.less'
-import router from '@router/router'
-import store from '@store/store'
-import Mixin from '@helpers/mixin/mixin'
-import App from './App.vue'
-import AppPublic from './AppPublic.vue'
-import '@directives/directive'
-import '@helpers/common-components'
+import 'es6-promise/auto';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import App from './App.vue';
+import Mixin from '@helpers/mixin/mixin';
+import router from '@router/router';
+import store from '@store/store';
 import menuFix from '@helpers/menu-fix';
+import '@helpers/less/pm-style.less';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import loadComponents from '@helpers/load-components';
 
-window.pmBus = new Vue();
+Vue.config.devtools = process.env.NODE_ENV !== 'production';
 
-Vue.config.devtools = true;
-
+loadComponents(Vue);
+Vue.mixin(Mixin);
+Vue.use(Vuex);
+Vue.use(store);
 const SL_Vue = {
     el: `#${SL_Vars.id}`,
     store,
@@ -21,17 +24,8 @@ const SL_Vue = {
     render: t => t(App),
 }
 
-const SL_Vue_Public = {
-    el: `#${SL_Vars.public_id}`,
-    store,
-    router,
-    render: t => t(AppPublic),
-}
-
-Vue.mixin(Mixin);
 
 new Vue(SL_Vue);
-new Vue(SL_Vue_Public);
 
 // fix the admin menu for the slug "vue-app"
 menuFix('pm_projects');

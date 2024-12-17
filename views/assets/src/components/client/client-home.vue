@@ -42,7 +42,7 @@ export default {
   },
   created() {
     this.getClientId(this.user);
-    this.getCurrentUserRoles();
+    this.getCurrentUser();
   }
 }
 </script>

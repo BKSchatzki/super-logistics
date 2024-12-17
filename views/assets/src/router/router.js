@@ -3,6 +3,7 @@ import '@components/qr-scanner/router';
 import '@components/reports/router';
 import '@components/client/router';
 import '@components/settings/router';
+import '@components/user-management/router';
 
 import Empty from '@components/root/init.vue';
 

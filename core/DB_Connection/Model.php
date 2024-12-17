@@ -39,7 +39,8 @@ class Model extends Eloquent\Model {
         }
 
         if ( ! $this->prefixed_table ) {
-            $this->prefixed_table = $this->getConnection()->db->prefix . $table;
+//            $this->prefixed_table = $this->getConnection()->getTablePrefix() . $table;
+            $this->prefixed_table = $table;
         }
 
         return $this;
@@ -52,7 +53,8 @@ class Model extends Eloquent\Model {
      */
     public function getTable() {
         if ( ! $this->prefixed_table ) {
-            $this->prefixed_table = $this->getConnection()->db->prefix . $this->table;
+//	        $this->prefixed_table = $this->getConnection()->getTablePrefix() . $this->table;
+	        $this->prefixed_table = $this->table;
         }
 
         return $this->prefixed_table;

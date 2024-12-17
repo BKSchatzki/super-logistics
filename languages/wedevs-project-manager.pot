@@ -591,7 +591,7 @@ msgstr ""
 msgid "Task list ID must be greater than zero"
 msgstr ""
 
-#: src/User/Controllers/User_Controller.php:174
+#: src/User/Controllers/UserController.php:174
 msgid "You have no permission to create/update user meta."
 msgstr ""
 
