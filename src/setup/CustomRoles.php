@@ -1,5 +1,5 @@
 <?php
-namespace BigTB\SuperLogistics\Setup;
+namespace BigTB\SL\Setup;
 
 class CustomRoles {
 

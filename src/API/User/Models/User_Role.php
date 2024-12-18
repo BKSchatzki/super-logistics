@@ -2,10 +2,10 @@
 
 namespace BigTB\SL\API\User\Models;
 
-use BigTB\SL\API\Core\DB_Connection\Model as Eloquent;
+use Illuminate\Database\Eloquent\Model;
 use BigTB\SL\API\Role\Models\Role;
 
-class User_Role extends Eloquent {
+class User_Role extends Model {
     protected $table = 'pm_role_user';
 
     public $timestamps = false;

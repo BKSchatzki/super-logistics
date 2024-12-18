@@ -2,9 +2,9 @@
 
 namespace BigTB\SL\API\User\Models;
 
-use BigTB\SL\API\Core\DB_Connection\Model as Eloquent;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Eloquent {
+class User extends Model {
 	protected $primaryKey = 'ID';
 
 	protected $table = 'users';

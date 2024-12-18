@@ -16,7 +16,7 @@ use BigTB\SL\API\PDF\Transformers\PDFTransformer;
 use BigTB\SL\API\Update\Models\Update;
 
 class TransactionController {
-    use Transformer_Manager, Request_Filter;
+    use ResponseManager;
 
     public function index( WP_REST_Request $request ): array {
         $transactions = Transaction::where('status', '<>', 0)
@@ -24,14 +24,14 @@ class TransactionController {
         $resource = new Collection($transactions, new TransactionTransformer);
         $resource->setPaginator(new IlluminatePaginatorAdapter($transactions));
 
-        return $this->get_response( $resource );
+        return $this->prepareArrayResponse( $resource );
     }
 
     public function get( WP_REST_Request $request ): array {
         $transaction = Transaction::with(['show', 'client', 'carrier', 'shipper', 'exhibitor', 'updates', 'items'])->find($request->get_param('id'));
         $resource = new Item($transaction, new TransactionTransformer);
 
-        return $this->get_response( $resource );
+        return $this->prepareArrayResponse( $resource );
     }
 
     public function store(WP_REST_Request $request): array {
@@ -61,7 +61,7 @@ class TransactionController {
         $transaction->save();
         $resource = new Item($transaction, new TransactionTransformer);
 
-        return $this->get_response($resource);
+        return $this->prepareArrayResponse($resource);
     }
 
     public function update(WP_REST_Request $request): array {
@@ -98,7 +98,7 @@ class TransactionController {
         $transaction->save();
         $resource = new Item($transaction, new TransactionTransformer);
 
-        return $this->get_response($resource);
+        return $this->prepareArrayResponse($resource);
     }
 
     public function trash(WP_REST_Request $request): array {
@@ -106,14 +106,14 @@ class TransactionController {
         $transaction->status = 0;
         $transaction->save();
 
-        return $this->get_response([]);
+        return $this->prepareArrayResponse([]);
     }
 
     public function delete(WP_REST_Request $request): array {
         $transaction = Transaction::find($request->get_param('id'));
         $transaction->delete();
 
-        return $this->get_response([]);
+        return $this->prepareArrayResponse([]);
     }
 
     public function search(WP_REST_Request $request): array {
@@ -145,7 +145,7 @@ class TransactionController {
 
         $transactions = $query->with(['show', 'client', 'carrier', 'shipper', 'exhibitor', 'updates', 'items'])->get();
         $resource = new Collection($transactions, new TransactionTransformer);
-        return $this->get_response($resource);
+        return $this->prepareArrayResponse($resource);
     }
 
     public function createLabels(WP_REST_Request $request): array
@@ -162,7 +162,7 @@ class TransactionController {
         $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
-        return $this->get_response($res);
+        return $this->prepareArrayResponse($res);
     }
 
     public function createExternalLabel(WP_REST_Request $request): array
@@ -183,7 +183,7 @@ class TransactionController {
         $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
-        return $this->get_response($res);
+        return $this->prepareArrayResponse($res);
     }
 
     public function storeNote(WP_REST_Request $request): array {
@@ -202,7 +202,7 @@ class TransactionController {
 
         $resource = new Item($transaction, new TransactionTransformer);
 
-        return $this->get_response($resource);
+        return $this->prepareArrayResponse($resource);
     }
 
     private static function handleImageUpload($file): string {
@@ -236,6 +236,6 @@ class TransactionController {
         $update_id = $request->get_param('update_id');
         $update = Update::find($update_id);
         $update->update(['note' => '']);
-        return $this->get_response([]);
+        return $this->prepareArrayResponse([]);
     }
 }

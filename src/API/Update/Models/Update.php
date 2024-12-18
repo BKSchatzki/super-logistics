@@ -2,9 +2,9 @@
 
 namespace BigTB\SL\API\Update\Models;
 
-use BigTB\SL\API\Core\DB_Connection\Model as Eloquent;
+use Illuminate\Database\Eloquent\Model;
 
-class Update extends Eloquent {
+class Update extends Model {
     protected $table = 'sl_updates';
     protected $fillable = [
         'transaction_id',

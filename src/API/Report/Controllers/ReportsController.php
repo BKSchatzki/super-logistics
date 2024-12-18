@@ -17,7 +17,7 @@ use WP_REST_Request;
 
 class ReportsController
 {
-    use Transformer_Manager, Request_Filter;
+    use ResponseManager;
 
     public function getTrailerManifest(WP_REST_Request $request)
     {
@@ -35,7 +35,7 @@ class ReportsController
         $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
-        return $this->get_response($res);
+        return $this->prepareArrayResponse($res);
     }
 
     public function getPalletManifest(WP_REST_Request $request)
@@ -54,7 +54,7 @@ class ReportsController
         $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
-        return $this->get_response($res);
+        return $this->prepareArrayResponse($res);
     }
 
     public function getShowReport(WP_REST_Request $request)
@@ -82,7 +82,7 @@ class ReportsController
         $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
-        return $this->get_response($res);
+        return $this->prepareArrayResponse($res);
     }
 
     public function getShowReportTwo(WP_REST_Request $request)
@@ -110,6 +110,6 @@ class ReportsController
         $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
-        return $this->get_response($res);
+        return $this->prepareArrayResponse($res);
     }
 }

@@ -4,16 +4,15 @@
 namespace BigTB\SL\API\Entity\Controllers;
 
 use WP_REST_Request;
-use League\Fractal\Resource\Item as Item;
-use League\Fractal\Resource\Collection as Collection;
-use BigTB\SL\API\Setup\ResponseManager;
-use BigTB\SL\API\Common\Traits\Request_Filter;
+use League\Fractal\Resource\Item;
+use League\Fractal\Resource\Collection;
+use BigTB\SL\Setup\ResponseManager;
 use BigTB\SL\API\Entity\Models\Entity;
 use BigTB\SL\API\Entity\Transformers\EntityTransformer;
 
 class EntityController
 {
-    use Transformer_Manager, Request_Filter;
+    use ResponseManager;
 
     public function show(WP_REST_Request $request):array
     {
@@ -22,7 +21,7 @@ class EntityController
         $entities = Entity::where('type', $type)->get();
         $resource = new Collection($entities, new EntityTransformer);
 
-        return $this->get_response($resource);
+        return $this->prepareArrayResponse($resource);
     }
 
     public function store(): array
@@ -45,7 +44,7 @@ class EntityController
 
         $resource = new Item($entity, new EntityTransformer);
 
-        return $this->get_response($resource);
+        return $this->prepareArrayResponse($resource);
     }
 
     public function updateCode(WP_REST_Request $request): bool {
@@ -67,7 +66,7 @@ class EntityController
         // Transform and return the entities and their related codes
         $resource = new Collection($entities, new EntityTransformer);
 
-        return $this->get_response($resource);
+        return $this->prepareArrayResponse($resource);
     }
 
     public function registerUser(): bool {

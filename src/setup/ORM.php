@@ -1,6 +1,6 @@
 <?php
 
-namespace BigTB\SuperLogistics\Setup;
+namespace BigTB\SL\Setup;
 
 use \wpdb;
 use Illuminate\Database\Capsule\Manager as Capsule;

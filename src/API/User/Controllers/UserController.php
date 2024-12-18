@@ -12,7 +12,7 @@ use BigTB\SL\API\User\Transformers\UserTransformer;
 use WP_REST_Request;
 
 class UserController {
-	use Transformer_Manager, Request_Filter;
+	use ResponseManager;
 
 	public function index( WP_REST_Request $request ) {
 		$id = $request->get_param( 'id' );
@@ -26,7 +26,7 @@ class UserController {
 		}
 
 
-		return $this->get_response( $resource );
+		return $this->prepareArrayResponse( $resource );
 	}
 
 	public function show( WP_REST_Request $request ) {
@@ -34,7 +34,7 @@ class UserController {
 		$user     = User::find( $id );
 		$resource = new Item( $user, new UserTransformer );
 
-		return $this->get_response( $resource );
+		return $this->prepareArrayResponse( $resource );
 	}
 
 	public function showAppUsers( WP_REST_Request $request ): array {
@@ -56,7 +56,7 @@ class UserController {
 		}
 
 		$users = new Collection( $users, new UserTransformer );
-		return $this->get_response( $users );
+		return $this->prepareArrayResponse( $users );
 	}
 
 	public function showCurrent() {
@@ -67,7 +67,7 @@ class UserController {
 		if ( $user ) {
 			$resource = new Item( $user, new UserTransformer );
 
-			return $this->get_response( $resource );
+			return $this->prepareArrayResponse( $resource );
 		} else {
 			// The user is not logged in
 			return new \WP_Error( 'not_logged_in', 'You are not logged in.' );
@@ -119,7 +119,7 @@ class UserController {
 		// Transforming database model instance
 		$resource = new Item( $user, new UserTransformer );
 
-		return $this->get_response( $resource );
+		return $this->prepareArrayResponse( $resource );
 	}
 
 	public function search( WP_REST_Request $request ) {
@@ -146,7 +146,7 @@ class UserController {
 
 //        $resource->setPaginator( new IlluminatePaginatorAdapter( $users ) );
 
-		return $this->get_response( $resource );
+		return $this->prepareArrayResponse( $resource );
 	}
 
 	public function update_role( WP_REST_Request $request ) {
@@ -170,7 +170,7 @@ class UserController {
 		// Transforming database model instance
 		$resource = new Item( $user, new UserTransformer );
 
-		return $this->get_response( $resource );
+		return $this->prepareArrayResponse( $resource );
 	}
 
 	public function save_users_map_name( WP_REST_Request $request ) {
@@ -246,7 +246,7 @@ class UserController {
 		$result     = $wpdb->get_row( $query );
 		$result     = new Item( $result, new UserTransformer );
 
-		return $this->get_response( $result );
+		return $this->prepareArrayResponse( $result );
 	}
 
 	private function formatRoles($user) {

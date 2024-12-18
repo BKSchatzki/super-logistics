@@ -2,9 +2,9 @@
 
 namespace BigTB\SL\API\Entity\Models;
 
-use BigTB\SL\API\Core\DB_Connection\Model as Eloquent;
+use Illuminate\Database\Eloquent\Model;
 
-class Entity extends Eloquent {
+class Entity extends Model {
     protected $table = 'sl_entities';
     protected $fillable = [
         'name',

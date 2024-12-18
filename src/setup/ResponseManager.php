@@ -1,6 +1,6 @@
 <?php
 
-namespace BigTB\SuperLogistics\Setup;
+namespace BigTB\SL\Setup;
 
 use League\Fractal\Manager;
 use League\Fractal\Serializer\DataArraySerializer;

@@ -1,8 +1,8 @@
 <?php
 
-namespace BigTB\SuperLogistics\Setup;
+namespace BigTB\SL\Setup;
 
-class Frontend
+class FrontendManager
 {
     public static function init() {
         add_shortcode( 'super-logistics', __CLASS__ . '::shortcode' );

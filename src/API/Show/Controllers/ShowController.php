@@ -5,13 +5,12 @@ namespace BigTB\SL\API\Show\Controllers;
 use WP_REST_Request;
 use League\Fractal\Resource\Item as Item;
 use League\Fractal\Resource\Collection as Collection;
-use BigTB\SL\API\Setup\ResponseManager;
-use BigTB\SL\API\Common\Traits\Request_Filter;
+use BigTB\SL\Setup\ResponseManager;
 use BigTB\SL\API\Show\Models\Show;
 use BigTB\SL\API\Show\Transformers\ShowTransformer;
 
 class ShowController {
-    use Transformer_Manager, Request_Filter;
+    use ResponseManager;
 
     public function store(WP_REST_Request $request): array {
 
@@ -57,7 +56,7 @@ class ShowController {
 
         $resource = new Item($show, new ShowTransformer);
 
-        return $this->get_response( $resource );
+        return $this->prepareArrayResponse( $resource );
     }
 
     public function showRelevant(): array {
@@ -74,21 +73,21 @@ class ShowController {
 
         $resource = new Collection($shows, new ShowTransformer);
 
-        return $this->get_response( $resource );
+        return $this->prepareArrayResponse( $resource );
     }
 
     public function show(WP_REST_Request $request): array {
         $show = Show::find($request->get_param('id'));
         $resource = new Item($show, new ShowTransformer);
 
-        return $this->get_response( $resource );
+        return $this->prepareArrayResponse( $resource );
     }
 
     public function showAll(): array {
         $shows = Show::all();
         $resource = new Collection($shows, new ShowTransformer);
 
-        return $this->get_response( $resource );
+        return $this->prepareArrayResponse( $resource );
     }
 
     private static function handleImageUpload($file):string {

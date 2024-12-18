@@ -2,9 +2,9 @@
 
 namespace BigTB\SL\API\Transaction\Models;
 
-use BigTB\SL\API\Core\DB_Connection\Model as Eloquent;
+use Illuminate\Database\Eloquent\Model;
 
-class Transaction extends Eloquent
+class Transaction extends Model
 {
     protected $table = 'sl_transactions';
     protected $fillable = [

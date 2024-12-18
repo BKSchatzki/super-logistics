@@ -2,10 +2,9 @@
 
 namespace BigTB\SL\API\Item\Models;
 
-use BigTB\SL\API\Core\DB_Connection\Model as Eloquent;
-use BigTB\SL\API\User\Models\User;
+use Illuminate\Database\Eloquent\Model;
 
-class Item extends Eloquent {
+class Item extends Model {
     protected $table = 'sl_items';
     protected $fillable = [
         'transaction_id',
@@ -18,7 +17,7 @@ class Item extends Eloquent {
         ];
     public $timestamps = false;
 
-    public function transaction() {
+    public function transaction(): object {
         return $this->belongsTo( 'BigTB\SL\API\Transaction\Models\Transaction' );
     }
 }

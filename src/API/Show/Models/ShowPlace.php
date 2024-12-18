@@ -2,9 +2,9 @@
 
 namespace BigTB\SL\API\Show\Models;
 
-use BigTB\SL\API\Core\DB_Connection\Model as Eloquent;
+use Illuminate\Database\Eloquent\Model;
 
-class ShowPlace extends Eloquent {
+class ShowPlace extends Model {
     protected $table = 'sl_show_places';
     protected $fillable = [
         'show_id',
