@@ -1,0 +1,21 @@
+{
+    "name": "bigtb/super-logistics",
+    "description": "A wordpress plugin used to manage Las Vegas Convention logistics.",
+    "type": "project",
+    "license": "ISC",
+    "autoload": {
+        "psr-4": {
+            "BigTB\\SuperLogistics\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Gabriel Burgos",
+            "email": "gabrielb102@gmail.com"
+        }
+    ],
+    "require": {
+        "illuminate/database": "^11.36",
+        "league/fractal": "^0.20.1"
+    }
+}
