@@ -6,31 +6,20 @@ namespace BigTB\SL\API\Entity\Transformers;
 use BigTB\SL\API\Entity\Models\Entity;
 use League\Fractal\TransformerAbstract;
 
-class EntityTransformer extends TransformerAbstract
-{
-    public function transform(Entity $item)
-    {
-        $codes = $item->codes->map(function ($code) {
-            return [
-                'id' => $code->id,
-                'show_id' => $code->pivot->show_id,
-                'code' => $code->pivot->code,
-                'show_name' => $code->entity->name,
-            ];
-        });
-
-        return [
-            'id' => (int)$item->id,
-            'name' => $item->name,
-            'type' => $item->type,
-            'phone' => $item->phone,
-            'email' => $item->email,
-            'address' => $item->address,
-            'city' => $item->city,
-            'state' => $item->state,
-            'zip' => $item->zip,
-            'logo_path' => $item->logo_path,
-            'codes' => $codes,
-        ];
-    }
+class EntityTransformer extends TransformerAbstract {
+	public function transform( Entity $item ) {
+		return [
+			'id'        => (int) $item->id,
+			'name'      => (string) $item->name,
+			'type'      => (int) $item->type,
+			'phone'     => (string) $item->phone,
+			'email'     => (string) $item->email,
+			'address'   => (string) $item->address,
+			'city'      => (string) $item->city,
+			'state'     => (string) $item->state,
+			'zip'       => (int) $item->zip,
+			'logo_path' => (string) $item->logo_path,
+			'active' => (boolean) $item->active,
+		];
+	}
 }

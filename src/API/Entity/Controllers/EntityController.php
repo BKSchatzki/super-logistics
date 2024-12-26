@@ -3,113 +3,118 @@
 
 namespace BigTB\SL\API\Entity\Controllers;
 
-use WP_REST_Request;
-use League\Fractal\Resource\Item;
-use League\Fractal\Resource\Collection;
-use BigTB\SL\Setup\ResponseManager;
 use BigTB\SL\API\Entity\Models\Entity;
 use BigTB\SL\API\Entity\Transformers\EntityTransformer;
+use BigTB\SL\Setup\Controller;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
+use WP_REST_Request;
 
-class EntityController
-{
-    use ResponseManager;
+//	TODO: test this controller
 
-    public function show(WP_REST_Request $request):array
-    {
-        // Fetching all entities, then transform and return
-        $type = ($request->get_param('type'));
-        $entities = Entity::where('type', $type)->get();
-        $resource = new Collection($entities, new EntityTransformer);
+class EntityController extends Controller {
+// This controller is for Clients, Carriers, and sl_entities is also responsible for Show information
+// Clients are type 1,
+// Shows are type 2, and
+// Carriers are type 3
 
-        return $this->prepareArrayResponse($resource);
-    }
+	public static function get( WP_REST_Request $request ): array {
+		// Fetching entities, then transform and return
+		// type determines the type of entity, 1 for clients, 2 for shows, 3 for carriers
+		// Use the ShowController to get shows
+		$params   = $request->get_params();
+		$query    = self::addWhereClauses( Entity::query(), $params, [
+			'type',
+			'active',
+			'id',
+			'name',
+			'email',
+			'address',
+			'city',
+			'state',
+			'zip',
+			'phone'
+		] );
+		$entities = $query->get();
+		$resource = new Collection( $entities, new EntityTransformer );
 
-    public function store(): array
-    {// This function is formData in order to handle the image file upload
-        $logo_path = isset($_FILES['logoFile']) ? self::handleImageUpload($_FILES['logoFile']) : '';
+		return self::prepareArrayResponse( $resource );
+	}
 
-        $entity_data = [
-            'name' => sanitize_text_field($_POST['name']),
-            'type' => sanitize_text_field($_POST['type']),
-            'address' => sanitize_text_field($_POST['address']),
-            'city' => sanitize_text_field($_POST['city']),
-            'state' => sanitize_text_field($_POST['state']),
-            'zip' => sanitize_text_field($_POST['zip']),
-            'phone' => sanitize_text_field($_POST['phone']),
-            'email' => sanitize_email($_POST['email']),
-            'logo_path' => $logo_path
-        ];
+	public static function create(): array {// This function is formData in order to handle the image file upload
+		$logo_path = isset( $_FILES['logoFile'] ) ? self::handleImageUpload( $_FILES['logoFile'] ) : '';
 
-        $entity = Entity::create($entity_data);
+		$entity_data = [
+			'name'      => sanitize_text_field( $_POST['name'] ),
+			'type'      => sanitize_text_field( $_POST['type'] ),
+			'address'   => sanitize_text_field( $_POST['address'] ),
+			'city'      => sanitize_text_field( $_POST['city'] ),
+			'state'     => sanitize_text_field( $_POST['state'] ),
+			'zip'       => sanitize_text_field( $_POST['zip'] ),
+			'phone'     => sanitize_text_field( $_POST['phone'] ),
+			'email'     => sanitize_email( $_POST['email'] ),
+			'logo_path' => $logo_path
+		];
 
-        $resource = new Item($entity, new EntityTransformer);
+		$entity = Entity::create( $entity_data );
 
-        return $this->prepareArrayResponse($resource);
-    }
+		$resource = new Item( $entity, new EntityTransformer );
 
-    public function updateCode(WP_REST_Request $request): bool {
-        $entity_id = $request->get_param('entity_id');
-        $show_id = $request->get_param('show_id');
-        $code = $request->get_param('code');
+		return self::prepareArrayResponse( $resource );
+	}
 
-        $entity = Entity::find($entity_id);
-        $entity->codes()->syncWithoutDetaching([$show_id => ['code' => $code]]);
+	public static function update( WP_REST_Request $request ): array {
+		$logo_path           = isset( $_FILES['logoFile'] ) ? self::handleImageUpload( $_FILES['logoFile'] ) : '';
+		$params              = $request->get_params();
+		$params['logo_path'] = $logo_path;
+		$entity              = Entity::find( $params['id'] );
 
-        return true;
-    }
+		if ( ! $entity ) {
+			return self::prepareErrorResponse( 'Entity not found', 404 );
+		}
 
-    public function getCodes(WP_REST_Request $request): array
-    {
-        // Fetch all entities with their related codes
-        $entities = Entity::with('codes.entity')->get();
+		self::updateIfProvided( $entity, $params, [
+			'name',
+			'type',
+			'phone',
+			'email',
+			'address',
+			'city',
+			'state',
+			'zip'
+		] );
 
-        // Transform and return the entities and their related codes
-        $resource = new Collection($entities, new EntityTransformer);
+		$entity->save();
 
-        return $this->prepareArrayResponse($resource);
-    }
+		$resource = new Item( $entity, new EntityTransformer );
 
-    public function registerUser(): bool {
-        $code = $_POST['code'];
+		return self::prepareArrayResponse( $resource );
+	}
 
-        $entity = Entity::whereHas('codes', function ($query) use ($code) {
-            $query->where('code', $code);
-        })->first();
+	public static function inactivate( WP_REST_Request $request ): array {
+		$entity = Entity::find( $request->get_param( 'id' ) );
 
-        if (!$entity) {
-            return false; // Or handle the error as needed
-        }
+		if ( ! $entity ) {
+			return self::throwNotFoundError();
+		}
 
-        $currentUser = wp_get_current_user();
-        if (!$currentUser || $currentUser->ID == 0) {
-            return false; // Or handle the error as needed
-        }
+		$entity->active = 0;
+		$entity->save();
 
-        $entity->users()->attach($currentUser->ID);
+		$resource = new Item( $entity, new EntityTransformer );
 
-        return true;
-    }
+		return self::prepareArrayResponse( $resource );
+	}
 
-    private static function handleImageUpload($file):string {
-        // Define overrides
-        $overrides = array(
-            'test_form' => false,
-            'mimes' => array(
-                'jpg|jpeg|jpe' => 'image/jpeg',
-                'png' => 'image/png',
-                'gif' => 'image/gif'
-            )
-        );
+	public static function delete( WP_REST_Request $request ): array {
+		$entity = Entity::find( $request->get_param( 'id' ) );
 
-        // Handle file upload
-        $upload = wp_handle_upload($file, $overrides);
+		if ( ! $entity ) {
+			return self::prepareErrorResponse( 'Entity not found', 404 );
+		}
 
-        // Check for errors
-        if (isset($upload['error'])) {
-            return new WP_Error('upload_failed', $upload['error'], array('status' => 500));
-        }
+		$entity->delete();
 
-        // File upload successful
-        return $upload['file'];
-    }
+		return self::prepareArrayResponse( 'Entity deleted successfully' );
+	}
 }

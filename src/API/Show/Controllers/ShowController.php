@@ -3,16 +3,50 @@
 namespace BigTB\SL\API\Show\Controllers;
 
 use WP_REST_Request;
-use League\Fractal\Resource\Item as Item;
-use League\Fractal\Resource\Collection as Collection;
-use BigTB\SL\Setup\ResponseManager;
+use WP_Error;
+use League\Fractal\Resource\Item;
+use League\Fractal\Resource\Collection;
+use BigTB\SL\Setup\Controller;
 use BigTB\SL\API\Show\Models\Show;
 use BigTB\SL\API\Show\Transformers\ShowTransformer;
 
-class ShowController {
-    use ResponseManager;
+// TODO: Build out show controller
+// TODO: Test this controller
+// TODO: Error Handling
 
-    public function store(WP_REST_Request $request): array {
+class ShowController extends Controller {
+
+	public static function get( WP_REST_Request $request ): array {
+		// Fetched with the ENTITY ID as the primary key
+		// Yes it's a little convoluted, but this way it's more easily accessible for manipulation from the user model
+		$params   = $request->get_params();
+		// Some of these are through the relationship, so adjust for that in addWhereClauses
+		$query    = self::addWhereClauses( Show::query(), $params, [
+			'name',
+			'client_id',
+			'min_carat_weight',
+			'carat_weight_inc',
+			'date_start',
+			'date_end',
+			'floor_plan_path',
+			'name',
+			'type',
+			'phone',
+			'email',
+			'address',
+			'city',
+			'state',
+			'zip',
+			'logo_path',
+			'active',
+		] );
+		$entities = $query->get();
+		$resource = new Collection( $entities, new EntityTransformer );
+
+		return self::prepareArrayResponse( $resource );
+	}
+
+    public static function create(WP_REST_Request $request): array {
 
         // Store images first
         $logoFile = $request->get_file_params()['logoFile'] ?? null;
@@ -56,41 +90,58 @@ class ShowController {
 
         $resource = new Item($show, new ShowTransformer);
 
-        return $this->prepareArrayResponse( $resource );
+        return self::prepareArrayResponse( $resource );
     }
 
-    public function showRelevant(): array {
-        $format = 'Y-m-d H:i:s';
-        $currentDate = date($format);
+	public static function update(WP_REST_Request $request): array {
+		$show = Show::find($request->get_param('id'));
 
-        $shows = Show::with(['entity', 'places'])
-            ->where(function ($query) use ($currentDate) {
-                $query->where('date_expiry', '>', $currentDate)
-                    ->orWhereNull('date_expiry')
-                    ->orWhere('date_expiry', '0000-00-00');
-            })
-            ->get();
+		// Use get_param() to retrieve each input field, handle empty/null values as needed
+		$show->date_start = sanitize_text_field($request->get_param('dateStart'));
+		$show->date_end = sanitize_text_field($request->get_param('dateEnd')) == 'null' ?
+			null : sanitize_text_field($request->get_param('dateEnd'));
+		$show->date_expiry = sanitize_text_field($request->get_param('dateExpiry')) == 'null' ?
+			null : sanitize_text_field($request->get_param('dateExpiry'));
+		$show->min_carat_weight = sanitize_text_field($request->get_param('minCaratWeight'));
+		$show->carat_weight_inc = sanitize_text_field($request->get_param('caratWeightInc'));
+		$show->client_id = sanitize_text_field($request->get_param('clientID'));
+		$show->floor_plan_path = sanitize_text_field($request->get_param('floorPlanPath'));
 
-        $resource = new Collection($shows, new ShowTransformer);
+		$show->entity->name = sanitize_text_field($request->get_param('name'));
+		$show->entity->address = sanitize_text_field($request->get_param('address'));
+		$show->entity->city = sanitize_text_field($request->get_param('city'));
+		$show->entity->state = sanitize_text_field($request->get_param('state'));
+		$show->entity->zip = sanitize_text_field($request->get_param('zip'));
+		$show->entity->phone = sanitize_text_field($request->get_param('phone'));
+		$show->entity->email = sanitize_email($request->get_param('email'));
+		$show->entity->logo_path = sanitize_text_field($request->get_param('logoPath'));
 
-        return $this->prepareArrayResponse( $resource );
-    }
+		$show->save();
+		$show->entity->save();
 
-    public function show(WP_REST_Request $request): array {
-        $show = Show::find($request->get_param('id'));
-        $resource = new Item($show, new ShowTransformer);
+		$resource = new Item($show, new ShowTransformer);
 
-        return $this->prepareArrayResponse( $resource );
-    }
+		return self::prepareArrayResponse( $resource );
+	}
 
-    public function showAll(): array {
-        $shows = Show::all();
-        $resource = new Collection($shows, new ShowTransformer);
+	public static function inactivate(WP_REST_Request $request): array {
+		$show = Show::find($request->get_param('id'));
+		$show->active = 0;
+		$show->save();
 
-        return $this->prepareArrayResponse( $resource );
-    }
+		$resource = new Item($show, new ShowTransformer);
 
-    private static function handleImageUpload($file):string {
+		return self::prepareArrayResponse( $resource );
+	}
+
+	public static function delete(WP_REST_Request $request): array {
+		$show = Show::find($request->get_param('id'));
+		$show->delete();
+
+		return self::prepareArrayResponse( [] );
+	}
+
+    private static function handleImageUpload($file):string | WP_Error {
         // Define overrides
         $overrides = array(
             'test_form' => false,

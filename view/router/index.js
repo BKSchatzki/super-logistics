@@ -1,21 +1,55 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHashHistory } from 'vue-router'
+import DataInput from '@/components/data-input/data-input.vue'
+import QRScanner from '@/components/qr-scanner/QRScanner.vue'
+import ReportsMain from '@/components/reports/ReportsMain.vue'
+import UserMgmtMain from '@/components/user-management/UserMgmtMain.vue'
+import ClientMgmtMain from '@/components/client-management/ClientMgmtMain.vue'
+import Settings from '@/components/settings/Settings.vue'
+import PublicHome from '@/components/public-facing/PublicHome.vue'
+import TransactionsMain from '@/components/transactions/TransactionsMain.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(localized.pageURL),
   routes: [
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: DataInput,
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/transactions',
+      name: 'transactions',
+      component: TransactionsMain,
+    },
+    {
+      path: '/scanner',
+      name: 'scanner',
+      component: QRScanner,
+    },
+    {
+      path: '/clients',
+      name: 'clients',
+      component: ClientMgmtMain,
+    },
+    {
+      path: '/reports',
+      name: 'reports',
+      component: ReportsMain,
+    },
+    {
+      path: '/users',
+      name: 'user-management',
+      component: UserMgmtMain,
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: Settings,
+    },
+    {
+      path: '/public',
+      name: 'public-home',
+      component: PublicHome,
     },
   ],
 })

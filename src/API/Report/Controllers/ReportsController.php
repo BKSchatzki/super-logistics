@@ -2,10 +2,9 @@
 
 namespace BigTB\SL\API\Report\Controllers;
 
-use League\Fractal\Resource\Collection as Collection;
-use League\Fractal\Resource\Item as Item;
-use BigTB\SL\API\Common\Traits\Request_Filter;
-use BigTB\SL\API\Setup\ResponseManager;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
+use BigTB\SL\Setup\ResponseManager;
 use BigTB\SL\API\PDF\PalletManifestGenerator;
 use BigTB\SL\API\PDF\TrailerManifestGenerator;
 use BigTB\SL\API\PDF\ShowReportGenerator;
@@ -19,7 +18,7 @@ class ReportsController
 {
     use ResponseManager;
 
-    public function getTrailerManifest(WP_REST_Request $request)
+    public static function getTrailerManifest(WP_REST_Request $request): array
     {
         $trailer_number = $request->get_param('trailerNum');
         $transactions = Transaction::with(
@@ -35,10 +34,10 @@ class ReportsController
         $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
-        return $this->prepareArrayResponse($res);
+        return self::prepareArrayResponse($res);
     }
 
-    public function getPalletManifest(WP_REST_Request $request)
+    public static function getPalletManifest(WP_REST_Request $request): array
     {
         $pallet_number = $request->get_param('palletNum');
         $transactions = Transaction::with(
@@ -54,10 +53,10 @@ class ReportsController
         $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
-        return $this->prepareArrayResponse($res);
+        return self::prepareArrayResponse($res);
     }
 
-    public function getShowReport(WP_REST_Request $request)
+    public static function getShowReport(WP_REST_Request $request): array
     {
         $client_id = $request->get_param('client_id');
         $show_id = $request->get_param('show_id');
@@ -82,10 +81,10 @@ class ReportsController
         $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
-        return $this->prepareArrayResponse($res);
+        return self::prepareArrayResponse($res);
     }
 
-    public function getShowReportTwo(WP_REST_Request $request)
+    public static function getShowReportTwo(WP_REST_Request $request): array
     {
         $client_id = $request->get_param('client_id');
         $show_id = $request->get_param('show_id');
@@ -110,6 +109,6 @@ class ReportsController
         $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
-        return $this->prepareArrayResponse($res);
+        return self::prepareArrayResponse($res);
     }
 }

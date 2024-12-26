@@ -2,256 +2,202 @@
 
 namespace BigTB\SL\API\User\Controllers;
 
-use Illuminate\Pagination\Paginator;
-use League\Fractal\Resource\Collection as Collection;
-use League\Fractal\Resource\Item as Item;
-use BigTB\SL\API\Common\Traits\Request_Filter;
-use BigTB\SL\API\Setup\ResponseManager;
 use BigTB\SL\API\User\Models\User;
 use BigTB\SL\API\User\Transformers\UserTransformer;
+use BigTB\SL\Setup\Controller;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
 use WP_REST_Request;
 
-class UserController {
-	use ResponseManager;
+// TODO: Error Handling!!
+// TODO: Testing!!
 
-	public function index( WP_REST_Request $request ) {
-		$id = $request->get_param( 'id' );
+class UserController extends Controller {
 
-		if ( $id && is_array( $id ) ) {
-			$users    = User::find( $id );
-			$resource = new Collection( $users, new UserTransformer );
-		} else {
-			$users    = User::all();
-			$resource = new Collection( $users, new UserTransformer );
-		}
+	public static function get( WP_REST_Request $request ): array {
+		$params       = $request->get_params();
+		$params['ID'] = $params['id'];
+		$users        = self::getUsers( $params );
+		if ( isset( $params['roles'] ) ) {
+			$roles = $params['roles'];
+			$users = $users->filter( function ( $entity ) use ( $roles ) {
+				$userRoles = $entity->roles->pluck( 'meta_value' )->toArray();
 
-
-		return $this->prepareArrayResponse( $resource );
-	}
-
-	public function show( WP_REST_Request $request ) {
-		$id       = $request->get_param( 'id' );
-		$user     = User::find( $id );
-		$resource = new Item( $user, new UserTransformer );
-
-		return $this->prepareArrayResponse( $resource );
-	}
-
-	public function showAppUsers( WP_REST_Request $request ): array {
-		$roles = $request->get_param( 'roles' );
-		error_log( "//////ROLES: " . print_r( $roles, true ) );
-
-		$users = User::with( 'roles', 'entities' )->get();
-		$users = $users->map( function ( $user ) {
-			return $this->formatRoles( $user );
-		} );
-
-		if ( ! empty( $roles ) ) {
-			$users = $users->filter( function ( $user ) use ( $roles ) {
-				return ! empty( array_intersect( $user->roles, $roles ) );
+				return ! empty( array_intersect( $userRoles, $roles ) );
 			} );
-			$users = $users->map(function($user) {
-				$user->role = $user->roles[0];
-			});
 		}
 
-		$users = new Collection( $users, new UserTransformer );
-		return $this->prepareArrayResponse( $users );
-	}
-
-	public function showCurrent() {
-		$current_user = wp_get_current_user();
-		$user         = User::with( 'entities', 'roles' )->find( $current_user->ID );
-		$user	  	 = $this->formatRoles( $user );
-
-		if ( $user ) {
-			$resource = new Item( $user, new UserTransformer );
-
-			return $this->prepareArrayResponse( $resource );
-		} else {
-			// The user is not logged in
-			return new \WP_Error( 'not_logged_in', 'You are not logged in.' );
-		}
-	}
-
-	public function store( WP_REST_Request $request ) {
-		// Extraction of user data from inputs
-		$user_data = [
-			'user_login'           => $request->get_param( 'username' ),
-			'user_email'           => $request->get_param( 'email' ),
-			'user_pass'            => $request->get_param( 'password' ),
-			'user_nicename'        => $request->get_param( 'nicename' ),
-			'display_name'         => $request->get_param( 'display_name' ),
-			'first_name'           => $request->get_param( 'first_name' ),
-			'last_name'            => $request->get_param( 'last_name' ),
-			'nickname'             => $request->get_param( 'nickname' ),
-			'user_url'             => $request->get_param( 'user_url' ),
-			'description'          => $request->get_param( 'description' ),
-			'locale'               => $request->get_param( 'locale' ),
-			'rich_editing'         => $request->get_param( 'rich_editing' ),
-			'comment_shortcuts'    => $request->get_param( 'comment_shortcuts' ),
-			'admin_color'          => $request->get_param( 'admin_color' ),
-			'show_admin_bar_front' => $request->get_param( 'show_admin_bar_front' ),
-			'user_registered'      => $request->get_param( 'user_registered' ),
-			'use_ssl'              => $request->get_param( 'use_ssl' ),
-		];
-		$user_data = array_filter( $user_data );
-
-		// User password insertion
-		if ( ! array_key_exists( 'user_pass', $user_data ) ) {
-			$user_data['user_pass'] = wp_generate_password(
-				$length = 12,
-				$include_standard_special_chars = false
-			);
-		}
-
-		// User creation
-		$user_id = wp_insert_user( $user_data );
-
-		if ( is_multisite() ) {
-			$blog_id = get_current_blog_id();
-			add_user_to_blog( $blog_id, $blog_id, 'subscriber' );
-		}
-
-		wp_send_new_user_notifications( $user_id );
-		$user = User::find( $user_id );
-
-		// Transforming database model instance
-		$resource = new Item( $user, new UserTransformer );
-
-		return $this->prepareArrayResponse( $resource );
-	}
-
-	public function search( WP_REST_Request $request ) {
-		$query_string = $request->get_param( 'query' );
-		$limit        = $request->get_param( 'limit' );
-		$term         = $request->get_param( 'term' );
-
-		$users = User::where( 'user_login', 'LIKE', '%' . $query_string . '%' )
-		             ->orWhere( 'user_nicename', 'LIKE', '%' . $query_string . '%' )
-		             ->orWhere( 'user_email', 'LIKE', '%' . $query_string . '%' )
-		             ->orWhere( 'user_url', 'LIKE', '%' . $query_string . '%' )
-		             ->multisite();
-
-		if ( $limit ) {
-			$users = $users->limit( intval( $limit ) )->get();
-		} else {
-			$users = $users->get();
-		}
-
-
-//        $user_collection = $users->getCollection();
-//        $resource = new Collection( $user_collection, new UserTransformer );
 		$resource = new Collection( $users, new UserTransformer );
 
-//        $resource->setPaginator( new IlluminatePaginatorAdapter( $users ) );
-
-		return $this->prepareArrayResponse( $resource );
+		return self::prepareArrayResponse( $resource );
 	}
 
-	public function update_role( WP_REST_Request $request ) {
-		// Extract user inputs
-		$id         = $request->get_param( 'user_id' );
-		$project_id = $request->get_param( 'project_id' );
-		$role_ids   = $request->get_param( 'role_ids' );
-		$role_ids   = explode( ',', $role_ids );
+	public static function getCurrent(): array {
+		$currentUser = wp_get_current_user();
+		$params      = [
+			'ID' => $currentUser->ID
+		];
+		$users       = self::getUsers( $params );
+		$resource    = new Item( $users[0], new UserTransformer );
 
-		// Associate roles and users
-		if ( $project_id ) {
-			foreach ( $role_ids as $role_id ) {
-				$role_project_ids[ $role_id ] = [ 'project_id' => $project_id ];
-			}
-			$role_ids = $role_project_ids;
+		return self::prepareArrayResponse( $resource );
+	}
+
+	public static function create( WP_REST_Request $request ): array {
+		// can take first_name, last_name, email, user_login, role, and roles
+		$params = $request->get_params();
+
+		$userData = self::createUser( $params );
+
+		if ( ! isset( $userData->ID ) ) {
+			return self::prepareErrorResponse( $userData );
 		}
 
-		$user = User::find( $id );
-		$user->roles()->sync( $role_ids );
+		$users = self::getUsers( [ 'ID' => $userData->ID ] );
 
-		// Transforming database model instance
+		$resource = new Item( $users[0], new UserTransformer );
+
+		return self::prepareArrayResponse( $resource );
+	}
+
+	public static function update( WP_REST_Request $request ): array {
+		$params = $request->get_params();
+		$userId = $params['id'];
+
+		$user = User::find( $userId );
+		if ( ! $user ) {
+			return self::prepareErrorResponse( 'User not found' );
+		}
+
+		if ( isset( $params['client'] ) ) {
+			$user->entities()->wherePivot( 'user_id', $userId )->sync( $params['client'] );
+		}
+
+		if ( isset( $params['shows'] ) ) {
+			$user->entities()->wherePivot( 'user_id', $userId )->sync( $params['shows'] );
+		}
+
+		self::updateRoles( $userId, $params['roles'] );
+
+		self::updateMetaIfProvided( $userId, $params, [ 'first_name', 'last_name' ] );
+
+		self::updateIfProvided( $user, $params, [ 'email' ] );
+
+		$user->save();
+
+		$users = self::getUsers( [ 'ID' => $userId ] );
+
+		$resource = new Item( $users[0], new UserTransformer );
+
+		return self::prepareArrayResponse( $resource );
+	}
+
+	public static function delete( WP_REST_Request $request ): array {
+		$params = $request->get_params();
+		$userId = $params['id'];
+
+		$user = User::find( $userId );
+		if ( ! $user ) {
+			return self::prepareErrorResponse( 'User not found' );
+		}
+
+		$user->delete();
+
 		$resource = new Item( $user, new UserTransformer );
 
-		return $this->prepareArrayResponse( $resource );
+		return self::prepareArrayResponse( $resource );
 	}
 
-	public function save_users_map_name( WP_REST_Request $request ) {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return new \WP_Error( 'usersmap', __( 'You have no permission to create/update user meta.', 'super-logistics' ) );
+	private static function getUsers( $params ) {
+		$query = self::addWhereClauses( User::with( [
+			'roles',
+			'first_name',
+			'last_name',
+			'entities',
+			'entities.show'
+		] ), $params, [ 'ID' ] );
+
+		if ( isset( $params['first_name'] ) ) {
+			$query->whereHas( 'first_name', function ( $q ) use ( $params ) {
+				$q->where( 'meta_value', $params['first_name'] );
+			} );
 		}
 
-		$usernames = $request->get_params();
-		foreach ( $usernames['usernames'] as $username_key => $username_value ) {
-			$username_key_array = explode( '_', $username_key );
-			if ( in_array( 'github', $username_key_array, true ) || in_array( 'bitbucket', $username_key_array, true ) ) {
-				$user_meta_id    = $username_key_array[1];
-				$user_meta_key   = $username_key_array[0];
-				$user_meta_value = ! empty( $username_value ) ? sanitize_text_field( $username_value ) : '';
+		if ( isset( $params['last_name'] ) ) {
+			$query->whereHas( 'last_name', function ( $q ) use ( $params ) {
+				$q->where( 'meta_value', $params['last_name'] );
+			} );
+		}
 
-				update_user_meta( $user_meta_id, $user_meta_key, $user_meta_value );
+		return $query->get();
+	}
+
+	public static function createUser( $userData ): object {
+		error_log( '///// Creating user with data: ' . print_r( $userData, true ) );
+		// Set default values for user data if not provided
+		$defaults = [
+			'user_login' => '',
+			'user_pass'  => wp_generate_password(),
+			'user_email' => '',
+			'role'       => ''
+		];
+
+		// Merge provided user data with defaults
+		$userData = wp_parse_args( $userData, $defaults );
+
+		// Extract roles if provided
+		$roles = $userData['roles'] ?? [ $userData['role'] ];
+		unset( $userData['roles'] );
+
+		// Create the user
+		$userId = wp_insert_user( $userData );
+
+		// Check for errors
+		if ( is_wp_error( $userId ) ) {
+			return $userId; // Return the error
+		}
+
+		// Assign multiple roles
+		foreach ( $roles as $role ) {
+			add_user_meta( $userId, 'wp_capabilities', [ $role => true ], true );
+		}
+
+		// Check for errors
+		if ( is_wp_error( $userId ) ) {
+			return $userId; // Return the error
+		}
+
+		// Optionally, send a notification to the new user
+		wp_send_new_user_notifications( $userId );
+
+		// Return the created user object
+		return get_userdata( $userId );
+	}
+
+	public static function updateMetaIfProvided( $uID, $params, $keys ): void {
+		if ( ! is_array( $keys ) ) {
+			$keys = [ $keys ];
+		}
+
+		foreach ( $keys as $key ) {
+			if ( isset( $params[ $key ] ) ) {
+				update_user_meta( $uID, $key, $params[ $key ] );
 			}
 		}
 	}
 
-	public function get_user_all_projects( WP_REST_Request $request ) {
-		global $wpdb;
-		$type = $request->get_param( 'user_type' );
+	public static function updateRoles( $uID, $roles ): void {
+		$user = new \WP_User( $uID );
 
-		$role = '';
-
-		if ( $type == 'manager' ) {
-			$role = ' AND rus.role_id=1';
-		} else if ( $type == 'co_worker' ) {
-			$role = ' AND rus.role_id=2';
-		} else if ( $type == 'client' ) {
-			$role = ' AND rus.role_id=3';
+		// Remove all existing roles
+		foreach ( $user->roles as $role ) {
+			$user->remove_role( $role );
 		}
 
-		$tb_role_users = pm_tb_prefix() . 'pm_role_user';
-		$tb_users      = $wpdb->base_prefix . 'users';
-		$tb_user_meta  = $wpdb->base_prefix . 'usermeta';
-
-		if ( is_multisite() ) {
-			$meta_key = pm_user_meta_key();
-
-			$sql = "SELECT DISTINCT us.ID as user_id, us.user_email as user_email, us.display_name as display_name
-                FROM $tb_role_users as rus
-                LEFT JOIN $tb_users as us ON us.ID=rus.user_id
-                LEFT JOIN $tb_user_meta as umeta ON umeta.user_id = us.ID
-                WHERE 1=1 
-                AND umeta.meta_key='$meta_key'
-                $role";
-		} else {
-			$sql = "SELECT DISTINCT us.ID as user_id, us.user_email as user_email, us.display_name as display_name
-                FROM $tb_role_users as rus
-                LEFT JOIN $tb_users as us ON us.ID=rus.user_id
-                WHERE 1=1 $role";
+		// Add new roles
+		foreach ( $roles as $role ) {
+			$user->add_role( $role );
 		}
-
-		$users = $wpdb->get_results( $sql );
-
-		foreach ( $users as $key => $user ) {
-			$user->avatar_url = get_avatar_url( $user->user_email );
-		}
-
-		wp_send_json_success( $users );
 	}
 
-	public function client() {
-		global $wpdb;
-
-		$user    = wp_get_current_user();
-		$user_id = $user->ID;
-
-		$table_name = $wpdb->prefix . 'sl_entity_users';
-		$query      = $wpdb->prepare( "SELECT * FROM $table_name WHERE user_id = %d", $user_id );
-		$result     = $wpdb->get_row( $query );
-		$result     = new Item( $result, new UserTransformer );
-
-		return $this->prepareArrayResponse( $result );
-	}
-
-	private function formatRoles($user) {
-		$unsrlzdRoles = isset( $user->roles[0] ) ? unserialize( $user->roles[0]->meta_value ) : [];
-		$user->roles  = array_keys( $unsrlzdRoles );
-		return $user;
-	}
 }

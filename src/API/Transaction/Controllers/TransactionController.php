@@ -5,10 +5,10 @@ namespace BigTB\SL\API\Transaction\Controllers;
 use BigTB\SL\API\PDF\ExternalLabelGenerator;
 use BigTB\SL\API\Transaction\Models\Transaction;
 use WP_REST_Request;
-use League\Fractal\Resource\Item as Item;
-use League\Fractal\Resource\Collection as Collection;
+use League\Fractal\Resource\Item;
+use League\Fractal\Resource\Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use BigTB\SL\API\Setup\ResponseManager;
+use BigTB\SL\Setup\ResponseManager;
 use BigTB\SL\API\Common\Traits\Request_Filter;
 use BigTB\SL\API\Transaction\Transformers\TransactionTransformer;
 use BigTB\SL\API\PDF\LabelGenerator;
@@ -18,23 +18,23 @@ use BigTB\SL\API\Update\Models\Update;
 class TransactionController {
     use ResponseManager;
 
-    public function index( WP_REST_Request $request ): array {
+    public static function index( WP_REST_Request $request ): array {
         $transactions = Transaction::where('status', '<>', 0)
-            ->paginate($this->get_per_page());
+            ->paginate(self::get_per_page());
         $resource = new Collection($transactions, new TransactionTransformer);
         $resource->setPaginator(new IlluminatePaginatorAdapter($transactions));
 
-        return $this->prepareArrayResponse( $resource );
+        return self::prepareArrayResponse( $resource );
     }
 
-    public function get( WP_REST_Request $request ): array {
+    public static function get( WP_REST_Request $request ): array {
         $transaction = Transaction::with(['show', 'client', 'carrier', 'shipper', 'exhibitor', 'updates', 'items'])->find($request->get_param('id'));
         $resource = new Item($transaction, new TransactionTransformer);
 
-        return $this->prepareArrayResponse( $resource );
+        return self::prepareArrayResponse( $resource );
     }
 
-    public function store(WP_REST_Request $request): array {
+    public static function create(WP_REST_Request $request): array {
         $transaction_data = json_decode($request->get_param('transaction'), true);
         $items_data = $transaction_data['items'];
 
@@ -61,10 +61,10 @@ class TransactionController {
         $transaction->save();
         $resource = new Item($transaction, new TransactionTransformer);
 
-        return $this->prepareArrayResponse($resource);
+        return self::prepareArrayResponse($resource);
     }
 
-    public function update(WP_REST_Request $request): array {
+    public static function update(WP_REST_Request $request): array {
         $transaction_data = json_decode($request->get_param('transaction'), true);
 
         $items_data = $transaction_data['items'];
@@ -98,25 +98,25 @@ class TransactionController {
         $transaction->save();
         $resource = new Item($transaction, new TransactionTransformer);
 
-        return $this->prepareArrayResponse($resource);
+        return self::prepareArrayResponse($resource);
     }
 
-    public function trash(WP_REST_Request $request): array {
+    public static function trash(WP_REST_Request $request): array {
         $transaction = Transaction::find($request->get_param('id'));
         $transaction->status = 0;
         $transaction->save();
 
-        return $this->prepareArrayResponse([]);
+        return self::prepareArrayResponse([]);
     }
 
-    public function delete(WP_REST_Request $request): array {
+    public static function delete(WP_REST_Request $request): array {
         $transaction = Transaction::find($request->get_param('id'));
         $transaction->delete();
 
-        return $this->prepareArrayResponse([]);
+        return self::prepareArrayResponse([]);
     }
 
-    public function search(WP_REST_Request $request): array {
+    public static function search(WP_REST_Request $request): array {
 
         $totalQueries = [
             'show_id' => $request->get_param('show_id'),
@@ -145,10 +145,10 @@ class TransactionController {
 
         $transactions = $query->with(['show', 'client', 'carrier', 'shipper', 'exhibitor', 'updates', 'items'])->get();
         $resource = new Collection($transactions, new TransactionTransformer);
-        return $this->prepareArrayResponse($resource);
+        return self::prepareArrayResponse($resource);
     }
 
-    public function createLabels(WP_REST_Request $request): array
+    public static function createLabels(WP_REST_Request $request): array
     {
         $trans_id = $request->get_param('trans_id');
         $t = Transaction::with(['show.entity', 'client', 'carrier', 'shipper', 'exhibitor', 'showPlace', 'items'])->find($trans_id);
@@ -162,10 +162,10 @@ class TransactionController {
         $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
-        return $this->prepareArrayResponse($res);
+        return self::prepareArrayResponse($res);
     }
 
-    public function createExternalLabel(WP_REST_Request $request): array
+    public static function createExternalLabel(WP_REST_Request $request): array
     {
         $transaction_data = json_decode($request->get_param('txn'), true);
 
@@ -183,10 +183,10 @@ class TransactionController {
         $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
         // Return the response
-        return $this->prepareArrayResponse($res);
+        return self::prepareArrayResponse($res);
     }
 
-    public function storeNote(WP_REST_Request $request): array {
+    public static function storeNote(WP_REST_Request $request): array {
         $transaction_id = $request->get_param('transaction_id');
         $note = $request->get_param('note');
 
@@ -202,10 +202,10 @@ class TransactionController {
 
         $resource = new Item($transaction, new TransactionTransformer);
 
-        return $this->prepareArrayResponse($resource);
+        return self::prepareArrayResponse($resource);
     }
 
-    private static function handleImageUpload($file): string {
+    private static function handleImageUpload($file): string | \WP_Error {
         // Define overrides
         $overrides = array(
             'test_form' => false,
@@ -221,7 +221,7 @@ class TransactionController {
 
         // Check for errors
         if (isset($upload['error'])) {
-            return new WP_Error('upload_failed', $upload['error'], array('status' => 500));
+            return new \WP_Error('upload_failed', $upload['error'], array('status' => 500));
         }
 
         // File upload successful, get file URL
@@ -232,10 +232,10 @@ class TransactionController {
         return $url;
     }
 
-    public function removeNote(WP_REST_Request $request): array {
+    public static function removeNote(WP_REST_Request $request): array {
         $update_id = $request->get_param('update_id');
         $update = Update::find($update_id);
         $update->update(['note' => '']);
-        return $this->prepareArrayResponse([]);
+        return self::prepareArrayResponse([]);
     }
 }
