@@ -8,7 +8,7 @@ use WP_REST_Request;
 use League\Fractal\Resource\Item;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use BigTB\SL\Setup\ResponseManager;
+use BigTB\SL\Setup\WP\ResponseManager;
 use BigTB\SL\API\Common\Traits\Request_Filter;
 use BigTB\SL\API\Transaction\Transformers\TransactionTransformer;
 use BigTB\SL\API\PDF\LabelGenerator;

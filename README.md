@@ -1,60 +1,18 @@
-# view
+# Super Logistics
 
-This template should help get you started developing with Vue 3 in Vite.
+Super Logistics is a WordPress plugin that allows you to manage your logistics data in a simple and efficient way.
 
-## Recommended IDE Setup
+## Data Organization (engineering)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+The plugin is organized in the following way:
 
-## Customize configuration
+### Entities
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+The following are considered the main entities of the plugin:
+- clients
+- shows
 
-## Project Setup
+### Users
 
-```sh
-npm install
-```
+Users are stored in the wp_users table and are associated with entities through the sl_users_entities table.
 
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Run End-to-End Tests with [Playwright](https://playwright.dev)
-
-```sh
-# Install browsers for the first run
-npx playwright install
-
-# When testing on CI, must build the project first
-npm run build
-
-# Runs the end-to-end tests
-npm run test:e2e
-# Runs the tests only on Chromium
-npm run test:e2e -- --project=chromium
-# Runs the tests of a specific file
-npm run test:e2e -- tests/example.spec.ts
-# Runs the tests in debug mode
-npm run test:e2e -- --debug
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```

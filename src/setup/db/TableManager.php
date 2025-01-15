@@ -140,7 +140,7 @@ class TableManager {
           `entity_id` INT(11) UNSIGNED NOT NULL,
           `user_id` BIGINT(20) UNSIGNED NOT NULL,
           FOREIGN KEY (`entity_id`) REFERENCES " . $prefix . "sl_entities(`id`) ON DELETE CASCADE,
-          FOREIGN KEY (`user_id`) REFERENCES " . $prefix . "users(`ID`) ON DELETE RESTRICT
+          FOREIGN KEY (`user_id`) REFERENCES " . $prefix . "users(`ID`) ON DELETE CASCADE
         ) DEFAULT CHARSET=utf8";
 
 		dbDelta( $sql );

@@ -21,7 +21,7 @@ class Transaction extends Model
 
     public function show(): object
     {
-        return $this->belongsTo('BigTB\SL\API\Show\Models\Show', 'show_id');
+        return $this->belongsTo('BigTB\SL\API\Entity\Models\Show', 'show_id');
     }
 
     public function client(): object

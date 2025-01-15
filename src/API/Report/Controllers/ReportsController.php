@@ -4,7 +4,7 @@ namespace BigTB\SL\API\Report\Controllers;
 
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
-use BigTB\SL\Setup\ResponseManager;
+use BigTB\SL\Setup\WP\ResponseManager;
 use BigTB\SL\API\PDF\PalletManifestGenerator;
 use BigTB\SL\API\PDF\TrailerManifestGenerator;
 use BigTB\SL\API\PDF\ShowReportGenerator;

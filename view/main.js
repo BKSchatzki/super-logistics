@@ -1,9 +1,10 @@
 import './assets/main.css'
-import changeTheme from '@/root/theme.js'
 
 import {createApp} from 'vue'
 import PrimeVue from 'primevue/config'
-import Aura from '@primevue/themes/aura'
+import ToastService from 'primevue/toastservice';
+import SuperLogisticsTheme from "@/root/theme.js";
+import 'primeicons/primeicons.css'
 import {loadComponents, components} from "@/root/components.js";
 
 import App from './root/App.vue'
@@ -16,7 +17,7 @@ const app = createApp(App)
 loadComponents(app, components)
 app.use(PrimeVue, {
     theme: {
-        preset: Aura,
+        preset: SuperLogisticsTheme,
         options: {
             prefix: 'p',
             darkModeSelector: 'system',
@@ -30,7 +31,7 @@ app.use(PrimeVue, {
 
 app.use(store)
 app.use(router)
+app.use(ToastService)
 app.mixin(mixin)
 
 app.mount('#super-logistics-app')
-changeTheme()

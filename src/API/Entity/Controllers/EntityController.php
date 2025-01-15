@@ -1,11 +1,10 @@
 <?php
 
-
 namespace BigTB\SL\API\Entity\Controllers;
 
 use BigTB\SL\API\Entity\Models\Entity;
 use BigTB\SL\API\Entity\Transformers\EntityTransformer;
-use BigTB\SL\Setup\Controller;
+use BigTB\SL\Setup\Core\Controller;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use WP_REST_Request;
@@ -22,7 +21,8 @@ class EntityController extends Controller {
 		// Fetching entities, then transform and return
 		// type determines the type of entity, 1 for clients, 2 for shows, 3 for carriers
 		// Use the ShowController to get shows
-		$params   = $request->get_params();
+		$params = $request->get_params();
+
 		$query    = self::addWhereClauses( Entity::query(), $params, [
 			'type',
 			'active',
@@ -41,19 +41,19 @@ class EntityController extends Controller {
 		return self::prepareArrayResponse( $resource );
 	}
 
-	public static function create(): array {// This function is formData in order to handle the image file upload
+	public static function create( WP_REST_Request $request ): array {// This function is formData in order to handle the image file upload
 		$logo_path = isset( $_FILES['logoFile'] ) ? self::handleImageUpload( $_FILES['logoFile'] ) : '';
-
+		extract( $request->get_params() );
 		$entity_data = [
-			'name'      => sanitize_text_field( $_POST['name'] ),
-			'type'      => sanitize_text_field( $_POST['type'] ),
-			'address'   => sanitize_text_field( $_POST['address'] ),
-			'city'      => sanitize_text_field( $_POST['city'] ),
-			'state'     => sanitize_text_field( $_POST['state'] ),
-			'zip'       => sanitize_text_field( $_POST['zip'] ),
-			'phone'     => sanitize_text_field( $_POST['phone'] ),
-			'email'     => sanitize_email( $_POST['email'] ),
-			'logo_path' => $logo_path
+			'name'      => sanitize_text_field( $name ),
+			'type'      => sanitize_text_field( $type ),
+			'address'   => sanitize_text_field( $address ?? '' ),
+			'city'      => sanitize_text_field( $city ?? '' ),
+			'state'     => sanitize_text_field( $state ?? '' ),
+			'zip'       => sanitize_text_field( $zip ?? '' ),
+			'phone'     => sanitize_text_field( $phone ?? '' ),
+			'email'     => sanitize_email( $email ?? '' ),
+			'logo_path' => $logo_path ?? ''
 		];
 
 		$entity = Entity::create( $entity_data );
@@ -91,7 +91,7 @@ class EntityController extends Controller {
 		return self::prepareArrayResponse( $resource );
 	}
 
-	public static function inactivate( WP_REST_Request $request ): array {
+	public static function markInactive( WP_REST_Request $request ): array {
 		$entity = Entity::find( $request->get_param( 'id' ) );
 
 		if ( ! $entity ) {
@@ -101,9 +101,7 @@ class EntityController extends Controller {
 		$entity->active = 0;
 		$entity->save();
 
-		$resource = new Item( $entity, new EntityTransformer );
-
-		return self::prepareArrayResponse( $resource );
+		return self::prepareArrayResponse( new Item( $entity, new EntityTransformer ) );
 	}
 
 	public static function delete( WP_REST_Request $request ): array {
@@ -113,8 +111,12 @@ class EntityController extends Controller {
 			return self::prepareErrorResponse( 'Entity not found', 404 );
 		}
 
-		$entity->delete();
+		try {
+			$entity->delete();
+		} catch ( \Exception $e ) {
+			return self::prepareErrorResponse( 'Error deleting entity: ' . $e->getMessage(), 500 );
+		}
 
-		return self::prepareArrayResponse( 'Entity deleted successfully' );
+		return self::prepareArrayResponse( new Item( $entity, new EntityTransformer ) );
 	}
 }

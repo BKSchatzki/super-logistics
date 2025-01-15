@@ -1,19 +1,22 @@
-import {updatePrimaryPalette} from '@primevue/themes';
+import {definePreset} from '@primevue/themes';
+import Aura from '@primevue/themes/aura';
 
-const changeTheme = () => {
-    updatePrimaryPalette({
-        50: '#e0e7ff',
-        100: '#c7d2fe',
-        200: '#a5b4fc',
-        300: '#818cf8',
-        400: '#6366f1',
-        500: '#4f46e5',
-        600: '#4338ca',
-        700: '#3730a3',
-        800: '#312e81',
-        900: '#23225e',
-        950: '#1e1b4b'
-    });
-}
+const SuperLogisticsTheme = definePreset(Aura, {
+    semantic: {
+        primary: {
+            50: '#f9d7dd',
+            100: '#f2abb8',
+            200: '#e65b75',
+            300: '#c41e3c',
+            400: '#a81a34',
+            500: '#8e162c',
+            600: '#6f1122',
+            700: '#540d1a',
+            800: '#3a0912',
+            900: '#1b0408',
+            950: '#0d0204',
+        }
+    }
+});
 
-export default changeTheme;
+export default SuperLogisticsTheme;

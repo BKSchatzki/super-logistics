@@ -33,6 +33,9 @@ class RouteManager {
 	private static function formatMethods( $class, $methods ): array {
 		foreach ( $methods as &$method ) {
 			$method['callback'] = [ $class, $method['callback'] ];
+			if ($method['permission_callback'] !== '__return_true') {
+				$method['permission_callback'] = [ Permissions::class, $method['permission_callback'] ];
+			}
 		}
 		return $methods;
 	}

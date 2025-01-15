@@ -42,14 +42,10 @@ class RequestUtility {
         // Create Axios request
         return axios(axiosConfig)
             .then(res => {
-                if (requestInfo.success && typeof requestInfo.success === 'function') {
-                    requestInfo.success(res);
-                }
+                if (requestInfo.success && typeof requestInfo.success === 'function') return requestInfo.success(res);
             })
             .catch(err => {
-                if (requestInfo.error && typeof requestInfo.error === 'function') {
-                    requestInfo.error(err);
-                }
+                if (requestInfo.error && typeof requestInfo.error === 'function') return requestInfo.error(err);
             });
     }
 }

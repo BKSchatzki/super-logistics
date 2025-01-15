@@ -11,7 +11,7 @@ export default new Vuex.createStore({
         clients: [],
         loadedPDF: '',
         users: [],
-        user: {roles: []},
+        user: {},
         clientId: 0,
         update: false,
     },
@@ -30,15 +30,6 @@ export default new Vuex.createStore({
         },
         setClients (state, clients) {
             state.clients = clients;
-        },
-        setCarriers (state, carriers) {
-            state.carriers = carriers;
-        },
-        setExhibitors (state, exhibitors) {
-            state.exhibitors = exhibitors;
-        },
-        setShippers (state, shippers) {
-            state.shippers = shippers;
         },
         setSelectedShow (state, show) {
             state.selectedShow = show;

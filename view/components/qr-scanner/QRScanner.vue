@@ -1,20 +1,8 @@
 <script>
 import { QrcodeStream } from 'vue-qrcode-reader';
-import LookupMixin from '@/components/lookup/mixin';
-import ViewTransaction from "@/components/lookup/trans-view.vue";
-import TransView from "@/components/lookup/trans-view.vue";
-import TransactionForm from "@/components/data-input/transaction-form.vue";
-import QrFilledTransForm from "@/components/data-input/qr-filled-trans-form.vue";
+
 
 export default {
-  components: {
-    TransactionForm,
-    TransView,
-    ViewTransaction,
-    QrcodeStream,
-    QrFilledTransForm
-  },
-  mixins: [LookupMixin],
   data() {
     return {
       showScanner: true,

@@ -32,6 +32,6 @@ class Entity extends Model {
 	}
 
 	public function show(): object {
-		return $this->hasOne( 'BigTB\SL\API\Show\Models\Show', 'entity_id' );
+		return $this->hasOne( 'BigTB\SL\API\Entity\Models\Show', 'entity_id' );
 	}
 }

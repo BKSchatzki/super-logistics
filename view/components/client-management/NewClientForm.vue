@@ -1,12 +1,15 @@
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {reactive} from "vue";
 import {useStore} from "vuex";
-import U from '@utils/UserUtility';
-import D from '@utils/DataUtility';
+import {useAPI} from '@utils/useAPI.js';
+import {useForm} from '@utils/useForm.js';
+import TextInput from "@/components/form/TextInput.vue";
+import FormRow from "@/components/form/FormRow.vue";
+
 const store = useStore();
+const {get, post} = useAPI();
 
 // Form
-const visible = ref(false);
 const text = {
   internal: {
     button: "Add New client",
@@ -14,31 +17,37 @@ const text = {
     description: "Clients organize trade shows and conventions, they are the primary billed party for shows."
   }
 }
-const formData = ref({
-  name: ''
-})
+const {form, visible, submit} = useForm({name: ''});
 
 // Add New
-const addNew = () => {
-  D.postData('clients', formData)
-  visible.value = false
+const toastConfig = reactive({
+  success: {
+    summary: 'New Client',
+    detail: `Client has been added successfully.`,
+  },
+  fail: {
+    summary: 'New Client',
+    detail: `There was an error adding the new client. Please try again.`,
+  }
+});
+const submitNewForm = async () => {
+  await submit('clients', 'post', toastConfig);
 }
 </script>
 
 <template>
   <Button class="mb-4 right-0" :label="text.internal.button" @click="visible = true"/>
-
+  <Toast/>
   <Dialog v-model:visible="visible" modal :header="text.internal.title" :style="{ width: '25rem' }">
     <span class="text-surface-500 dark:text-surface-400 block mb-8">
       {{ text.internal.description }}
     </span>
-    <div class="flex items-center gap-4 mb-4">
-      <label for="name" class="font-semibold w-24">Name</label>
-      <InputText v-model="formData.name" id="name" class="flex-auto" autocomplete="off"/>
-    </div>
+    <FormRow>
+      <TextInput label="Name" v-model="form.name"/>
+    </FormRow>
     <div class="flex justify-end gap-2">
       <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
-      <Button type="button" label="Add New" severity="primary" @click="addNew"></Button>
+      <Button type="submit" label="Add New" severity="primary" @click="submitNewForm"></Button>
     </div>
   </Dialog>
 </template>

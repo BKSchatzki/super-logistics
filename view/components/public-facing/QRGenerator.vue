@@ -1,10 +1,6 @@
 <script>
-import TransactionForm from '@/components/data-input/transaction-form.vue';
 
 export default {
-  components: {
-    TransactionForm
-  },
   computed: {
     pdfurl() {
       return this.$store.state.loadedPDF

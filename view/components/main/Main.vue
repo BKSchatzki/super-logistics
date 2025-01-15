@@ -1,25 +1,11 @@
-<script>
+<script setup>
+import {watch} from 'vue';
 import NavBar from '@/components/main/NavBar.vue';
-import U from '@utils/UserUtility.js';
 
-export default {
-  components: {
-    NavBar,
-  },
-  data() {
-    return {
-      initialLoad: true
-    }
-  },
-  computed: {
-    user() {
-      return this.$store.state.user
-    }
-  },
-  created() {
-    U.getCurrentUser();
-  }
-};
+import {useUserAPI} from "@utils/useUserAPI.js";
+const {getCurrentUser} = useUserAPI();
+
+const user = getCurrentUser();
 </script>
 
 <template>
@@ -39,11 +25,11 @@ export default {
 
 .sli-header {
   box-shadow: -5px 5px 25px #b8b8b8,
-    5px -5px 10px #ffffff;
+  5px -5px 10px #ffffff;
 }
 
 .sl-main {
   box-shadow: -5px 5px 25px #b8b8b8,
-    5px -5px 10px #ffffff;
+  5px -5px 10px #ffffff;
 }
 </style>

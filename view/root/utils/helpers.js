@@ -7,7 +7,11 @@ const checkOverlap = (array1, array2) => {
 }
 
 const toCapitalCase = (str) => {
-    return str.replace(/\b\w/g, char => char.toUpperCase());
+    return str.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
 }
 
-export {checkOverlap, toCapitalCase};
+const toSingular = (str) => {
+    return str.replace(/s$/, '');
+}
+
+export {checkOverlap, toCapitalCase, toSingular};

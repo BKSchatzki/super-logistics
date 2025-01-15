@@ -6,8 +6,11 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import tailwindcss from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
 
+const isDevBuild = true;
+
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/wp-content/plugins/super-logistics/view/dist/',
   plugins: [
     vue(),
     vueDevTools(),
@@ -23,8 +26,9 @@ export default defineConfig({
     rollupOptions: {
       input: fileURLToPath(new URL('./view/main.js', import.meta.url)),
       output: {
-        entryFileNames: 'bundle.js',
-        assetFileNames: 'bundle.css',
+        entryFileNames: 'bundle[hash].js',
+        assetFileNames: 'bundle[hash].css',
+        chunkFileNames: 'bundle[hash].js',
       }
     }
   },
@@ -35,5 +39,8 @@ export default defineConfig({
         autoprefixer
       ],
     },
+  },
+  define: {
+    __DEV__: isDevBuild
   }
 })

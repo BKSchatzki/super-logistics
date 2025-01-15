@@ -5,7 +5,7 @@ namespace BigTB\SL\API\Package\Controllers;
 use WP_REST_Request;
 use League\Fractal\Resource\Item;
 use League\Fractal\Resource\Collection;
-use BigTB\SL\Setup\ResponseManager;
+use BigTB\SL\Setup\WP\ResponseManager;
 use BigTB\SL\API\Package\Models\Package;
 use BigTB\SL\API\Package\Transformers\PackageTransformer;
 

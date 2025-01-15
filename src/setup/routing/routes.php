@@ -2,10 +2,10 @@
 
 namespace BigTB\SL\Setup\Routing;
 
-use BigTB\SL\API\Entity\Controllers\EntityController;
+use BigTB\SL\API\Entity\Controllers\ClientController;
 use BigTB\SL\API\Package\Controllers\PackageController;
 use BigTB\SL\API\Report\Controllers\ReportsController;
-use BigTB\SL\API\Show\Controllers\ShowController;
+use BigTB\SL\API\Entity\Controllers\ShowController;
 use BigTB\SL\API\Transaction\Controllers\TransactionController;
 use BigTB\SL\API\User\Controllers\UserController;
 
@@ -13,10 +13,26 @@ $basicRoutes = [
 	[
 		'path'    => '',
 		'methods' => [
-			[ 'methods' => 'POST', 'callback' => 'create', 'permission_callback' => '__return_true' ],
-			[ 'methods' => 'GET', 'callback' => 'get', 'permission_callback' => '__return_true' ],
-			[ 'methods' => 'PATCH', 'callback' => 'update', 'permission_callback' => '__return_true' ],
-			[ 'methods' => 'DELETE', 'callback' => 'delete', 'permission_callback' => '__return_true' ]
+			[
+				'methods'             => 'POST',
+				'callback'            => 'create',
+				'permission_callback' => 'isLoggedIn'
+			],
+			[
+				'methods'             => 'GET',
+				'callback'            => 'get',
+				'permission_callback' => 'isLoggedIn'
+			],
+			[
+				'methods'             => 'PATCH',
+				'callback'            => 'update',
+				'permission_callback' => 'isLoggedIn'
+			],
+			[
+				'methods'             => 'DELETE',
+				'callback'            => 'delete',
+				'permission_callback' => 'isLoggedIn'
+			]
 		]
 	]
 ];
@@ -24,15 +40,19 @@ $basicRoutes = [
 $entityRoutes = [
 	...$basicRoutes,
 	[
-		'path'    => 'inactivate',
+		'path' => 'status',
 		'methods' => [
-			[ 'methods' => 'PATCH', 'callback' => 'inactivate', 'permission_callback' => '__return_true' ]
+			[
+				'methods'             => 'PATCH',
+				'callback'            => 'markInactive',
+				'permission_callback' => 'isLoggedIn'
+			]
 		]
 	]
 ];
 
 $clientRouting = [
-	'handlerClass' => EntityController::class,
+	'handlerClass' => ClientController::class,
 	'base'         => 'clients',
 	'routes'       => $entityRoutes
 ];
@@ -40,24 +60,92 @@ $clientRouting = [
 $showRouting = [
 	'handlerClass' => ShowController::class,
 	'base'         => 'shows',
-	'routes'       => $entityRoutes
-];
-
-$carrierRouting = [
-	'handlerClass' => EntityController::class,
-	'base'         => 'carriers',
-	'routes'       => $entityRoutes
+	'routes'       => [
+		[
+			'path'    => '',
+			'methods' => [
+				[
+					'methods'             => 'POST',
+					'callback'            => 'create',
+					'permission_callback' => 'isAdmin'
+				],
+				[
+					'methods'             => 'GET',
+					'callback'            => 'get',
+					'permission_callback' => 'isLoggedIn'
+				],
+				[
+					'methods'             => 'PATCH',
+					'callback'            => 'update',
+					'permission_callback' => 'isAdmin'
+				],
+				[
+					'methods'             => 'DELETE',
+					'callback'            => 'delete',
+					'permission_callback' => 'isAdmin'
+				],
+			]
+		],
+		[
+			'path' => 'status',
+			'methods' => [
+				[
+					'methods'             => 'PATCH',
+					'callback'            => 'markInactive',
+					'permission_callback' => 'isInternalAdmin'
+				]
+			]
+		]
+	]
 ];
 
 $txnRouting = [
 	'handlerClass' => TransactionController::class,
 	'base'         => 'transactions',
 	'routes'       => [
-		...$entityRoutes,
+		[
+			'path'    => '',
+			'methods' => [
+				[
+					'methods'             => 'POST',
+					'callback'            => 'create',
+					'permission_callback' => 'isLoggedIn'
+				],
+				[
+					'methods'             => 'GET',
+					'callback'            => 'get',
+					'permission_callback' => 'isLoggedIn'
+				],
+				[
+					'methods'             => 'PATCH',
+					'callback'            => 'update',
+					'permission_callback' => 'isLoggedIn'
+				],
+				[
+					'methods'             => 'DELETE',
+					'callback'            => 'delete',
+					'permission_callback' => 'isLoggedIn'
+				]
+			]
+		],
+		[
+			'path' => 'status',
+			'methods' => [
+				[
+					'methods'             => 'PATCH',
+					'callback'            => 'markInactive',
+					'permission_callback' => 'isInternalAdmin'
+				]
+			]
+		],
 		[
 			'path'    => 'labels',
 			'methods' => [
-				[ 'methods' => 'GET', 'callback' => 'getLabels' ]
+				[
+					'methods'             => 'GET',
+					'callback'            => 'getLabels',
+					'permission_callback' => 'isLoggedIn'
+				]
 			]
 		],
 	]
@@ -71,7 +159,11 @@ $itemRouting = [
 		[
 			'path'    => 'labels',
 			'methods' => [
-				[ 'methods' => 'GET', 'callback' => 'getLabels' ]
+				[
+					'methods'             => 'GET',
+					'callback'            => 'getLabels',
+					'permission_callback' => 'isLoggedIn'
+				]
 			]
 		],
 	]
@@ -87,11 +179,49 @@ $userRouting = [
 	'handlerClass' => UserController::class,
 	'base'         => 'users',
 	'routes'       => [
-		...$basicRoutes,
+		[
+			'path'    => '',
+			'methods' => [
+				[
+					'methods'             => 'POST',
+					'callback'            => 'create',
+					'permission_callback' => 'isAdmin'
+				],
+				[
+					'methods'             => 'GET',
+					'callback'            => 'get',
+					'permission_callback' => 'isAdmin'
+				],
+				[
+					'methods'             => 'PATCH',
+					'callback'            => 'update',
+					'permission_callback' => 'isAdmin'
+				],
+				[
+					'methods'             => 'DELETE',
+					'callback'            => 'delete',
+					'permission_callback' => 'isAdmin'
+				]
+			]
+		],
 		[
 			'path'    => 'current',
 			'methods' => [
-				[ 'methods' => 'GET', 'callback' => 'getCurrent' ]
+				[
+					'methods'             => 'GET',
+					'callback'            => 'getCurrent',
+					'permission_callback' => 'isLoggedIn'
+				]
+			]
+		],
+		[
+			'path'    => 'logout',
+			'methods' => [
+				[
+					'methods'             => 'POST',
+					'callback'            => 'logout',
+					'permission_callback' => 'isLoggedIn'
+				]
 			]
 		]
 	]
@@ -104,28 +234,39 @@ $reportRouting = [
 		[
 			'path'    => 'trailer-manifest',
 			'methods' => [
-				[ 'methods' => 'GET', 'callback' => 'getTrailerManifest' ]
+				[
+					'methods'             => 'GET',
+					'callback'            => 'getTrailerManifest',
+					'permission_callback' => 'isLoggedIn'
+				]
 			]
 		],
 		[
 			'path'    => 'pallet-manifest',
 			'methods' => [
-				[ 'methods' => 'GET', 'callback' => 'getPalletManifest' ]
+				[
+					'methods'             => 'GET',
+					'callback'            => 'getPalletManifest',
+					'permission_callback' => 'isLoggedIn'
+				]
 			]
 		],
 		[
 			'path'    => 'show-report',
 			'methods' => [
-				[ 'methods' => 'GET', 'callback' => 'getShowReport' ]
-			]
-		],
+				[
+					'methods'             => 'GET',
+					'callback'            => 'getShowReport',
+					'permission_callback' => 'isLoggedIn'
+				]
+			],
+		]
 	]
 ];
 
 return [
 	$clientRouting,
 	$showRouting,
-	$carrierRouting,
 	$txnRouting,
 	$itemRouting,
 	$noteRouting,

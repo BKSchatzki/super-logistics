@@ -1,39 +1,52 @@
 <script setup>
-import {computed, onMounted, watch} from 'vue';
-import {useStore} from 'vuex';
-import D from '@utils/DataUtility';
+import {ref} from 'vue';
+import {useAPI} from '@utils/useAPI.js';
+import Toast from 'primevue/toast';
 import NewShowForm from '@/components/show-management/NewShowForm.vue';
+import ShowDetails from '@/components/show-management/ShowDetails.vue';
 
-const store = useStore();
-const user = computed(() => store.state.user);
+const {get} = useAPI();
+
+const tableData = get('shows');
+const selected = ref(null);
+const unselect = () => {
+  selected.value = null;
+}
+
+// Open show details
+const openDetails = (evt) => {
+  selected.value = evt.data
+}
+
 // add new shows
 // edit shows
 // delete shows
 // get shows
-const getUsers = async (show) => {
-  if (U.isInternal(user)) {
-    U.getAllAppUsers();
-  } else if (U.isClientAdmin(user)) {
-    U.getClientAppUsers(user.client_id);
-  } else if (U.isClient(user)) {
-    U.getClientAppUsers(user.client_id, [user.shows]);
-  }
-}
-onMounted(() => {
-  D.getData('shows')
-});
-watch(user.value, getUsers);
-// get show specific users
+
+// get show specific shows
 </script>
 
 <template>
   <div class="flex flex-row justify-between mb-4">
-    <h1>User Management</h1>
-    <NewUserForm/>
+    <h1 class="font-sans text-3xl">Show Management</h1>
+    <NewShowForm/>
   </div>
-  <DataTable>
+  <ShowDetails v-if="selected" :subject="selected" @close="unselect"/>
+  <Toast/>
+  <DataTable :value="tableData" paginator :rows="10" @row-click="openDetails" :rowHover="true">
     <template #empty>
-      No users in the system. Add one if you're an admin.
+      No shows in the system. Add one if you're an admin.
     </template>
+    <Column field="id" >
+      <template #body="{data}">
+        <span class="font-extralight text-slate-500">{{data.id}}</span>
+      </template>
+    </Column>
+    <Column field="name" header="Name"/>
+    <Column field="client" header="Client">
+      <template #body="{field, data}">
+        <span>{{ data[field].name }}</span>
+      </template>
+    </Column>
   </DataTable>
 </template>

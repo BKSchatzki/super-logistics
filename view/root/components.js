@@ -9,6 +9,10 @@ import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 import Dialog from 'primevue/dialog';
 import Select from 'primevue/select';
+import MultiSelect from 'primevue/multiselect';
+import IftaLabel from 'primevue/iftalabel';
+import Toast from 'primevue/toast';
+import DatePicker from 'primevue/datepicker';
 
 const components = {
     Menubar,
@@ -21,7 +25,11 @@ const components = {
     Button,
     InputNumber,
     Dialog,
+    MultiSelect,
     Select,
+    IftaLabel,
+    Toast,
+    DatePicker
 }
 
 

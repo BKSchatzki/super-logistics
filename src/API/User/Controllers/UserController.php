@@ -4,11 +4,13 @@ namespace BigTB\SL\API\User\Controllers;
 
 use BigTB\SL\API\User\Models\User;
 use BigTB\SL\API\User\Transformers\UserTransformer;
-use BigTB\SL\Setup\Controller;
+use BigTB\SL\Setup\Core\Controller;
+use BigTB\SL\Setup\Routing\Permissions;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use WP_REST_Request;
 
+// TODO: Permissioning (create separate methods for each user role creation / updating)
 // TODO: Error Handling!!
 // TODO: Testing!!
 
@@ -16,7 +18,7 @@ class UserController extends Controller {
 
 	public static function get( WP_REST_Request $request ): array {
 		$params       = $request->get_params();
-		$params['ID'] = $params['id'];
+		$params['ID'] = $params['id'] ?? null;
 		$users        = self::getUsers( $params );
 		if ( isset( $params['roles'] ) ) {
 			$roles = $params['roles'];
@@ -43,19 +45,27 @@ class UserController extends Controller {
 		return self::prepareArrayResponse( $resource );
 	}
 
+	public static function logout(): void {
+		wp_logout();
+	}
+
 	public static function create( WP_REST_Request $request ): array {
 		// can take first_name, last_name, email, user_login, role, and roles
 		$params = $request->get_params();
 
-		$userData = self::createUser( $params );
+		$userData = self::createWPUser( $params );
 
 		if ( ! isset( $userData->ID ) ) {
 			return self::prepareErrorResponse( $userData );
 		}
 
-		$users = self::getUsers( [ 'ID' => $userData->ID ] );
+		list( $user ) = self::getUsers( [ 'ID' => $userData->ID ] );
 
-		$resource = new Item( $users[0], new UserTransformer );
+		if ( str_contains( $params['role'], 'client' ) ) {
+			$user = self::associateEntities( $user, $params );
+		}
+
+		$resource = new Item( $user, new UserTransformer );
 
 		return self::prepareArrayResponse( $resource );
 	}
@@ -69,25 +79,36 @@ class UserController extends Controller {
 			return self::prepareErrorResponse( 'User not found' );
 		}
 
-		if ( isset( $params['client'] ) ) {
-			$user->entities()->wherePivot( 'user_id', $userId )->sync( $params['client'] );
+		// Update Roles
+		if ( isset( $params['role'] ) ) {
+			self::updateRole( $userId, $params['role'] );
+
+			$user = User::find( $userId );
 		}
 
-		if ( isset( $params['shows'] ) ) {
-			$user->entities()->wherePivot( 'user_id', $userId )->sync( $params['shows'] );
+		if ( str_contains( $params['role'], 'internal' ) ) {
+			$user = self::clearEntities( $user );
+
+		} else {
+			// Update entity associations
+			$entities = [];
+
+			if ( isset( $params['client'] ) ) {
+				$entities[] = (int) $params['client'];
+			}
+
+			if ( isset( $params['shows'] ) ) {
+				$entities = array_merge( $entities, array_map( 'intval', (array) $params['shows'] ) );
+			}
+
+			if ( ! empty( $entities ) ) {
+				$user->entities()->sync( $entities );
+			}
+
+			$user->save();
 		}
 
-		self::updateRoles( $userId, $params['roles'] );
-
-		self::updateMetaIfProvided( $userId, $params, [ 'first_name', 'last_name' ] );
-
-		self::updateIfProvided( $user, $params, [ 'email' ] );
-
-		$user->save();
-
-		$users = self::getUsers( [ 'ID' => $userId ] );
-
-		$resource = new Item( $users[0], new UserTransformer );
+		$resource = new Item( $user, new UserTransformer );
 
 		return self::prepareArrayResponse( $resource );
 	}
@@ -109,6 +130,17 @@ class UserController extends Controller {
 	}
 
 	private static function getUsers( $params ) {
+
+		$allowedRoles = [ 'internal_admin', 'internal_employee', 'client_admin', 'client_employee' ];
+
+		if ( Permissions::isClientAdmin() ) {
+			$allowedRoles = [ 'client_admin', 'client_employee' ];
+		}
+
+		if ( isset( $params['roles'] ) ) {
+			$params['roles'] = array_intersect( $params['roles'], $allowedRoles );
+		}
+
 		$query = self::addWhereClauses( User::with( [
 			'roles',
 			'first_name',
@@ -132,8 +164,7 @@ class UserController extends Controller {
 		return $query->get();
 	}
 
-	public static function createUser( $userData ): object {
-		error_log( '///// Creating user with data: ' . print_r( $userData, true ) );
+	public static function createWPUser( $userData ): object {
 		// Set default values for user data if not provided
 		$defaults = [
 			'user_login' => '',
@@ -174,6 +205,36 @@ class UserController extends Controller {
 		return get_userdata( $userId );
 	}
 
+	private static function clearEntities( $user ): User {
+		$user->entities()->detach();
+		$user->save();
+
+		return $user;
+	}
+
+	private static function associateEntities( $user, $params ): User {
+		// Associate Clients
+
+		if ( isset( $params['client'] ) ) {
+			$user->entities()->attach( (int) $params['client'] );
+		}
+
+		// Associate Shows
+		if ( isset( $params['shows'] ) ) {
+			if ( is_string( $params['shows'] ) ) {
+				$params['shows'] = json_decode( $params['shows'], true );
+			}
+			foreach ( $params['shows'] as $show ) {
+				error_log( "adding show: $show" );
+				$user->entities()->attach( (int) $show );
+			}
+		}
+
+		$user->save();
+
+		return $user;
+	}
+
 	public static function updateMetaIfProvided( $uID, $params, $keys ): void {
 		if ( ! is_array( $keys ) ) {
 			$keys = [ $keys ];
@@ -186,18 +247,16 @@ class UserController extends Controller {
 		}
 	}
 
-	public static function updateRoles( $uID, $roles ): void {
+	public static function updateRole( $uID, $role ): void {
 		$user = new \WP_User( $uID );
 
 		// Remove all existing roles
-		foreach ( $user->roles as $role ) {
-			$user->remove_role( $role );
+		foreach ( $user->roles as $existingRole ) {
+			$user->remove_role( $existingRole );
 		}
 
-		// Add new roles
-		foreach ( $roles as $role ) {
-			$user->add_role( $role );
-		}
+		// Add new role
+		$user->add_role( $role );
 	}
 
 }

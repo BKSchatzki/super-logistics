@@ -26,7 +26,6 @@ export default {
                 type: 'get',
                 url: 'current-user',
                 success: (res) => {
-                    // console.log("From request in mixin: ", res.data.data);
                     self.$store.commit('setUser', res.data.data);
                 },
                 error: (res) => {

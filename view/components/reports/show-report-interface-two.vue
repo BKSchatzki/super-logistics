@@ -1,13 +1,10 @@
 <script>
 import reportModal from "@/components/reports/report-modal.vue";
-import SimpleField from "@/components/form-components/simple-field.vue";
-import DropdownField from "@/components/form-components/dropdown-field.vue";
-import DataMixin from "@/components/data-input/mixin"
 import ReportMixin from "@/components/reports/mixin"
 
 export default {
-  components: {DropdownField, SimpleField, reportModal},
-  mixins: [DataMixin, ReportMixin],
+  components: {reportModal},
+  mixins: [ReportMixin],
   data() {
     return {
       startDate: null,
@@ -41,7 +38,6 @@ export default {
   },
   watch: {
     dateRange: function (newVal, oldVal) {
-      console.log(newVal);
       let str = newVal;
       if (str.length === 2 && oldVal.length !== 3) {
         this.dateRange += '/';

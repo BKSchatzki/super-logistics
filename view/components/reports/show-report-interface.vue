@@ -1,13 +1,8 @@
 <script>
 import reportModal from "@/components/reports/report-modal.vue";
-import SimpleField from "@/components/form-components/simple-field.vue";
-import DropdownField from "@/components/form-components/dropdown-field.vue";
-import DataMixin from "@/components/data-input/mixin"
 import ReportMixin from "@/components/reports/mixin"
 
 export default {
-  components: {DropdownField, SimpleField, reportModal},
-  mixins: [DataMixin, ReportMixin],
   data() {
     return {
       startDate: null,

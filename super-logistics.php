@@ -16,9 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once 'vendor/autoload.php';
 
 add_action( 'init', function () {
-	BigTB\SL\Setup\CustomRoles::init();
-	BigTB\SL\Setup\FrontendManager::init();
-	BigTB\SL\Setup\ScriptManager::init( __FILE__ );
+	BigTB\SL\Setup\WP\CustomRoles::init();
+	BigTB\SL\Setup\WP\FrontendManager::init();
+	BigTB\SL\Setup\WP\ScriptManager::init( __FILE__ );
 	BigTB\SL\Setup\DB\TableManager::init();
 	BigTB\SL\Setup\DB\ORM::init();
 } );
