@@ -19,7 +19,8 @@ class EntityTransformer extends TransformerAbstract {
 			'state'     => (string) $item->state,
 			'zip'       => (int) $item->zip,
 			'logo_path' => (string) $item->logo_path,
-			'active' => (boolean) $item->active,
+			'active'    => (boolean) $item->active,
+			'trashed'   => (boolean) $item->trashed
 		];
 	}
 }

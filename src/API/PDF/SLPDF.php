@@ -2,13 +2,13 @@
 namespace BigTB\SL\API\PDF;
 use TCPDF;
 
-class SLPDF extends TCPDF {
+class ReportPDF extends TCPDF {
     private $trailer_manifest = false;
     private $pallet_manifest = false;
     private $show_report = false;
     private $detail = '';
 
-    public function __construct($orientation = 'L', $unit = 'mm', $format = array(102, 152), $report = null, $detail = '',$unicode = true, $encoding = 'UTF-8', $diskcache = false, $pdfa = false) {
+    public function __construct($orientation = 'P', $unit = 'mm', $format = array(102, 152), $report = null, $detail = '',$unicode = true, $encoding = 'UTF-8', $diskcache = false, $pdfa = false) {
         parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
 
         switch ($report) {

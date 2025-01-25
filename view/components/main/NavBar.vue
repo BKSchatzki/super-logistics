@@ -1,7 +1,7 @@
 <script setup>
 import {computed, defineProps, ref, watch} from "vue";
 import {useRouter} from "vue-router";
-import {useUserAPI} from "@utils/useUserAPI.js";
+import {useUserAPI} from "@utils/composables/useUserAPI.js";
 
 const router = useRouter();
 const props = defineProps({
@@ -13,12 +13,6 @@ const props = defineProps({
 const {logOut} = useUserAPI();
 
 const items = ref([
-  {
-    label: 'Home',
-    route: 'home',
-    icon: 'pi pi-home',
-    permissions: ['administrator', 'client_admin', 'client_employee', 'internal_admin', 'internal_employee']
-  },
   {
     label: 'Transactions',
     route: 'transactions',
@@ -56,22 +50,10 @@ const items = ref([
     permissions: ['administrator', 'client_admin', 'client_employee', 'internal_admin', 'internal_employee']
   },
   {
-    label: 'Public Home',
-    route: 'public-home',
+    label: 'Shipping Labels',
+    route: 'shipper-labels',
     icon: 'pi pi-home',
     permissions: []
-  },
-  {
-    label: 'Log In',
-    url: localized.loginURL,
-    icon: 'pi pi-home',
-    permissions: []
-  },
-  {
-    label: 'Log Out',
-    action: logOut,
-    icon: 'pi pi-home',
-    permissions: ['administrator', 'client_admin', 'client_employee', 'internal_admin', 'internal_employee']
   }
 ]);
 const filteredItems = computed(() => {
@@ -85,12 +67,6 @@ const isAllowed = (user, permissions) => {
 
   return !props.user.role ? permissions.length === 0 : permissions.includes(props.user.role);
 };
-watch(props.user, (updatedUser) => {
-  if (!updatedUser.role) {
-    router.push({name: 'public-home'});
-    return permissions.length === 0;
-  }
-})
 
 const logIn = () => {
   window.location.href = localized.loginURL;

@@ -13,6 +13,12 @@ import MultiSelect from 'primevue/multiselect';
 import IftaLabel from 'primevue/iftalabel';
 import Toast from 'primevue/toast';
 import DatePicker from 'primevue/datepicker';
+import Textarea from 'primevue/textarea';
+import ToggleButton from "primevue/togglebutton";
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
+import Checkbox from 'primevue/checkbox';
+import { QrcodeStream } from 'vue-qrcode-reader'
 
 const components = {
     Menubar,
@@ -29,7 +35,13 @@ const components = {
     Select,
     IftaLabel,
     Toast,
-    DatePicker
+    DatePicker,
+    Textarea,
+    ToggleButton,
+    IconField,
+    InputIcon,
+    Checkbox,
+    QrcodeStream
 }
 
 

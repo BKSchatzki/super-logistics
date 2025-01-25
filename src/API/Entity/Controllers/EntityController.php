@@ -5,6 +5,7 @@ namespace BigTB\SL\API\Entity\Controllers;
 use BigTB\SL\API\Entity\Models\Entity;
 use BigTB\SL\API\Entity\Transformers\EntityTransformer;
 use BigTB\SL\Setup\Core\Controller;
+use BigTB\SL\Setup\Routing\Permissions;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use WP_REST_Request;
@@ -17,13 +18,15 @@ class EntityController extends Controller {
 // Shows are type 2, and
 // Carriers are type 3
 
+	public static int $entityType = 0;
+
 	public static function get( WP_REST_Request $request ): array {
 		// Fetching entities, then transform and return
 		// type determines the type of entity, 1 for clients, 2 for shows, 3 for carriers
 		// Use the ShowController to get shows
 		$params = $request->get_params();
 
-		$query    = self::addWhereClauses( Entity::query(), $params, [
+		$query = self::addWhereClauses( Entity::query(), $params, [
 			'type',
 			'active',
 			'id',
@@ -35,6 +38,25 @@ class EntityController extends Controller {
 			'zip',
 			'phone'
 		] );
+
+		// Modify query to filter active users
+		if ( Permissions::isAdmin() ) {
+			if ( isset( $params['active'] ) ) {
+				$query->where( 'active', $params['active'] );
+			}
+		} else {
+			$query->where( 'active', 1 );
+		}
+
+		// Modify query to filter trashed users
+		if ( Permissions::isInternalAdmin() ) {
+			if ( isset( $params['trashed'] ) ) {
+				$query->where( 'trashed', $params['trashed'] );
+			}
+		} else {
+			$query->where( 'trashed', 0 );
+		}
+
 		$entities = $query->get();
 		$resource = new Collection( $entities, new EntityTransformer );
 
@@ -104,19 +126,50 @@ class EntityController extends Controller {
 		return self::prepareArrayResponse( new Item( $entity, new EntityTransformer ) );
 	}
 
-	public static function delete( WP_REST_Request $request ): array {
+	public static function markActive( WP_REST_Request $request ): array {
 		$entity = Entity::find( $request->get_param( 'id' ) );
+
+		if ( ! $entity ) {
+			return self::prepareUserNotFoundResponse();
+		}
+
+		$entity->active = 1;
+		$entity->save();
+
+		return self::prepareArrayResponse( new Item( $entity, new EntityTransformer ) );
+	}
+
+	public static function delete( WP_REST_Request $request ): array {
+		if ( self::$entityType !== 0 ) {
+			$entity = Entity::where( 'id', $request->get_param( 'id' ) )->where( 'type', self::$entityType )->first();
+		} else {
+			$entity = Entity::where( 'id', $request->get_param( 'id' ) )->first();
+		}
 
 		if ( ! $entity ) {
 			return self::prepareErrorResponse( 'Entity not found', 404 );
 		}
 
-		try {
-			$entity->delete();
-		} catch ( \Exception $e ) {
-			return self::prepareErrorResponse( 'Error deleting entity: ' . $e->getMessage(), 500 );
+		$entity->trashed = 1;
+		$entity->save();
+
+		return self::singleResponse( $entity, new EntityTransformer );
+	}
+
+	public static function restore( WP_REST_Request $request ): array {
+		if ( self::$entityType !== 0 ) {
+			$entity = Entity::where( 'id', $request->get_param( 'id' ) )->where( 'type', self::$entityType )->first();
+		} else {
+			$entity = Entity::where( 'id', $request->get_param( 'id' ) )->first();
 		}
 
-		return self::prepareArrayResponse( new Item( $entity, new EntityTransformer ) );
+		if ( ! $entity ) {
+			return self::prepareErrorResponse( 'Entity not found', 404 );
+		}
+
+		$entity->trashed = 0;
+		$entity->save();
+
+		return self::singleResponse( $entity, new EntityTransformer );
 	}
 }

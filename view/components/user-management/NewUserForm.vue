@@ -1,16 +1,15 @@
 <script setup>
 import {computed, reactive, watch} from "vue";
-import {useToast} from "primevue/usetoast"
 import {useStore} from "vuex";
-import {useAPI} from "@utils/useAPI";
-import {useForm} from "@utils/useForm";
+import {useAPI} from "@utils/composables/useAPI.js";
+import {useForm} from "@utils/composables/useForm.js";
 import SelectInput from "@/components/form/SelectInput.vue";
 import TextInput from "@/components/form/TextInput.vue";
-import FormRow from "@/components/form/FormRow.vue";
+import Col from "@/components/form/Col.vue";
+import Row from "@/components/form/Row.vue";
 
 const store = useStore();
-const {get, post} = useAPI();
-const toast = useToast();
+const {get} = useAPI('users');
 
 // Permissions
 const user = computed(() => store.state.user);
@@ -37,16 +36,15 @@ const formText = computed(() => {
   if (!user.value) return text.loading;
   return text[user.value['isInternal'] ? 'internal' : 'client'];
 });
-const staticFormData = {
+const {form, visible, submit, getRoleDroptions, getDroptions} = useForm({
   first_name: '',
   last_name: '',
   user_login: '',
   user_email: '',
   role: '',
-  client: user.value.client ? user.value.client.id : null,
+  client_id: user.value.client ? user.value.client.id : null,
   shows: []
-}
-const {form, visible, submit, getRoleDroptions, getDroptions} = useForm(staticFormData);
+});
 
 // Submission
 const toastConfig = reactive({
@@ -80,9 +78,9 @@ watch(() => form.role, (newRole) => {
 });
 
 // Show Options
-const showOptions = getDroptions('shows', {client_id: form.client});
+const showOptions = getDroptions('shows', {client_id: form.client_id});
 const displayShowField = computed(() => form.role === 'client_employee' && user.value['isInternal']);
-watch(() => form.client, (cID) => {
+watch(() => form.client_id, (cID) => {
   if (cID) {
     get('shows', {client_id: cID});
   }
@@ -97,29 +95,32 @@ watch(() => form.client, (cID) => {
     <span class="text-surface-500 dark:text-surface-400 block mb-8 w-full">
       {{ formText.description }}
     </span>
-    <FormRow>
-      <TextInput label="First Name" v-model="form.first_name" placeholder="Jerry"/>
-      <TextInput label="Last Name" v-model="form.last_name" placeholder="Smith"/>
-    </FormRow>
-    <FormRow>
-      <TextInput label="Username" v-model="form.user_login" placeholder="username_01"/>
-    </FormRow>
-    <FormRow>
-      <TextInput label="Email" v-model="form.user_email" placeholder="example@domain.com"/>
-    </FormRow>
-    <FormRow>
-      <SelectInput type="select" label="Type" :options="roleOptions" v-model="form.role"
-                 placeholder="Select Type of User"/>
-      <SelectInput v-if="displayClientField" type="select" label="Client" :options="clientOptions" v-model="form.client"
-                 placeholder="Select the Client"/>
-    </FormRow>
-    <FormRow>
-      <SelectInput v-if="displayShowField" type="select" label="Shows" :options="showOptions" v-model="form.shows"
-                 placeholder="Select Shows" multiple/>
-    </FormRow>
-    <div class="flex justify-end gap-2">
-      <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
-      <Button type="submit" label="Add New" severity="primary" @click="submitNewForm"></Button>
-    </div>
+    <Col>
+      <Row>
+        <TextInput label="First Name" v-model="form.first_name" placeholder="Jerry"/>
+        <TextInput label="Last Name" v-model="form.last_name" placeholder="Smith"/>
+      </Row>
+      <Row>
+        <TextInput label="Username" v-model="form.user_login" placeholder="username_01"/>
+      </Row>
+      <Row>
+        <TextInput label="Email" v-model="form.user_email" placeholder="example@domain.com"/>
+      </Row>
+      <Row>
+        <SelectInput type="select" label="Type" :options="roleOptions" v-model="form.role"
+                     placeholder="Select Type of User"/>
+        <SelectInput v-if="displayClientField" type="select" label="Client" :options="clientOptions"
+                     v-model="form.client_id"
+                     placeholder="Select the Client"/>
+      </Row>
+      <Row>
+        <SelectInput v-if="displayShowField" type="select" label="Shows" :options="showOptions" v-model="form.shows"
+                     placeholder="Select Shows" multiple/>
+      </Row>
+      <div class="flex justify-end gap-2">
+        <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
+        <Button type="submit" label="Add New" severity="primary" @click="submitNewForm"></Button>
+      </div>
+    </Col>
   </Dialog>
 </template>

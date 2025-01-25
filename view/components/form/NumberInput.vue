@@ -9,6 +9,7 @@ const props = defineProps({
   },
   label: String,
   modelValue: [String, Number],
+  placeholder: String,
   default: Number,
   disabled: Boolean,
 })
@@ -30,7 +31,7 @@ const updateValue = (event) => {
         :id
         :modelValue
         @input="updateValue"
-        :default
+        :defaultValue="props.default"
         :placeholder
         :disabled
         autocomplete="off"

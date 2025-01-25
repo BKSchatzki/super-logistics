@@ -20,6 +20,7 @@ class Entity extends Model {
 		'zip',
 		'logo_path',
 		'active',
+		'trashed'
 	];
 	public $timestamps = false;
 

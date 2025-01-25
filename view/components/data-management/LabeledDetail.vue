@@ -4,7 +4,8 @@ import {computed} from 'vue';
 const props = defineProps({
   label: String,
   property: String,
-  subject: Object
+  subject: Object,
+  unit: String
 })
 
 const data = computed(() => {
@@ -21,9 +22,9 @@ const label = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-row gap-2 mb-0">
+  <div class="flex flex-row justify-between mb-0">
     <span class="capitalize align_baseline font-bold">{{ label }}:</span>
-    <span class="capitalize align_baseline font-extralight">{{ data }}</span>
+    <span class="capitalize align_baseline font-extralight">{{ data }} {{ unit }}</span>
   </div>
 </template>
 

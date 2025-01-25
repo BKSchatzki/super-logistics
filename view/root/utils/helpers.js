@@ -14,4 +14,10 @@ const toSingular = (str) => {
     return str.replace(/s$/, '');
 }
 
-export {checkOverlap, toCapitalCase, toSingular};
+const formatDateForJS = (dateString) => {
+    const date = new Date(dateString);
+    date.setTime(date.getTime() + 8 * 60 * 60 * 1000); // Add 8 hours in milliseconds
+    return date
+}
+
+export {checkOverlap, toCapitalCase, toSingular, formatDateForJS};

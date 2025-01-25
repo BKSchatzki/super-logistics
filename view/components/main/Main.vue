@@ -2,7 +2,7 @@
 import {watch} from 'vue';
 import NavBar from '@/components/main/NavBar.vue';
 
-import {useUserAPI} from "@utils/useUserAPI.js";
+import {useUserAPI} from "@utils/composables/useUserAPI.js";
 const {getCurrentUser} = useUserAPI();
 
 const user = getCurrentUser();

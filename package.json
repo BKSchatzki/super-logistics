@@ -13,7 +13,8 @@
     "test:e2e": "playwright test",
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
-    "watch": "vite build --watch"
+    "watch": "vite build --watch",
+    "release": "gulp build"
   },
   "dependencies": {
     "@primevue/themes": "^4.2.5",
@@ -23,8 +24,9 @@
     "tailwindcss-primeui": "^0.3.4",
     "uuid": "^11.0.4",
     "vue": "^3.5.13",
-    "vue-qrcode-reader": "^5.6.0",
+    "vue-qrcode-reader": "^5.7.0",
     "vue-router": "^4.4.5",
+    "vue3-qrcode-reader": "^0.0.1",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
@@ -38,6 +40,8 @@
     "eslint": "^9.14.0",
     "eslint-plugin-playwright": "^2.1.0",
     "eslint-plugin-vue": "^9.30.0",
+    "gulp": "^5.0.0",
+    "gulp-zip": "^6.1.0",
     "jsdom": "^25.0.1",
     "less": "^4.2.1",
     "postcss": "^8.4.49",

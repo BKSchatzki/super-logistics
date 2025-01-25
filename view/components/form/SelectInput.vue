@@ -17,6 +17,7 @@ const props = defineProps({
   disabled: Boolean,
   editable: Boolean,
   showClear: Boolean,
+  filter: Boolean,
   type: {
     type: String,
     default: 'text'
@@ -47,6 +48,7 @@ const componentType = computed(() => props.multiple ? MultiSelect : Select);
         optionValue="value"
         @change="updateValue"
         :editable
+        :filter
         :showClear
         :placeholder
         :disabled

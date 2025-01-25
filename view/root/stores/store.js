@@ -2,28 +2,23 @@ import Vuex from 'vuex';
 
 export default new Vuex.createStore({
     state: {
-        txns: [],
-        transaction: {},
+        transactions: [],
         selectedShow: {},
         shows: [],
-        carriers: [],
-        shippers: [],
         clients: [],
         loadedPDF: '',
         users: [],
         user: {},
-        clientId: 0,
-        update: false,
     },
 
     mutations: {
         // Super Logistics mutations
-        setTxns(state, txns) {
-            state.txns = txns;
+        setTransactions(state, transactions) {
+            state.transactions = transactions;
         },
         removeTransaction(state, txn_id) {
-            const index = state.txns.findIndex(x => x.id === txn_id);
-            state.txns.splice(index, 1);
+            const index = state.transactions.findIndex(x => x.id === txn_id);
+            state.transactions.splice(index, 1);
         },
         setTransaction (state, transaction) {
             state.transaction = transaction;

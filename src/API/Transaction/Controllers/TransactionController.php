@@ -2,240 +2,126 @@
 
 namespace BigTB\SL\API\Transaction\Controllers;
 
-use BigTB\SL\API\PDF\ExternalLabelGenerator;
-use BigTB\SL\API\Transaction\Models\Transaction;
-use WP_REST_Request;
-use League\Fractal\Resource\Item;
-use League\Fractal\Resource\Collection;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use BigTB\SL\Setup\WP\ResponseManager;
-use BigTB\SL\API\Common\Traits\Request_Filter;
-use BigTB\SL\API\Transaction\Transformers\TransactionTransformer;
-use BigTB\SL\API\PDF\LabelGenerator;
+use BigTB\SL\API\Entity\Models\Entity;
+use BigTB\SL\API\Entity\Models\ShowPlace;
+use BigTB\SL\API\PDF\Labels\ShippingLabelGenerator;
 use BigTB\SL\API\PDF\Transformers\PDFTransformer;
-use BigTB\SL\API\Update\Models\Update;
+use BigTB\SL\API\Transaction\Models\Transaction;
+use BigTB\SL\API\Transaction\Transformers\TransactionTransformer;
+use BigTB\SL\Setup\Core\Controller;
+use League\Fractal\Resource\Item;
+use SimplePie\Exception;
+use WP_REST_Request;
 
-class TransactionController {
-    use ResponseManager;
+class TransactionController extends Controller {
 
-    public static function index( WP_REST_Request $request ): array {
-        $transactions = Transaction::where('status', '<>', 0)
-            ->paginate(self::get_per_page());
-        $resource = new Collection($transactions, new TransactionTransformer);
-        $resource->setPaginator(new IlluminatePaginatorAdapter($transactions));
+	public static function get( WP_REST_Request $request ): array {
+		$query  = Transaction::query()->with( [ 'items', 'show' ] )->where( 'trashed', 0 );
+		$params = $request->get_params();
+		$query  = self::addWhereClauses( $query, $params, [ 'id', 'show_id', 'active' ] );
 
-        return self::prepareArrayResponse( $resource );
-    }
+		$transactions = $query->get();
 
-    public static function get( WP_REST_Request $request ): array {
-        $transaction = Transaction::with(['show', 'client', 'carrier', 'shipper', 'exhibitor', 'updates', 'items'])->find($request->get_param('id'));
-        $resource = new Item($transaction, new TransactionTransformer);
+		return self::collectionResponse( $transactions, new TransactionTransformer );
+	}
 
-        return self::prepareArrayResponse( $resource );
-    }
+	public static function create( WP_REST_Request $request ): array {
 
-    public static function create(WP_REST_Request $request): array {
-        $transaction_data = json_decode($request->get_param('transaction'), true);
-        $items_data = $transaction_data['items'];
+		$params = $request->get_params();
 
-        $update_data = [
-            'user_id' => get_current_user_id(),
-            'type' => 1,
-            'note' => $transaction_data['note'],
-            'datetime' => date('Y-m-d H:i:s'),
-        ];
+		if ( ! self::checkIfProvided( $params, [ 'name', 'show_id', 'zone' ] ) ) {
+			return self::prepareErrorResponse( 'Missing required parameters to create transaction', 400 );
+		}
 
-        if ($transaction_data['image_path'] && $transaction_data['image_path'] !== '') {
-            $update_data['image_path'] = $transaction_data['image_path'];
-        } elseif (isset($_FILES['image'])) {
-            $update_data['image_path'] = self::handleImageUpload($_FILES['image']);
-        } else {
-            $update_data['image_path'] = '';
-        }
+		extract( $params );
+		$transactionData = [
+			'name'    => $name,
+			'show_id' => $show_id,
+			'zone'    => $zone,
+			'active'  => 1
+		];
 
-        $transaction = Transaction::create($transaction_data);
-        foreach ($items_data as $data) {
-            $transaction->items()->create($data);
-        }
-        $transaction->updates()->create($update_data);
-        $transaction->save();
-        $resource = new Item($transaction, new TransactionTransformer);
+		$transaction = Transaction::create( $transactionData );
 
-        return self::prepareArrayResponse($resource);
-    }
+		return self::prepareArrayResponse( new Item( $transaction, new TransactionTransformer ) );
+	}
 
-    public static function update(WP_REST_Request $request): array {
-        $transaction_data = json_decode($request->get_param('transaction'), true);
+	public static function update( WP_REST_Request $request ): array {
+		$params = $request->get_params();
 
-        $items_data = $transaction_data['items'];
+		if ( ! self::checkIfProvided( $params, [ 'id', 'name', 'show_id', 'zone' ] ) ) {
+			return self::prepareErrorResponse( 'Missing required parameters to update transaction', 400 );
+		}
 
-        $update_data = [
-            'user_id' => get_current_user_id(),
-            'type' => 1,
-            'note' => $transaction_data['note'],
-            'datetime' => date('Y-m-d H:i:s'),
-        ];
+		$transaction = Transaction::find( $params['id'] );
 
-        if (isset($_FILES['image'])) {
-            $update_data['image_path'] = self::handleImageUpload($_FILES['image']);
-        } else {
-            $update_data['image_path'] = '';
-        }
+		if ( ! $transaction ) {
+			return self::prepareErrorResponse( 'Transaction not found', 404 );
+		}
 
-        $transaction = Transaction::find($transaction_data['id']);
-        $transaction->fill($transaction_data);
+		$transaction->fill( $params );
+		$transaction->save();
 
-        foreach ($items_data as $data) {
-            $item_array = $transaction->items()->where('type', $data['type'])->get();
-            $item = $item_array->first();
-            if ($item) {
-                $item->fill($data);
-                $item->save();
-            }
-        }
-        $transaction->updates()->create($update_data);
+		return self::prepareArrayResponse( new Item( $transaction, new TransactionTransformer ) );
+	}
 
-        $transaction->save();
-        $resource = new Item($transaction, new TransactionTransformer);
+	public static function delete( WP_REST_Request $request ): array {
+		$transaction          = Transaction::find( $request->get_param( 'id' ) );
+		$transaction->trashed = 1;
+		$transaction->save();
 
-        return self::prepareArrayResponse($resource);
-    }
+		return self::singleResponse( $transaction, new TransactionTransformer );
+	}
 
-    public static function trash(WP_REST_Request $request): array {
-        $transaction = Transaction::find($request->get_param('id'));
-        $transaction->status = 0;
-        $transaction->save();
+	public static function markInactive( WP_REST_Request $request ): array {
+		$transaction         = Transaction::find( $request->get_param( 'id' ) );
+		$transaction->active = 0;
+		$transaction->save();
 
-        return self::prepareArrayResponse([]);
-    }
+		return self::singleResponse( $transaction, new TransactionTransformer );
+	}
 
-    public static function delete(WP_REST_Request $request): array {
-        $transaction = Transaction::find($request->get_param('id'));
-        $transaction->delete();
+	public static function printShippingLabels( WP_REST_Request $request ): array {
 
-        return self::prepareArrayResponse([]);
-    }
+		$params = $request->get_params();
 
-    public static function search(WP_REST_Request $request): array {
+		if ( ! self::checkIfProvided( $params, [
+			'shipper',
+			'exhibitor',
+			'show_id',
+			'zone_id',
+			'booth_id',
+			'carrier',
+			'tracking',
+			'street_address',
+			'city',
+			'state',
+			'zip',
+			'freight_type',
+			'total_pcs',
+		] ) ) {
+			return self::prepareErrorResponse( 'Missing required parameters to print shipping labels', 400 );
+		}
 
-        $totalQueries = [
-            'show_id' => $request->get_param('show_id'),
-            'client_id' => $request->get_param('client_id'),
-            'carrier_id' => $request->get_param('carrier_id'),
-            'shipper_id' => $request->get_param('shipper_id'),
-            'exhibitor_id' => $request->get_param('exhibitor_id'),
-            'shipment' => $request->get_param('shipment'),
-            'place' => $request->get_param('place'),
-            'booth' => $request->get_param('booth'),
-            'billable_weight' => $request->get_param('billable_weight'),
-            'pallet_no' => $request->get_param('pallet_no'),
-            'freight_type' => $request->get_param('freight_type'),
-            'status' => 1,
-        ];
+		// Fill in the related info
+		$params['show']  = Entity::with( [ 'show' ] )->find( $params['show_id'] );
+		$params['zone']  = ShowPlace::find( $params['zone_id'] );
+		$params['booth'] = ShowPlace::find( $params['booth_id'] );
+		$params['tracking'] = array_map('strtoupper', array_map('trim', explode(',', $params['tracking'])));
 
-        // Start a new query
-        $query = Transaction::query();
+		// Create a new LabelGenerator and generate the PDF content
+		$generator = new ShippingLabelGenerator();
+		try {
+			$pdf = $generator->generate( $params );
+		} catch ( Exception $e ) {
+			return self::prepareErrorResponse( $e, 500 );
+		}
+		error_log( "PDF: " . $pdf );
+		$pdfBase64 = base64_encode( $pdf );
+		$res       = new Item( [ 'pdf' => $pdfBase64 ], new PDFTransformer() );
 
-        // Add where clauses for each non-empty parameter
-        foreach ($totalQueries as $field => $value) {
-            if ($value !== '' && $value !== null) {
-                $query->where($field, $value);
-            }
-        }
+		return self::prepareArrayResponse( $res );
+	}
 
-        $transactions = $query->with(['show', 'client', 'carrier', 'shipper', 'exhibitor', 'updates', 'items'])->get();
-        $resource = new Collection($transactions, new TransactionTransformer);
-        return self::prepareArrayResponse($resource);
-    }
 
-    public static function createLabels(WP_REST_Request $request): array
-    {
-        $trans_id = $request->get_param('trans_id');
-        $t = Transaction::with(['show.entity', 'client', 'carrier', 'shipper', 'exhibitor', 'showPlace', 'items'])->find($trans_id);
-
-        // Create a new LabelGenerator and generate the PDF content
-        $labelGenerator = new LabelGenerator();
-        $pdf = $labelGenerator->generate($t);
-        // Encode the PDF content to base64
-        $pdfBase64 = base64_encode($pdf);
-
-        $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
-
-        // Return the response
-        return self::prepareArrayResponse($res);
-    }
-
-    public static function createExternalLabel(WP_REST_Request $request): array
-    {
-        $transaction_data = json_decode($request->get_param('txn'), true);
-
-        if (isset($_FILES['image'])) {
-            $transaction_data['image_path'] = self::handleImageUpload($_FILES['image']);
-        } else {
-            $transaction_data['image_path'] = '';
-        }
-
-        $labelGenerator = new ExternalLabelGenerator();
-        $pdf = $labelGenerator->generate($transaction_data);
-        // Encode the PDF content to base64
-        $pdfBase64 = base64_encode($pdf);
-
-        $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
-
-        // Return the response
-        return self::prepareArrayResponse($res);
-    }
-
-    public static function storeNote(WP_REST_Request $request): array {
-        $transaction_id = $request->get_param('transaction_id');
-        $note = $request->get_param('note');
-
-        $update_data = [
-            'user_id' => get_current_user_id(),
-            'type' => 1,
-            'note' => $note,
-            'datetime' => date('Y-m-d H:i:s'),
-        ];
-
-        $transaction = Transaction::find($transaction_id);
-        $transaction->updates()->create($update_data);
-
-        $resource = new Item($transaction, new TransactionTransformer);
-
-        return self::prepareArrayResponse($resource);
-    }
-
-    private static function handleImageUpload($file): string | \WP_Error {
-        // Define overrides
-        $overrides = array(
-            'test_form' => false,
-            'mimes' => array(
-                'jpg|jpeg|jpe' => 'image/jpeg',
-                'png' => 'image/png',
-                'gif' => 'image/gif'
-            )
-        );
-
-        // Handle file upload
-        $upload = wp_handle_upload($file, $overrides);
-
-        // Check for errors
-        if (isset($upload['error'])) {
-            return new \WP_Error('upload_failed', $upload['error'], array('status' => 500));
-        }
-
-        // File upload successful, get file URL
-        $upload_dir = wp_upload_dir();
-        $url = $upload_dir['url'] . '/' . basename($upload['file']);
-
-        // Return absolute URL instead of relative path
-        return $url;
-    }
-
-    public static function removeNote(WP_REST_Request $request): array {
-        $update_id = $request->get_param('update_id');
-        $update = Update::find($update_id);
-        $update->update(['note' => '']);
-        return self::prepareArrayResponse([]);
-    }
 }

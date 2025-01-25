@@ -49,4 +49,8 @@ class User extends Model {
 		return $this->belongsToMany( Entity::class,
 			'sl_entity_users', 'user_id', 'entity_id' );
 	}
+
+	public function status(): object {
+		return $this->hasOne( UserStatus::class, 'user_id', 'ID' );
+	}
 }

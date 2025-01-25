@@ -7,18 +7,58 @@ class TableManager {
 	public static function init(): void {
 
 		include_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		self::createUserStatusTable();
 		self::createEntitiesTable();
 		self::createShowsTable();
 		self::createTransactionsTable();
-		self::createUpdatesTable();
-		self::createItemsTable();
+		self::createShowPlaceTable();
 		self::createEntityUsersTable();
+
+		// If users are not already in the active users table, add them
+		self::populateUserStatusTable();
 	}
 
 	private static function prefix(): string {
 		global $wpdb;
 
 		return $wpdb->prefix;
+	}
+
+	private static function createUserStatusTable(): void {
+		$prefix     = self::prefix();
+		$table_name = $prefix . 'sl_user_status';
+
+		$sql = "CREATE TABLE IF NOT EXISTS $table_name (
+		  `user_id` BIGINT(20) UNSIGNED NOT NULL,
+		  `active` TINYINT(1) DEFAULT 1,
+		  `trashed` TINYINT(1) DEFAULT 0,
+		  PRIMARY KEY (`user_id`),
+		  FOREIGN KEY (`user_id`) REFERENCES " . $prefix . "users(`ID`) ON DELETE CASCADE
+		) DEFAULT CHARSET=utf8";
+
+		dbDelta( $sql );
+	}
+
+	private static function populateUserStatusTable(): void {
+		global $wpdb;
+		$prefix             = self::prefix();
+		$users_table        = $prefix . 'users';
+		$active_users_table = $prefix . 'sl_user_status';
+
+		$users = $wpdb->get_results( "SELECT ID FROM $users_table" );
+
+		foreach ( $users as $user ) {
+			$user_id = $user->ID;
+			$exists  = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $active_users_table WHERE user_id = %d", $user_id ) );
+
+			if ( ! $exists ) {
+				$wpdb->insert( $active_users_table, [
+					'user_id' => $user_id,
+					'active'  => 1,
+					'trashed' => 0
+				] );
+			}
+		}
 	}
 
 	private static function createEntitiesTable(): void {
@@ -40,6 +80,7 @@ class TableManager {
             `email` VARCHAR(255) NULL,
             `logo_path` VARCHAR(255) NULL,
             `active` TINYINT(1) DEFAULT 1,
+            `trashed` TINYINT(1) DEFAULT 0,
             PRIMARY KEY (`id`)
         ) DEFAULT CHARSET=utf8";
 
@@ -75,59 +116,61 @@ class TableManager {
           `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
           `name` VARCHAR(255) NOT NULL,
           `show_id` INT(11) UNSIGNED NOT NULL,
-          `zone` VARCHAR(255) NOT NULL,
           `active` TINYINT(1) DEFAULT 1,
+          `trashed` TINYINT(1) DEFAULT 0,
           `created_at` TIMESTAMP NULL DEFAULT NULL,
+          `created_by` BIGINT(20) UNSIGNED NOT NULL,
           `updated_at` TIMESTAMP NULL DEFAULT NULL,
-          PRIMARY KEY (`id`),
-          FOREIGN KEY (`show_id`) REFERENCES " . $prefix . "sl_shows(`id`) ON DELETE RESTRICT
-        ) DEFAULT CHARSET=utf8";
-
-		dbDelta( $sql );
-	}
-
-	private static function createUpdatesTable(): void {
-		$prefix     = self::prefix();
-		$table_name = self::prefix() . 'sl_updates';
-
-		$sql = "CREATE TABLE IF NOT EXISTS $table_name (
-          `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-          `transaction_id` INT(11) UNSIGNED NOT NULL,
-          `user_id` BIGINT(20) UNSIGNED NOT NULL,
-          `type` INT(11) NOT NULL,
-          `datetime` DATETIME NOT NULL,
-          `image_path` VARCHAR(255) NOT NULL,
-          `note` VARCHAR(255) NULL,
-          PRIMARY KEY (`id`),
-          FOREIGN KEY (`transaction_id`) REFERENCES " . $prefix . "sl_transactions(`id`) ON DELETE CASCADE,
-          FOREIGN KEY (`user_id`) REFERENCES " . $prefix . "users(`ID`) ON DELETE RESTRICT
-        ) DEFAULT CHARSET=utf8";
-
-		dbDelta( $sql );
-	}
-
-	private static function createItemsTable(): void {
-		$prefix     = self::prefix();
-		$table_name = self::prefix() . 'sl_items';
-
-		$sql = "CREATE TABLE IF NOT EXISTS $table_name (
-          `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-          `transaction_id` INT(11) UNSIGNED NOT NULL,
-          `type` INT(11) NOT NULL,
-          `pcs` INT(11) NOT NULL,
-          `bol_count` INT(11) NULL,
-          `weight` INT(11) NOT NULL,
-          `special` tinyINT(1) DEFAULT 0,
-          `notes` VARCHAR(255) NULL,
-          `tracking` VARCHAR(255) NULL,
-          `carrier` INT(11) UNSIGNED NULL,
+          `updated_by` BIGINT(20) UNSIGNED NOT NULL,
+          `shipper` varchar(255) NOT NULL,
           `exhibitor` VARCHAR(255) NOT NULL,
-          `returning` tinyINT(1) DEFAULT 0,
-          `active` tinyINT(1) DEFAULT 1,
+          `carrier` VARCHAR(255) NOT NULL,
+          `tracking` VARCHAR(255) NOT NULL,
+          `zone_id` INT(11) UNSIGNED NOT NULL,
+          `booth_id` INT(11) UNSIGNED NOT NULL,
+          `crate_pcs` INT(11) UNSIGNED DEFAULT 0,
+          `carton_pcs` INT(11) UNSIGNED DEFAULT 0,
+          `skid_pcs` INT(11) UNSIGNED DEFAULT 0,
+          `fiber_case_pcs` INT(11) UNSIGNED DEFAULT 0,
+          `carpet_pcs` INT(11) UNSIGNED DEFAULT 0,
+          `misc_pcs` INT(11) UNSIGNED DEFAULT 0,
+          `total_pcs` INT(11) UNSIGNED NOT NULL,
+          `total_weight` INT(11) UNSIGNED NOT NULL,
+          `remarks` TEXT NULL,
+          `special_handling` INT(1) UNSIGNED DEFAULT 0,
+          `shipper_city` VARCHAR(255) NOT NULL,
+          `shipper_state` VARCHAR(255) NOT NULL,
+          `shipper_zip` VARCHAR(255) NOT NULL,
+          `trailer` VARCHAR(255) NULL,
+          `pallet` VARCHAR(255) NULL,
+          `image_path` VARCHAR(255) NULL,
+          `freight_type` VARCHAR(255) NOT NULL,
           PRIMARY KEY (`id`),
-          FOREIGN KEY (`transaction_id`) REFERENCES " . $prefix . "sl_transactions(`id`) ON DELETE CASCADE,
-          FOREIGN KEY (`carrier`) REFERENCES " . $prefix . "sl_entities(`id`) ON DELETE CASCADE
+          FOREIGN KEY (`created_by`) REFERENCES " . $prefix . "users(`ID`) ON DELETE RESTRICT,
+          FOREIGN KEY (`updated_by`) REFERENCES " . $prefix . "users(`ID`) ON DELETE RESTRICT,
+          FOREIGN KEY (`show_id`) REFERENCES " . $prefix . "sl_entities(`id`) ON DELETE RESTRICT,
+          FOREIGN KEY (`zone_id`) REFERENCES " . $prefix . "sl_show_places(`id`) ON DELETE RESTRICT,
+          FOREIGN KEY (`booth_id`) REFERENCES " . $prefix . "sl_show_places(`id`) ON DELETE RESTRICT
         ) DEFAULT CHARSET=utf8";
+
+		dbDelta( $sql );
+	}
+
+	private static function createShowPlaceTable(): void {
+		$prefix     = self::prefix();
+		$table_name = $prefix . 'sl_show_places';
+
+		// zones are type 1
+		// booths are type 2
+		$sql = "CREATE TABLE IF NOT EXISTS $table_name (
+		  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+		  `type` VARCHAR(255) NOT NULL,
+		  `show_id` INT(11) UNSIGNED NOT NULL,
+		  `name` VARCHAR(255) NOT NULL,
+		  `trashed` TINYINT(1) DEFAULT 0,
+		  PRIMARY KEY (`id`),
+		  FOREIGN KEY (`show_id`) REFERENCES " . $prefix . "sl_entities(`id`) ON DELETE CASCADE
+		) DEFAULT CHARSET=utf8";
 
 		dbDelta( $sql );
 	}

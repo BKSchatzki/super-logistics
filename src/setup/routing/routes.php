@@ -21,7 +21,7 @@ $basicRoutes = [
 			[
 				'methods'             => 'GET',
 				'callback'            => 'get',
-				'permission_callback' => 'isLoggedIn'
+				'permission_callback' => '__return_true'
 			],
 			[
 				'methods'             => 'PATCH',
@@ -37,18 +37,42 @@ $basicRoutes = [
 	]
 ];
 
-$entityRoutes = [
-	...$basicRoutes,
+$statusRoutes = [
 	[
-		'path' => 'status',
+		'path' => 'inactive',
 		'methods' => [
 			[
 				'methods'             => 'PATCH',
 				'callback'            => 'markInactive',
-				'permission_callback' => 'isLoggedIn'
+				'permission_callback' => 'isInternalAdmin'
+			]
+		]
+	],
+	[
+		'path' => 'active',
+		'methods' => [
+			[
+				'methods'             => 'PATCH',
+				'callback'            => 'markActive',
+				'permission_callback' => 'isInternalAdmin'
+			]
+		]
+	],
+	[
+		'path' => 'restore',
+		'methods' => [
+			[
+				'methods'             => 'PATCH',
+				'callback'            => 'restore',
+				'permission_callback' => 'isInternalAdmin'
 			]
 		]
 	]
+];
+
+$entityRoutes = [
+	...$basicRoutes,
+	...$statusRoutes
 ];
 
 $clientRouting = [
@@ -61,42 +85,28 @@ $showRouting = [
 	'handlerClass' => ShowController::class,
 	'base'         => 'shows',
 	'routes'       => [
+		...$entityRoutes,
 		[
-			'path'    => '',
+			'path'    => 'places',
 			'methods' => [
 				[
 					'methods'             => 'POST',
-					'callback'            => 'create',
+					'callback'            => 'createPlaces',
 					'permission_callback' => 'isAdmin'
 				],
 				[
-					'methods'             => 'GET',
-					'callback'            => 'get',
-					'permission_callback' => 'isLoggedIn'
-				],
-				[
 					'methods'             => 'PATCH',
-					'callback'            => 'update',
+					'callback'            => 'updatePlaces',
 					'permission_callback' => 'isAdmin'
 				],
 				[
 					'methods'             => 'DELETE',
-					'callback'            => 'delete',
+					'callback'            => 'deletePlaces',
 					'permission_callback' => 'isAdmin'
-				],
-			]
-		],
-		[
-			'path' => 'status',
-			'methods' => [
-				[
-					'methods'             => 'PATCH',
-					'callback'            => 'markInactive',
-					'permission_callback' => 'isInternalAdmin'
 				]
 			]
 		]
-	]
+		]
 ];
 
 $txnRouting = [
@@ -139,40 +149,26 @@ $txnRouting = [
 			]
 		],
 		[
-			'path'    => 'labels',
+			'path'    => 'shipping',
 			'methods' => [
 				[
-					'methods'             => 'GET',
-					'callback'            => 'getLabels',
-					'permission_callback' => 'isLoggedIn'
+					'methods'             => 'POST',
+					'callback'            => 'printShippingLabels',
+					'permission_callback' => '__return_true'
 				]
 			]
 		],
-	]
-];
-
-$itemRouting = [
-	'handlerClass' => PackageController::class,
-	'base'         => 'packages',
-	'routes'       => [
-		...$basicRoutes,
 		[
-			'path'    => 'labels',
+			'path'    => 'receiving',
 			'methods' => [
 				[
-					'methods'             => 'GET',
-					'callback'            => 'getLabels',
-					'permission_callback' => 'isLoggedIn'
+					'methods'             => 'POST',
+					'callback'            => 'printAdvanceWarehouseLabels',
+					'permission_callback' => 'isInternal'
 				]
 			]
 		],
 	]
-];
-
-$noteRouting = [
-	'handlerClass' => TransactionController::class,
-	'base'         => 'transactions/notes',
-	'routes'       => $basicRoutes
 ];
 
 $userRouting = [
@@ -204,6 +200,7 @@ $userRouting = [
 				]
 			]
 		],
+		...$statusRoutes,
 		[
 			'path'    => 'current',
 			'methods' => [
@@ -268,8 +265,6 @@ return [
 	$clientRouting,
 	$showRouting,
 	$txnRouting,
-	$itemRouting,
-	$noteRouting,
 	$userRouting,
 	$reportRouting
 ];

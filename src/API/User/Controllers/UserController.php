@@ -6,7 +6,6 @@ use BigTB\SL\API\User\Models\User;
 use BigTB\SL\API\User\Transformers\UserTransformer;
 use BigTB\SL\Setup\Core\Controller;
 use BigTB\SL\Setup\Routing\Permissions;
-use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use WP_REST_Request;
 
@@ -29,9 +28,7 @@ class UserController extends Controller {
 			} );
 		}
 
-		$resource = new Collection( $users, new UserTransformer );
-
-		return self::prepareArrayResponse( $resource );
+		return self::collectionResponse( $users, new UserTransformer );
 	}
 
 	public static function getCurrent(): array {
@@ -39,10 +36,9 @@ class UserController extends Controller {
 		$params      = [
 			'ID' => $currentUser->ID
 		];
-		$users       = self::getUsers( $params );
-		$resource    = new Item( $users[0], new UserTransformer );
+		list( $user ) = self::getUsers( $params );
 
-		return self::prepareArrayResponse( $resource );
+		return self::singleResponse( $user, new UserTransformer );
 	}
 
 	public static function logout(): void {
@@ -61,6 +57,12 @@ class UserController extends Controller {
 
 		list( $user ) = self::getUsers( [ 'ID' => $userData->ID ] );
 
+		$user->status->create( [
+			'user_id' => $userData->ID,
+			'active'  => 1,
+			'trashed' => 0
+		] );
+
 		if ( str_contains( $params['role'], 'client' ) ) {
 			$user = self::associateEntities( $user, $params );
 		}
@@ -76,7 +78,7 @@ class UserController extends Controller {
 
 		$user = User::find( $userId );
 		if ( ! $user ) {
-			return self::prepareErrorResponse( 'User not found' );
+			return self::prepareUserNotFoundResponse();
 		}
 
 		// Update Roles
@@ -86,15 +88,27 @@ class UserController extends Controller {
 			$user = User::find( $userId );
 		}
 
+		// Update first_name, last_name, and user_email using WordPress APIs
+		if ( isset( $params['first_name'] ) ) {
+			update_user_meta( $userId, 'first_name', $params['first_name'] );
+		}
+
+		if ( isset( $params['last_name'] ) ) {
+			update_user_meta( $userId, 'last_name', $params['last_name'] );
+		}
+
+		if ( isset( $params['user_email'] ) ) {
+			$user->user_email = $params['user_email'];
+		}
+
 		if ( str_contains( $params['role'], 'internal' ) ) {
 			$user = self::clearEntities( $user );
-
 		} else {
 			// Update entity associations
 			$entities = [];
 
-			if ( isset( $params['client'] ) ) {
-				$entities[] = (int) $params['client'];
+			if ( isset( $params['client_id'] ) ) {
+				$entities[] = (int) $params['client_id'];
 			}
 
 			if ( isset( $params['shows'] ) ) {
@@ -105,8 +119,9 @@ class UserController extends Controller {
 				$user->entities()->sync( $entities );
 			}
 
-			$user->save();
 		}
+
+		$user->save();
 
 		$resource = new Item( $user, new UserTransformer );
 
@@ -119,14 +134,58 @@ class UserController extends Controller {
 
 		$user = User::find( $userId );
 		if ( ! $user ) {
-			return self::prepareErrorResponse( 'User not found' );
+			return self::prepareUserNotFoundResponse();
 		}
 
-		$user->delete();
+		$user->status->trashed = 1;
+		$user->status->save();
 
-		$resource = new Item( $user, new UserTransformer );
+		return self::singleResponse( $user, new UserTransformer );
+	}
 
-		return self::prepareArrayResponse( $resource );
+	public static function restore( WP_REST_Request $request ): array {
+		$params = $request->get_params();
+		$userId = $params['id'];
+
+		$user = User::find( $userId );
+		if ( ! $user ) {
+			return self::prepareUserNotFoundResponse();
+		}
+
+		$user->status->trashed = 0;
+		$user->status->save();
+
+		return self::singleResponse( $user, new UserTransformer );
+	}
+
+	public static function markInactive( WP_REST_Request $request ): array {
+		$params = $request->get_params();
+		$userId = $params['id'];
+
+		$user = User::find( $userId );
+		if ( ! $user ) {
+			return self::prepareUserNotFoundResponse();
+		}
+
+		$user->status->active = 0;
+		$user->status->save();
+
+		return self::singleResponse( $user, new UserTransformer );
+	}
+
+	public static function markActive( WP_REST_Request $request ): array {
+		$params = $request->get_params();
+		$userId = $params['id'];
+
+		$user = User::find( $userId );
+		if ( ! $user ) {
+			return self::prepareUserNotFoundResponse();
+		}
+
+		$user->status->active = 1;
+		$user->status->save();
+
+		return self::singleResponse( $user, new UserTransformer );
 	}
 
 	private static function getUsers( $params ) {
@@ -141,6 +200,7 @@ class UserController extends Controller {
 			$params['roles'] = array_intersect( $params['roles'], $allowedRoles );
 		}
 
+		// If ID is set
 		$query = self::addWhereClauses( User::with( [
 			'roles',
 			'first_name',
@@ -149,6 +209,7 @@ class UserController extends Controller {
 			'entities.show'
 		] ), $params, [ 'ID' ] );
 
+		// Filter by first and last name
 		if ( isset( $params['first_name'] ) ) {
 			$query->whereHas( 'first_name', function ( $q ) use ( $params ) {
 				$q->where( 'meta_value', $params['first_name'] );
@@ -158,6 +219,32 @@ class UserController extends Controller {
 		if ( isset( $params['last_name'] ) ) {
 			$query->whereHas( 'last_name', function ( $q ) use ( $params ) {
 				$q->where( 'meta_value', $params['last_name'] );
+			} );
+		}
+
+		// View active users
+		if ( Permissions::isAdmin() ) {
+			if ( isset( $params['active'] ) ) {
+				$query->whereHas( 'status', function ( $q ) use ( $params ) {
+					$q->where( 'active', $params['active'] );
+				} );
+			}
+		} else {
+			$query->whereHas( 'status', function ( $q ) {
+				$q->where( 'active', 1 );
+			} );
+		}
+
+		// View trashed users
+		if ( Permissions::isInternalAdmin() ) {
+			if ( isset( $params['trashed'] ) ) {
+				$query->whereHas( 'status', function ( $q ) use ( $params ) {
+					$q->where( 'trashed', $params['trashed'] );
+				} );
+			}
+		} else {
+			$query->whereHas( 'status', function ( $q ) {
+				$q->where( 'trashed', 0 );
 			} );
 		}
 
@@ -215,8 +302,8 @@ class UserController extends Controller {
 	private static function associateEntities( $user, $params ): User {
 		// Associate Clients
 
-		if ( isset( $params['client'] ) ) {
-			$user->entities()->attach( (int) $params['client'] );
+		if ( isset( $params['client_id'] ) ) {
+			$user->entities()->attach( (int) $params['client_id'] );
 		}
 
 		// Associate Shows
@@ -225,7 +312,6 @@ class UserController extends Controller {
 				$params['shows'] = json_decode( $params['shows'], true );
 			}
 			foreach ( $params['shows'] as $show ) {
-				error_log( "adding show: $show" );
 				$user->entities()->attach( (int) $show );
 			}
 		}
@@ -233,18 +319,6 @@ class UserController extends Controller {
 		$user->save();
 
 		return $user;
-	}
-
-	public static function updateMetaIfProvided( $uID, $params, $keys ): void {
-		if ( ! is_array( $keys ) ) {
-			$keys = [ $keys ];
-		}
-
-		foreach ( $keys as $key ) {
-			if ( isset( $params[ $key ] ) ) {
-				update_user_meta( $uID, $key, $params[ $key ] );
-			}
-		}
 	}
 
 	public static function updateRole( $uID, $role ): void {

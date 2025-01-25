@@ -1,13 +1,9 @@
 <script setup>
 import {reactive} from "vue";
-import {useStore} from "vuex";
-import {useAPI} from '@utils/useAPI.js';
-import {useForm} from '@utils/useForm.js';
+import {useForm} from '@utils/composables/useForm.js';
 import TextInput from "@/components/form/TextInput.vue";
-import FormRow from "@/components/form/FormRow.vue";
-
-const store = useStore();
-const {get, post} = useAPI();
+import Row from "@/components/form/Row.vue";
+import Col from "@/components/form/Col.vue";
 
 // Form
 const text = {
@@ -42,12 +38,14 @@ const submitNewForm = async () => {
     <span class="text-surface-500 dark:text-surface-400 block mb-8">
       {{ text.internal.description }}
     </span>
-    <FormRow>
-      <TextInput label="Name" v-model="form.name"/>
-    </FormRow>
-    <div class="flex justify-end gap-2">
-      <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
-      <Button type="submit" label="Add New" severity="primary" @click="submitNewForm"></Button>
-    </div>
+    <Col>
+      <Row>
+        <TextInput label="Name" v-model="form.name"/>
+      </Row>
+      <div class="flex justify-end gap-2">
+        <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
+        <Button type="submit" label="Add New" severity="primary" @click="submitNewForm"></Button>
+      </div>
+    </Col>
   </Dialog>
 </template>

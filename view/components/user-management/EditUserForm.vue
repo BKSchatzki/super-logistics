@@ -1,29 +1,30 @@
 <script setup>
-import {computed} from "vue";
+import {computed, watch} from "vue";
 import {useStore} from "vuex";
-import {useForm} from "@utils/useForm";
+import {useForm} from "@utils/composables/useForm.js";
+import {useAPI} from "@utils/composables/useAPI.js";
 import SelectInput from "@/components/form/SelectInput.vue";
 import TextInput from "@/components/form/TextInput.vue";
-import FormRow from "@/components/form/FormRow.vue";
+import Row from "@/components/form/Row.vue";
+import Col from "@/components/form/Col.vue";
 
 const store = useStore();
-
 const props = defineProps({
-  subject: Object
+  subject: {type: Object, required: true},
+  stop: {type: Function, required: true}
 });
-const emit = defineEmits(['closed']);
 
 // Permissions
 const user = computed(() => store.state.user);
 
 // Form
-const subjectShows = computed(() => props.subject.shows ? props.subject.shows.map(s => s.id) : []);
-const initialData = {
+const subjectShows = computed(() => props.subject['shows'] ? props.subject['shows'].map(s => s.id) : []);
+console.log("subject: ", props.subject);
+const {form, getDroptions, clearForm, getRoleDroptions, submit} = useForm({
   ...props.subject,
   shows: subjectShows.value,
-  client: props.subject.client ? props.subject.client.id : null,
-};
-const {form, getDroptions, clearForm, getRoleDroptions, submit} = useForm(initialData);
+  client_id: props.subject['client'] ? props.subject['client'].id : null,
+});
 
 // Submission
 const toastConfig = {
@@ -38,11 +39,11 @@ const toastConfig = {
 }
 const submitEditUserForm = async () => {
   await submit('users', 'update', toastConfig)
-  emit('close')
+  props.stop()
 }
 const cancel = () => {
-  clearForm();
-  emit('close');
+  clearForm()
+  props.stop()
 }
 
 // Select Options
@@ -57,9 +58,14 @@ const displayClientField = computed(() => {
 });
 
 // Show Options
-const showOptions = getDroptions('shows', {client_id: form.client});
-const displayShowField = computed(() => form.role === 'client_employee' && user.value['isInternal']);
-
+const showOptions = getDroptions('shows', {client_id: form['client_id']});
+const displayShowField = computed(() => form['role'] === 'client_employee' && user.value['isInternal']);
+const {get: getShows} = useAPI('shows');
+watch(() => form['client_id'], (cID) => {
+  if (cID) {
+    getShows({client_id: cID});
+  }
+});
 
 </script>
 
@@ -68,28 +74,31 @@ const displayShowField = computed(() => form.role === 'client_employee' && user.
   <span class="text-surface-500 dark:text-surface-400 block mb-8 w-full">
     Edit user information. Passwords and usernames cannot be changed.
   </span>
-  <FormRow>
-    <TextInput label="First Name" v-model="form.first_name"/>
-    <TextInput label="Last Name" v-model="form.last_name"/>
-  </FormRow>
-  <FormRow>
-    <TextInput label="Username" v-model="form.user_login" disabled/>
-  </FormRow>
-  <FormRow>
-    <TextInput label="Email" v-model="form.user_email"/>
-  </FormRow>
-  <FormRow>
-    <SelectInput ref="roleInput" type="select" label="Type" :options="roleOptions" v-model="form.role"
-               placeholder="Select Type of User"/>
-    <SelectInput v-if="displayClientField" type="select" label="Client" :options="clientOptions" v-model="form.client"
-               placeholder="Select the Client"/>
-  </FormRow>
-  <FormRow>
-    <SelectInput v-if="displayShowField" type="select" label="Shows" :options="showOptions" v-model="form.shows"
-               placeholder="Select Shows" multiple/>
-  </FormRow>
-  <div class="flex justify-end gap-2">
-    <Button type="button" label="Cancel" severity="secondary" @click="cancel"></Button>
-    <Button type="button" label="Save" severity="primary" @click="submitEditUserForm"></Button>
-  </div>
+  <Col>
+    <Row>
+      <TextInput label="First Name" v-model="form['first_name']"/>
+      <TextInput label="Last Name" v-model="form['last_name']"/>
+    </Row>
+    <Row>
+      <TextInput label="Username" v-model="form['user_login']" disabled/>
+    </Row>
+    <Row>
+      <TextInput label="Email" v-model="form['user_email']"/>
+    </Row>
+    <Row>
+      <SelectInput ref="roleInput" type="select" label="Type" :options="roleOptions" v-model="form['role']"
+                   placeholder="Select Type of User"/>
+      <SelectInput v-if="displayClientField" type="select" label="Client" :options="clientOptions"
+                   v-model="form['client_id']"
+                   placeholder="Select the Client"/>
+    </Row>
+    <Row>
+      <SelectInput v-if="displayShowField" type="select" label="Shows" :options="showOptions" v-model="form.shows"
+                   placeholder="Select Shows" multiple/>
+    </Row>
+    <div class="flex justify-end gap-2">
+      <Button type="button" label="Cancel" severity="secondary" @click="cancel"></Button>
+      <Button type="button" label="Save" severity="primary" @click="submitEditUserForm"></Button>
+    </div>
+  </Col>
 </template>

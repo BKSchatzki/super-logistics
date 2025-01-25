@@ -8,13 +8,16 @@ class UserTransformer extends TransformerAbstract {
 	public function transform( $item ): array {
 		$firstName = $item->first_name ? $item->first_name[0]['meta_value'] : '';
 		$lastName  = $item->last_name ? $item->last_name[0]['meta_value'] : '';
+		$fullName  = $firstName . ' ' . $lastName;
 		list( $role, $isAdmin, $isInternalAdmin, $isClientAdmin, $isInternal, $isClient ) = self::formatRoles( $item );
 		list( $shows, $client ) = self::formatEntities( $item );
 
 		return [
 			'id'              => (int) $item->ID,
-			'name'            => (string) $item->display_name,
+			'name'            => $fullName,
 			'user_login'      => (string) $item->user_login,
+			'active'          => (boolean) $item->status->active,
+			'trashed'         => (boolean) $item->status->trashed,
 			'first_name'      => (string) $firstName,
 			'last_name'       => (string) $lastName,
 			'role'            => (string) $role,
@@ -32,10 +35,10 @@ class UserTransformer extends TransformerAbstract {
 
 	private static function formatRoles( $item ): array {
 
-		if ( empty( $item->roles || !is_array($item->roles) ) ) {
+		if ( empty( $item->roles || ! is_array( $item->roles ) ) ) {
 			return [ '', false, false, false, false, false ];
 		}
-		$rolesData = isset($item->roles[0]) ? unserialize( $item->roles[0]['meta_value'] ) : [];
+		$rolesData = isset( $item->roles[0] ) ? unserialize( $item->roles[0]['meta_value'] ) : [];
 		$roles     = [];
 		foreach ( $rolesData as $role => $value ) {
 			if ( $value ) {
