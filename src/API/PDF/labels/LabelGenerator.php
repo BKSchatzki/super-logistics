@@ -1,6 +1,6 @@
 <?php
 
-namespace BigTB\SL\API\PDF\Labels;
+namespace BigTB\SL\API\PDF\labels;
 
 class LabelGenerator {
 
@@ -40,6 +40,16 @@ class LabelGenerator {
 			}
 		}
 		return true;
+	}
+
+	public function writeInfo( string $label, string|int $value, int $width = 12 ): void {
+		// Bold Label
+		$this->pdf->SetFont( 'helvetica', 'B', $this->bodyTextSize );
+		$this->pdf->Cell( $width, 4, $label . ': ', 0, 0, 'L' );
+
+		// Regular Text for info
+		$this->pdf->SetFont( 'helvetica', '', $this->bodyTextSize );
+		$this->pdf->Cell( $width, 4, $value, 0, 1, 'L' );
 	}
 
 }

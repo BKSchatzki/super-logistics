@@ -14,15 +14,13 @@ function buildVue(done) {
 
 // Step 2: Zip the plugin files (including the dist folder from the Vue build)
 function zipPlugin() {
-    // Use the package.json version
-
     return gulp.src([
         'super-logistics.php',
         'src/**/*',
         'vendor/**/*',
         'view/dist/**/*'
     ], { base: '.' })
-        .pipe(zip('super-logistics.zip'))
+        .pipe(zip('super-logistics.zip', { compress: false })) // Disable compression
         .pipe(gulp.dest('./build'));
 }
 

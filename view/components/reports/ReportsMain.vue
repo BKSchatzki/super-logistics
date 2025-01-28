@@ -23,7 +23,7 @@ export default {
 <template>
 <div>
   <div>
-    <h1>Reports</h1>
+    <h1 class="font-sans text-3xl">Reports</h1>
   </div>
   <div>
     <trailer-man-interface/>

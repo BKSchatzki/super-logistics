@@ -58,4 +58,16 @@ const stateOptions = [
     {label: "VI", value: "VI"},
 ]
 
-export { stateOptions }
+const freightOptions = [
+    {label: 'Less Than Truckload', value: 1},
+    {label: 'Full Truckload', value: 2},
+    {label: 'Small Pack', value: 3}
+]
+
+const frhtOptions = [
+    {label: 'LTL', value: 1},
+    {label: 'FTL', value: 2},
+    {label: 'SmlPk', value: 3}
+]
+
+export { stateOptions, freightOptions, frhtOptions }

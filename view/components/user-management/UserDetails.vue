@@ -1,7 +1,7 @@
 <script setup>
 import EditUserForm from "@/components/user-management/EditUserForm.vue";
-import LabeledDetail from "@/components/data-management/LabeledDetail.vue";
-import ManageDetails from "@/components/data-management/ManageDetails.vue";
+import LabeledDetail from "@/components/data/LabeledDetail.vue";
+import ManageDetails from "@/components/data/ManageDetails.vue";
 
 const props = defineProps({
   subject: Object

@@ -1,4 +1,5 @@
 <script setup>
+
 const props = defineProps({
   modelValue: {
     type: Number,
@@ -23,7 +24,9 @@ const updateValue = (event) => {
 </script>
 
 <template>
-  <InputNumber :modelValue :inputId="id" showButtons buttonLayout="vertical" style="width: 3rem" :min="0" :max="99">
+  <div class="flex flex-col gap-2 items-center">
+  <InputNumber :modelValue :inputId="id" showButtons buttonLayout="vertical" style="width: 6rem;"
+               @input="updateValue" :min="0" :max="99">
     <template #incrementbuttonicon>
       <span class="pi pi-plus" />
     </template>
@@ -32,6 +35,7 @@ const updateValue = (event) => {
     </template>
   </InputNumber>
   <label v-if="label" :for="id">{{ label }}</label>
+  </div>
 </template>
 
 <style scoped>

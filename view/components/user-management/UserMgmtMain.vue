@@ -7,8 +7,8 @@ import {FilterMatchMode} from '@primevue/core/api';
 import Toast from 'primevue/toast';
 import NewUserForm from '@/components/user-management/NewUserForm.vue';
 import UserDetails from '@/components/user-management/UserDetails.vue';
-import SearchBar from '@/components/data-management/SearchBar.vue';
-import StatusFilters from '@/components/data-management/StatusFilters.vue';
+import SearchBar from '@/components/data/SearchBar.vue';
+import StatusFilters from '@/components/data/StatusFilters.vue';
 
 const {data, statusBoxes, statusStyles} = useStatusFilters('users');
 const {selected, unselect, openDetails} = useDetailsModal();

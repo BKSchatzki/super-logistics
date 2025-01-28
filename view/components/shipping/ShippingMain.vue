@@ -2,15 +2,14 @@
 import {computed} from "vue";
 import {useStore} from "vuex";
 import {useForm} from "@utils/composables/useForm.js";
-import {useToast} from "primevue/usetoast";
+import {useAPI} from "@utils/composables/useAPI";
 import TextInput from "@/components/form/TextInput.vue";
 import TextareaInput from "@/components/form/TextareaInput.vue";
 import NumberInput from "@/components/form/NumberInput.vue";
 import SelectInput from "@/components/form/SelectInput.vue";
 import Row from "@/components/form/Row.vue";
 import Col from "@/components/form/Col.vue";
-import RequestUtility from "@utils/RequestUtility.js";
-import {stateOptions} from "@utils/dropdowns.js";
+import {freightOptions, stateOptions} from "@utils/dropdowns.js";
 
 // Form
 const {form, clearForm, getDroptions} = useForm({
@@ -22,41 +21,19 @@ const {form, clearForm, getDroptions} = useForm({
   carrier: '',
   tracking: '',
   street_address: '',
-  city: '',
-  state: '',
-  zip: '',
+  shipper_city: '',
+  shipper_state: '',
+  shipper_zip: '',
   freight_type: null,
   total_pcs: null,
 });
-const toast = useToast();
+const {print} = useAPI();
 const printLabels = () => {
-  return new Promise((resolve, reject) => {
-    RequestUtility.sendRequest({
-      type: 'post',
-      data: form, // converted to FormData object in sendRequest
-      url: 'transactions/shipping',
-      success: (res) => {
-        console.log("res: ", res);
-        const pdfWindow = window.open("");
-        pdfWindow.document.write(
-            `<iframe width='100%' height='100%' src='data:application/pdf;base64,${res.data.data.pdf}'></iframe>`
-        );
-        toast.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Shipping labels printed successfully.',
-          life: 3000
-        });
-        resolve(res.data);
-        clearForm();
-      },
-      error: (res) => {
-        console.error(`Failed to print labels:`, res);
-        toast.add({severity: 'error', summary: 'Error', detail: 'Failed to print shipping labels.', life: 3000});
-        reject(res);
-      }
-    });
-  });
+  console.log("form: ", form);
+  const printPromise = print(form, 'transactions/shipping', 'shipping labels');
+  printPromise.then(() => {
+    clearForm();
+  })
 };
 
 // Options
@@ -83,13 +60,6 @@ const boothOptions = computed(() => {
   });
 });
 
-// Freight Types
-const freightOptions = [
-  {label: 'Less Than Truckload', value: 1},
-  {label: 'Full Truckload', value: 2},
-  {label: 'Small Pack', value: 3}
-]
-
 // Testing
 const loadTestData = () => {
   form['shipper'] = 'Test Supply Co.';
@@ -112,9 +82,8 @@ const loadTestData = () => {
 <template>
   <div class="flex flex-col gap-4">
     <h1 class="font-sans text-3xl">Shipping</h1>
-    <Toast/>
     <Button severity="danger" @click="loadTestData">Test Form</Button>
-    <Panel class="flex flex-col gap-2" header="Welcome" toggleable collapsed>
+    <Fieldset class="flex flex-col gap-2" legend="Welcome" toggleable collapsed>
       <p class="mb-2 font-extralight">
         Welcome to the shipping page, if you were never assigned an account, you are probably in the right place.
       </p>
@@ -133,7 +102,7 @@ const loadTestData = () => {
       <p class="font-semibold">
         Thank you!
       </p>
-    </Panel>
+    </Fieldset>
     <Panel header="Shipping Labels">
       <Col>
         <div class="flex flex-row align-top gap-4">
@@ -145,13 +114,14 @@ const loadTestData = () => {
               <TextInput v-model="form['street_address']" label="Street Address" placeholder="Street Address"/>
             </Row>
             <Row>
-              <TextInput v-model="form['city']" label="City" placeholder="City"/>
-              <SelectInput v-model="form['state']" label="State" placeholder="State" :options="stateOptions" filter/>
-              <TextInput v-model="form['zip']" label="Zip Code" placeholder="Zip Code"/>
+              <TextInput v-model="form['shipper_city']" label="City" placeholder="City"/>
+              <SelectInput v-model="form['shipper_state']" label="State" placeholder="State" :options="stateOptions" filter/>
+              <TextInput v-model="form['shipper_zip']" label="Zip Code" placeholder="Zip Code"/>
             </Row>
             <Row>
-              <TextInput v-model="form['carrier']" label="Carrier"/>
-              <SelectInput v-model="form['freight_type']" :options="freightOptions" label="Freight Type"/>
+              <TextInput v-model="form['carrier']" label="Carrier" placeholder="Carrier Name"/>
+              <SelectInput v-model="form['freight_type']" :options="freightOptions" label="Freight Type"
+                           placeholder="Select"/>
               <NumberInput v-model="form['total_pcs']" label="Qty. of Packages" placeholder="#"/>
             </Row>
           </Col>
@@ -172,7 +142,7 @@ const loadTestData = () => {
         </div>
         <Row>
           <TextareaInput v-model="form['tracking']" label="Tracking Number or Pro Number"
-                         placeholder="Type all of your Tracking or Pro numbers here, separated by commas. One each will appear on your labels."/>
+                         placeholder="Type your tracking numbers here, all of the tracking numbers will appear on all of your labels."/>
         </Row>
         <div class="flex justify-end gap-2">
           <Button @click="clearForm" severity="secondary" label="Clear"/>

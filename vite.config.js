@@ -27,10 +27,20 @@ export default defineConfig({
       input: fileURLToPath(new URL('./view/main.js', import.meta.url)),
       output: {
         entryFileNames: 'bundle[hash].js',
-        assetFileNames: 'bundle[hash].css',
+        assetFileNames: (assetInfo) => {
+          // Keep original filenames for fonts
+          if (/\.woff|\.woff2|\.eot|\.ttf|\.otf$/.test(assetInfo.name)) {
+            return '[name][extname]'; // Do not append hash
+          }
+          if (/\.css$/.test(assetInfo.name)) {
+            return '[name][hash][extname]'; // Append hash for CSS only
+          }
+          return '[name][hash][extname]';
+        },
         chunkFileNames: 'bundle[hash].js',
       }
-    }
+    },
+    assetsInlineLimit: 0, // Ensure fonts are not inlined as base64
   },
   css: {
     postcss: {
@@ -43,4 +53,4 @@ export default defineConfig({
   define: {
     __DEV__: isDevBuild
   }
-})
+});

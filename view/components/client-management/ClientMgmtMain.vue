@@ -6,8 +6,8 @@ import {useStatusFilters} from "@utils/composables/useStatusFilters.js";
 import {useDetailsModal} from "@utils/composables/useDetailsModal.js";
 import NewClientForm from '@/components/client-management/NewClientForm.vue';
 import ClientDetails from '@/components/client-management/ClientDetails.vue';
-import SearchBar from "@/components/data-management/SearchBar.vue";
-import StatusFilters from "@/components/data-management/StatusFilters.vue";
+import SearchBar from "@/components/data/SearchBar.vue";
+import StatusFilters from "@/components/data/StatusFilters.vue";
 
 const store = useStore();
 const user = computed(() => store.state.user);

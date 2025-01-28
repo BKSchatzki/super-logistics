@@ -1,7 +1,7 @@
 import {computed} from 'vue';
 import {useStore} from 'vuex';
 import RequestUtility from "@utils/RequestUtility.js";
-import {toCapitalCase} from "@utils/helpers.js";
+import {toCapitalCase, toSingular} from "@utils/helpers.js";
 import {useToast} from 'primevue/usetoast';
 
 export function useAPI(dataTopic = '') {
@@ -33,14 +33,16 @@ export function useAPI(dataTopic = '') {
         return computed(() => store.state[topic]);
     }
 
-    const post = (formData, topic = dataTopic) => {
+    const post = (formData, topic = dataTopic, refresh = true) => {
         return new Promise((resolve, reject) => {
             RequestUtility.sendRequest({
                 type: 'post',
                 data: formData, // converted to FormData object in sendRequest
                 url: topic,
                 success: (res) => {
-                    get({}, topic);
+                    if (refresh) {
+                        get({}, topic);
+                    }
                     resolve(res.data);
                 },
                 error: (res) => {
@@ -51,14 +53,16 @@ export function useAPI(dataTopic = '') {
         });
     }
 
-    const trash = (data, topic = dataTopic) => {
+    const trash = (data, topic = dataTopic, refresh = true) => {
         return new Promise((resolve, reject) => {
             RequestUtility.sendRequest({
                 type: 'delete',
                 data: data, // converted to FormData object in sendRequest
                 url: topic,
                 success: (res) => {
-                    get({}, topic);
+                    if (refresh) {
+                        get({}, topic);
+                    }
                     toast.add({
                         severity: 'info',
                         summary: toCapitalCase(topic) + ' Deleted',
@@ -75,19 +79,21 @@ export function useAPI(dataTopic = '') {
         });
     }
 
-    const patch = (data, topic, endpoint, successMessage, errorMessage) => {
+    const patch = (data, topic, endpoint, successMessage, errorMessage, refresh = true) => {
         return new Promise((resolve, reject) => {
             RequestUtility.sendRequest({
                 type: 'patch',
                 data: data,
                 url: topic + '/' + endpoint,
                 success: (res) => {
-                    get({}, topic);
+                    if (refresh) {
+                        get({}, topic);
+                    }
                     toast.add({
                         ...defaultToast,
                         severity: 'success',
                         summary: toCapitalCase(topic) + successMessage,
-                        detail: `${res.data.data.name} has been ${successMessage.toLowerCase()}.`,
+                        detail: `${toCapitalCase(toSingular(topic))} has been ${successMessage.toLowerCase()}.`,
                     });
                     resolve(res.data);
                 },
@@ -106,7 +112,7 @@ export function useAPI(dataTopic = '') {
     }
 
     const update = (data, topic = dataTopic) => {
-        return patch(data, topic, '', ' Updated', 'Updated');
+        return patch(data, topic, '', ' Updated', 'Updated', refresh);
     }
 
     const markInactive = (data, topic = dataTopic) => {
@@ -121,5 +127,39 @@ export function useAPI(dataTopic = '') {
         return patch(data, topic, 'restore', ' Restored', 'Archived');
     }
 
-    return {get, post, trash, update, markInactive, markActive, restore}
+    const print = (data, endpoint = dataTopic, documentName = 'Document') => {
+        return new Promise((resolve, reject) => {
+            RequestUtility.sendRequest({
+                type: 'post',
+                data: data, // converted to FormData object in sendRequest
+                url: endpoint,
+                success: (res) => {
+                    console.log("res: ", res);
+                    const pdfWindow = window.open("");
+                    pdfWindow.document.write(
+                        `<iframe width='100%' height='100%' src='data:application/pdf;base64,${res.data.data.pdf}'></iframe>`
+                    );
+                    toast.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: `${documentName} printed successfully.`,
+                        life: 3000
+                    });
+                    resolve(res.data);
+                },
+                error: (res) => {
+                    console.error(`Failed to print ${documentName}:`, res);
+                    toast.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: `Failed to print ${documentName}.`,
+                        life: 3000
+                    });
+                    reject(res);
+                }
+            });
+        });
+    }
+
+    return {get, post, trash, update, markInactive, markActive, restore, print}
 }

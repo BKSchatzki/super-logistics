@@ -85,7 +85,7 @@ const logIn = () => {
     </template>
     <template #end>
       <Button v-if="!props.user.id" severity="primary" icon="pi pi-sign-in" @click="logIn" label="Log In"></Button>
-      <Button v-else severity="secondary" icon="pi pi-sign-out" @click="logOut" label="Log Out"></Button>
+      <Button v-else severity="secondary" variant="outlined" icon="pi pi-sign-out" @click="logOut" label="Log Out"></Button>
     </template>
   </Menubar>
 </template>

@@ -7,15 +7,11 @@ import {useForm} from '@utils/composables/useForm.js';
 import {useStatusFilters} from "@utils/composables/useStatusFilters.js";
 import {useDetailsModal} from "@utils/composables/useDetailsModal.js";
 import {FilterMatchMode} from '@primevue/core/api';
-import SearchBar from "@/components/data-management/SearchBar.vue";
-import StatusFilters from "@/components/data-management/StatusFilters.vue";
+import SearchBar from "@/components/data/SearchBar.vue";
+import StatusFilters from "@/components/data/StatusFilters.vue";
 
 const {data, statusBoxes, statusStyles} = useStatusFilters('shows');
 const {selected, unselect, openDetails} = useDetailsModal();
-
-watchEffect(() => {
-  console.log('data:', data);
-});
 
 // Filters
 const filters = ref({
@@ -23,6 +19,8 @@ const filters = ref({
   name: {value: null, matchMode: FilterMatchMode.CONTAINS},
   'client.name': {value: null, matchMode: FilterMatchMode.IN}
 });
+
+// Options
 const {getDroptions} = useForm();
 const clientOptions = getDroptions('clients');
 </script>

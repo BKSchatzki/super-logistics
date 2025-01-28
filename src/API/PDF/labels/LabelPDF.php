@@ -1,6 +1,6 @@
 <?php
 
-namespace BigTB\SL\API\PDF\Labels;
+namespace BigTB\SL\API\PDF\labels;
 
 use TCPDF;
 

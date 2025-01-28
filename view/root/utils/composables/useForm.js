@@ -35,7 +35,7 @@ export function useForm(staticFormData) {
         return computed(() => user.value['isInternal'] ? internalRoleOptions : clientRoleOptions);
     }
 
-    const submit = async (topic, method) => {
+    const submit = async (topic, method = 'post') => {
 
         // Method for Request
         const methodFunctions = {
@@ -53,6 +53,7 @@ export function useForm(staticFormData) {
         if (res.data) {
             clearForm();
             visible.value = false;
+            return res.data;
         }
     }
 
