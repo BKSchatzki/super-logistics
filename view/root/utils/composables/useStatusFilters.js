@@ -5,14 +5,29 @@ export function useStatusFilters(topic) {
 
     const { get } = useAPI(topic);
 
+    // all restrictions by user role are done in the backend
+    // the parameters are so that the WordPress admin does automatically see the active and deleted items
     const data = get({active: 1, trashed: 0});
 
-    // Checkbox models
+    //------------------------------------------
+    // Status boxes
+    //------------------------------------------
     const activeBox = ref(true);
     const inactiveBox = ref(false);
     const deletedBox = ref(false);
+    const none = computed(() => {
+        return !activeBox.value && !inactiveBox.value && !deletedBox.value;
+    });
+    const statusBoxes = reactive({
+        active: activeBox,
+        inactive: inactiveBox,
+        deleted: deletedBox,
+        none
+    });
 
-    // Status states
+    //------------------------------------------
+    // Status parameters based on checkboxes
+    //------------------------------------------
     const active = computed(() => {
         if (activeBox.value && inactiveBox.value) {
             return null;
@@ -29,19 +44,15 @@ export function useStatusFilters(topic) {
             return deletedBox.value ? null : 0;
         }
     });
-    const none = computed(() => {
-        return !activeBox.value && !inactiveBox.value && !deletedBox.value;
-    });
-
-    // Status objects
     const statusParams = reactive({active, trashed});
-    const statusBoxes = reactive({
-        active: activeBox,
-        inactive: inactiveBox,
-        deleted: deletedBox,
-        none
+    // this constantly runs to update data based on the checkboxes
+    watchEffect(() => {
+        get(statusParams)
     });
 
+    //------------------------------------------
+    // Status styles
+    //------------------------------------------
     const statusStyles = (data) => {
         const defaultStyle = {'border-radius': '10px'};
         if (data.trashed) {
@@ -50,10 +61,6 @@ export function useStatusFilters(topic) {
             return {...defaultStyle, 'background': 'rgba(150, 150, 150, 0.3)'};
         }
     }
-
-    watchEffect(() => {
-        get(statusParams)
-    });
 
     return { data, statusParams, statusBoxes, statusStyles };
 }

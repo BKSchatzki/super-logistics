@@ -15,8 +15,8 @@ const props = defineProps({
       <LabeledDetail :subject label="Name" property="name"/>
       <LabeledDetail :subject label="Status" property="active"/>
     </template>
-    <template #edit-form="{subject, stop}">
-      <EditClientForm :subject :stop/>
+    <template #edit-form="{formData, close}">
+      <EditClientForm :subject="formData" :stop="close"/>
     </template>
   </ManageDetails>
 </template>

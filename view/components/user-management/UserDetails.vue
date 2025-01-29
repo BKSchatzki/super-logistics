@@ -1,5 +1,5 @@
 <script setup>
-import EditUserForm from "@/components/user-management/EditUserForm.vue";
+import UserForm from "@/components/user-management/UserForm.vue";
 import LabeledDetail from "@/components/data/LabeledDetail.vue";
 import ManageDetails from "@/components/data/ManageDetails.vue";
 
@@ -19,8 +19,8 @@ const props = defineProps({
       <LabeledDetail v-if="props.subject.client" :subject="subject" label="Client" property="client.name"/>
       <LabeledDetail :subject="subject" label="Email" property="user_email"/>
     </template>
-    <template #edit-form="{subject, stop}">
-      <EditUserForm :subject :stop/>
+    <template #edit-form="{formData, close}">
+      <UserForm :formData :close method="update" />
     </template>
   </ManageDetails>
 </template>

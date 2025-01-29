@@ -2,6 +2,7 @@
 
 namespace BigTB\SL\Setup\Core;
 
+use BigTB\SL\API\User\Models\User;
 use BigTB\SL\Setup\Routing\Permissions;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 
@@ -95,6 +96,10 @@ class Controller {
 
 		// File upload successful
 		return $upload['file'];
+	}
+
+	protected static function getCurrentUserModel(): User {
+		return User::where( 'id', wp_get_current_user()->ID )->with( 'client', 'shows' )->first();
 	}
 
 }

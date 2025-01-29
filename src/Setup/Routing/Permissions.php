@@ -4,8 +4,7 @@ namespace BigTB\SL\Setup\Routing;
 
 class Permissions {
 	public static function isLoggedIn(): bool {
-
-		return current_user_can('read');
+		return is_user_logged_in();
 	}
 
 	public static function isWPAdmin(): bool {

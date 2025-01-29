@@ -1,4 +1,5 @@
 <script setup>
+import {watchEffect} from "vue";
 import NavBar from '@/components/main/NavBar.vue';
 
 import {useUserAPI} from "@utils/composables/useUserAPI.js";
@@ -6,6 +7,9 @@ import {useUserAPI} from "@utils/composables/useUserAPI.js";
 const {getCurrentUser} = useUserAPI();
 
 const user = getCurrentUser();
+watchEffect(() => {
+  console.log("Current: ", user);
+}, {immediate: true})
 </script>
 
 <template>

@@ -4,6 +4,10 @@ import {useAPI} from "@utils/composables/useAPI.js";
 import {toCapitalCase, toSingular} from '@utils/helpers.js';
 import Col from '@/components/form/Col.vue';
 
+//-------------------------------------
+// Data
+//-------------------------------------
+
 const props = defineProps({
   subject: Object,
   topic: {
@@ -27,13 +31,6 @@ const props = defineProps({
     default: 'name'
   }
 })
-
-console.log("Subject: ", props.subject);
-
-const emit = defineEmits(['close'])
-const visible = computed(() => {
-  return props.subject !== null
-})
 const niceSingular = computed(() => {
   return toCapitalCase(toSingular(props.topic));
 })
@@ -46,8 +43,24 @@ const subjectStatus = computed(() => {
   }
   return '';
 });
+console.log("Props: ", props);
 
+//-------------------------------------
+// Modal Visibility
+//-------------------------------------
+
+const visible = computed(() => {
+  return props.subject !== null
+})
+const emit = defineEmits(['close'])
+const triggerUnselect = () => {
+  emit('close', null)
+}
+
+//-------------------------------------
 // Actions
+//-------------------------------------
+
 const {trash, restore, markInactive, markActive} = useAPI(props.topic)
 const status = ref('viewing')
 const verb = computed(() => {
@@ -83,10 +96,6 @@ const markSubjectActive = () => {
       .then(triggerUnselect)
 }
 
-// Closing
-const triggerUnselect = () => {
-  emit('close', null)
-}
 </script>
 
 <template>
@@ -96,15 +105,15 @@ const triggerUnselect = () => {
     <template #header>
       <template v-if="status === 'viewing'">
         <span class="p-dialog-title">{{ subjectStatus }} {{ niceSingular }} Details</span>
-        <Button v-if="allowArchive && !!props.subject.active" variant="text" severity="secondary" icon="pi pi-folder"
+        <Button v-if="allowArchive && !!subject['active'] && !subject['trashed']" variant="text" severity="secondary" icon="pi pi-folder"
                 rounded @click="() => status = 'archiving'"/>
-        <Button v-if="allowEdit && !!props.subject.active" variant="text" severity="secondary" icon="pi pi-user-edit"
+        <Button v-if="allowEdit && !!subject['active'] && !subject['trashed']" variant="text" severity="secondary" icon="pi pi-pencil"
                 rounded @click="() => status = 'editing'"/>
-        <Button v-if="allowArchive && !props.subject.active" variant="text" severity="secondary"
+        <Button v-if="allowArchive && !subject['active']" variant="text" severity="secondary"
                 icon="pi pi-folder-open" rounded @click="() => status = 'activating'"/>
-        <Button v-if="allowTrash && !props.subject.trashed" variant="text" severity="danger" icon="pi pi-trash"
+        <Button v-if="allowTrash && !subject['trashed']" variant="text" severity="danger" icon="pi pi-trash"
                 rounded @click="() => status = 'deleting'"/>
-        <Button v-if="allowTrash && !!props.subject.trashed" variant="text" severity="success" icon="pi pi-undo"
+        <Button v-if="allowTrash && !!subject['trashed']" variant="text" severity="success" icon="pi pi-undo"
                 rounded @click="() => status = 'restoring'"/>
       </template>
       <template v-if="status === 'deleting'">
@@ -157,7 +166,7 @@ const triggerUnselect = () => {
       </Col>
     </div>
     <div v-if="status === 'editing'" class="flex flex-col gap-2">
-      <slot name="edit-form" :subject="props.subject" :stop="() => status = 'viewing'"/>
+      <slot name="edit-form" :formData="props.subject" :close="() => status = 'viewing'"/>
     </div>
   </Dialog>
 </template>

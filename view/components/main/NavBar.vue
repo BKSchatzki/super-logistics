@@ -23,37 +23,37 @@ const items = ref([
     label: 'Scanner',
     route: 'scanner',
     icon: 'pi pi-qrcode',
-    permissions: ['administrator', 'client_admin', 'client_employee', 'internal_admin', 'internal_employee']
+    permissions: ['internal_admin', 'internal_employee']
   },
   {
     label: 'Reports',
     route: 'reports',
     icon: 'pi pi-file',
-    permissions: ['administrator', 'client_admin', 'client_employee', 'internal_admin', 'internal_employee']
+    permissions: []
   },
   {
     label: 'Clients',
     route: 'clients',
     icon: 'pi pi-address-book',
-    permissions: ['administrator', 'client_admin', 'client_employee', 'internal_admin', 'internal_employee']
+    permissions: ['internal_admin']
   },
   {
     label: 'Users',
     route: 'users',
     icon: 'pi pi-users',
-    permissions: ['administrator', 'client_admin', 'client_employee', 'internal_admin', 'internal_employee']
+    permissions: ['client_admin', 'internal_admin']
   },
   {
     label: 'Shows',
     route: 'shows',
     icon: 'pi pi-home',
-    permissions: ['administrator', 'client_admin', 'client_employee', 'internal_admin', 'internal_employee']
+    permissions: ['client_admin', 'client_employee', 'internal_admin', 'internal_employee']
   },
   {
     label: 'Shipping Labels',
     route: 'shipper-labels',
     icon: 'pi pi-home',
-    permissions: []
+    permissions: ['internal_admin', 'client_admin', 'client_employee', 'public']
   }
 ]);
 const filteredItems = computed(() => {
@@ -61,6 +61,9 @@ const filteredItems = computed(() => {
 });
 
 const isAllowed = (user, permissions) => {
+  if (!props.user.role && permissions.includes('public')) {
+    return true;
+  }
   if (props.user.role === 'administrator') {
     return true;
   }

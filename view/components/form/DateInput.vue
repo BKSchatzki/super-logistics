@@ -18,7 +18,7 @@ const props = defineProps({
   disabled: Boolean,
 })
 
-// Change Handling
+// <editor-fold desc="Change Handling">
 const emits = defineEmits(['update:modelValue']);
 const updateValue = (event) => {
   // Defined to handle the range mode, single may require a different approach
@@ -28,6 +28,7 @@ const updateValue = (event) => {
     emits('update:modelValue', [props.modelValue[0], event]);
   }
 };
+// </editor-fold>
 
 </script>
 
@@ -39,6 +40,7 @@ const updateValue = (event) => {
         :selectionMode="mode"
         :inline
         @date-select="updateValue"
+        :disabled
     />
   </InputLabel>
 </template>

@@ -41,7 +41,7 @@ export function useAPI(dataTopic = '') {
                 url: topic,
                 success: (res) => {
                     if (refresh) {
-                        get({}, topic);
+                        get({active: 1, trashed: 0}, topic);
                     }
                     resolve(res.data);
                 },
@@ -87,7 +87,7 @@ export function useAPI(dataTopic = '') {
                 url: topic + '/' + endpoint,
                 success: (res) => {
                     if (refresh) {
-                        get({}, topic);
+                        get({active: 1, trashed: 0}, topic);
                     }
                     toast.add({
                         ...defaultToast,
@@ -111,7 +111,7 @@ export function useAPI(dataTopic = '') {
         });
     }
 
-    const update = (data, topic = dataTopic) => {
+    const update = (data, topic = dataTopic, refresh = true) => {
         return patch(data, topic, '', ' Updated', 'Updated', refresh);
     }
 

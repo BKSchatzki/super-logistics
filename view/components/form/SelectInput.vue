@@ -53,6 +53,7 @@ const componentType = computed(() => props.multiple ? MultiSelect : Select);
         :placeholder
         :disabled
         autocomplete="off"
+        :maxSelectedLabels="2"
     />
   </InputLabel>
 </template>

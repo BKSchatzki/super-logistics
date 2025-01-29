@@ -67,7 +67,7 @@ class UserTransformer extends TransformerAbstract {
 		}
 
 		$isAdmin         = ! empty( array_intersect( [ 'administrator', 'internal_admin', 'client_admin' ], $roles ) );
-		$isInternalAdmin = in_array( 'internal_admin', $roles );
+		$isInternalAdmin = ! empty( array_intersect( [ 'administrator', 'internal_admin' ], $roles ) );
 		$isClientAdmin   = in_array( 'client_admin', $roles );
 		$isInternal      = ! empty( array_intersect( [
 			'administrator',

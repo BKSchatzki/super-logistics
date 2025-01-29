@@ -1,6 +1,6 @@
 <?php
 
-namespace BigTB\SL\API\PDF\Labels;
+namespace BigTB\SL\API\PDF\labels;
 
 use SimplePie\Exception;
 
@@ -48,9 +48,9 @@ class ShippingLabelGenerator extends LabelGenerator {
 			'carrier'        => $labelInfo['carrier'],
 			'tracking'       => $labelInfo['tracking'],
 			'street_address' => $labelInfo['street_address'],
-			'city'           => $labelInfo['city'],
-			'state'          => $labelInfo['state'],
-			'zip'            => $labelInfo['zip'],
+			'shipper_city'   => $labelInfo['shipper_city'],
+			'shipper_state'  => $labelInfo['shipper_state'],
+			'shipper_zip'    => $labelInfo['shipper_zip'],
 			'freight_type'   => (int) $labelInfo['freight_type'],
 			'total_pcs'      => (int) $labelInfo['total_pcs'],
 		];
@@ -81,7 +81,7 @@ class ShippingLabelGenerator extends LabelGenerator {
 		$fromLines = [
 			$labelInfo['shipper'],
 			$labelInfo['street_address'],
-			$labelInfo['city'] . ', ' . $labelInfo['state'] . ' ' . $labelInfo['zip']
+			$labelInfo['shipper_city'] . ', ' . $labelInfo['shipper_state'] . ' ' . $labelInfo['shipper_zip']
 		];
 		foreach ( $fromLines as $line ) {
 			$this->pdf->Cell( 0, 4, $line, 0, 1, 'L' );
@@ -122,12 +122,12 @@ class ShippingLabelGenerator extends LabelGenerator {
 		$this->writeInfo( 'Carrier', $labelInfo['carrier'], 16 );
 
 		$freightTypes = [ 'LTL', 'FTL', 'Small Pack' ];
-		$this->writeInfo( 'Freight Type', $freightTypes[ $labelInfo['freight_type'] ], 28 );
+		$this->writeInfo( 'Freight Type', $freightTypes[ (int) $labelInfo['freight_type'] - 1 ], 28 );
 
 		// Tracking number label
 		$tracking = wordwrap( $labelInfo['tracking'] ?? '', 34 );
 		$this->pdf->SetFont( 'helvetica', 'B', $this->bodyTextSize );
-		$this->pdf->MultiCell( 26, 4, "Transaction /Pro#", 0, 'L', 0, 0 );
+		$this->pdf->MultiCell( 20, 4, "Tracking /Pro#", 0, 'L', 0, 0 );
 		$this->pdf->Cell( 1, 4, ': ', 0, 0, 'C' );
 		$this->pdf->SetFont( 'helvetica', '', $this->bodyTextSize );
 		$this->pdf->MultiCell( 0, 0, $tracking, 0, 'L', 0, 0 );
@@ -135,13 +135,4 @@ class ShippingLabelGenerator extends LabelGenerator {
 		// Done with this page
 	}
 
-	private function writeInfo( string $label, string|int $value, int $width = 12 ): void {
-		// Bold Label
-		$this->pdf->SetFont( 'helvetica', 'B', $this->bodyTextSize );
-		$this->pdf->Cell( $width, 4, $label . ': ', 0, 0, 'L' );
-
-		// Regular Text for info
-		$this->pdf->SetFont( 'helvetica', '', $this->bodyTextSize );
-		$this->pdf->Cell( $width, 4, $value, 0, 1, 'L' );
-	}
 }

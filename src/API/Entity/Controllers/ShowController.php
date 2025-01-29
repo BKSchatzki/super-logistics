@@ -5,15 +5,11 @@ namespace BigTB\SL\API\Entity\Controllers;
 use BigTB\SL\API\Entity\Models\Entity;
 use BigTB\SL\API\Entity\Models\Show;
 use BigTB\SL\API\Entity\Transformers\ShowTransformer;
+use BigTB\SL\API\User\Models\User;
 use BigTB\SL\Setup\Routing\Permissions;
 use Carbon\Carbon;
-use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use WP_REST_Request;
-
-// TODO: Build out show controller
-// TODO: Test this controller
-// TODO: Error Handling
 
 class ShowController extends EntityController {
 
@@ -26,6 +22,9 @@ class ShowController extends EntityController {
 
 	public static function get( WP_REST_Request $request ): array {
 		// Fetched with the ENTITY ID as the primary key
+		// Area for optimization - try to fetch from a users assigned shows first
+
+		// <editor-fold desc="Fetch Shows">---------------------
 
 		self::setType( $request );
 		$params = $request->get_params();
@@ -51,7 +50,8 @@ class ShowController extends EntityController {
 			'phone',
 			'email',
 		] ) ) ) {
-			$query    = self::addWhereClauses( Entity::query()->with( [ 'show.client' ] ), $params, [
+			// prepare query
+			$query = self::addWhereClauses( Entity::query()->with( [ 'show.client' ] ), $params, [
 				'id',
 				'name',
 				'type',
@@ -62,7 +62,9 @@ class ShowController extends EntityController {
 				'phone',
 				'email',
 			] );
+			// get entities
 			$entities = $query->get();
+			// convert to show instances of shows
 			foreach ( $entities as $e ) {
 				$show = Show::where( 'entity_id', $e->id )->with( [ 'entity', 'client', 'zones', 'booths' ] )->first();
 				if ( $show ) {
@@ -72,49 +74,28 @@ class ShowController extends EntityController {
 		}
 
 		// Trim repeated shows
-		$shows = $shows->unique( 'id' )->values();
+		$shows = $shows->unique( 'entity_id' )->values();
 
-		// Filter active users
-		if ( Permissions::isAdmin() ) {
-			if ( isset( $params['active'] ) ) {
-				$shows = $shows->filter( function ( $show ) use ( $params ) {
-					return $show->entity->active == $params['active'];
-				} );
-			}
-		} else {
-			$shows = $shows->filter( function ( $show ) {
-				return $show->entity->active == 1;
-			} );
-		}
+		// </editor-fold>----------------------------------------
 
-		// Filter trashed users
-		if ( Permissions::isInternalAdmin() ) {
-			if ( isset( $params['trashed'] ) ) {
-				$shows = $shows->filter( function ( $show ) use ( $params ) {
-					return $show->entity->trashed == $params['trashed'];
-				} );
-			}
-		} else {
-			$shows = $shows->filter( function ( $show ) {
-				return $show->entity->trashed == 0;
-			} );
-		}
+		// <editor-fold desc="Filtering"> -----------------------
 
-		return self::prepareArrayResponse( new Collection( $shows, new ShowTransformer ) );
+		// Filter by assigned shows (if client)
+		$shows = self::filterForClient( $shows );
+
+		// Filter active shows
+		$shows = self::filterByStatus( $shows, $params );
+
+		// </editor-fold>----------------------------------------
+
+		return self::collectionResponse( $shows, new ShowTransformer );
 	}
 
 	public static function create( WP_REST_Request $request ): array {
 
-		// Store images first
-		$logoFile      = $request->get_file_params()['logoFile'] ?? null;
-		$floorPlanFile = $request->get_file_params()['floorPlanFile'] ?? null;
+		//<editor-fold desc="Validate Parameters Provided">
 
-		$logo_path       = $logoFile ? self::handleImageUpload( $logoFile ) : '';
-		$floor_plan_path = $floorPlanFile ? self::handleImageUpload( $floorPlanFile ) : '';
-		$params          = $request->get_params();
-
-		error_log("SHOW PARAMS: " . print_r($params, true));
-
+		$params = $request->get_params();
 		if ( ! self::checkIfProvided( $params, [
 			'name',
 			'date_start',
@@ -125,8 +106,16 @@ class ShowController extends EntityController {
 		}
 		extract( $params );
 
+		//</editor-fold>
+
+		// <editor-fold desc="Prepare Data for Insertion">---------------------
+
+		// Format Dates
 		$date_start = trim( $date_start, '"' );
 		$date_end   = trim( $date_end, '"' );
+
+		// Store images
+		list( $logo_path, $floor_plan_path ) = self::storeImages( $request );
 
 		// Use get_param() to retrieve each input field, handle empty/null values as needed
 		$show_data   = [
@@ -149,47 +138,51 @@ class ShowController extends EntityController {
 			'logo_path' => $logo_path,
 		];
 
+		// </editor-fold>-------------------------------------------------------
+
+		// <editor-fold desc="Insert Data">--------------------------------------
+
 		// Create the related entity and show
 		$entity          = Entity::create( $entity_data );
 		$show            = $entity->show()->create( $show_data );
 		$show->entity_id = $entity->id;
 		$show->save();
 
-		// Create zones and booths
-		$zones = self::createBulkInsertRows( json_decode($params['zones']), 1 );
-		$booths = self::createBulkInsertRows( json_decode($params['booths']), 2 );
-		$show->places()->createMany( [...$zones, ...$booths] );
+		// </editor-fold>-------------------------------------------------------
+
+		// <editor-fold desc="Insert Zones and Booths">-------------------------
+
+		$zones  = self::createBulkInsertRows( json_decode( $params['zones'] ), 1 );
+		$booths = self::createBulkInsertRows( json_decode( $params['booths'] ), 2 );
+		$show->places()->createMany( [ ...$zones, ...$booths ] );
+
+		// </editor-fold>-------------------------------------------------------
 
 		return self::prepareArrayResponse( new Item( $show, new ShowTransformer ) );
 	}
 
 	public static function update( WP_REST_Request $request ): array {
-		$show = Show::where( 'entity_id', $request->get_param( 'id' ) )->first();
 
+		// <editor-fold desc="Validate show being updated">------------------------
+
+		$show = Show::where( 'entity_id', $request->get_param( 'id' ) )->first();
 		if ( ! $show ) {
 			return self::prepareErrorResponse( 'Show not found' );
 		}
 
-		// Store images first
-		$logoFile      = $request->get_file_params()['logoFile'] ?? null;
-		$floorPlanFile = $request->get_file_params()['floorPlanFile'] ?? null;
+		// </editor-fold>----------------------------------------------------------
 
-		$logo_path       = $logoFile ? self::handleImageUpload( $logoFile ) : $show->entity->logo_path;
-		$floor_plan_path = $floorPlanFile ? self::handleImageUpload( $floorPlanFile ) : $show->floor_plan_path;
-		$params          = $request->get_params();
+		// <editor-fold desc="Prepare Data for Update">----------------------------
 
-		if ( ! self::checkIfProvided( $params, [
-			'name',
-			'date_start',
-			'date_end',
-			'client_id',
-		] ) ) {
-			return self::prepareErrorResponse( 'Missing required fields' );
-		}
+		$params = $request->get_params(); // params are used later on in the function
 		extract( $params );
 
+		// Format Dates
 		$date_start = trim( $date_start, '"' );
 		$date_end   = trim( $date_end, '"' );
+
+		// Store images
+		list( $logo_path, $floor_plan_path ) = self::storeImages( $request );
 
 		// Use get_param() to retrieve each input field, handle empty/null values as needed
 		$show_data = [
@@ -212,8 +205,21 @@ class ShowController extends EntityController {
 			'logo_path' => $logo_path,
 		];
 
+		// </editor-fold>----------------------------------------------------------
+
+		// <editor-fold desc="Update Data">----------------------------------------
+
 		$show->update( $show_data );
 		$show->entity->update( $entity_data );
+
+		// </editor-fold>----------------------------------------------------------
+
+		// <editor-fold desc="Update Zones and Booths">----------------------------
+
+		self::updatePlaces( $show, $params, 1, 'zones' );
+		self::updatePlaces( $show, $params, 2, 'booths' );
+
+		// </editor-fold>----------------------------------------------------------
 
 		return self::prepareArrayResponse( new Item( $show, new ShowTransformer ) );
 	}
@@ -232,12 +238,6 @@ class ShowController extends EntityController {
 		return self::prepareArrayResponse( new Item( $show, new ShowTransformer ) );
 	}
 
-	/**
-	 * @param $zones1
-	 * @param $show
-	 *
-	 * @return void
-	 */
 	public static function createBulkInsertRows( $names, $type ): array {
 		$places = [];
 		foreach ( $names as $name ) {
@@ -245,6 +245,91 @@ class ShowController extends EntityController {
 		}
 
 		return $places;
+	}
+
+	private static function updatePlaces( $show, $params, $type, $typeName ): void {
+
+		if ( ! isset( $params[ $typeName ] ) ) {
+			return;
+		}
+
+		// Identify additions and deletions to make
+		$existingPlaces = $show->places()->where( 'type', $type )->pluck( 'name' )->toArray();
+		$placesToAdd    = array_diff( $params[ $typeName ], $existingPlaces );
+		$placesToDelete = array_diff( $existingPlaces, $params[ $typeName ] );
+
+		// Delete
+		if ( ! empty( $placesToDelete ) ) {
+			$show->places()->whereIn( 'name', $placesToDelete )->where( 'type', $type )->update( [ 'trashed' => true ] );
+		}
+
+		// Add
+		if ( ! empty( $placesToAdd ) ) {
+			$show->places()->createMany( self::createBulkInsertRows($placesToAdd, $type) );
+		}
+	}
+
+	protected static function filterForClient( $shows ) {
+		$currentUser = self::getCurrentUserModel();
+
+		if ( $currentUser->roles->contains( 'client_admin' ) || $currentUser->roles->contains( 'client_employee' ) ) {
+			$clientId = $currentUser->client->id ?? null;
+			if ( $clientId ) {
+				$shows = $shows->filter( function ( $show ) use ( $clientId ) {
+					return $show->client_id == $clientId;
+				} );
+			}
+			if ( $currentUser->roles->contains( 'client_employee' ) ) {
+				$userShowIds = $currentUser->shows->pluck( 'entity_id' )->toArray();
+				$shows       = $shows->filter( function ( $show ) use ( $userShowIds ) {
+					return in_array( $show->id, $userShowIds );
+				} );
+			}
+		}
+
+		return $shows;
+
+	}
+
+	protected static function filterByStatus( $shows, $params = [] ) {
+
+		// Filter active shows
+		if ( Permissions::isAdmin() ) {
+			if ( isset( $params['active'] ) ) {
+				$shows = $shows->filter( function ( $show ) use ( $params ) {
+					return $show->entity->active == $params['active'];
+				} );
+			}
+		} else {
+			$shows = $shows->filter( function ( $show ) {
+				return $show->entity->active == 1;
+			} );
+		}
+
+		// Filter trashed shows
+		if ( Permissions::isInternalAdmin() ) {
+			if ( isset( $params['trashed'] ) ) {
+				$shows = $shows->filter( function ( $show ) use ( $params ) {
+					return $show->entity->trashed == $params['trashed'];
+				} );
+			}
+		} else {
+			$shows = $shows->filter( function ( $show ) {
+				return $show->entity->trashed == 0;
+			} );
+		}
+
+		return $shows;
+	}
+
+	private static function storeImages( $request ): array {
+		$logoFile      = $request->get_file_params()['logoFile'] ?? null;
+		$floorPlanFile = $request->get_file_params()['floorPlanFile'] ?? null;
+
+		$logo_path       = $logoFile ? self::handleImageUpload( $logoFile ) : '';
+		$floor_plan_path = $floorPlanFile ? self::handleImageUpload( $floorPlanFile ) : '';
+
+		return [ $logo_path, $floor_plan_path ];
 	}
 
 }

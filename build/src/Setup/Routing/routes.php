@@ -150,11 +150,21 @@ $txnRouting = [
 			]
 		],
 		[
-			'path'    => 'receiving',
+			'path'    => 'receiving/labels',
 			'methods' => [
 				[
 					'methods'             => 'POST',
-					'callback'            => 'printAdvanceWarehouseLabels',
+					'callback'            => 'printAWLabels',
+					'permission_callback' => 'isInternal'
+				]
+			]
+		],
+		[
+			'path'    => 'receiving/docs',
+			'methods' => [
+				[
+					'methods'             => 'POST',
+					'callback'            => 'printReceiverDocs',
 					'permission_callback' => 'isInternal'
 				]
 			]

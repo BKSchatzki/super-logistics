@@ -9,22 +9,30 @@ use BigTB\SL\Setup\Routing\Permissions;
 use League\Fractal\Resource\Item;
 use WP_REST_Request;
 
-// TODO: Permissioning (create separate methods for each user role creation / updating)
-// TODO: Error Handling!!
-// TODO: Testing!!
-
 class UserController extends Controller {
 
 	public static function get( WP_REST_Request $request ): array {
+
+		// Get users
 		$params       = $request->get_params();
 		$params['ID'] = $params['id'] ?? null;
 		$users        = self::getUsers( $params );
+
+		// Filter by roles
 		if ( isset( $params['roles'] ) ) {
 			$roles = $params['roles'];
 			$users = $users->filter( function ( $entity ) use ( $roles ) {
 				$userRoles = $entity->roles->pluck( 'meta_value' )->toArray();
 
 				return ! empty( array_intersect( $userRoles, $roles ) );
+			} );
+		}
+
+		// Filter for Client
+		$currentUser = self::getCurrentUserModel();
+		if ( Permissions::isClientAdmin() ) {
+			$users = $users->filter( function ( $user ) use ( $currentUser ) {
+				return $user->client[0]->id == $currentUser->client[0]->id;
 			} );
 		}
 
@@ -54,22 +62,13 @@ class UserController extends Controller {
 		if ( ! isset( $userData->ID ) ) {
 			return self::prepareErrorResponse( $userData );
 		}
-
-		list( $user ) = self::getUsers( [ 'ID' => $userData->ID ] );
-
-		$user->status->create( [
-			'user_id' => $userData->ID,
-			'active'  => 1,
-			'trashed' => 0
-		] );
+		$user = User::find( $userData->ID );
 
 		if ( str_contains( $params['role'], 'client' ) ) {
 			$user = self::associateEntities( $user, $params );
 		}
 
-		$resource = new Item( $user, new UserTransformer );
-
-		return self::prepareArrayResponse( $resource );
+		return self::singleResponse( $user, new UserTransformer );
 	}
 
 	public static function update( WP_REST_Request $request ): array {

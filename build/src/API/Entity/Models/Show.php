@@ -48,10 +48,14 @@ class Show extends Model {
 	}
 
 	public function zones(): object {
-		return $this->hasMany( ShowPlace::class, 'show_id', 'entity_id' )->where( 'type', 1 );
+		return $this->hasMany( ShowPlace::class, 'show_id', 'entity_id' )
+		            ->where( 'type', 1 )
+		            ->where( 'trashed', 0 );
 	}
 
 	public function booths(): object {
-		return $this->hasMany( ShowPlace::class, 'show_id', 'entity_id' )->where( 'type', 2 );
+		return $this->hasMany( ShowPlace::class, 'show_id', 'entity_id' )
+		            ->where( 'type', 2 )
+		            ->where( 'trashed', 0 );
 	}
 }

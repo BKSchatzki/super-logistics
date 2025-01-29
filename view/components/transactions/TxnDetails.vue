@@ -40,8 +40,8 @@ const props = defineProps({
       <LabeledDetail :subject label="Status" property="active"/>
       <LabeledDetail :subject label="Trashed" property="trashed"/>
     </template>
-    <template #edit-form="{subject, stop}">
-      <TransactionForm :labelData="subject" :close="stop" method="update"/>
+    <template #edit-form="{formData, close}">
+      <TransactionForm :labelData="subject" :close method="update"/>
     </template>
   </ManageDetails>
 </template>

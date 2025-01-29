@@ -1,19 +1,39 @@
 <script setup>
-import {ref} from 'vue';
+import {computed, ref} from 'vue';
+import {useStore} from "vuex";
 import {useForm} from '@utils/composables/useForm.js';
 import {useStatusFilters} from '@utils/composables/useStatusFilters.js';
 import {useDetailsModal} from '@utils/composables/useDetailsModal.js';
 import {FilterMatchMode} from '@primevue/core/api';
 import Toast from 'primevue/toast';
-import NewUserForm from '@/components/user-management/NewUserForm.vue';
 import UserDetails from '@/components/user-management/UserDetails.vue';
 import SearchBar from '@/components/data/SearchBar.vue';
 import StatusFilters from '@/components/data/StatusFilters.vue';
+import FormModal from "@/components/form/FormModal.vue";
+import UserForm from "@/components/user-management/UserForm.vue";
 
 const {data, statusBoxes, statusStyles} = useStatusFilters('users');
 const {selected, unselect, openDetails} = useDetailsModal();
 
-// Filters
+const store = useStore();
+const user = computed(() => store.state.user)
+
+// <editor-fold desc="New Form">----------------------------
+const newFormText = {
+  client_admin: {
+    button: "Add New Employee",
+    title: "New Employee",
+    description: "Add a new user to handle logistics for your shows"
+  },
+  internal_admin: {
+    button: "Add New User",
+    title: "New User",
+    description: "Add any type of user to the system for use by your office or for the client."
+  }
+}
+
+// <editor-fold desc="Filters">---------------------------------
+
 const filters = ref({
   global: {value: null, matchMode: FilterMatchMode.CONTAINS},
   name: {value: null, matchMode: FilterMatchMode.CONTAINS},
@@ -21,15 +41,30 @@ const filters = ref({
   role: {value: null, matchMode: FilterMatchMode.IN},
   'client.name': {value: null, matchMode: FilterMatchMode.IN}
 });
+
+// </editor-fold>-----------------------------------------------
+
+// <editor-fold desc="Select Options">--------------------------
+
 const {getDroptions, getRoleDroptions} = useForm();
 const roleOptions = getRoleDroptions();
 const clientOptions = getDroptions('clients');
+
+// </editor-fold>-----------------------------------------------
+
 </script>
 
 <template>
   <div class="flex flex-row justify-between mb-4">
     <h1 class="font-sans text-3xl">User Management</h1>
-    <NewUserForm/>
+    <FormModal v-if="user['isAdmin']"
+               :buttonLabel="newFormText[user['role']]['button']"
+               :header="newFormText[user['role']]['button']"
+               :description="newFormText[user['role']]['description']">
+      <template #form="{close}">
+        <UserForm :close/>
+      </template>
+    </FormModal>
   </div>
   <UserDetails v-if="selected" :subject="selected" @close="unselect"/>
   <Toast/>
@@ -67,7 +102,7 @@ const clientOptions = getDroptions('clients');
                      placeholder="Any" :maxSelectedLabels="1" style="min-width: 12rem"/>
       </template>
     </Column>
-    <Column field="client" header="Client" filterField="client.name" sortable>
+    <Column v-if="user['isInternal']" field="client" header="Client" filterField="client.name" sortable>
       <template #body="{data}">
         {{ data.client ? data.client.name : '' }}
       </template>

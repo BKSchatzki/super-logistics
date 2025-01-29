@@ -4,6 +4,7 @@
 namespace BigTB\SL\API\Transaction\Transformers;
 
 use BigTB\SL\API\Transaction\Models\Transaction;
+use BigTB\SL\API\User\Models\User;
 use League\Fractal\TransformerAbstract;
 
 class TransactionTransformer extends TransformerAbstract {
@@ -31,8 +32,8 @@ class TransactionTransformer extends TransformerAbstract {
 			'name' => $client->name,
 		];
 
-		$created_by_user = \BigTB\SL\Models\User::find( $item->created_by );
-		$updated_by_user = \BigTB\SL\Models\User::find( $item->updated_by );
+		$created_by_user = User::find( $item->created_by );
+		$updated_by_user = User::find( $item->updated_by );
 
 		return [
 			'id'               => (int) $item->id,

@@ -1,26 +1,36 @@
 <script setup>
-import {ref, watchEffect} from 'vue';
-import Toast from 'primevue/toast';
-import NewShowForm from '@/components/show-management/NewShowForm.vue';
-import ShowDetails from '@/components/show-management/ShowDetails.vue';
+import {computed, ref, watchEffect} from 'vue';
+import {useStore} from "vuex";
 import {useForm} from '@utils/composables/useForm.js';
 import {useStatusFilters} from "@utils/composables/useStatusFilters.js";
 import {useDetailsModal} from "@utils/composables/useDetailsModal.js";
 import {FilterMatchMode} from '@primevue/core/api';
+import Toast from 'primevue/toast';
+import ShowDetails from '@/components/show-management/ShowDetails.vue';
 import SearchBar from "@/components/data/SearchBar.vue";
 import StatusFilters from "@/components/data/StatusFilters.vue";
+import FormModal from "@/components/form/FormModal.vue";
+import ShowForm from "@/components/show-management/ShowForm.vue";
 
+// ------------------------------------------
+// Setup
+// ------------------------------------------
+const store = useStore();
+const user = computed(() => store.state.user);
 const {data, statusBoxes, statusStyles} = useStatusFilters('shows');
 const {selected, unselect, openDetails} = useDetailsModal();
-
+// ------------------------------------------
 // Filters
+// ------------------------------------------
 const filters = ref({
   global: {value: null, matchMode: FilterMatchMode.CONTAINS},
   name: {value: null, matchMode: FilterMatchMode.CONTAINS},
   'client.name': {value: null, matchMode: FilterMatchMode.IN}
 });
-
+const filterDisplay = computed(() => user.value['isInternal'] ? 'row' : null);
+// ------------------------------------------
 // Options
+// ------------------------------------------
 const {getDroptions} = useForm();
 const clientOptions = getDroptions('clients');
 </script>
@@ -28,17 +38,21 @@ const clientOptions = getDroptions('clients');
 <template>
   <div class="flex flex-row justify-between mb-4">
     <h1 class="font-sans text-3xl">Show Management</h1>
-    <NewShowForm/>
+    <FormModal v-if="user.isAdmin" buttonLabel="Add New Show" header="New Show" description="Shows are events for which the advance warehouse manages the logistics. There is a penalty for shipper sending items early or late.">
+      <template #form="{close}">
+        <ShowForm :close/>
+      </template>
+    </FormModal>
   </div>
   <ShowDetails v-if="selected" :subject="selected" @close="unselect"/>
   <Toast/>
   <DataTable :value="data" paginator :rows="10" @row-click="openDetails" :rowHover="true"
-             v-model:filters="filters" removableSort filterDisplay="row" :rowStyle="statusStyles"
+             v-model:filters="filters" removableSort :filterDisplay :rowStyle="statusStyles"
              :globalFilterFields="['name', 'client.name']">
     <template #header>
       <div class="flex justify-start gap-4">
         <SearchBar v-model="filters.global.value" placeholder="Search all fields"/>
-        <StatusFilters :checkBoxes="statusBoxes"/>
+        <StatusFilters v-if="user['isAdmin']" :checkBoxes="statusBoxes"/>
       </div>
     </template>
     <template #empty>
@@ -55,7 +69,7 @@ const clientOptions = getDroptions('clients');
                    placeholder="Search by name"/>
       </template>
     </Column>
-    <Column field="client" header="Client" filterField="client.name" sortable>
+    <Column v-if="user['isInternal']" field="client" header="Client" filterField="client.name">
       <template #body="{data}">
         {{ data.client ? data.client.name : '' }}
       </template>
