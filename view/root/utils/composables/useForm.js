@@ -49,6 +49,7 @@ export function useForm(staticFormData) {
         }
 
         // Making and handling the request
+        console.log("Form Data: ", form);
         const res = await request(form, topic);
         if (res.data) {
             clearForm();

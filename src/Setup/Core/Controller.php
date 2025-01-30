@@ -5,6 +5,7 @@ namespace BigTB\SL\Setup\Core;
 use BigTB\SL\API\User\Models\User;
 use BigTB\SL\Setup\Routing\Permissions;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use WP_Error;
 
 class Controller {
 
@@ -76,6 +77,7 @@ class Controller {
 	}
 
 	public static function handleImageUpload($file):string | \WP_Error {
+
 		// Define overrides
 		$overrides = array(
 			'test_form' => false,
@@ -91,11 +93,12 @@ class Controller {
 
 		// Check for errors
 		if (isset($upload['error'])) {
+			error_log('Error uploading file: ' . $upload['error']);
 			return new \WP_Error('upload_failed', $upload['error'], array('status' => 500));
 		}
 
 		// File upload successful
-		return $upload['file'];
+		return $upload['url'];
 	}
 
 	protected static function getCurrentUserModel(): User {

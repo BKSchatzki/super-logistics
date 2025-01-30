@@ -25,6 +25,7 @@ import Button from 'primevue/button';
 import Select from 'primevue/select';
 import Toast from 'primevue/toast';
 import Panel from 'primevue/panel';
+import Card from 'primevue/card';
 import Step from 'primevue/step';
 import Row from 'primevue/row';
 import { QrcodeStream } from 'vue-qrcode-reader'
@@ -57,6 +58,7 @@ const components = {
     Select,
     Toast,
     Panel,
+    Card,
     Step,
     Row,
     QrcodeStream

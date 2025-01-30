@@ -35,6 +35,8 @@ class TransactionTransformer extends TransformerAbstract {
 		$created_by_user = User::find( $item->created_by );
 		$updated_by_user = User::find( $item->updated_by );
 
+		$receivedStatus = self::determineTimeliness( $item );
+
 		return [
 			'id'               => (int) $item->id,
 			'shipper'          => $item->shipper,
@@ -65,6 +67,8 @@ class TransactionTransformer extends TransformerAbstract {
 			'special_handling' => (bool) $item->special_handling,
 			'pallet'           => $item->pallet,
 			'trailer'          => $item->trailer,
+			'image_path'       => $item->image_path,
+			'received_status'  => $receivedStatus,
 			'active'           => (bool) $item->active,
 			'trashed'          => (bool) $item->trashed,
 			'created_by'       => (int) $item->created_by,
@@ -74,5 +78,18 @@ class TransactionTransformer extends TransformerAbstract {
 			'updated_by_user'  => $updated_by_user->display_name,
 			'updated_at'       => $item->updated_at,
 		];
+	}
+
+	private static function determineTimeliness( $item ): string {
+		$earliest = $item->show->date_start;
+		$latest = $item->show->date_end;
+
+		if ( $item->created_at < $earliest ) {
+			return 'early';
+		} elseif ( $item->created_at > $latest ) {
+			return 'late';
+		} else {
+			return 'on_time';
+		}
 	}
 }

@@ -80,6 +80,9 @@ export function useAPI(dataTopic = '') {
     }
 
     const patch = (data, topic, endpoint, successMessage, errorMessage, refresh = true) => {
+
+        console.log("Data send through patch request: ", data);
+
         return new Promise((resolve, reject) => {
             RequestUtility.sendRequest({
                 type: 'patch',

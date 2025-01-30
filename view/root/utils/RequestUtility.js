@@ -7,10 +7,14 @@ class RequestUtility {
     static createFormData(formFill) {
         const formData = new FormData();
         Object.entries(formFill).forEach(([key, value]) => {
-            if (typeof value === 'object' && !(value instanceof File)) {
+            if (typeof value === 'object' && !(value instanceof File) && !(value instanceof Blob)) {
                 value = JSON.stringify(value);
+                formData.append(key, value);
+            } else if (key === 'image') {
+                formData.append('image', value, 'image.png');
+            } else {
+                formData.append(key, value);
             }
-            formData.append(key, value);
         });
         return formData;
     }

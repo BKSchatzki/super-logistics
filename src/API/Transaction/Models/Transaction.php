@@ -39,6 +39,7 @@ class Transaction extends Model {
 		'shipper_zip',
 		'pallet',
 		'freight_type',
+		'image_path'
 	];
 	public $timestamps = true;
 

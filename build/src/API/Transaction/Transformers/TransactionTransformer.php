@@ -65,6 +65,7 @@ class TransactionTransformer extends TransformerAbstract {
 			'special_handling' => (bool) $item->special_handling,
 			'pallet'           => $item->pallet,
 			'trailer'          => $item->trailer,
+			'image_path'       => $item->image_path,
 			'active'           => (bool) $item->active,
 			'trashed'          => (bool) $item->trashed,
 			'created_by'       => (int) $item->created_by,

@@ -8,7 +8,6 @@ const decodedContent = ref(null);
 const onDecode = (content) => {
   showScanner.value = false;
   decodedContent.value = JSON.parse(content[0].rawValue);
-  console.log(decodedContent.value);
 }
 const resetScanner = () => {
   decodedContent.value = null;

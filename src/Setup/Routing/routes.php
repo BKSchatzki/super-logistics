@@ -127,13 +127,18 @@ $txnRouting = [
 					'permission_callback' => 'isLoggedIn'
 				],
 				[
-					'methods'             => 'PATCH',
-					'callback'            => 'update',
-					'permission_callback' => 'isLoggedIn'
-				],
-				[
 					'methods'             => 'DELETE',
 					'callback'            => 'delete',
+					'permission_callback' => 'isLoggedIn'
+				]
+			]
+		],
+		[
+			'path' => 'update',
+			'methods' => [
+				[
+					'methods'             => 'POST',
+					'callback'            => 'update',
 					'permission_callback' => 'isLoggedIn'
 				]
 			]

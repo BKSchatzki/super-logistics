@@ -30,8 +30,10 @@ class TransactionController extends Controller {
 
 	public static function create( WP_REST_Request $request ): array {
 
-		$params = $request->get_params();
+		// <editor-fold desc="Data Validation">--------------------------
 
+		error_log( "Request: " . print_r( $request, true ) );
+		$params = $request->get_params();
 		if ( ! self::checkIfProvided( $params, [
 			'shipper',
 			'exhibitor',
@@ -57,11 +59,22 @@ class TransactionController extends Controller {
 			'pallet',
 			'trailer'
 		] ) ) {
-			return self::prepareErrorResponse( 'Missing required parameters to create transaction', 400 );
+			return self::prepareErrorResponse( 'Missing required parameters to create transaction' );
 		}
 
-		$user = wp_get_current_user();
+		error_log("Passed Data Validation");
 
+		// </editor-fold>--------------------------------------------------
+
+		// <editor-fold desc="Data Preparation">--------------------------
+
+		if ( isset( $_FILES['image'] ) ) {
+			$imagePath = self::handleImageUpload( $_FILES['image'] );
+		}
+
+		error_log("Passed Image Upload: " . $imagePath ?? 'Image not uploaded');
+
+		$user = wp_get_current_user();
 		extract( $params );
 		$transactionData = [
 			'shipper'          => $shipper,
@@ -88,23 +101,65 @@ class TransactionController extends Controller {
 			'special_handling' => $special_handling === 'true' ? 1 : 0,
 			'pallet'           => $pallet,
 			'trailer'          => $trailer,
+			'image_path'       => $imagePath,
 			'created_by'       => $user->ID,
 			'updated_by'       => $user->ID,
 		];
 
+		// </editor-fold>--------------------------------------------------
+
+		error_log( "Data prepared for insertion: " . print_r( $transactionData, true ) );
+
 		$transaction = Transaction::create( $transactionData );
+
+		error_log( "Transaction inserted: " . print_r( $transaction, true ) );
 
 		return self::prepareArrayResponse( new Item( $transaction, new TransactionTransformer ) );
 	}
 
 	public static function update( WP_REST_Request $request ): array {
-		$params = $request->get_params();
 
+		// <editor-fold desc="Data Validation">--------------------------
+
+		$params      = $request->get_params();
 		$transaction = Transaction::find( $params['id'] );
-
 		if ( ! $transaction ) {
 			return self::prepareErrorResponse( 'Transaction not found', 404 );
 		}
+
+		// </editor-fold>--------------------------------------------------
+
+		// <editor-fold desc="Update Image if Different">--------------------------
+
+		// if no existing image
+		if ( isset( $params['image'] ) && ! $transaction->image_path ) {
+
+			$newImagePath         = self::handleImageUpload( $params['image'] );
+			$params['image_path'] = $newImagePath;
+
+			// if existing image
+		} elseif ( isset( $params['image'] ) && $transaction->image_path ) {
+
+			// Handle the new image upload
+			$newImagePath = self::handleImageUpload( $params['image'] );
+
+			// Determine equality by generating and comparing hashes of image content
+
+			$newImageHash      = md5_file( $newImagePath );
+			$existingImageHash = md5_file( $transaction->image_path );
+
+			// Compare and delete the existing image if different
+			if ( $existingImageHash && $existingImageHash !== $newImageHash ) {
+				unlink( $transaction->image_path );
+			}
+
+			// Update the image path in the transaction data
+			$params['image_path'] = $newImagePath;
+		}
+
+		// </editor-fold>--------------------------------------------------
+
+		// <editor-fold desc="Update Transaction">--------------------------
 
 		$transactionData = [
 			...$params,
@@ -113,6 +168,8 @@ class TransactionController extends Controller {
 
 		$transaction->fill( $transactionData );
 		$transaction->save();
+
+		// </editor-fold>--------------------------------------------------
 
 		return self::prepareArrayResponse( new Item( $transaction, new TransactionTransformer ) );
 	}
@@ -221,8 +278,8 @@ class TransactionController extends Controller {
 		}
 
 		// Fill in the related info
-		$transaction = Transaction::with(['show.entity', 'zone', 'booth'])->find( $params['id'] );
-		$docData = $transaction->toArray();
+		$transaction       = Transaction::with( [ 'show.entity', 'zone', 'booth' ] )->find( $params['id'] );
+		$docData           = $transaction->toArray();
 		$docData['client'] = Entity::find( $docData['show']['client_id'] );
 
 		// Create a new LabelGenerator and generate the PDF content

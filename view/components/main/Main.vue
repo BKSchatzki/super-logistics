@@ -8,7 +8,7 @@ const {getCurrentUser} = useUserAPI();
 
 const user = getCurrentUser();
 watchEffect(() => {
-  console.log("Current: ", user);
+  console.log("Current User: ", user);
 }, {immediate: true})
 </script>
 

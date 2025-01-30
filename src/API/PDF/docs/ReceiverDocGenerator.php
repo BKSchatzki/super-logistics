@@ -21,6 +21,7 @@ class ReceiverDocGenerator extends DocGenerator {
 		$copies = [
 			'Show Management Copy',
 			'Trailer Copy',
+			'Warehouse Copy'
 		];
 
 		foreach ( $copies as $copyLabel ) {
