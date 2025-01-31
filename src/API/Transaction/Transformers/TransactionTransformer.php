@@ -5,6 +5,7 @@ namespace BigTB\SL\API\Transaction\Transformers;
 
 use BigTB\SL\API\Transaction\Models\Transaction;
 use BigTB\SL\API\User\Models\User;
+use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 
 class TransactionTransformer extends TransformerAbstract {
@@ -16,26 +17,14 @@ class TransactionTransformer extends TransformerAbstract {
 			'name' => $item->show->entity->name,
 		];
 
-		$zone = [
-			'id'   => $item->zone->id,
-			'name' => $item->zone->name,
-		];
+		$zone   = self::getObjectData( $item->zone );
+		$booth  = self::getObjectData( $item->booth );
+		$client = self::getObjectData( $item->show->client );
 
-		$booth = [
-			'id'   => $item->booth->id,
-			'name' => $item->booth->name,
-		];
+		$created_by_user = self::getUserData( $item, 'created_by' );
+		$updated_by_user = self::getUserData( $item, 'updated_by' );
 
-		$client = $item->show->client;
-		$client = [
-			'id'   => $client->id,
-			'name' => $client->name,
-		];
-
-		$created_by_user = User::find( $item->created_by );
-		$updated_by_user = User::find( $item->updated_by );
-
-		$receivedStatus = self::determineTimeliness( $item );
+		$arrivalStatus = self::determineTimeliness( $item );
 
 		return [
 			'id'               => (int) $item->id,
@@ -68,28 +57,44 @@ class TransactionTransformer extends TransformerAbstract {
 			'pallet'           => $item->pallet,
 			'trailer'          => $item->trailer,
 			'image_path'       => $item->image_path,
-			'received_status'  => $receivedStatus,
+			'arrival_status'   => $arrivalStatus,
 			'active'           => (bool) $item->active,
 			'trashed'          => (bool) $item->trashed,
-			'created_by'       => (int) $item->created_by,
-			'created_by_user'  => $created_by_user->display_name,
+			'created_by'       => $item->created_by,
+			'created_by_user'  => $created_by_user,
 			'created_at'       => $item->created_at,
-			'updated_by'       => (int) $item->updated_by,
-			'updated_by_user'  => $updated_by_user->display_name,
+			'updated_by'       => $item->updated_by,
+			'updated_by_user'  => $updated_by_user,
 			'updated_at'       => $item->updated_at,
 		];
 	}
 
 	private static function determineTimeliness( $item ): string {
 		$earliest = $item->show->date_start;
-		$latest = $item->show->date_end;
+		$latest   = $item->show->date_end;
 
 		if ( $item->created_at < $earliest ) {
-			return 'early';
+			return 'Early';
 		} elseif ( $item->created_at > $latest ) {
-			return 'late';
+			return 'Late';
 		} else {
-			return 'on_time';
+			return 'On Time';
 		}
+	}
+
+	private static function getUserData( $item, $key ): array {
+		$user = User::find( $item->$key );
+
+		return [
+			'id'   => $user->id,
+			'name' => $user->first_name[0]['meta_value'] . ' ' . $user->last_name[0]['meta_value'],
+		];
+	}
+
+	private static function getObjectData( $object ): array {
+		return [
+			'id'   => $object->id,
+			'name' => $object->name,
+		];
 	}
 }

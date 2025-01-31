@@ -132,9 +132,9 @@ class TransactionController extends Controller {
 		// <editor-fold desc="Update Image if Different">--------------------------
 
 		// if no existing image
-		if ( isset( $params['image'] ) && ! $transaction->image_path ) {
+		if ( isset( $_FILES['image'] ) && ! $transaction->image_path ) {
 
-			$newImagePath         = self::handleImageUpload( $params['image'] );
+			$newImagePath         = self::handleImageUpload( $_FILES['image'] );
 			$params['image_path'] = $newImagePath;
 
 			// if existing image
@@ -142,6 +142,10 @@ class TransactionController extends Controller {
 
 			// Handle the new image upload
 			$newImagePath = self::handleImageUpload( $params['image'] );
+
+			if ( is_wp_error( $newImagePath ) ) {
+				return self::prepareErrorResponse( $newImagePath );
+			}
 
 			// Determine equality by generating and comparing hashes of image content
 
@@ -163,6 +167,9 @@ class TransactionController extends Controller {
 
 		$transactionData = [
 			...$params,
+			'special_handling' => $params['special_handling'] === 'true' ? 1 : 0,
+			'active'     => 1,
+			'trashed'    => 0,
 			'updated_by' => wp_get_current_user()->ID,
 		];
 
