@@ -49,7 +49,7 @@ trait ResponseManager {
 		return array_merge( $extra, $response );
 	}
 
-	public static function prepareUserNotFoundResponse(): array {
+	public static function prepareUserNotFoundResponse(): void {
 		self::sendErrorResponse( "User not found", 404 );
 	}
 
