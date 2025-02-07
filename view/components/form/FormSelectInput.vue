@@ -29,7 +29,6 @@ const componentType = computed(() => props.multiple ? MultiSelect : Select);
 
 const {value, errorMessage, validate} = useField(props.name);
 
-
 </script>
 
 <template>

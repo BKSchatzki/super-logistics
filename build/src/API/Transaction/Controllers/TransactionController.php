@@ -40,8 +40,6 @@ class TransactionController extends Controller {
 			'zone_id',
 			'booth_id',
 			'carrier',
-			'tracking',
-			'street_address',
 			'shipper_city',
 			'shipper_state',
 			'shipper_zip',
@@ -55,8 +53,6 @@ class TransactionController extends Controller {
 			'total_pcs',
 			'total_weight',
 			'special_handling',
-			'pallet',
-			'trailer'
 		] ) ) {
 			self::sendErrorResponse( 'Missing required parameters to create transaction' );
 		}

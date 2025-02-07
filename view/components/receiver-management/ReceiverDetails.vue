@@ -35,7 +35,7 @@ const props = defineProps({
         <div class="flex flex-row justify-between mb-0">
           <span class="capitalize align_baseline font-bold">Freight Type:</span>
           <span class="capitalize align_baseline font-extralight">{{
-              frhtOptions.find(opt => opt.value = props.subject.freight_type).label
+              frhtOptions.find(opt => opt.value === props.subject.freight_type).label
             }}</span>
         </div>
         <LabeledDetail :subject label="Crates" property="crate_pcs" falseLabel="0"/>
