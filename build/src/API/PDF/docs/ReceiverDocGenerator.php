@@ -19,9 +19,10 @@ class ReceiverDocGenerator extends DocGenerator {
 	 */
 	public function generate( array $data ): string {
 		$copies = [
-			'Show Management Copy',
-			'Trailer Copy',
-			'Warehouse Copy'
+			'White - Service Desk Copy',
+			'Yellow - Control Copy',
+			'Pink - Freight Desk Copy',
+			'Gold - Checker Copy',
 		];
 
 		foreach ( $copies as $copyLabel ) {

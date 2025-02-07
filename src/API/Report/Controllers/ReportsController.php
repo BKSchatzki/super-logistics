@@ -2,29 +2,30 @@
 
 namespace BigTB\SL\API\Report\Controllers;
 
-use League\Fractal\Resource\Collection;
+use BigTB\SL\Setup\Core\Controller;
+use BigTB\SL\Setup\Core\ResponseManager;
 use League\Fractal\Resource\Item;
-use BigTB\SL\Setup\WP\ResponseManager;
-use BigTB\SL\API\PDF\PalletManifestGenerator;
-use BigTB\SL\API\PDF\TrailerManifestGenerator;
+use BigTB\SL\API\PDF\reports\TrailerManifestGenerator;
+use BigTB\SL\API\PDF\reports\PalletManifestGenerator;
 use BigTB\SL\API\PDF\ShowReportGenerator;
 use BigTB\SL\API\PDF\ShowReportGeneratorTwo;
 use BigTB\SL\API\PDF\Transformers\PDFTransformer;
-use BigTB\SL\API\Transaction\Transformers\TransactionTransformer;
 use BigTB\SL\API\Transaction\Models\Transaction;
 use WP_REST_Request;
 
-class ReportsController
+class ReportsController extends Controller
 {
-    use ResponseManager;
-
-    public static function getTrailerManifest(WP_REST_Request $request): array
+    public static function printTrailerManifest(WP_REST_Request $request): array
     {
-        $trailer_number = $request->get_param('trailerNum');
+        $trailerNo = $request->get_param('trailer_no');
         $transactions = Transaction::with(
-            ['client', 'carrier', 'shipper', 'exhibitor', 'showPlace', 'items', 'updates'])
-            ->where('trailer', $trailer_number)
+            ['zone', 'booth'])
+            ->where('trailer', $trailerNo)
             ->get();
+
+		if ($transactions->isEmpty()) {
+			self::sendErrorResponse('No transactions found for this trailer number');
+		}
 
         $reportGenerator = new TrailerManifestGenerator();
         $pdf = $reportGenerator->generate($transactions);
@@ -37,26 +38,30 @@ class ReportsController
         return self::prepareArrayResponse($res);
     }
 
-    public static function getPalletManifest(WP_REST_Request $request): array
-    {
-        $pallet_number = $request->get_param('palletNum');
-        $transactions = Transaction::with(
-            ['client', 'carrier', 'shipper', 'exhibitor', 'showPlace', 'items', 'updates'])
-            ->where('pallet_no', $pallet_number)
-            ->get();
+	public static function printPalletManifest(WP_REST_Request $request): array
+	{
+		$palletNo = $request->get_param('pallet_no');
+		$transactions = Transaction::with(
+			['zone', 'booth'])
+		                           ->where('pallet', $palletNo)
+		                           ->get();
 
-        $reportGenerator = new PalletManifestGenerator();
-        $pdf = $reportGenerator->generate($transactions);
-        // Encode the PDF content to base64
-        $pdfBase64 = base64_encode($pdf);
+		if ($transactions->isEmpty()) {
+			self::sendErrorResponse('No transactions found for this pallet number');
+		}
 
-        $res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
+		$reportGenerator = new PalletManifestGenerator();
+		$pdf = $reportGenerator->generate($transactions);
+		// Encode the PDF content to base64
+		$pdfBase64 = base64_encode($pdf);
 
-        // Return the response
-        return self::prepareArrayResponse($res);
-    }
+		$res = new Item(['pdf' => $pdfBase64], new PDFTransformer());
 
-    public static function getShowReport(WP_REST_Request $request): array
+		// Return the response
+		return self::prepareArrayResponse($res);
+	}
+
+    public static function printShowReport(WP_REST_Request $request): array
     {
         $client_id = $request->get_param('client_id');
         $show_id = $request->get_param('show_id');

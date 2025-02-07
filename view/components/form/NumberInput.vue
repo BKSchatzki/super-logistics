@@ -1,6 +1,6 @@
 <script setup>
 import {v4 as uuid} from 'uuid';
-import InputLabel from "@/components/form/InputLabel.vue";
+import InputFrame from "@/components/form/InputFrame.vue";
 
 const props = defineProps({
   id: {
@@ -24,7 +24,7 @@ const updateValue = (event) => {
 </script>
 
 <template>
-  <InputLabel :id :label="label">
+  <InputFrame :id :label="label">
     <InputNumber
         class="flex-auto w-full"
         inputClass="w-12"
@@ -36,5 +36,5 @@ const updateValue = (event) => {
         :disabled
         autocomplete="off"
     />
-  </InputLabel>
+  </InputFrame>
 </template>

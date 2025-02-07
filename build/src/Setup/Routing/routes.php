@@ -238,8 +238,8 @@ $reportRouting = [
 			'path'    => 'trailer-manifest',
 			'methods' => [
 				[
-					'methods'             => 'GET',
-					'callback'            => 'getTrailerManifest',
+					'methods'             => 'POST',
+					'callback'            => 'printTrailerManifest',
 					'permission_callback' => 'isLoggedIn'
 				]
 			]
@@ -248,8 +248,8 @@ $reportRouting = [
 			'path'    => 'pallet-manifest',
 			'methods' => [
 				[
-					'methods'             => 'GET',
-					'callback'            => 'getPalletManifest',
+					'methods'             => 'POST',
+					'callback'            => 'printPalletManifest',
 					'permission_callback' => 'isLoggedIn'
 				]
 			]
@@ -258,8 +258,8 @@ $reportRouting = [
 			'path'    => 'show-report',
 			'methods' => [
 				[
-					'methods'             => 'GET',
-					'callback'            => 'getShowReport',
+					'methods'             => 'POST',
+					'callback'            => 'printShowReport',
 					'permission_callback' => 'isLoggedIn'
 				]
 			],

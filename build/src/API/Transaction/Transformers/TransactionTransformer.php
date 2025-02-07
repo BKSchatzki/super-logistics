@@ -5,12 +5,17 @@ namespace BigTB\SL\API\Transaction\Transformers;
 
 use BigTB\SL\API\Transaction\Models\Transaction;
 use BigTB\SL\API\User\Models\User;
-use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
+use Carbon\Carbon;
 
 class TransactionTransformer extends TransformerAbstract {
 
 	public function transform( Transaction $item ): array {
+
+		$item->show->date_start = Carbon::parse($item->show->date_start)->setTimezone('America/Los_Angeles');
+		$item->show->date_end = Carbon::parse($item->show->date_end)->setTimezone('America/Los_Angeles');
+		$item->created_at = Carbon::parse($item->created_at)->setTimezone('America/Los_Angeles');
+		$item->updated_at = Carbon::parse($item->updated_at)->setTimezone('America/Los_Angeles');
 
 		$show = [
 			'id'   => $item->show->id,
@@ -54,7 +59,7 @@ class TransactionTransformer extends TransformerAbstract {
 			'total_weight'     => (int) $item->total_weight,
 			'remarks'          => $item->remarks,
 			'special_handling' => (bool) $item->special_handling,
-			'pallet'           => $item->pallet,
+			'pallet'           => strtoupper($item->pallet),
 			'trailer'          => $item->trailer,
 			'image_path'       => $item->image_path,
 			'arrival_status'   => $arrivalStatus,
@@ -63,9 +68,11 @@ class TransactionTransformer extends TransformerAbstract {
 			'created_by'       => $item->created_by,
 			'created_by_user'  => $created_by_user,
 			'created_at'       => $item->created_at,
+			'nice_created_at'  => $item->created_at->format( 'M/d/y H:i' ),
 			'updated_by'       => $item->updated_by,
 			'updated_by_user'  => $updated_by_user,
 			'updated_at'       => $item->updated_at,
+			'nice_updated_at'  => $item->updated_at->format( 'M/d/y H:i' ),
 		];
 	}
 
@@ -86,8 +93,9 @@ class TransactionTransformer extends TransformerAbstract {
 		$user = User::find( $item->$key );
 
 		return [
-			'id'   => $user->id,
-			'name' => $user->first_name[0]['meta_value'] . ' ' . $user->last_name[0]['meta_value'],
+			'id'         => $user->id,
+			'name'       => $user->first_name[0]['meta_value'] . ' ' . $user->last_name[0]['meta_value'],
+			'user_login' => $user->user_login,
 		];
 	}
 

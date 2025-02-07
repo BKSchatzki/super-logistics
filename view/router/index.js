@@ -1,9 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import QRScanner from '@/components/qr-scanner/QRScanner.vue'
+import QRScanner from '@/components/scanner/QRScanner.vue'
 import ReportsMain from '@/components/reports/ReportsMain.vue'
 import UserMgmtMain from '@/components/user-management/UserMgmtMain.vue'
 import ClientMgmtMain from '@/components/client-management/ClientMgmtMain.vue'
-import TransactionsMain from '@/components/transactions/TransactionsMain.vue'
+import ReceiverMgmtMain from '@/components/receiver-management/ReceiverMgmtMain.vue'
 import ShowMgmtMain from "@/components/show-management/ShowMgmtMain.vue";
 import ShippingMain from "@/components/shipping/ShippingMain.vue"
 
@@ -13,7 +13,7 @@ const router = createRouter({
     {
       path: '/transactions',
       name: 'transactions',
-      component: TransactionsMain,
+      component: ReceiverMgmtMain,
     },
     {
       path: '/scanner',

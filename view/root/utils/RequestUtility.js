@@ -44,6 +44,9 @@ class RequestUtility {
         };
 
         // Create Axios request
+
+        console.log("Axios request: ", axiosConfig);
+
         return axios(axiosConfig)
             .then(res => {
                 if (requestInfo.success && typeof requestInfo.success === 'function') return requestInfo.success(res);

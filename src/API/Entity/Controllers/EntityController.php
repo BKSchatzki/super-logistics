@@ -77,7 +77,7 @@ class EntityController extends Controller {
 		$entity              = Entity::find( $params['id'] );
 
 		if ( ! $entity ) {
-			return self::prepareErrorResponse( 'Entity not found', 404 );
+			self::sendErrorResponse( 'Entity not found', 404 );
 		}
 
 		self::updateIfProvided( $entity, $params, [
@@ -132,7 +132,7 @@ class EntityController extends Controller {
 		}
 
 		if ( ! $entity ) {
-			return self::prepareErrorResponse( 'Entity not found', 404 );
+			self::sendErrorResponse( 'Entity not found', 404 );
 		}
 
 		$entity->trashed = 1;
@@ -149,7 +149,7 @@ class EntityController extends Controller {
 		}
 
 		if ( ! $entity ) {
-			return self::prepareErrorResponse( 'Entity not found', 404 );
+			self::sendErrorResponse( 'Entity not found', 404 );
 		}
 
 		$entity->trashed = 0;

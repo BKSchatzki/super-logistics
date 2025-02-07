@@ -70,4 +70,10 @@ const frhtOptions = [
     {label: 'SmlPk', value: 3}
 ]
 
-export { stateOptions, freightOptions, frhtOptions }
+const frhtFilters = [
+    {label: 'LTL', value: 'LTL'},
+    {label: 'FTL', value: 'FTL'},
+    {label: 'SmlPk', value: 'SmlPk'}
+]
+
+export { stateOptions, freightOptions, frhtOptions, frhtFilters }

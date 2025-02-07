@@ -33,7 +33,8 @@ export function useAPI(dataTopic = '') {
         return computed(() => store.state[topic]);
     }
 
-    const post = (formData, topic = dataTopic, refresh = true) => {
+    const post = (formData, topic = dataTopic, refresh = true, successMessage = '', errorMessage = '') => {
+
         return new Promise((resolve, reject) => {
             RequestUtility.sendRequest({
                 type: 'post',
@@ -43,10 +44,22 @@ export function useAPI(dataTopic = '') {
                     if (refresh) {
                         get({active: 1, trashed: 0}, topic);
                     }
+                    toast.add({
+                        ...defaultToast,
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: successMessage,
+                    });
                     resolve(res.data);
                 },
                 error: (res) => {
                     console.error(`Failed to post new ${topic}:`, res);
+                    toast.add({
+                        ...defaultToast,
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: res.response ? res.response.data.data : errorMessage,
+                    });
                     reject(res);
                 }
             });

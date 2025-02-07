@@ -50,14 +50,11 @@ trait ResponseManager {
 	}
 
 	public static function prepareUserNotFoundResponse(): array {
-		return self::prepareErrorResponse( "User not found", 404 );
+		self::sendErrorResponse( "User not found", 404 );
 	}
 
-	public static function prepareErrorResponse( $message = "Resource not found", $status = 400 ): array {
-		return [
-			'error'  => $message,
-			'status' => $status
-		];
+	public static function sendErrorResponse( $message = "Resource not found", $status = 400 ): void {
+		wp_send_json_error( $message, $status );
 	}
 
 	public static function collectionResponse( $data, $transformer ): array {

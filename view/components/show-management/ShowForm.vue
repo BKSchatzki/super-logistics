@@ -1,15 +1,19 @@
 <script setup>
 import {ref, watch} from "vue";
 import {useStore} from "vuex";
-import {useForm} from "@utils/composables/useForm";
-import SelectInput from "@/components/form/SelectInput.vue";
+import {useFormAssist} from "@utils/composables/useFormAssist";
+import {formatDateForJS} from "@utils/helpers";
+import * as yup from 'yup';
 import Row from "@/components/form/Row.vue";
 import DateInput from "@/components/form/DateInput.vue";
-import TextareaInput from "@/components/form/TextareaInput.vue";
+import ShowTextarea from "@/components/show-management/ShowTextarea.vue";
 import Col from "@/components/form/Col.vue";
-import TextInput from "@/components/form/TextInput.vue";
-import NumberInput from "@/components/form/NumberInput.vue";
-import {formatDateForJS} from "@utils/helpers";
+import FormTextInput from "@/components/form/FormTextInput.vue";
+import FormSelectInput from "@/components/form/FormSelectInput.vue";
+import FormNumberInput from "@/components/form/FormNumberInput.vue";
+import {useForm} from "vee-validate";
+
+// <editor-fold desc="Setup">-----------------------------------------
 
 const props = defineProps({
   formData: {
@@ -23,19 +27,32 @@ const props = defineProps({
   method: {
     type: String,
     default: 'post'
+  },
+  description: {
+    type: String,
+    default: null
   }
 })
-
-const errorText = ref('');
 const user = ref(useStore().state.user);
+
+// </editor-fold>-------------------------------------------------------
 
 // <editor-fold desc="Form">-----------------------------------------
 
-// instantiating form data / methods
-const getListString = (places) => {
-  return places.map(place => place['name']).join(',\n');
-}
-const {form, submit, getDroptions} = useForm({
+// Validation Schema
+const validationSchema = yup.object().shape({
+  name: yup.string().required().label('Name'),
+  min_carat_weight: yup.number().optional().label('Min. Carat Weight'),
+  carat_weight_inc: yup.number().optional().label('Carat Weight Incr.'),
+  zones: yup.array().of(yup.string()).optional().label('Zones'),
+  booths: yup.array().of(yup.string()).optional().label('Booths'),
+  client_id: yup.number().required().label('Client'),
+  date_start: yup.date().required().label('Start Date'),
+  date_end: yup.date().required().label('End Date')
+});
+
+// Initial Values
+const initialValues = ref({
   name: '',
   min_carat_weight: 150,
   carat_weight_inc: 100,
@@ -46,41 +63,33 @@ const {form, submit, getDroptions} = useForm({
   date_start: props.formData['date_start'] ? formatDateForJS(props.formData['date_start']) : new Date(),
   date_end: props.formData['date_end'] ? formatDateForJS(props.formData['date_end']) : new Date()
 });
-// Special Fields
+
+const {meta, values, errors, handleSubmit, setFieldValue} = useForm({validationSchema, initialValues});
+const {submitToAPI, getDroptions} = useFormAssist();
+
+// <editor-fold desc="Special Fields">-----------------------------------------
+
+// Client ID
 watch(user, (newVal) => {
   if (newVal['isClient']) {
-    form.client_id = newVal['client']['id'];
+    values.client_id = newVal['client']['id'];
   }
 }, {immediate: true});
-const zones = ref(props.formData['zones'] ? getListString(props.formData['zones']) : '');
-watch(zones, (newVal) => {
-  try {
-    form.zones = newVal.split(',').map(zone => zone.trim());
-  } catch (e) {
-    form.zones = [];
-    errorText.value = 'Error parsing zones. Please adjust format.';
-  }
-}, {immediate: true}); // if immediate is not true, it will send an empty array and delete the zones upon submission.
-const booths = ref(props.formData['booths'] ? getListString(props.formData['booths']) : '');
-watch(booths, (newVal) => {
-  try {
-    form.booths = newVal.split(',').map(booth => booth.trim());
-  } catch (e) {
-    form.booths = [];
-    errorText.value = 'Error parsing booths. Please adjust format.';
-  }
-}, {immediate: true});// if immediate is not true, it will send an empty array and delete the booths upon submission.
-const dates = ref([form.date_start, form.date_end]);
+
+// Dates
+const dates = ref([values['date_start'], values['date_end']]);
 watch(dates, (newVal) => {
-  form.date_start = newVal[0];
-  form.date_end = newVal[1];
+  setFieldValue('date_start', newVal[0]);
+  setFieldValue('date_end', newVal[1]);
 });
 
+//</editor-fold>--------------------------------------------------------
+
 // Submit
-const submitForm = async () => {
-  await submit('shows', props.method);
+const submitForm = handleSubmit(async () => {
+  await submitToAPI('shows', values, props.method);
   props.close();
-}
+})
 
 //</editor-fold>--------------------------------------------------------
 
@@ -94,29 +103,30 @@ const clientOptions = getDroptions('clients', {active: 1, trashed: 0});
 </script>
 
 <template>
-  <span v-if="errorText !== ''" class="text-red-400">
-      {{ errorText }}
-  </span>
+  <Toast/>
   <Col>
+    <Row v-if="description">
+      <span>{{ description }}</span>
+    </Row>
     <Row>
-      <TextInput label="Name" v-model="form['name']" placeholder="Trade show name"/>
+      <FormTextInput label="Name" name="name" placeholder="Trade show name"/>
     </Row>
     <Row v-if="user['isInternal']">
-      <SelectInput label="Client" v-model="form['client_id']" :options="clientOptions" placeholder="Select a Client"/>
+      <FormSelectInput label="Client" name="client_id" :options="clientOptions" placeholder="Select a Client"/>
     </Row>
     <Row>
-      <DateInput label="Advance Warehouse Dates" v-model="dates" mode="range" inline :disabled="(method === 'update') && user['isClient']"/>
+      <DateInput label="Advance Warehouse Dates" v-model="dates" mode="range" inline
+                 :disabled="(method === 'update') && user['isClient']"/>
     </Row>
     <Row v-if="user['isInternalAdmin']">
-      <NumberInput label="Min. Carat Weight" v-model="form['min_carat_weight']"/>
-      <NumberInput label="Carat Weight Incr." v-model="form['carat_weight_inc']"/>
+      <FormNumberInput label="Min. Carat Weight" name="min_carat_weight"/>
+      <FormNumberInput label="Carat Weight Incr." name="carat_weight_inc"/>
     </Row>
     <Row>
-      <TextareaInput v-model="zones" label="Zones" placeholder="Enter zones here, separated by commas, no spaces."/>
+      <ShowTextarea name="zones" label="Zones" placeholder="Enter zones here, separated by commas, no spaces."/>
     </Row>
     <Row>
-      <TextareaInput v-model="booths" label="Booths"
-                     placeholder="Enter booths here, separated by commas, no spaces."/>
+      <ShowTextarea name="booths" label="Booths" placeholder="Enter booths here, separated by commas, no spaces."/>
     </Row>
     <div class="flex justify-end gap-2">
       <Button type="button" label="Cancel" severity="secondary" @click="props.close"></Button>

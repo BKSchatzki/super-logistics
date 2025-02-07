@@ -12,6 +12,11 @@ class TransactionTransformer extends TransformerAbstract {
 
 	public function transform( Transaction $item ): array {
 
+		$item->show->date_start = Carbon::parse( $item->show->date_start )->setTimezone( 'America/Los_Angeles' );
+		$item->show->date_end   = Carbon::parse( $item->show->date_end )->setTimezone( 'America/Los_Angeles' );
+		$item->created_at       = Carbon::parse( $item->created_at )->setTimezone( 'America/Los_Angeles' );
+		$item->updated_at       = Carbon::parse( $item->updated_at )->setTimezone( 'America/Los_Angeles' );
+
 		$show = [
 			'id'   => $item->show->id,
 			'name' => $item->show->entity->name,
@@ -26,46 +31,51 @@ class TransactionTransformer extends TransformerAbstract {
 
 		$arrivalStatus = self::determineTimeliness( $item );
 
+		$niceFreightType = self::getNiceFreightType( $item->freight_type );
+
 		return [
-			'id'               => (int) $item->id,
-			'shipper'          => $item->shipper,
-			'exhibitor'        => $item->exhibitor,
-			'client'           => $client,
-			'show_id'          => (int) $item->show_id,
-			'show'             => $show,
-			'zone_id'          => (int) $item->zone_id,
-			'zone'             => $zone,
-			'booth_id'         => (int) $item->booth_id,
-			'booth'            => $booth,
-			'carrier'          => $item->carrier,
-			'tracking'         => $item->tracking,
-			'street_address'   => $item->street_address,
-			'shipper_city'     => $item->shipper_city,
-			'shipper_state'    => $item->shipper_state,
-			'shipper_zip'      => $item->shipper_zip,
-			'freight_type'     => (int) $item->freight_type,
-			'crate_pcs'        => (int) $item->crate_pcs,
-			'carton_pcs'       => (int) $item->carton_pcs,
-			'skid_pcs'         => (int) $item->skid_pcs,
-			'fiber_case_pcs'   => (int) $item->fiber_case_pcs,
-			'carpet_pcs'       => (int) $item->carpet_pcs,
-			'misc_pcs'         => (int) $item->misc_pcs,
-			'total_pcs'        => (int) $item->total_pcs,
-			'total_weight'     => (int) $item->total_weight,
-			'remarks'          => $item->remarks,
-			'special_handling' => (bool) $item->special_handling,
-			'pallet'           => $item->pallet,
-			'trailer'          => $item->trailer,
-			'image_path'       => $item->image_path,
-			'arrival_status'   => $arrivalStatus,
-			'active'           => (bool) $item->active,
-			'trashed'          => (bool) $item->trashed,
-			'created_by'       => $item->created_by,
-			'created_by_user'  => $created_by_user,
-			'created_at'       => $item->created_at,
-			'updated_by'       => $item->updated_by,
-			'updated_by_user'  => $updated_by_user,
-			'updated_at'       => $item->updated_at,
+			'id'                => (int) $item->id,
+			'shipper'           => $item->shipper,
+			'exhibitor'         => $item->exhibitor,
+			'client'            => $client,
+			'show_id'           => (int) $item->show_id,
+			'show'              => $show,
+			'zone_id'           => (int) $item->zone_id,
+			'zone'              => $zone,
+			'booth_id'          => (int) $item->booth_id,
+			'booth'             => $booth,
+			'carrier'           => $item->carrier,
+			'tracking'          => $item->tracking,
+			'street_address'    => $item->street_address,
+			'shipper_city'      => $item->shipper_city,
+			'shipper_state'     => $item->shipper_state,
+			'shipper_zip'       => $item->shipper_zip,
+			'freight_type'      => (int) $item->freight_type,
+			'nice_freight_type' => $niceFreightType,
+			'crate_pcs'         => (int) $item->crate_pcs,
+			'carton_pcs'        => (int) $item->carton_pcs,
+			'skid_pcs'          => (int) $item->skid_pcs,
+			'fiber_case_pcs'    => (int) $item->fiber_case_pcs,
+			'carpet_pcs'        => (int) $item->carpet_pcs,
+			'misc_pcs'          => (int) $item->misc_pcs,
+			'total_pcs'         => (int) $item->total_pcs,
+			'total_weight'      => (int) $item->total_weight,
+			'remarks'           => $item->remarks,
+			'special_handling'  => (bool) $item->special_handling,
+			'pallet'            => strtoupper( $item->pallet ),
+			'trailer'           => $item->trailer,
+			'image_path'        => $item->image_path,
+			'arrival_status'    => $arrivalStatus,
+			'active'            => (bool) $item->active,
+			'trashed'           => (bool) $item->trashed,
+			'created_by'        => $item->created_by,
+			'created_by_user'   => $created_by_user,
+			'created_at'        => $item->created_at,
+			'nice_created_at'   => $item->created_at->format( 'M/d/y H:i' ),
+			'updated_by'        => $item->updated_by,
+			'updated_by_user'   => $updated_by_user,
+			'updated_at'        => $item->updated_at,
+			'nice_updated_at'   => $item->updated_at->format( 'M/d/y H:i' ),
 		];
 	}
 
@@ -86,8 +96,9 @@ class TransactionTransformer extends TransformerAbstract {
 		$user = User::find( $item->$key );
 
 		return [
-			'id'   => $user->id,
-			'name' => $user->first_name[0]['meta_value'] . ' ' . $user->last_name[0]['meta_value'],
+			'id'         => $user->id,
+			'name'       => $user->first_name[0]['meta_value'] . ' ' . $user->last_name[0]['meta_value'],
+			'user_login' => $user->user_login,
 		];
 	}
 
@@ -96,5 +107,15 @@ class TransactionTransformer extends TransformerAbstract {
 			'id'   => $object->id,
 			'name' => $object->name,
 		];
+	}
+
+	private static function getNiceFreightType( $freightType ): string {
+		$freightTypes = [
+			1 => 'FTL',
+			2 => 'LTL',
+			3 => 'SmlPk'
+		];
+
+		return $freightTypes[ $freightType ];
 	}
 }

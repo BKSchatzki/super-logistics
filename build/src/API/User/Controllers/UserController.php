@@ -30,7 +30,7 @@ class UserController extends Controller {
 
 		// Filter for Client
 		$currentUser = self::getCurrentUserModel();
-		if ( Permissions::isClientAdmin() ) {
+		if ( Permissions::isClientAdmin() && ! Permissions::isWPAdmin() ) {
 			$users = $users->filter( function ( $user ) use ( $currentUser ) {
 				return $user->client[0]->id == $currentUser->client[0]->id;
 			} );
@@ -60,7 +60,7 @@ class UserController extends Controller {
 		$userData = self::createWPUser( $params );
 
 		if ( ! isset( $userData->ID ) ) {
-			return self::prepareErrorResponse( $userData );
+			self::sendErrorResponse( $userData );
 		}
 		$user = User::find( $userData->ID );
 

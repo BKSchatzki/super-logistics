@@ -1,6 +1,6 @@
 <script setup>
 import {v4 as uuid} from 'uuid';
-import InputLabel from "@/components/form/InputLabel.vue";
+import InputFrame from "@/components/form/InputFrame.vue";
 
 // Data and Configuration
 const props = defineProps({
@@ -33,7 +33,7 @@ const updateValue = (event) => {
 </script>
 
 <template>
-  <InputLabel :id :label="label">
+  <InputFrame :id :label="label">
     <DatePicker
         class="w-full"
         :modelValue
@@ -42,5 +42,5 @@ const updateValue = (event) => {
         @date-select="updateValue"
         :disabled
     />
-  </InputLabel>
+  </InputFrame>
 </template>

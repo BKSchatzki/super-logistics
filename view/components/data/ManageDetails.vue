@@ -14,6 +14,10 @@ const props = defineProps({
     type: String,
     required: true
   },
+  header: {
+    type: String,
+    default: null
+  },
   allowEdit: {
     type: Boolean,
     default: true
@@ -30,6 +34,9 @@ const props = defineProps({
     type: String,
     default: 'name'
   }
+})
+const title = computed(() => {
+  return props.header ?? `${toCapitalCase(toSingular(props.topic))} Details`
 })
 const niceSingular = computed(() => {
   return toCapitalCase(toSingular(props.topic));
@@ -104,7 +111,7 @@ const markSubjectActive = () => {
           contentClass="w-[400]px min-h-60" :draggable="false">
     <template #header>
       <template v-if="status === 'viewing'">
-        <span class="p-dialog-title">{{ subjectStatus }} {{ niceSingular }} Details</span>
+        <span class="p-dialog-title">{{ title }}</span>
         <Button v-if="allowArchive && !!subject['active'] && !subject['trashed']" variant="text" severity="secondary" icon="pi pi-folder"
                 rounded @click="() => status = 'archiving'"/>
         <Button v-if="allowEdit && !!subject['active'] && !subject['trashed']" variant="text" severity="secondary" icon="pi pi-pencil"

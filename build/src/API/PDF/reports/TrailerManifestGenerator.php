@@ -1,80 +1,95 @@
 <?php
 
-namespace BigTB\SL\API\PDF;
+namespace BigTB\SL\API\PDF\reports;
 
-use BigTB\SL\API\PDF\SLPDF;
+use Illuminate\Support\Collection; // If you use Laravel's collection, otherwise adapt
 
-class TrailerManifestGenerator
+class TrailerManifestGenerator extends ReportGenerator
 {
-    public function generate($transactions): string
-    {
-        // Create a new TCPDF object
-        $transactionsArray = $transactions->toArray();
-        $trailer_num = isset($transactionsArray[0]) ? $transactionsArray[0]['trailer'] : null;
-        $pdf = new SLPDF($orientation = 'L','mm', 'LETTER', 'trailer_manifest', $trailer_num);
-        $this->setMetaData($pdf);
-        $this->configPDF($pdf);
+	protected int $bodyTextSize = 12;
 
-        $pdf->AddPage();
-        $pdf->SetXY(10, 35);
+	/**
+	 * Creates a PDF grouped by 'pallet', showing sums of total_pcs & total_weight,
+	 * and the latest received date among that group's transactions.
+	 *
+	 * @param Collection $transactions Array of Transaction models
+	 */
+	public function generate(Collection $transactions): string
+	{
+		// Add a page
+		$this->pdf->AddPage();
 
-        foreach($transactions as $t) {
-            $pdf->SetFont('helvetica', '', 8);
-            $pdf->Cell(15, 6, $t->id, 1);
-            $pdf->Cell(25, 6, substr($t->exhibitor->name, 0 , 15), 1);
-            $pdf->Cell(15, 6, substr($t->carrier->name, 0 , 15), 1);
-            $pdf->Cell(30, 6, substr($t->tracking, 0 , 15), 1);
-            $pdf->Cell(25, 6, substr($t->showPlace->name, 0 , 15), 1);
-            $pdf->Cell(15, 6, substr($t->booth, 0 , 15), 1);
-            $pdf->Cell(15, 6, self::countItems($t), 1);
-            $pdf->Cell(45, 6, substr(self::getNotes($t), 0, 30), 1);
-            $pdf->Cell(25, 6, substr($t->shipment, 0, 15), 1);
-            $pdf->Cell(15, 6, substr($t->trailer, 0, 15), 1);
-            $pdf->Cell(25, 6, \Carbon\Carbon::parse($t->created_at)->format('m/d/y'), 1);
-            $pdf->Ln();
-        }
-        return $pdf->Output('sample.pdf', 'S');
-    }
+		// <editor-fold desc="Header">--------------------------------------------
 
-    private function setMetaData($pdf): void
-    {
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('ThinkSTG');
-        $pdf->SetTitle('Trailer Manifest');
-    }
+		$trailerNumber = $transactions[0]->trailer ?? 'N/A';
 
-    private function configPDF($pdf): void
-    {
+		// Header
+		$this->pdf->SetFont('helvetica', 'B', 31);
+		$this->pdf->Cell(110, 12, 'Trailer Manifest', 1, 0, 'L');
+		$this->pdf->Cell(78,    12, $trailerNumber,    1, 1, 'L');
 
-        // Set margins
-        $pdf->SetMargins(10, 35, PDF_MARGIN_RIGHT);
-        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+		// </editor-fold>--------------------------------------------------------
 
-        // Set auto page breaks
-        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+		$this->pdf->Ln(5);
 
-        // Set image scale factor
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        $pdf->SetFont('helvetica', '', 15);
-    }
+		// <editor-fold desc="Table">---------------------------------------------
 
-    private function countItems($transaction): int
-    {
-        $totalPcs = 0;
-        foreach ($transaction->items as $item) {
-            $totalPcs += $item->pcs;
-        }
-        return $totalPcs;
-    }
+		// Group transactions by 'pallet'
+		$groupedByPallet = [];
+		foreach ($transactions as $tx) {
+			$palletKey = $tx->pallet ?? 'N/A';
+			$groupedByPallet[$palletKey][] = $tx;
+		}
 
-    private function getNotes($transaction): string
-    {
-        $notes = [];
-        foreach ($transaction->updates as $update) {
-            $notes[] = $update->note;
-        }
-        return implode("\n", $notes);
-    }
+		// Table header
+		$this->pdf->SetFont('helvetica', 'B', $this->bodyTextSize);
+		$this->pdf->Cell(30, 8, 'Pallet ID',         1, 0, 'C');
+		$this->pdf->Cell(30, 8, 'Total Pcs',         1, 0, 'C');
+		$this->pdf->Cell(50, 8, 'Total Weight',      1, 0, 'C');
+		$this->pdf->Cell(78,  8, 'Last Received Date',1, 1, 'C');
+
+		// Table rows
+		$this->pdf->SetFont('helvetica', '', $this->bodyTextSize);
+
+		foreach ($groupedByPallet as $palletId => $group) {
+			self::writeTableRow($palletId, $group);
+		}
+
+		// </editor-fold>--------------------------------------------------------
+
+		// Output the PDF as a string
+		return $this->pdf->Output('trailer_manifest.pdf', 'S');
+	}
+
+	public function writeTableRow($palletId, $group):void {
+		// Sum total_pcs and total_weight
+		// Identify the max created_at
+		// If your code is purely array-based (no Laravel), do a manual loop:
+		$sumPcs = 0;
+		$sumWeight = 0;
+		$latestDate = null;
+
+		foreach ($group as $tx) {
+			$sumPcs += (int) $tx->total_pcs;
+			$sumWeight += (float) $tx->total_weight;
+
+			// Check date
+			$txCreated = strtotime($tx->created_at);
+			if (!$latestDate || $txCreated > $latestDate) {
+				$latestDate = $txCreated;
+			}
+		}
+
+		// Format the date
+		$lastReceivedDate = $latestDate ? date('M/d/y', $latestDate) : '';
+
+		// If you want the weight with “ lbs.” at the end:
+		$weightStr = $sumWeight . ' lbs.';
+
+		// Print the row
+		$this->pdf->Cell(30, 8, $palletId,        1, 0, 'C');
+		$this->pdf->Cell(30, 8, $sumPcs,          1, 0, 'C');
+		$this->pdf->Cell(50, 8, $weightStr,       1, 0, 'C');
+		$this->pdf->Cell(78,  8, $lastReceivedDate,1, 1, 'C');
+	}
 }
-

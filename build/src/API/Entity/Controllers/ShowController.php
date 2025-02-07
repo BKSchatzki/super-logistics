@@ -102,7 +102,7 @@ class ShowController extends EntityController {
 			'date_end',
 			'client_id',
 		] ) ) {
-			return self::prepareErrorResponse( 'Missing required fields' );
+			self::sendErrorResponse( 'Missing required fields' );
 		}
 		extract( $params );
 
@@ -167,7 +167,7 @@ class ShowController extends EntityController {
 
 		$show = Show::where( 'entity_id', $request->get_param( 'id' ) )->first();
 		if ( ! $show ) {
-			return self::prepareErrorResponse( 'Show not found' );
+			self::sendErrorResponse( 'Show not found' );
 		}
 
 		// </editor-fold>----------------------------------------------------------

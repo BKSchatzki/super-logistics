@@ -1,5 +1,5 @@
 <script setup>
-import EditClientForm from "@/components/client-management/EditClientForm.vue";
+import ClientForm from "@/components/client-management/ClientForm.vue";
 import LabeledDetail from "@/components/data/LabeledDetail.vue";
 import ManageDetails from "@/components/data/ManageDetails.vue";
 
@@ -16,7 +16,7 @@ const props = defineProps({
       <LabeledDetail :subject label="Status" property="active"/>
     </template>
     <template #edit-form="{formData, close}">
-      <EditClientForm :subject="formData" :stop="close"/>
+      <ClientForm :formData :close/>
     </template>
   </ManageDetails>
 </template>

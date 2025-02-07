@@ -11,7 +11,7 @@ const updateValue = (event) => {
 </script>
 
 <template>
-  <IconField>
+  <IconField class="w-auto">
     <InputIcon>
       <i class="pi pi-search"/>
     </InputIcon>

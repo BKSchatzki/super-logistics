@@ -1,39 +1,49 @@
-<script>
+<script setup>
+import {useAPI} from "@utils/composables/useAPI";
+import {Form} from "vee-validate";
+import FormTextInput from "@/components/form/FormTextInput.vue";
+import Row from "@/components/form/Row.vue";
+import Col from "@/components/form/Col.vue";
+import PageTitle from "@/components/general-ui/PageTitle.vue";
 
-import TrailerManInterface from "@/components/reports/trailer-man-interface.vue";
-import ShowReportInterface from "@/components/reports/show-report-interface.vue";
-import ShowReportInterfaceTwo from "@/components/reports/show-report-interface-two.vue";
-import PalletManInterface from "@/components/reports/pallet-man-interface.vue";
+const {print} = useAPI();
 
-export default {
-  components: {
-    TrailerManInterface,
-    ShowReportInterface,
-    ShowReportInterfaceTwo,
-    PalletManInterface
-  },
-  data() {
-    return {
-      dateRange: null
-    }
-  }
-}
+const printTrailerManifest = (data) => {
+  print(data, "reports/trailer-manifest", "Trailer Manifest");
+};
+
+const printPalletManifest = (data) => {
+  print(data, "reports/pallet-manifest", "Pallet Manifest");
+};
+
 </script>
 
 <template>
-<div>
-  <div>
-    <h1 class="font-sans text-3xl">Reports</h1>
-  </div>
-  <div>
-    <trailer-man-interface/>
-    <pallet-man-interface/>
-    <show-report-interface/>
-    <show-report-interface-two/>
-  </div>
-</div>
+  <Col>
+    <div class="mb-4">
+      <PageTitle title="Reports"/>
+    </div>
+    <Toast/>
+    <Panel>
+      <Row>
+        <Panel header="Trailer Manifest">
+          <Form @submit="printTrailerManifest">
+            <Col>
+              <FormTextInput name="trailer_no" label="Trailer Number"/>
+              <Button type="submit" label="Print"/>
+            </Col>
+          </Form>
+        </Panel>
+        <Panel header="Pallet Manifest">
+          <Form @submit="printPalletManifest">
+            <Col>
+              <FormTextInput name="pallet_no" label="Pallet Number"/>
+              <Button type="submit" label="Print"/>
+            </Col>
+          </Form>
+        </Panel>
+      </Row>
+    </Panel>
+  </Col>
 </template>
 
-<style scoped>
-
-</style>

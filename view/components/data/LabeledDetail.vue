@@ -5,13 +5,26 @@ const props = defineProps({
   label: String,
   property: String,
   subject: Object,
-  unit: String
+  unit: String,
+  trueLabel: {
+    type: String,
+    default: 'Yes'
+  },
+  falseLabel: {
+    type: String,
+    default: 'No'
+  }
 })
 
+// To get nested data from the subject object - iterating through nested objects
 const data = computed(() => {
+  if (!props.property) return '';
   const d = props.property.split('.').reduce((obj, key) => obj[key], props.subject);
   if (typeof d === 'boolean') {
-    return d ? props.property : 'Not ' + props.property;
+    return d ? props.trueLabel : props.falseLabel;
+  }
+  if (!d) {
+    return props.falseLabel;
   }
   return d;
 });

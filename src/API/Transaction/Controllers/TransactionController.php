@@ -32,7 +32,6 @@ class TransactionController extends Controller {
 
 		// <editor-fold desc="Data Validation">--------------------------
 
-		error_log( "Request: " . print_r( $request, true ) );
 		$params = $request->get_params();
 		if ( ! self::checkIfProvided( $params, [
 			'shipper',
@@ -41,8 +40,6 @@ class TransactionController extends Controller {
 			'zone_id',
 			'booth_id',
 			'carrier',
-			'tracking',
-			'street_address',
 			'shipper_city',
 			'shipper_state',
 			'shipper_zip',
@@ -56,13 +53,9 @@ class TransactionController extends Controller {
 			'total_pcs',
 			'total_weight',
 			'special_handling',
-			'pallet',
-			'trailer'
 		] ) ) {
-			return self::prepareErrorResponse( 'Missing required parameters to create transaction' );
+			self::sendErrorResponse( 'Missing required parameters to create transaction' );
 		}
-
-		error_log("Passed Data Validation");
 
 		// </editor-fold>--------------------------------------------------
 
@@ -71,8 +64,6 @@ class TransactionController extends Controller {
 		if ( isset( $_FILES['image'] ) ) {
 			$imagePath = self::handleImageUpload( $_FILES['image'] );
 		}
-
-		error_log("Passed Image Upload: " . $imagePath ?? 'Image not uploaded');
 
 		$user = wp_get_current_user();
 		extract( $params );
@@ -99,7 +90,7 @@ class TransactionController extends Controller {
 			'total_weight'     => $total_weight,
 			'remarks'          => $remarks,
 			'special_handling' => $special_handling === 'true' ? 1 : 0,
-			'pallet'           => $pallet,
+			'pallet'           => strtoupper($pallet),
 			'trailer'          => $trailer,
 			'image_path'       => $imagePath,
 			'created_by'       => $user->ID,
@@ -108,11 +99,7 @@ class TransactionController extends Controller {
 
 		// </editor-fold>--------------------------------------------------
 
-		error_log( "Data prepared for insertion: " . print_r( $transactionData, true ) );
-
 		$transaction = Transaction::create( $transactionData );
-
-		error_log( "Transaction inserted: " . print_r( $transaction, true ) );
 
 		return self::prepareArrayResponse( new Item( $transaction, new TransactionTransformer ) );
 	}
@@ -124,7 +111,7 @@ class TransactionController extends Controller {
 		$params      = $request->get_params();
 		$transaction = Transaction::find( $params['id'] );
 		if ( ! $transaction ) {
-			return self::prepareErrorResponse( 'Transaction not found', 404 );
+			self::sendErrorResponse( 'Transaction not found', 404 );
 		}
 
 		// </editor-fold>--------------------------------------------------
@@ -138,13 +125,13 @@ class TransactionController extends Controller {
 			$params['image_path'] = $newImagePath;
 
 			// if existing image
-		} elseif ( isset( $params['image'] ) && $transaction->image_path ) {
+		} elseif ( isset( $_FILES['image'] ) && $transaction->image_path ) {
 
 			// Handle the new image upload
-			$newImagePath = self::handleImageUpload( $params['image'] );
+			$newImagePath = self::handleImageUpload( $_FILES['image'] );
 
-			if ( is_wp_error( $newImagePath ) ) {
-				return self::prepareErrorResponse( $newImagePath );
+			if ( is_wp_error( $newImagePath ) || ! $newImagePath ) {
+				self::sendErrorResponse( $newImagePath );
 			}
 
 			// Determine equality by generating and comparing hashes of image content
@@ -167,10 +154,11 @@ class TransactionController extends Controller {
 
 		$transactionData = [
 			...$params,
+			'pallet'           => strtoupper($params['pallet']),
 			'special_handling' => $params['special_handling'] === 'true' ? 1 : 0,
-			'active'     => 1,
-			'trashed'    => 0,
-			'updated_by' => wp_get_current_user()->ID,
+			'active'           => 1,
+			'trashed'          => 0,
+			'updated_by'       => wp_get_current_user()->ID,
 		];
 
 		$transaction->fill( $transactionData );
@@ -193,7 +181,7 @@ class TransactionController extends Controller {
 		$transaction = Transaction::find( $request->get_param( 'id' ) );
 
 		if ( ! $transaction ) {
-			return self::prepareErrorResponse( 'Transaction not found', 404 );
+			self::sendErrorResponse( 'Transaction not found', 404 );
 		}
 
 		$transaction->active = 0;
@@ -213,14 +201,12 @@ class TransactionController extends Controller {
 			'zone_id',
 			'booth_id',
 			'carrier',
-			'tracking',
 			'street_address',
 			'shipper_city',
 			'shipper_state',
 			'shipper_zip',
-			'freight_type'
 		] ) ) {
-			return self::prepareErrorResponse( 'Missing required parameters to print shipping labels' );
+			self::sendErrorResponse( 'Missing required parameters to print shipping labels' );
 		}
 
 		// Fill in the related info
@@ -231,7 +217,7 @@ class TransactionController extends Controller {
 		try {
 			$pdf = $generator->generate( $params );
 		} catch ( Exception $e ) {
-			return self::prepareErrorResponse( $e, 500 );
+			self::sendErrorResponse( $e, 500 );
 		}
 		$pdfBase64 = base64_encode( $pdf );
 		$res       = new Item( [ 'pdf' => $pdfBase64 ], new PDFTransformer() );
@@ -256,7 +242,7 @@ class TransactionController extends Controller {
 			'freight_type',
 			'total_pcs'
 		] ) ) {
-			return self::prepareErrorResponse( 'Missing required parameters to print advance warehouse labels' );
+			self::sendErrorResponse( 'Missing required parameters to print advance warehouse labels' );
 		}
 
 		// Fill in the related info
@@ -268,7 +254,7 @@ class TransactionController extends Controller {
 		try {
 			$pdf = $generator->generate( $params );
 		} catch ( Exception $e ) {
-			return self::prepareErrorResponse( $e, 500 );
+			self::sendErrorResponse( $e, 500 );
 		}
 		$pdfBase64 = base64_encode( $pdf );
 		$res       = new Item( [ 'pdf' => $pdfBase64 ], new PDFTransformer() );
@@ -281,7 +267,7 @@ class TransactionController extends Controller {
 		$params = $request->get_params();
 
 		if ( ! self::checkIfProvided( $params, [ 'id' ] ) ) {
-			return self::prepareErrorResponse( 'Missing required parameters to print receiver documents' );
+			self::sendErrorResponse( 'Missing required parameters to print receiver documents' );
 		}
 
 		// Fill in the related info
@@ -294,7 +280,7 @@ class TransactionController extends Controller {
 		try {
 			$pdf = $generator->generate( $docData );
 		} catch ( Exception $e ) {
-			return self::prepareErrorResponse( $e, 500 );
+			self::sendErrorResponse( $e, 500 );
 		}
 		$pdfBase64 = base64_encode( $pdf );
 		$res       = new Item( [ 'pdf' => $pdfBase64 ], new PDFTransformer() );

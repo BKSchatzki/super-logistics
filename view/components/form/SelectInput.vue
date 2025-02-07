@@ -2,7 +2,7 @@
 import {v4 as uuid} from 'uuid';
 import {computed} from 'vue';
 import {Select, MultiSelect} from "primevue";
-import InputLabel from "@/components/form/InputLabel.vue";
+import InputFrame from "@/components/form/InputFrame.vue";
 
 const props = defineProps({
   id: {
@@ -37,7 +37,7 @@ const componentType = computed(() => props.multiple ? MultiSelect : Select);
 </script>
 
 <template>
-  <InputLabel :id :label="label">
+  <InputFrame :id :label="label">
     <component
         class="flex-auto w-full min-w-24"
         :is="componentType"
@@ -55,5 +55,5 @@ const componentType = computed(() => props.multiple ? MultiSelect : Select);
         autocomplete="off"
         :maxSelectedLabels="2"
     />
-  </InputLabel>
+  </InputFrame>
 </template>

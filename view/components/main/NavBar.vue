@@ -2,6 +2,7 @@
 import {computed, defineProps, ref, watch} from "vue";
 import {useRouter} from "vue-router";
 import {useUserAPI} from "@utils/composables/useUserAPI.js";
+import logo from "@/assets/tstg-logo.png";
 
 const router = useRouter();
 const props = defineProps({
@@ -14,7 +15,7 @@ const {logOut} = useUserAPI();
 
 const items = ref([
   {
-    label: 'Transactions',
+    label: 'Receivers',
     route: 'transactions',
     icon: 'pi pi-home',
     permissions: ['administrator', 'client_admin', 'client_employee', 'internal_admin', 'internal_employee']
@@ -79,6 +80,9 @@ const logIn = () => {
 
 <template>
   <Menubar :model="filteredItems">
+    <template #start>
+      <img :src="logo" alt="TSTG Logo" style="height: 2rem; margin-right: 1rem;">
+    </template>
     <template #item="{ item, props }">
       <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
         <a :href="href" v-bind="props.action" @click="navigate">
