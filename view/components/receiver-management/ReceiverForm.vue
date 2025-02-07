@@ -154,7 +154,7 @@ const displayErrors = () => {
     detail: 'Please correct the errors in the form',
     life: 5000
   });
-  console.log(errors.value);
+  console.error(errors.value);
 }
 const submitForm = handleSubmit(async () => {
   if (props.method === 'post') {

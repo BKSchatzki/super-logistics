@@ -150,7 +150,6 @@ export function useAPI(dataTopic = '') {
                 data: data, // converted to FormData object in sendRequest
                 url: endpoint,
                 success: (res) => {
-                    console.log("res: ", res);
                     const pdfWindow = window.open("");
                     pdfWindow.document.write(
                         `<iframe width='100%' height='100%' src='data:application/pdf;base64,${res.data.data.pdf}'></iframe>`

@@ -111,8 +111,8 @@ class TransactionTransformer extends TransformerAbstract {
 
 	private static function getNiceFreightType( $freightType ): string {
 		$freightTypes = [
-			1 => 'FTL',
-			2 => 'LTL',
+			1 => 'LTL',
+			2 => 'FTL',
 			3 => 'SmlPk'
 		];
 

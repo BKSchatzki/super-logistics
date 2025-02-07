@@ -50,7 +50,6 @@ const subjectStatus = computed(() => {
   }
   return '';
 });
-console.log("Props: ", props);
 
 //-------------------------------------
 // Modal Visibility

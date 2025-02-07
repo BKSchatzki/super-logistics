@@ -24,12 +24,10 @@ const tableData = computed(() => {
 
   // Date Range Filtering
   const [startRange, endRange] = dateRange.value || [];
-  console.log("Data: ", data.value);
   const dateFilteredData = data.value.filter(row => {
     const created_at = new Date(row['created_at']);
     return (!startRange || created_at >= startRange) && (!endRange || created_at <= endRange);
   });
-  console.log("Filtered Data: ", dateFilteredData);
 
   return dateFilteredData.map(row => ({
     ...row,

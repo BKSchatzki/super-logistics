@@ -17,7 +17,6 @@ const props = defineProps({
 //------------------------------------
 const store = useStore();
 const user = computed(() => store.state.user);
-console.log("ShowDetails User: ", user);
 const allowEdit = computed(() => {
   return user.value['isAdmin'];
 });

@@ -41,9 +41,6 @@ const transformValue = (evt) => {
 // </editor-fold>-------------------------------------------------------
 
 const userFacingValue = ref(getListString(value.value));
-watchEffect(() => {
-  console.log("Value: ", value.value);
-});
 
 </script>
 
