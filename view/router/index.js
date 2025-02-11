@@ -6,10 +6,16 @@ import ClientMgmtMain from '@/components/client-management/ClientMgmtMain.vue'
 import ReceiverMgmtMain from '@/components/receiver-management/ReceiverMgmtMain.vue'
 import ShowMgmtMain from "@/components/show-management/ShowMgmtMain.vue";
 import ShippingMain from "@/components/shipping/ShippingMain.vue"
+import Home from '@/components/main/Home.vue'
 
 const router = createRouter({
   history: createWebHashHistory(localized.pageURL),
   routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: Home,
+    },
     {
       path: '/transactions',
       name: 'transactions',

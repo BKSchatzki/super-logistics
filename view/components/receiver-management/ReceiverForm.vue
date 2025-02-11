@@ -18,6 +18,8 @@ import FormCheckInput from "@/components/form/FormCheckInput.vue";
 import {frhtOptions, stateOptions} from "@utils/dropdowns.js";
 import FormNumberInput from "@/components/form/FormNumberInput.vue";
 
+// <editor-fold desc="Setup">--------------------------------------
+
 const props = defineProps({
   labelData: {type: Object, default: {}},
   close: {
@@ -31,46 +33,54 @@ const props = defineProps({
 })
 const startingPage = computed(() => Object.keys(props.labelData).length === 0 ? '1' : '4');
 
+const submitButtonText = computed(() => {
+  return props.method === 'post' ? 'Receive' : 'Update';
+})
+
+const submitted = ref(false);
+
+// </editor-fold>--------------------------------------------------
+
 // <editor-fold desc="Form">-------------------------------------
 
 // Validation Schema
 const validationSchema = yup.object().shape({
-      shipper: yup.string().required().label('Shipper'),
-      exhibitor: yup.string().required().label('Exhibitor'),
-      show_id: yup.number().nullable().required().label('Show ID'),
-      zone_id: yup.number().nullable().required().label('Zone ID'),
-      booth_id: yup.number().nullable().required().label('Booth ID'),
-      carrier: yup.string().required().label('Carrier'),
-      tracking: yup.string().optional().label('Tracking'),
-      street_address: yup.string().nullable().label('Street Address'),
-      shipper_city: yup.string().required().label('City'),
-      shipper_state: yup.string().required().label('State'),
-      shipper_zip: yup.string().required().label('Zip'),
-      freight_type: yup.number().nullable().required().label('Type'),
-      crate_pcs: yup.number().required().label('Crate Pieces'),
-      carton_pcs: yup.number().required().label('Carton Pieces'),
-      skid_pcs: yup.number().required().label('Skid Pieces'),
-      fiber_case_pcs: yup.number().required().label('Fiber Case Pieces'),
-      carpet_pcs: yup.number().required().label('Carpet Pieces'),
-      misc_pcs: yup.number().required().label('Miscellaneous Pieces'),
-      total_pcs: yup.number().moreThan(0).required().label('Total pieces'),
-      total_weight: yup.number().moreThan(0).required().label('Total weight'),
-      pallet: yup.string().optional().label('Pallet'),
-      trailer: yup.string().optional().label('Trailer'),
-      special_handling: yup.boolean().optional().label('Special Handling'),
-      remarks: yup.string().when('special_handling', {
-        is: true,
-        then: (schema) => schema.required('Remarks are required when Special Handling is checked'),
-        otherwise: (schema) => schema.optional(),
-      }),
-      image_path: yup.string().nullable().label('Image Path'),
-      image: yup.mixed().when('image_path', {
-        is: (value) => !value,
-        then: schema => schema.required("Please take a picture of the shipment").label('Image'),
-        otherwise: schema => schema.nullable().label('Image')
-      }),
-      id: yup.number().nullable().label('ID'),
-    });
+  shipper: yup.string().required().label('Shipper'),
+  exhibitor: yup.string().required().label('Exhibitor'),
+  show_id: yup.number().nullable().required().label('Show ID'),
+  zone_id: yup.number().nullable().required().label('Zone ID'),
+  booth_id: yup.number().nullable().required().label('Booth ID'),
+  carrier: yup.string().required().label('Carrier'),
+  tracking: yup.string().optional().label('Tracking'),
+  street_address: yup.string().nullable().label('Street Address'),
+  shipper_city: yup.string().required().label('City'),
+  shipper_state: yup.string().required().label('State'),
+  shipper_zip: yup.string().required().label('Zip'),
+  freight_type: yup.number().nullable().required().label('Type'),
+  crate_pcs: yup.number().required().label('Crate Pieces'),
+  carton_pcs: yup.number().required().label('Carton Pieces'),
+  skid_pcs: yup.number().required().label('Skid Pieces'),
+  fiber_case_pcs: yup.number().required().label('Fiber Case Pieces'),
+  carpet_pcs: yup.number().required().label('Carpet Pieces'),
+  misc_pcs: yup.number().required().label('Miscellaneous Pieces'),
+  total_pcs: yup.number().moreThan(0).required().label('Total pieces'),
+  total_weight: yup.number().moreThan(0).required().label('Total weight'),
+  pallet: yup.string().optional().label('Pallet'),
+  trailer: yup.string().optional().label('Trailer'),
+  special_handling: yup.boolean().optional().label('Special Handling'),
+  remarks: yup.string().when('special_handling', {
+    is: true,
+    then: (schema) => schema.required('Remarks are required when Special Handling is checked'),
+    otherwise: (schema) => schema.optional(),
+  }),
+  image_path: yup.string().nullable().label('Image Path'),
+  image: yup.mixed().when('image_path', {
+    is: (value) => !value,
+    then: schema => schema.required("Please take a picture of the shipment").label('Image'),
+    otherwise: schema => schema.nullable().label('Image')
+  }),
+  id: yup.number().nullable().label('ID'),
+});
 
 // Initial Values
 const initialValues = ref({
@@ -138,15 +148,16 @@ const picFrameCSS = computed(() => {
 
 // <editor-fold desc="Submit">--------------------------------------
 
-const submitButtonText = computed(() => {
-  return Object.keys(props.labelData).length === 0 ? 'Receive' : 'Update Receiver';
-})
-const updateTxn = async () => {
-  await post(values, `transactions/update`, false);
-  get({active: 1, trashed: 0});
-}
+// Setup
 const {get, post, print} = useAPI('transactions');
 const toast = useToast();
+
+// Accessory functions
+const updateTxn = async () => {
+  const data = await post(values, `transactions/update`, false);
+  get({active: 1, trashed: 0});
+  return data;
+}
 const displayErrors = () => {
   toast.add({
     severity: 'error',
@@ -156,25 +167,47 @@ const displayErrors = () => {
   });
   console.error(errors.value);
 }
-const submitForm = handleSubmit(async () => {
+
+// Submit functions
+const submitReceiver = async () => {
   if (props.method === 'post') {
-    await submitToAPI('transactions', values, props.method);
+    const res =  await submitToAPI('transactions', values, props.method);
+    submitted.value = true;
+    return res;
   } else if (props.method === 'update') {
-    await updateTxn();
+    const res = await updateTxn();
+    return res.data
   }
-  props.close();
+}
+const submitForm = async (printLabels, printReceivers) => {
+  const res = await submitReceiver();
+  console.log("Res: ", res);
+  setFieldValue('id', res.id);
+
+  if (printLabels) {
+    await print(values, 'transactions/receiving/labels', 'shipping labels');
+  }
+  if (printReceivers) {
+    await print(values, 'transactions/receiving/docs', 'receiving forms');
+  }
+};
+
+// Submit handlers
+
+const submitOnly = handleSubmit(async () => {
+  await submitForm(false, false);
 }, displayErrors)
-const submitAndPrint = handleSubmit(async () => {
-  let data = {};
-  if (props.method === 'post') {
-    data = await submitToAPI('transactions', values, props.method);
-  } else if (props.method === 'update') {
-    data = await updateTxn();
-  }
-  values['id'] = data.id;
-  await print(values, 'transactions/receiving/labels', 'shipping labels');
-  await print(values, 'transactions/receiving/docs', 'receiving forms');
-  props.close();
+
+const submitPrintLabels = handleSubmit(async () => {
+  await submitForm(true, false);
+}, displayErrors)
+
+const submitPrintReceivers = handleSubmit(async () => {
+  await submitForm(false, true);
+}, displayErrors)
+
+const submitPrintBoth = handleSubmit(async () => {
+  await submitForm(true, true);
 }, displayErrors)
 
 // </editor-fold>--------------------------------------------------
@@ -208,7 +241,8 @@ const boothOptions = computed(() => {
 </script>
 
 <template>
-  <Col>
+  <Col v-if="!submitted">
+    <h1 class="font-sans text-3xl">New Receiver</h1>
     <Toast/>
     <Stepper :value="startingPage">
       <StepItem value="1">
@@ -340,8 +374,8 @@ const boothOptions = computed(() => {
         <StepPanel v-slot="{ activateCallback }">
           <Col>
             <Row>
-              <FormTextInput label="Pallet No." name="pallet"/>
-              <FormTextInput label="Trailer No." name="trailer"/>
+              <FormTextInput label="Pallet No." name="pallet" placeholder="Incomplete"/>
+              <FormTextInput label="Trailer No." name="trailer" placeholder="Incomplete"/>
               <FormCheckInput label="Special Handling" name="special_handling"/>
             </Row>
             <Row>
@@ -357,13 +391,30 @@ const boothOptions = computed(() => {
     <div class="flex items-end gap-4">
       <Col>
         <Row>
-          <Button class="w-full" @click="close" severity="secondary" label="Cancel"/>
-          <Button class="w-full" @click="submitForm" severity="primary" :label="submitButtonText"/>
+          <Button class="w-full" @click="submitPrintBoth" severity="primary"
+                  :label="`${submitButtonText} and Print All`"/>
         </Row>
         <Row>
-          <Button class="w-full" @click="submitAndPrint" severity="primary" :label="`${submitButtonText} and Print`"/>
+          <Button class="w-full" @click="submitPrintLabels" severity="primary"
+                  :label="`${submitButtonText} and Print Labels`"/>
+          <Button class="w-full" @click="submitPrintReceivers" severity="primary"
+                  :label="`${submitButtonText} and Print Receivers`"/>
+        </Row>
+        <Row>
+          <Button class="w-full" @click="close" severity="secondary" label="Cancel"/>
+          <Button class="w-full" @click="submitOnly" severity="primary" :label="`${submitButtonText}`"/>
         </Row>
       </Col>
+    </div>
+  </Col>
+  <Col v-else>
+    <div class="flex flex-col items-center gap-4">
+      <i class="pi pi-check-circle text-primary-500 text-3xl"/>
+      <span class="text-3xl font-light">Receiver {{ values['id'] }} Submitted</span>
+      <router-link to="/transactions">
+        <Button severity="contrast" label="View All Transactions" icon="pi pi-list"/>
+      </router-link>
+      <Button @click="close" severity="secondary" label="Scan Again" icon="pi pi-qrcode"/>
     </div>
   </Col>
 </template>

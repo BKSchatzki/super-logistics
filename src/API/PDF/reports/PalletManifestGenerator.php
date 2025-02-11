@@ -88,6 +88,10 @@ class PalletManifestGenerator extends ReportGenerator {
 		// If zone or booth exist, we show their "name" property, else blank
 		$zoneName  = $tx->zone->name ?? '';
 		$boothName = $tx->booth->name ?? '';
+		$trailer   = 'Incomplete';
+		if ($tx->trailer && $tx->trailer !== '') {
+			$trailer = $tx->trailer;
+		}
 
 		// The columns in the same order as the header
 		$cells = [
@@ -99,7 +103,7 @@ class PalletManifestGenerator extends ReportGenerator {
 			$boothName,              // Booth
 			(string) $tx->total_pcs, // Pcs.
 			$tx->remarks ?? '',      // Remarks (multiline possible)
-			$tx->trailer,
+			$trailer,				// Trailer
 			$receivedText,           // Received (multiline)
 		];
 

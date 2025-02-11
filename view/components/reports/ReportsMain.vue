@@ -30,6 +30,7 @@ const printPalletManifest = (data) => {
           <Form @submit="printTrailerManifest">
             <Col>
               <FormTextInput name="trailer_no" label="Trailer Number"/>
+              <FormTextInput name="seal_no" label="Seal Number"/>
               <Button type="submit" label="Print"/>
             </Col>
           </Form>

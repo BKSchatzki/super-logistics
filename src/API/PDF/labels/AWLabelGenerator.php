@@ -28,7 +28,7 @@ class AWLabelGenerator extends LabelGenerator {
 		}
 
 		// Return the PDF as a string
-		return $this->pdf->Output( 'transaction_label.pdf', 'S' );
+		return $this->pdf->Output( 'advance_warehouse_label.pdf', 'S' );
 	}
 
 	/**
@@ -38,7 +38,7 @@ class AWLabelGenerator extends LabelGenerator {
 	private function writeLabel( array $labelInfo, int $currentPage, int $totalPieces ): void {
 		// Set a base font size (the parent's constructor sets one too, but let's ensure consistency)
 		$this->pdf->SetFont( 'helvetica', '', $this->bodyTextSize );
-		$this->writeInfo( 'Transaction', $labelInfo['id'], 30 );
+		$this->writeInfo( 'Receiver No.', $labelInfo['id'], 30 );
 		$this->writeInfo( 'Client', $labelInfo['client']->name, 16 );
 		$this->writeInfo( 'Show', $labelInfo['show']->name, 16 );
 		$this->writeInfo( 'Exhibitor', $labelInfo['exhibitor'], 25 );

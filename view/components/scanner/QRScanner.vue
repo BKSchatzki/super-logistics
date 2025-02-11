@@ -33,10 +33,7 @@ const resetScanner = () => {
           </router-link>
         </div>
       </div>
-      <div v-else>
-        <h1 class="font-sans text-3xl">New Transaction</h1>
-        <ReceiverForm :close="resetScanner" :labelData="decodedContent"/>
-      </div>
+      <ReceiverForm v-else :close="resetScanner" :labelData="decodedContent"/>
     </Panel>
   </Col>
 </template>

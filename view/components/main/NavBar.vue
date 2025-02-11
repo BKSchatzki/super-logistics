@@ -1,5 +1,5 @@
 <script setup>
-import {computed, defineProps, ref, watch} from "vue";
+import {computed, defineProps, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useUserAPI} from "@utils/composables/useUserAPI.js";
 import logo from "@/assets/tstg-logo.png";
@@ -30,7 +30,7 @@ const items = ref([
     label: 'Reports',
     route: 'reports',
     icon: 'pi pi-file',
-    permissions: []
+    permissions: ['administrator', 'client_admin', 'client_employee', 'internal_admin']
   },
   {
     label: 'Clients',
@@ -81,7 +81,9 @@ const logIn = () => {
 <template>
   <Menubar :model="filteredItems">
     <template #start>
-      <img :src="logo" alt="TSTG Logo" style="height: 2rem; margin-right: 1rem;">
+      <router-link to="/">
+        <img :src="logo" alt="TSTG Logo" style="height: 2rem; margin-right: 1rem;">
+      </router-link>
     </template>
     <template #item="{ item, props }">
       <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
@@ -92,7 +94,8 @@ const logIn = () => {
     </template>
     <template #end>
       <Button v-if="!props.user.id" severity="primary" icon="pi pi-sign-in" @click="logIn" label="Log In"></Button>
-      <Button v-else severity="secondary" variant="outlined" icon="pi pi-sign-out" @click="logOut" label="Log Out"></Button>
+      <Button v-else severity="secondary" variant="outlined" icon="pi pi-sign-out" @click="logOut"
+              label="Log Out"></Button>
     </template>
   </Menubar>
 </template>

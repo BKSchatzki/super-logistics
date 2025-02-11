@@ -1,10 +1,13 @@
 import {computed} from 'vue';
 import {useStore} from 'vuex';
+import {useRouter} from 'vue-router';
 import RequestUtility from "@utils/RequestUtility.js";
 
 export function useUserAPI() {
 
     const store = useStore();
+
+    const router = useRouter();
 
     const getCurrentUser = () => {
         const requestData = {
@@ -15,6 +18,7 @@ export function useUserAPI() {
             },
             error: (res) => {
                 console.log('No User logged in:', res);
+                router.push('/');
             }
         };
         RequestUtility.sendRequest(requestData);

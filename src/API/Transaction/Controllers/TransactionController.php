@@ -101,7 +101,7 @@ class TransactionController extends Controller {
 
 		$transaction = Transaction::create( $transactionData );
 
-		return self::prepareArrayResponse( new Item( $transaction, new TransactionTransformer ) );
+		return self::singleResponse( $transaction, new TransactionTransformer );
 	}
 
 	public static function update( WP_REST_Request $request ): array {
@@ -166,7 +166,7 @@ class TransactionController extends Controller {
 
 		// </editor-fold>--------------------------------------------------
 
-		return self::prepareArrayResponse( new Item( $transaction, new TransactionTransformer ) );
+		return self::singleResponse( $transaction, new TransactionTransformer );
 	}
 
 	public static function delete( WP_REST_Request $request ): array {
@@ -271,7 +271,11 @@ class TransactionController extends Controller {
 		}
 
 		// Fill in the related info
+		error_log( "Params ID: " . $params['id'] );
 		$transaction       = Transaction::with( [ 'show.entity', 'zone', 'booth' ] )->find( $params['id'] );
+		if ( ! $transaction ) {
+			self::sendErrorResponse( "Transaction not found, instead found $transaction: ", 404 );
+		}
 		$docData           = $transaction->toArray();
 		$docData['client'] = Entity::find( $docData['show']['client_id'] );
 

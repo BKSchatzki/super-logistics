@@ -5,7 +5,6 @@ namespace BigTB\SL\API\Entity\Controllers;
 use BigTB\SL\API\Entity\Models\Entity;
 use BigTB\SL\API\Entity\Models\Show;
 use BigTB\SL\API\Entity\Transformers\ShowTransformer;
-use BigTB\SL\API\User\Models\User;
 use BigTB\SL\Setup\Routing\Permissions;
 use Carbon\Carbon;
 use League\Fractal\Resource\Item;
@@ -226,14 +225,14 @@ class ShowController extends EntityController {
 
 	public static function markInactive( WP_REST_Request $request ): array {
 		parent::markInactive( $request );
-		$show = Entity::find( $request->get_param( 'id' ) )->show()->with( [ 'client', 'entity' ] )->first();
+		$show = Entity::find( $request->get_param( 'id' ) )->show()->with( [ 'client', 'entity', 'transactions' ] )->first();
 
 		return self::prepareArrayResponse( new Item( $show, new ShowTransformer ) );
 	}
 
 	public static function markActive( WP_REST_Request $request ): array {
 		parent::markActive( $request );
-		$show = Entity::find( $request->get_param( 'id' ) )->show()->with( [ 'client', 'entity' ] )->first();
+		$show = Entity::find( $request->get_param( 'id' ) )->show()->with( [ 'client', 'entity', 'transactions' ] )->first();
 
 		return self::prepareArrayResponse( new Item( $show, new ShowTransformer ) );
 	}
@@ -265,7 +264,7 @@ class ShowController extends EntityController {
 
 		// Add
 		if ( ! empty( $placesToAdd ) ) {
-			$show->places()->createMany( self::createBulkInsertRows($placesToAdd, $type) );
+			$show->places()->createMany( self::createBulkInsertRows( $placesToAdd, $type ) );
 		}
 	}
 
