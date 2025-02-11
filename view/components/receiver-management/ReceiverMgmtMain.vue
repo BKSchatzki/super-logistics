@@ -124,7 +124,8 @@ const columns = ref([
   {label: 'Last Updated by', value: 'updated_by', filter: true},
   {label: 'Freight Type', value: 'nice_freight_type', filter: true, filterChoices: frhtFilters},
   {label: 'Special Handling', value: 'special_handling', filter: false},
-  {label: 'Total Weight', value: 'total_weight', filter: false},
+  {label: 'Total Weight', value: 'total_weight', filter: false, units: ' lbs.'},
+  {label: 'Billable Weight', value: 'billable_weight', filter: false, units: ' lbs.'},
   {label: 'Received Date/Time', value: 'nice_created_at', filter: false},
   {label: 'Last Updated', value: 'nice_updated_at', filter: false},
 ])
@@ -182,7 +183,7 @@ const selectedColumns = ref([
             <span class="text-nowrap">{{ col.label }}</span>
           </template>
           <template #body="{data, field}">
-            <span class="text-nowrap">{{ data[field] }}</span>
+            <span class="text-nowrap">{{ data[field] }}{{ col['units'] ?? '' }}</span>
           </template>
           <template #filter="{ filterModel, filterCallback }" v-if="col.filter">
             <MultiSelect v-if="col['filterChoices'] && col['filterChoices'].length" fluid v-model="filterModel.value"

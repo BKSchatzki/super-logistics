@@ -33,6 +33,8 @@ class TransactionTransformer extends TransformerAbstract {
 
 		$niceFreightType = self::getNiceFreightType( $item->freight_type );
 
+		$billable_weight = self::calculateBillableWeight( $item );
+
 		return [
 			'id'                => (int) $item->id,
 			'shipper'           => $item->shipper,
@@ -60,6 +62,7 @@ class TransactionTransformer extends TransformerAbstract {
 			'misc_pcs'          => (int) $item->misc_pcs,
 			'total_pcs'         => (int) $item->total_pcs,
 			'total_weight'      => (int) $item->total_weight,
+			'billable_weight'   => $billable_weight,
 			'remarks'           => $item->remarks,
 			'special_handling'  => (bool) $item->special_handling,
 			'pallet'            => strtoupper( $item->pallet ),
@@ -117,5 +120,16 @@ class TransactionTransformer extends TransformerAbstract {
 		];
 
 		return $freightTypes[ $freightType ];
+	}
+
+	private static function calculateBillableWeight( $item ): int {
+		$billableWeight   = $item->show->min_carat_weight;
+		$increment = $item->show->carat_weight_inc;
+
+		while ( $billableWeight < $item->total_weight ) {
+			$billableWeight += $increment;
+		}
+
+		return $billableWeight;
 	}
 }
