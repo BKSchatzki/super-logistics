@@ -38,12 +38,12 @@ class AWLabelGenerator extends LabelGenerator {
 	private function writeLabel( array $labelInfo, int $currentPage, int $totalPieces ): void {
 		// Set a base font size (the parent's constructor sets one too, but let's ensure consistency)
 		$this->pdf->SetFont( 'helvetica', '', $this->bodyTextSize );
-		$this->writeInfo( 'Receiver No.', $labelInfo['id'], 30 );
+		$this->writeInfo( 'Receiver No.', $labelInfo['id'], 33 );
 		$this->writeInfo( 'Client', $labelInfo['client']->name, 16 );
 		$this->writeInfo( 'Show', $labelInfo['show']->name, 16 );
 		$this->writeInfo( 'Exhibitor', $labelInfo['exhibitor'], 25 );
 		$this->writeInfo( 'Zone', $labelInfo['zone']->name, 15);
-		$this->writeInfo( 'Booth', $labelInfo['booth']->name, 17 );
+		$this->writeInfo( 'Booth', $labelInfo['booth'], 17 );
 		$this->writeInfo( 'Pallet', $labelInfo['pallet'], 16 );
 		$this->writeInfo( 'Trailer', $labelInfo['trailer'], 18 );
 		$this->writeInfo( 'Carrier', $labelInfo['carrier'], 19 );

@@ -80,7 +80,9 @@ class ShowController extends EntityController {
 		// <editor-fold desc="Filtering"> -----------------------
 
 		// Filter by assigned shows (if client)
-		$shows = self::filterForClient( $shows );
+		if ( Permissions::isLoggedIn() ) {
+			$shows = self::filterForClient( $shows );
+		}
 
 		// Filter active shows
 		$shows = self::filterByStatus( $shows, $params );
@@ -225,14 +227,22 @@ class ShowController extends EntityController {
 
 	public static function markInactive( WP_REST_Request $request ): array {
 		parent::markInactive( $request );
-		$show = Entity::find( $request->get_param( 'id' ) )->show()->with( [ 'client', 'entity', 'transactions' ] )->first();
+		$show = Entity::find( $request->get_param( 'id' ) )->show()->with( [
+			'client',
+			'entity',
+			'transactions'
+		] )->first();
 
 		return self::prepareArrayResponse( new Item( $show, new ShowTransformer ) );
 	}
 
 	public static function markActive( WP_REST_Request $request ): array {
 		parent::markActive( $request );
-		$show = Entity::find( $request->get_param( 'id' ) )->show()->with( [ 'client', 'entity', 'transactions' ] )->first();
+		$show = Entity::find( $request->get_param( 'id' ) )->show()->with( [
+			'client',
+			'entity',
+			'transactions'
+		] )->first();
 
 		return self::prepareArrayResponse( new Item( $show, new ShowTransformer ) );
 	}
@@ -269,19 +279,23 @@ class ShowController extends EntityController {
 	}
 
 	protected static function filterForClient( $shows ) {
-		$currentUser = self::getCurrentUserModel();
 
-		if ( $currentUser->roles->contains( 'client_admin' ) || $currentUser->roles->contains( 'client_employee' ) ) {
-			$clientId = $currentUser->client->id ?? null;
+		$currentUser      = self::getCurrentUserModel();
+		$isClientEmployee = Permissions::isClientEmployee();
+
+		if ( ( Permissions::isClientAdmin() || $isClientEmployee ) && ! Permissions::isWPAdmin() ) {
+
+			$clientId = $currentUser->client[0]->id ?? null;
+
 			if ( $clientId ) {
 				$shows = $shows->filter( function ( $show ) use ( $clientId ) {
 					return $show->client_id == $clientId;
 				} );
 			}
-			if ( $currentUser->roles->contains( 'client_employee' ) ) {
-				$userShowIds = $currentUser->shows->pluck( 'entity_id' )->toArray();
+			if ( $isClientEmployee ) {
+				$userShowIds = $currentUser->shows->pluck( 'id' )->toArray();
 				$shows       = $shows->filter( function ( $show ) use ( $userShowIds ) {
-					return in_array( $show->id, $userShowIds );
+					return in_array( $show->entity->id, $userShowIds );
 				} );
 			}
 		}

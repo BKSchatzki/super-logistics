@@ -102,7 +102,7 @@ class Controller {
 	}
 
 	protected static function getCurrentUserModel(): User {
-		return User::where( 'id', wp_get_current_user()->ID )->with( 'client', 'shows' )->first();
+		return User::where( 'id', wp_get_current_user()->ID )->with( 'client', 'shows', 'roles' )->first();
 	}
 
 }

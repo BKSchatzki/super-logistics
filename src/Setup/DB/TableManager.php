@@ -126,7 +126,7 @@ class TableManager {
           `carrier` VARCHAR(255) NOT NULL,
           `tracking` VARCHAR(255) NOT NULL,
           `zone_id` INT(11) UNSIGNED NOT NULL,
-          `booth_id` INT(11) UNSIGNED NOT NULL,
+          `booth` VARCHAR(255) NULL,
           `crate_pcs` INT(11) UNSIGNED DEFAULT 0,
           `carton_pcs` INT(11) UNSIGNED DEFAULT 0,
           `skid_pcs` INT(11) UNSIGNED DEFAULT 0,
@@ -148,8 +148,7 @@ class TableManager {
           FOREIGN KEY (`created_by`) REFERENCES " . $prefix . "users(`ID`) ON DELETE RESTRICT,
           FOREIGN KEY (`updated_by`) REFERENCES " . $prefix . "users(`ID`) ON DELETE RESTRICT,
           FOREIGN KEY (`show_id`) REFERENCES " . $prefix . "sl_entities(`id`) ON DELETE RESTRICT,
-          FOREIGN KEY (`zone_id`) REFERENCES " . $prefix . "sl_show_places(`id`) ON DELETE RESTRICT,
-          FOREIGN KEY (`booth_id`) REFERENCES " . $prefix . "sl_show_places(`id`) ON DELETE RESTRICT
+          FOREIGN KEY (`zone_id`) REFERENCES " . $prefix . "sl_show_places(`id`) ON DELETE RESTRICT
         ) DEFAULT CHARSET=utf8";
 
 		dbDelta( $sql );

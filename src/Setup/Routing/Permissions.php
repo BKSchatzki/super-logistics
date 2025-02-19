@@ -24,6 +24,10 @@ class Permissions {
 		return current_user_can('client_admin') || self::isWPAdmin();
 	}
 
+	public static function isClientEmployee(): bool {
+		return current_user_can('client_employee') || self::isWPAdmin();
+	}
+
 	public static function isInternal(): bool {
 		$isInternal = current_user_can('internal_admin') || current_user_can('internal_employee');
 		return $isInternal || self::isWPAdmin();

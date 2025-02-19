@@ -3,7 +3,6 @@
 namespace BigTB\SL\API\Transaction\Models;
 
 use BigTB\SL\API\Entity\Models\Entity;
-use BigTB\SL\API\Entity\Models\Show;
 use BigTB\SL\API\Entity\Models\ShowPlace;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,7 +21,7 @@ class Transaction extends Model {
 		'carrier',
 		'tracking',
 		'zone_id',
-		'booth_id',
+		'booth',
 		'crate_pcs',
 		'carton_pcs',
 		'skid_pcs',
@@ -44,22 +43,11 @@ class Transaction extends Model {
 	public $timestamps = true;
 
 	public function show(): object {
-		return $this->hasOneThrough(
-			Show::class,
-			Entity::class,
-			'id', // Foreign key on the entities table...
-			'entity_id', // Foreign key on the shows table...
-			'show_id', // Local key on the transactions table...
-			'id' // Local key on the entities table...
-		);
+		return $this->belongsTo( Entity::class, 'show_id' )->with( 'show' );
 	}
 
 	public function zone(): object {
 		return $this->belongsTo( ShowPlace::class, 'zone_id' );
-	}
-
-	public function booth(): object {
-		return $this->belongsTo( ShowPlace::class, 'booth_id' );
 	}
 
 }

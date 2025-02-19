@@ -33,7 +33,7 @@ const tableData = computed(() => {
     ...row,
     'show': row.show?.name,
     'zone': row.zone?.name,
-    'booth': row.booth?.name,
+    'client': row.client?.name,
     'created_at' : row['created_at'] ? new Date(row['created_at']) : null,
     'updated_at' : row['updated_at'] ? new Date(row['updated_at']) : null,
     'created_by': row['created_by_user']?.user_login,
@@ -56,6 +56,7 @@ const filters = ref({
   global: {value: null, matchMode: FilterMatchMode.CONTAINS},
   id: {value: null, matchMode: FilterMatchMode.CONTAINS},
   shipper: {value: null, matchMode: FilterMatchMode.CONTAINS},
+  client: {value: null, matchMode: FilterMatchMode.IN},
   show: {value: null, matchMode: FilterMatchMode.IN},
   zone: {value: null, matchMode: FilterMatchMode.IN},
   booth: {value: null, matchMode: FilterMatchMode.IN},
@@ -85,6 +86,9 @@ const filters = ref({
 
 const {getDroptions} = useFormAssist();
 
+// Client Options
+const clientOptions = getDroptions('clients', {active: 1, trashed: 0});
+
 // Show Options
 const showOptions = getDroptions('shows', {active: 1, trashed: 0})
 
@@ -107,6 +111,16 @@ const columns = ref([
   {label: 'Shipper', value: 'shipper', filter: true},
   {label: 'Exhibitor', value: 'exhibitor', filter: true},
   {label: 'Arrival Status', value: 'arrival_status', filter: false},
+  {label: 'Client', value: 'client', filter: true, filterChoices: clientOptions ?? []},
+  {label: 'Show', value: 'show', filter: true, filterChoices: showOptions ?? []},
+  {label: 'Zone', value: 'zone', filter: true, filterChoices: zoneOptions ?? []},
+  {label: 'Booth', value: 'booth', filter: true},
+  {label: 'Received by', value: 'created_by', filter: true},
+  {label: 'Received Date/Time', value: 'nice_created_at', filter: false},
+  {label: 'Last Updated by', value: 'updated_by', filter: true},
+  {label: 'Last Updated', value: 'nice_updated_at', filter: false},
+  {label: 'Trailer', value: 'trailer', filter: true},
+  {label: 'Pallet', value: 'pallet', filter: true},
   {label: 'Carrier', value: 'carrier', filter: true},
   {label: 'Crates', value: 'crate_pcs', filter: false},
   {label: 'Cartons', value: 'carton_pcs', filter: false},
@@ -115,19 +129,10 @@ const columns = ref([
   {label: 'Carpets', value: 'carpet_pcs', filter: false},
   {label: 'Misc', value: 'misc_pcs', filter: false},
   {label: 'Total Pcs.', value: 'total_pcs', filter: false},
-  {label: 'Trailer', value: 'trailer', filter: true},
-  {label: 'Pallet', value: 'pallet', filter: true},
-  {label: 'Show', value: 'show', filter: true, filterChoices: showOptions ?? []},
-  {label: 'Zone', value: 'zone', filter: true, filterChoices: zoneOptions ?? []},
-  {label: 'Booth', value: 'booth', filter: true},
-  {label: 'Received by', value: 'created_by', filter: true},
-  {label: 'Last Updated by', value: 'updated_by', filter: true},
   {label: 'Freight Type', value: 'nice_freight_type', filter: true, filterChoices: frhtFilters},
   {label: 'Special Handling', value: 'special_handling', filter: false},
   {label: 'Total Weight', value: 'total_weight', filter: false, units: ' lbs.'},
   {label: 'Billable Weight', value: 'billable_weight', filter: false, units: ' lbs.'},
-  {label: 'Received Date/Time', value: 'nice_created_at', filter: false},
-  {label: 'Last Updated', value: 'nice_updated_at', filter: false},
 ])
 const selectedColumns = ref([
   {label: 'Shipper', value: 'shipper', filter: true},
@@ -154,9 +159,9 @@ const selectedColumns = ref([
     <ReceiverDetails v-if="selected" :subject="selected" @close="unselect"/>
     <Toast/>
     <Panel>
-      <DataTable ref="table" :value="tableData" paginator :rows="20" showGridlines @row-click="openDetails"
+      <DataTable ref="table" :value="tableData" paginator :rows="10" showGridlines @row-click="openDetails"
                  :rowStyle="statusStyles" v-model:filters="filters" :rowHover="true" removable-sort filterDisplay="menu" size="small"
-                 :globalFilterFields="['id', 'shipper', 'exhibitor', 'nice_freight_type', 'show', 'zone', 'arrival_status', 'trailer', 'pallet', 'booth', 'received_by_user', 'updated_by_user']">
+                 :globalFilterFields="['id', 'shipper', 'exhibitor', 'nice_freight_type', 'show', 'zone', 'arrival_status', 'trailer', 'pallet', 'booth', 'received_by_user', 'updated_by_user', 'client']">
         <template #header>
           <div class="flex justify-start gap-4">
             <SearchBar v-model="filters.global.value" placeholder="Search all fields"/>

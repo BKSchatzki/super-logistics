@@ -12,19 +12,18 @@ class TransactionTransformer extends TransformerAbstract {
 
 	public function transform( Transaction $item ): array {
 
-		$item->show->date_start = Carbon::parse( $item->show->date_start )->setTimezone( 'America/Los_Angeles' );
-		$item->show->date_end   = Carbon::parse( $item->show->date_end )->setTimezone( 'America/Los_Angeles' );
-		$item->created_at       = Carbon::parse( $item->created_at )->setTimezone( 'America/Los_Angeles' );
-		$item->updated_at       = Carbon::parse( $item->updated_at )->setTimezone( 'America/Los_Angeles' );
+		$timeZone   = 'America/Los_Angeles';
+		$timeFormat = 'M/d/y H:i';
 
-		$show = [
-			'id'   => $item->show->id,
-			'name' => $item->show->entity->name,
-		];
+		// The show is an entity, which has a show property.
+		$item->show->show->date_start = Carbon::parse( $item->show->show->date_start )->setTimezone( $timeZone );
+		$item->show->show->date_end   = Carbon::parse( $item->show->show->date_end )->setTimezone( $timeZone );
+		$niceCreatedAt                = Carbon::parse( $item->created_at )->setTimezone( $timeZone )->format( $timeFormat );
+		$niceUpdatedAt                = Carbon::parse( $item->updated_at )->setTimezone( $timeZone )->format( $timeFormat );
 
+		$show   = self::getObjectData( $item->show );
 		$zone   = self::getObjectData( $item->zone );
-		$booth  = self::getObjectData( $item->booth );
-		$client = self::getObjectData( $item->show->client );
+		$client = self::getObjectData( $item->show->show->client );
 
 		$created_by_user = self::getUserData( $item, 'created_by' );
 		$updated_by_user = self::getUserData( $item, 'updated_by' );
@@ -44,8 +43,7 @@ class TransactionTransformer extends TransformerAbstract {
 			'show'              => $show,
 			'zone_id'           => (int) $item->zone_id,
 			'zone'              => $zone,
-			'booth_id'          => (int) $item->booth_id,
-			'booth'             => $booth,
+			'booth'             => (string) $item->booth,
 			'carrier'           => $item->carrier,
 			'tracking'          => $item->tracking,
 			'street_address'    => $item->street_address,
@@ -74,17 +72,17 @@ class TransactionTransformer extends TransformerAbstract {
 			'created_by'        => $item->created_by,
 			'created_by_user'   => $created_by_user,
 			'created_at'        => $item->created_at,
-			'nice_created_at'   => $item->created_at->format( 'M/d/y H:i' ),
+			'nice_created_at'   => $niceCreatedAt,
 			'updated_by'        => $item->updated_by,
 			'updated_by_user'   => $updated_by_user,
 			'updated_at'        => $item->updated_at,
-			'nice_updated_at'   => $item->updated_at->format( 'M/d/y H:i' ),
+			'nice_updated_at'   => $niceUpdatedAt,
 		];
 	}
 
 	private static function determineTimeliness( $item ): string {
-		$earliest = $item->show->date_start;
-		$latest   = $item->show->date_end;
+		$earliest = $item->show->show->date_start;
+		$latest   = $item->show->show->date_end;
 
 		if ( $item->created_at < $earliest ) {
 			return 'Early';
@@ -123,8 +121,8 @@ class TransactionTransformer extends TransformerAbstract {
 	}
 
 	private static function calculateBillableWeight( $item ): int {
-		$billableWeight   = $item->show->min_carat_weight;
-		$increment = $item->show->carat_weight_inc;
+		$billableWeight = $item->show->show->min_carat_weight;
+		$increment      = $item->show->show->carat_weight_inc;
 
 		while ( $billableWeight < $item->total_weight ) {
 			$billableWeight += $increment;

@@ -77,9 +77,6 @@ const items = ref([
 
 const isAllowed = (user, permissions) => {
 
-  console.log("User: ", user);
-  console.log("Permissions: ", permissions);
-
   if (!user.role && permissions.includes('public')) {
     return true;
   }
@@ -99,21 +96,22 @@ const filteredItems = computed(() => {
 <template>
   <Panel>
     <div class="flex flex-wrap gap-4">
-      <Card v-for="item in filteredItems"
+      <router-link v-for="item in filteredItems" :to="item.route">
+        <Card
             style="overflow: hidden"
             class="hover:shadow-lg hover:text-primary-500 cursor-pointer w-full sm:w-64 transition duration-500"
-            :key="item.label"
-            :onClick="() => router.push({name: item.route})">
-        <template #header>
-          <img :src="item.image" :alt="item.label">
-        </template>
-        <template #title>
-          {{ item.label }}
-        </template>
-        <template #content>
-          <span>{{ item.description }}</span>
-        </template>
-      </Card>
+            :key="item.label">
+          <template #header>
+            <img :src="item.image" :alt="item.label">
+          </template>
+          <template #title>
+            {{ item.label }}
+          </template>
+          <template #content>
+            <span>{{ item.description }}</span>
+          </template>
+        </Card>
+      </router-link>
     </div>
   </Panel>
 </template>

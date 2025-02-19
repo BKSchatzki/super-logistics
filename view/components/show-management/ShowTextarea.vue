@@ -1,5 +1,5 @@
 <script setup>
-import {ref, watchEffect} from 'vue';
+import {ref, onMounted} from 'vue';
 import {useField} from "vee-validate";
 import {v4 as uuid} from 'uuid';
 import InputFrame from "@/components/form/InputFrame.vue";
@@ -25,10 +25,9 @@ const {value, errorMessage, validate, setValue} = useField(props.name);
 const getListString = (places) => {
   return places.map(place => place['name']).join(',\n');
 }
-const transformValue = (evt) => {
-  const newVal = evt.target.value;
-  if (newVal !== undefined && newVal !== null) {
-    const places = newVal.split(',').map(placeName => placeName.trim());
+const transformValue = (val) => {
+  if (val !== undefined && val !== null) {
+    const places = val.split(',').map(placeName => placeName.trim());
     if (places.at(-1) === '') {
       places.pop();
     }
@@ -37,10 +36,17 @@ const transformValue = (evt) => {
     setValue([]);
   }
 }
+const handleInput = evt => {
+  const val = evt.target.value;
+  transformValue(val);
+}
 
 // </editor-fold>-------------------------------------------------------
 
 const userFacingValue = ref(getListString(value.value));
+onMounted(() => {
+  transformValue(userFacingValue.value);
+});
 
 </script>
 
@@ -50,7 +56,7 @@ const userFacingValue = ref(getListString(value.value));
         v-model="userFacingValue"
         :invalid="!!errorMessage"
         @blur="validate"
-        @input="transformValue"
+        @input="handleInput"
         class="flex-auto w-full"
         inputClass="w-full"
         :id

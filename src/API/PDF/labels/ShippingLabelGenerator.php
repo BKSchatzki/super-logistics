@@ -44,7 +44,7 @@ class ShippingLabelGenerator extends LabelGenerator {
 			'exhibitor'      => $labelInfo['exhibitor'],
 			'show_id'        => (int) $labelInfo['show_id'],
 			'zone_id'        => (int) $labelInfo['zone_id'],
-			'booth_id'       => (int) $labelInfo['booth_id'],
+			'booth'       => $labelInfo['booth'],
 			'carrier'        => $labelInfo['carrier'],
 			'tracking'       => $labelInfo['tracking'],
 			'street_address' => $labelInfo['street_address'],
@@ -113,7 +113,7 @@ class ShippingLabelGenerator extends LabelGenerator {
 		$this->pdf->Ln( 3 );
 		$this->writeInfo( 'Show', $labelInfo['show']['name'], 14 );
 		$this->writeInfo( 'Zone', $labelInfo['zone']['name'] );
-		$this->writeInfo( 'Booth', $labelInfo['booth']['name'], 15 );
+		$this->writeInfo( 'Booth', $labelInfo['booth'], 15 );
 
 		// ------------------------------------------------------
 		// 6) Carrier / Freight / Tracking

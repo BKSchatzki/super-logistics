@@ -12,6 +12,14 @@ const props = defineProps({
   label: String,
   name: String,
   options: Array,
+  optionLabel: {
+    type: String,
+    default: 'label'
+  },
+  optionValue: {
+    type: String,
+    default: 'value'
+  },
   placeholder: String,
   multiple: Boolean,
   disabled: Boolean,
@@ -42,8 +50,8 @@ const {value, errorMessage, validate} = useField(props.name);
           @blur="validate"
           class="flex-auto w-full min-w-24"
           :options
-          optionLabel="label"
-          optionValue="value"
+          :optionLabel
+          :optionValue
           :editable
           :filter
           :showClear

@@ -17,7 +17,8 @@ export function useFormAssist(staticFormData) {
     }
 
     const getDroptions = (topic, params) => {
-        const data = get(params, topic);
+        const fullParams = {active : 1, trashed: 0, ...params};
+        const data = get(fullParams, topic);
         return computed(() => data.value.map(d => ({label: d.name, value: parseInt(d.id)})));
     }
 

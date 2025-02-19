@@ -11,6 +11,7 @@ use BigTB\SL\API\PDF\Transformers\PDFTransformer;
 use BigTB\SL\API\Transaction\Models\Transaction;
 use BigTB\SL\API\Transaction\Transformers\TransactionTransformer;
 use BigTB\SL\Setup\Core\Controller;
+use BigTB\SL\Setup\Routing\Permissions;
 use League\Fractal\Resource\Item;
 use SimplePie\Exception;
 use WP_REST_Request;
@@ -18,12 +19,14 @@ use WP_REST_Request;
 class TransactionController extends Controller {
 
 	public static function get( WP_REST_Request $request ): array {
-		$query  = Transaction::query()->with( [ 'zone', 'show', 'booth' ] );
+		$query  = Transaction::query()->with( [ 'zone', 'show' ] );
 		$params = $request->get_params();
-		$query  = self::addWhereClauses( $query, $params, [ 'id', 'show_id', 'zone_id', 'booth_id' ] );
+		$query  = self::addWhereClauses( $query, $params, [ 'id', 'show_id', 'zone_id' ] );
 		$query  = self::accessTrashedInactive( $query, $params );
 
 		$transactions = $query->get();
+
+		$transactions = self::filterForClient( $transactions );
 
 		return self::collectionResponse( $transactions, new TransactionTransformer );
 	}
@@ -38,7 +41,6 @@ class TransactionController extends Controller {
 			'exhibitor',
 			'show_id',
 			'zone_id',
-			'booth_id',
 			'carrier',
 			'shipper_city',
 			'shipper_state',
@@ -65,6 +67,8 @@ class TransactionController extends Controller {
 			$imagePath = self::handleImageUpload( $_FILES['image'] );
 		}
 
+		$params['created_at'] = trim( $params['created_at'], '"' );
+
 		$user = wp_get_current_user();
 		extract( $params );
 		$transactionData = [
@@ -72,7 +76,7 @@ class TransactionController extends Controller {
 			'exhibitor'        => $exhibitor,
 			'show_id'          => $show_id,
 			'zone_id'          => $zone_id,
-			'booth_id'         => $booth_id,
+			'booth'            => $booth,
 			'carrier'          => $carrier,
 			'tracking'         => $tracking,
 			'street_address'   => $street_address,
@@ -90,7 +94,7 @@ class TransactionController extends Controller {
 			'total_weight'     => $total_weight,
 			'remarks'          => $remarks,
 			'special_handling' => $special_handling === 'true' ? 1 : 0,
-			'pallet'           => strtoupper($pallet),
+			'pallet'           => strtoupper( $pallet ),
 			'trailer'          => $trailer,
 			'image_path'       => $imagePath,
 			'created_by'       => $user->ID,
@@ -154,14 +158,19 @@ class TransactionController extends Controller {
 
 		$transactionData = [
 			...$params,
-			'pallet'           => strtoupper($params['pallet']),
+			'pallet'           => strtoupper( $params['pallet'] ),
 			'special_handling' => $params['special_handling'] === 'true' ? 1 : 0,
 			'active'           => 1,
 			'trashed'          => 0,
 			'updated_by'       => wp_get_current_user()->ID,
+			'created_at'       => trim( $params['created_at'], '"' ),
 		];
 
 		$transaction->fill( $transactionData );
+
+		error_log( "Received Date: " . $params['created_at'] );
+		$transaction->created_at = trim( $params['created_at'], '"' );
+
 		$transaction->save();
 
 		// </editor-fold>--------------------------------------------------
@@ -199,7 +208,6 @@ class TransactionController extends Controller {
 			'exhibitor',
 			'show_id',
 			'zone_id',
-			'booth_id',
 			'carrier',
 			'street_address',
 			'shipper_city',
@@ -235,7 +243,6 @@ class TransactionController extends Controller {
 			'exhibitor',
 			'show_id',
 			'zone_id',
-			'booth_id',
 			'carrier',
 			'tracking',
 			'street_address',
@@ -272,12 +279,15 @@ class TransactionController extends Controller {
 
 		// Fill in the related info
 		error_log( "Params ID: " . $params['id'] );
-		$transaction       = Transaction::with( [ 'show.entity', 'zone', 'booth' ] )->find( $params['id'] );
+		$transaction = Transaction::with( [
+			'show.show',
+			'zone'
+		] )->find( $params['id'] ); // Keep in mind, show is an entity, and the supplementary show data is related
 		if ( ! $transaction ) {
 			self::sendErrorResponse( "Transaction not found, instead found $transaction: ", 404 );
 		}
 		$docData           = $transaction->toArray();
-		$docData['client'] = Entity::find( $docData['show']['client_id'] );
+		$docData['client'] = Entity::find( $docData['show']['show']['client_id'] );
 
 		// Create a new LabelGenerator and generate the PDF content
 		$generator = new ReceiverDocGenerator();
@@ -294,10 +304,34 @@ class TransactionController extends Controller {
 
 	private static function getRemainingPrintData( $params ) {
 		return [
-			'show'  => Entity::with( [ 'show' ] )->find( $params['show_id'] ),
-			'zone'  => ShowPlace::find( $params['zone_id'] ),
-			'booth' => ShowPlace::find( $params['booth_id'] ),
+			'show' => Entity::with( [ 'show' ] )->find( $params['show_id'] ),
+			'zone' => ShowPlace::find( $params['zone_id'] ),
 		];
+	}
+
+	protected static function filterForClient( $transactions ) {
+
+		$currentUser      = self::getCurrentUserModel();
+		$isClientEmployee = Permissions::isClientEmployee();
+
+		if ( ( Permissions::isClientAdmin() || $isClientEmployee ) && ! Permissions::isWPAdmin() ) {
+			$clientId = $currentUser->client[0]->id ?? null;
+			if ( $clientId ) {
+				$transactions = $transactions->filter( function ( $transaction ) use ( $clientId ) {
+					return $transaction->show->show->client->id == $clientId;
+				} );
+			}
+			if ( $isClientEmployee ) {
+				$userShowIds  = $currentUser->shows->pluck( 'id' )->toArray();
+				$transactions = $transactions->filter( function ( $transaction ) use ( $userShowIds ) {
+					return in_array( $transaction->show->id, $userShowIds );
+				} );
+				error_log( "Transactions after filtering for shows: " . print_r( $transactions, true ) );
+			}
+		}
+
+		return $transactions;
+
 	}
 
 

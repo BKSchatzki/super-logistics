@@ -69,7 +69,7 @@ const clientOptions = getDroptions('clients');
   <UserDetails v-if="selected" :subject="selected" @close="unselect"/>
   <Toast/>
   <Panel>
-    <DataTable :value="data" paginator :rows="10" @row-click="openDetails" :rowHover="true"
+    <DataTable :value="data" paginator :rows="7" @row-click="openDetails" :rowHover="true"
                v-model:filters="filters" removableSort filterDisplay="menu" :rowStyle="statusStyles"
                :globalFilterFields="['name', 'user_email', 'role', 'client.name']">
       <template #header>

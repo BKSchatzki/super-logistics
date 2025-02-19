@@ -103,7 +103,6 @@ class TrailerManifestGenerator extends ReportGenerator
 		$this->pdf->SetFont('helvetica', '', $this->bodyTextSize);
 
 		$zoneName  = $tx->zone->name ?? '';
-		$boothName = $tx->booth->name ?? '';
 		$weightStr = ($tx->total_weight ?? 0) . ' lbs.';
 		$received  = Carbon::parse($tx->created_at)->format('M/d/y H:i');
 
@@ -113,7 +112,7 @@ class TrailerManifestGenerator extends ReportGenerator
 			(string) $tx->exhibitor,  // Exhibitor
 			(string) $tx->shipper,    // Shipper
 			$zoneName,                // Zone
-			$boothName,               // Booth
+			(string) $tx->booth,               // Booth
 			(string) $tx->total_pcs,  // Pcs
 			$weightStr,               // Weight
 			$received,                // Received

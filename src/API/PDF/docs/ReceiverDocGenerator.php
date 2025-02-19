@@ -66,7 +66,7 @@ class ReceiverDocGenerator extends DocGenerator {
 		$rowH = $this->rowH;
 
 		$this->pdf->Cell( $colW, $rowH, 'ThinkSTG Receiver Document', 0, 0, 'C' );
-		$this->pdf->Cell( $colW, $rowH, 'Transaction ' . $transaction, 0, 0, 'C' );
+		$this->pdf->Cell( $colW, $rowH, 'Receiver ' . $transaction, 0, 0, 'C' );
 		$this->pdf->Cell( 0, $rowH, $copyLabel, 0, 1, 'C' );
 	}
 
@@ -79,14 +79,12 @@ class ReceiverDocGenerator extends DocGenerator {
 		$colW = $this->widthForHalf;
 		$rowH = $this->rowH;
 
-		error_log( "Data: " . print_r( $data, true ) );
-
 		// Row 1
 		$this->writeTableCell( $colW, $rowH, 'Exhibitor', $data['exhibitor'] );
 		$this->writeTableCell( 0, $rowH, 'Origin / Shipper', $data['shipper'], true );
 
 		// Row 2
-		$this->writeTableCell( $colW, $rowH, 'Show', $data['show']['entity']['name'] );
+		$this->writeTableCell( $colW, $rowH, 'Show', $data['show']['name'] );
 		$this->writeTableCell( 0, $rowH, 'Carrier', $data['carrier'], true );
 
 		// Row 3
@@ -94,7 +92,7 @@ class ReceiverDocGenerator extends DocGenerator {
 		$this->writeTableCell( 0, $rowH, 'City / State / Zip', "{$data['shipper_city']}, {$data['shipper_state']}, {$data['shipper_zip']}", true );
 
 		// Row 4
-		$this->writeTableCell( $colW, $rowH, 'Booth Number', $data['booth']['name'], true );
+		$this->writeTableCell( $colW, $rowH, 'Booth', $data['booth'], true );
 
 	}
 

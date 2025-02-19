@@ -13,9 +13,10 @@ use League\Fractal\Resource\Item;
 use WP_REST_Request;
 
 class ReportsController extends Controller {
+
 	public static function printTrailerManifest( WP_REST_Request $request ): array {
 		$trailerNo    = $request->get_param( 'trailer_no' );
-		$transactions = Transaction::with( [ 'zone', 'booth' ] )
+		$transactions = Transaction::with( [ 'zone' ] )
 		                           ->where( 'trailer', $trailerNo )
 		                           ->where( 'active', 1 )
 		                           ->where( 'trashed', 0 )
@@ -39,7 +40,7 @@ class ReportsController extends Controller {
 	public static function printPalletManifest( WP_REST_Request $request ): array {
 		$palletNo     = $request->get_param( 'pallet_no' );
 		$transactions = Transaction::with(
-			[ 'zone', 'booth' ] )
+			[ 'zone' ] )
 		                           ->where( 'pallet', $palletNo )
 		                           ->where( 'active', 1 )
 		                           ->where( 'trashed', 0 )
@@ -60,71 +61,4 @@ class ReportsController extends Controller {
 		return self::prepareArrayResponse( $res );
 	}
 
-	public static function printShowReport( WP_REST_Request $request ): array {
-		$client_id    = $request->get_param( 'client_id' );
-		$show_id      = $request->get_param( 'show_id' );
-		$start_date   = $request->get_param( 'start_date' );
-		$end_date     = $request->get_param( 'end_date' );
-		$transactions = Transaction::with( [
-			'client',
-			'show.entity',
-			'carrier',
-			'shipper',
-			'exhibitor',
-			'showPlace',
-			'items',
-			'updates' => function ( $query ) {
-				$query->orderBy( 'datetime', 'desc' );
-			},
-			'updates.user'
-		] )
-		                           ->where( 'client_id', $client_id )
-		                           ->where( 'show_id', $show_id )
-		                           ->whereBetween( 'created_at', [ $start_date, $end_date ] )
-		                           ->get();
-
-		$reportGenerator = new ShowReportGenerator();
-		$pdf             = $reportGenerator->generate( $transactions, $start_date, $end_date );
-		// Encode the PDF content to base64
-		$pdfBase64 = base64_encode( $pdf );
-
-		$res = new Item( [ 'pdf' => $pdfBase64 ], new PDFTransformer() );
-
-		// Return the response
-		return self::prepareArrayResponse( $res );
-	}
-
-	public static function getShowReportTwo( WP_REST_Request $request ): array {
-		$client_id    = $request->get_param( 'client_id' );
-		$show_id      = $request->get_param( 'show_id' );
-		$start_date   = $request->get_param( 'start_date' );
-		$end_date     = $request->get_param( 'end_date' );
-		$transactions = Transaction::with( [
-			'client',
-			'show.entity',
-			'carrier',
-			'shipper',
-			'exhibitor',
-			'showPlace',
-			'items',
-			'updates' => function ( $query ) {
-				$query->orderBy( 'datetime', 'desc' );
-			},
-			'updates.user'
-		] )
-		                           ->where( 'client_id', $client_id )
-		                           ->where( 'show_id', $show_id )
-		                           ->whereBetween( 'created_at', [ $start_date, $end_date ] )
-		                           ->get();
-
-		$reportGenerator = new ShowReportGeneratorTwo();
-		$pdf             = $reportGenerator->generate( $transactions, $start_date, $end_date );
-		// Encode the PDF content to base64
-		$pdfBase64 = base64_encode( $pdf );
-
-		$res = new Item( [ 'pdf' => $pdfBase64 ], new PDFTransformer() );
-
-		// Return the response
-		return self::prepareArrayResponse( $res );
-	}
 }

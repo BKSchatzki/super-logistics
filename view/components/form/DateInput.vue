@@ -16,6 +16,15 @@ const props = defineProps({
   },
   inline: Boolean,
   disabled: Boolean,
+  showTime: Boolean,
+  timeFormat: {
+    type: String,
+    default: 'HH:mm',
+  },
+  dateFormat: {
+    type: String,
+    default: 'M/d/y',
+  },
 })
 
 // <editor-fold desc="Change Handling">
@@ -41,6 +50,9 @@ const updateValue = (event) => {
         :inline
         @date-select="updateValue"
         :disabled
+        :showTime
+        :timeFormat
+        :dateFormat
     />
   </InputFrame>
 </template>

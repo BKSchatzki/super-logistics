@@ -130,7 +130,7 @@ const clientOptions = getDroptions('clients', {active: 1, trashed: 0});
     </Row>
     <div class="flex justify-end gap-2">
       <Button type="button" label="Cancel" severity="secondary" @click="props.close"></Button>
-      <Button type="submit" label="Add New" severity="primary" @click="submitForm"></Button>
+      <Button type="submit" :label="props.method === 'post' ? 'Add New' : 'Update'" severity="primary" @click="submitForm"></Button>
     </div>
   </Col>
 </template>

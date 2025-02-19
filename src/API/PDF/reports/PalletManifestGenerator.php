@@ -65,7 +65,7 @@ class PalletManifestGenerator extends ReportGenerator {
 			[ 'w' => 12, 'label' => 'Pcs.' ],
 			[ 'w' => 47, 'label' => 'Remarks' ],
 			[ 'w' => 18, 'label' => 'Trailer' ],
-			[ 'w' => 0, 'label' => 'Received' ], // 0 => fill remaining width
+			[ 'w' => 24, 'label' => 'Received' ], // 0 => fill remaining width
 		];
 
 		foreach ( $headerCols as $col ) {
@@ -87,7 +87,6 @@ class PalletManifestGenerator extends ReportGenerator {
 
 		// If zone or booth exist, we show their "name" property, else blank
 		$zoneName  = $tx->zone->name ?? '';
-		$boothName = $tx->booth->name ?? '';
 		$trailer   = 'Incomplete';
 		if ($tx->trailer && $tx->trailer !== '') {
 			$trailer = $tx->trailer;
@@ -98,17 +97,17 @@ class PalletManifestGenerator extends ReportGenerator {
 			(string) $tx->id,        // Rec.
 			(string) $tx->exhibitor, // Exhibitor
 			(string) $tx->carrier,   // Carrier
-			$tx->tracking ?? '',     // Tracking (multiline possible)
+			(string) $tx->tracking,     // Tracking (multiline possible)
 			$zoneName,               // Zone
-			$boothName,              // Booth
+			(string) $tx->booth,              // Booth
 			(string) $tx->total_pcs, // Pcs.
-			$tx->remarks ?? '',      // Remarks (multiline possible)
+			(string) $tx->remarks,      // Remarks (multiline possible)
 			$trailer,				// Trailer
 			$receivedText,           // Received (multiline)
 		];
 
 		// Matching column widths
-		$colWidths = [ 15, 30, 20, 47, 40, 15, 12, 47, 18, 0 ];
+		$colWidths = [ 15, 30, 20, 47, 40, 15, 12, 47, 18, 24 ];
 
 		$this->writeCellsWithMultiline( $cells, $colWidths );
 	}

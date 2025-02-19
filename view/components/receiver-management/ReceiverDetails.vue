@@ -18,7 +18,7 @@ const printLabels = () => {
 };
 
 const printReceivers = () => {
-  print(props.subject, "transactions/receiving/docs", "Advance Warehouse Labels");
+  print(props.subject, "transactions/receiving/docs", "Advance Warehouse Receivers");
 };
 
 const printLabelsReceivers = () => {
@@ -40,6 +40,7 @@ const printLabelsReceivers = () => {
         </template>
         <LabeledDetail :subject label="Shipper" property="shipper"/>
         <LabeledDetail :subject label="Exhibitor" property="exhibitor"/>
+        <LabeledDetail :subject label="Client" property="client"/>
         <LabeledDetail :subject label="Show" property="show"/>
         <LabeledDetail :subject label="Zone" property="zone"/>
         <LabeledDetail :subject label="Booth" property="booth"/>

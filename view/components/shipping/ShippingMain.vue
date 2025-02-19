@@ -22,7 +22,7 @@ const validationSchema = yup.object({
   exhibitor: yup.string().required('Exhibitor is required'),
   show_id: yup.number().nullable().required('Show is required'),
   zone_id: yup.number().nullable().required('Zone is required'),
-  booth_id: yup.number().nullable().required('Booth is required'),
+  booth: yup.string().nullable().optional(),
   carrier: yup.string().required('Carrier is required'),
   tracking: yup.string().optional(),
   street_address: yup.string().required('Street address is required'),
@@ -104,7 +104,7 @@ const boothOptions = computed(() => {
               </Row>
               <Row>
                 <FormTextInput name="shipper_city" label="City" placeholder="City"/>
-                <FormSelectInput name="shipper_state" label="State" placeholder="State" :options="stateOptions" filter/>
+                <FormSelectInput name="shipper_state" label="State" placeholder="State" :options="stateOptions" editable/>
                 <FormTextInput name="shipper_zip" label="Zip Code" placeholder="Zip Code"/>
               </Row>
               <Row>
@@ -123,7 +123,7 @@ const boothOptions = computed(() => {
               </Row>
               <Row>
                 <FormSelectInput name="zone_id" label="Zone" :options="zoneOptions" filter placeholder="Select Zone"/>
-                <FormSelectInput name="booth_id" label="Booth" :options="boothOptions" filter
+                <FormSelectInput name="booth" label="Booth" :options="boothOptions" optionValue="label" editable
                                  placeholder="Select Booth"/>
               </Row>
             </Col>

@@ -59,7 +59,7 @@ const cancel = () => {
       </Row>
       <div class="flex justify-end gap-2">
         <Button type="button" label="Cancel" severity="secondary" @click="cancel"></Button>
-        <Button type="submit" label="Save" severity="primary" @click="submitForm"></Button>
+        <Button type="submit" :label="props.method === 'post' ? 'Add New' : 'Update'" severity="primary" @click="submitForm"></Button>
       </div>
     </Col>
   </form>
