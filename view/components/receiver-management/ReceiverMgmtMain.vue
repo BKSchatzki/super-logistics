@@ -1,6 +1,5 @@
 <script setup>
-import {computed, ref, watchEffect} from "vue";
-import {useStore} from "vuex";
+import {computed, ref} from "vue";
 import {useFormAssist} from "@utils/composables/useFormAssist.js";
 import {useStatusFilters} from "@utils/composables/useStatusFilters";
 import {useDetailsModal} from "@utils/composables/useDetailsModal";
@@ -63,6 +62,7 @@ const filters = ref({
   exhibitor: {value: null, matchMode: FilterMatchMode.CONTAINS},
   arrival_status: {value: null, matchMode: FilterMatchMode.CONTAINS},
   carrier: {value: null, matchMode: FilterMatchMode.CONTAINS},
+  tracking: {value: null, matchMode: FilterMatchMode.CONTAINS},
   crate_pcs: {value: null, matchMode: FilterMatchMode.CONTAINS},
   carton_pcs: {value: null, matchMode: FilterMatchMode.CONTAINS},
   skid_pcs: {value: null, matchMode: FilterMatchMode.CONTAINS},
@@ -91,15 +91,12 @@ const clientOptions = getDroptions('clients', {active: 1, trashed: 0});
 
 // Show Options
 const showOptions = getDroptions('shows', {active: 1, trashed: 0})
-
-// Restricting show places to the selected show
-const store = useStore();
-const shows = computed(() => store.state.shows); // getDroptions populated the store in the line before
 const selectedShows = ref([]);
 
 // Zones
 const zoneOptions = computed(() => {
-  return selectedShows.value ? selectedShows.value.reduce((acc, show) => {
+  return selectedShows.value ? selectedShows.value.reduce((acc = [], show = null) => {
+    if (!show || !show.zones) return acc;
     acc.push(show.zones.map(zone => ({label: zone.name, value: zone.id})));
   }, []) : [];
 });
@@ -122,6 +119,7 @@ const columns = ref([
   {label: 'Trailer', value: 'trailer', filter: true},
   {label: 'Pallet', value: 'pallet', filter: true},
   {label: 'Carrier', value: 'carrier', filter: true},
+  {label: 'Tracking', value: 'tracking', filter: true},
   {label: 'Crates', value: 'crate_pcs', filter: false},
   {label: 'Cartons', value: 'carton_pcs', filter: false},
   {label: 'Skids', value: 'skid_pcs', filter: false},

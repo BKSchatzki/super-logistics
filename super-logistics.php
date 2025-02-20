@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Super Logistics
  * Description: A plugin for managing logistics, providing tools for managing shipments, tracking, and inventory.
- * Version: 2.0.0
+ * Version: 2.0.1
  * Author: BigTB
  * Author URI: https://bigtb.com
  * License: Proprietary
@@ -24,6 +24,7 @@ add_action( 'init', function () {
 } );
 
 add_action( 'rest_api_init', function () {
-	$routes = require_once 'src/Setup/Routing/routes.php';
+    $config = new BigTB\SL\Setup\Routing\RouteConfig;
+	$routes = $config->routes;
 	BigTB\SL\Setup\Routing\RouteManager::declareRoutes( $routes );
 } );

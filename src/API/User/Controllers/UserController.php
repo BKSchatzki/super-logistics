@@ -321,15 +321,23 @@ class UserController extends Controller {
 	}
 
 	public static function updateRole( $uID, $role ): void {
-		$user = new \WP_User( $uID );
+		// None of the WordPress methods for users, set_role, add_role, remove_role, etc. work for updating roles
+        // So we have to do it manually
 
-		// Remove all existing roles
-		foreach ( $user->roles as $existingRole ) {
-			$user->remove_role( $existingRole );
-		}
+        global $wpdb;
 
-		// Add new role
-		$user->add_role( $role );
+        $serializedRole = serialize( [ $role => true ] );
+        $capabilities = $wpdb->prefix . 'capabilities';
+
+        error_log("Updating user $uID with role $role and serialized role $serializedRole at meta key $capabilities");
+
+
+        $wpdb->update(
+            $wpdb->usermeta,
+            [ 'meta_value' => $serializedRole ],
+            [ 'user_id' => $uID, 'meta_key' => "$capabilities" ]
+        );
+
 	}
 
 }
