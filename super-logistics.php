@@ -24,7 +24,7 @@ add_action( 'init', function () {
 } );
 
 add_action( 'rest_api_init', function () {
-    $config = new BigTB\SL\Setup\Routing\RouteConfig;
+    $config = new BigTB\SL\Setup\Routing\RouteConfig();
 	$routes = $config->routes;
 	BigTB\SL\Setup\Routing\RouteManager::declareRoutes( $routes );
 } );

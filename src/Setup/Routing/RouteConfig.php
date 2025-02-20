@@ -141,7 +141,7 @@ class RouteConfig
                         'callback' => 'printShowReport',
                         'permission_callback' => 'isLoggedIn']],]]];
 
-        return [$this->clientRouting,
+        $this->routes = [$this->clientRouting,
             $this->showRouting,
             $this->txnRouting,
             $this->userRouting,
