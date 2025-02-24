@@ -5,3 +5,4 @@ composer.lock
 vendor
 view/dist
 build
+*.DS_Store
