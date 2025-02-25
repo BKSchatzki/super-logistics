@@ -27,7 +27,7 @@ class ReportGenerator {
 		$this->pdf->SetSubject( $subject );
 	}
 
-	public function configPDF( float $leftMargin = PDF_MARGIN_LEFT, float $topMargin = 10, float $rightMargin = PDF_MARGIN_RIGHT, float $headerMargin = PDF_MARGIN_HEADER, float $footerMargin = PDF_MARGIN_FOOTER
+	public function configPDF( float $leftMargin = PDF_MARGIN_LEFT, float $topMargin = 10, float $rightMargin = PDF_MARGIN_RIGHT, float $bottomMargin = 11, float $headerMargin = PDF_MARGIN_HEADER, float $footerMargin = PDF_MARGIN_FOOTER
 	): void {
 		// Set margins
 		$this->pdf->SetMargins( $leftMargin, $topMargin, $rightMargin );
@@ -35,6 +35,9 @@ class ReportGenerator {
 		$this->pdf->SetFooterMargin( $footerMargin );
 		$this->pdf->SetAutoPageBreak( true, 0 );
 		$this->pdf->setCellPaddings(4, 0, 4, 0);
+
+		// Bottom margin
+		$this->pdf->SetAutoPageBreak(true, $bottomMargin);
 
 		// Set image scale factor
 		$this->pdf->setImageScale( PDF_IMAGE_SCALE_RATIO );

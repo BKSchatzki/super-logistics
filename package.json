@@ -1,6 +1,6 @@
 {
   "name": "super-logistics",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A wordpress plugin used to manage Las Vegas Convention logistics.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
