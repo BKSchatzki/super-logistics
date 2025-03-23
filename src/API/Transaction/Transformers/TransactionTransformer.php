@@ -10,16 +10,16 @@ use League\Fractal\TransformerAbstract;
 
 class TransactionTransformer extends TransformerAbstract {
 
+    private static string $timeZone = 'America/Los_Angeles';
+    private static string $timeFormat = 'M/d/y H:i';
+
 	public function transform( Transaction $item ): array {
 
-		$timeZone   = 'America/Los_Angeles';
-		$timeFormat = 'M/d/y H:i';
-
 		// The show is an entity, which has a show property.
-		$item->show->show->date_start = Carbon::parse( $item->show->show->date_start )->setTimezone( $timeZone );
-		$item->show->show->date_end   = Carbon::parse( $item->show->show->date_end )->setTimezone( $timeZone );
-		$niceCreatedAt                = Carbon::parse( $item->created_at )->setTimezone( $timeZone )->format( $timeFormat );
-		$niceUpdatedAt                = Carbon::parse( $item->updated_at )->setTimezone( $timeZone )->format( $timeFormat );
+		$item->show->show->date_start = Carbon::parse( $item->show->show->date_start )->setTimezone( self::$timeZone );
+		$item->show->show->date_end   = Carbon::parse( $item->show->show->date_end )->setTimezone( self::$timeZone );
+		$niceCreatedAt                = Carbon::parse( $item->created_at )->setTimezone( self::$timeZone )->format( self::$timeFormat );
+		$niceUpdatedAt                = Carbon::parse( $item->updated_at )->setTimezone( self::$timeZone )->format( self::$timeFormat );
 
 		$show   = self::getObjectData( $item->show );
 		$zone   = self::getObjectData( $item->zone );
@@ -80,18 +80,26 @@ class TransactionTransformer extends TransformerAbstract {
 		];
 	}
 
-	private static function determineTimeliness( $item ): string {
-		$earliest = $item->show->show->date_start;
-		$latest   = $item->show->show->date_end;
+    private static function determineTimeliness( $item ): string {
 
-		if ( $item->created_at < $earliest ) {
-			return 'Early';
-		} elseif ( $item->created_at > $latest ) {
-			return 'Late';
-		} else {
-			return 'On Time';
-		}
-	}
+        // Parse all dates to Carbon objects with the same timezone
+        $earliest = Carbon::parse($item->show->show->date_start)->startOfDay()->setTimezone(self::$timeZone);
+        $latest = Carbon::parse($item->show->show->date_end)->endOfDay()->setTimezone(self::$timeZone);
+        $createdAt = Carbon::parse($item->created_at)->setTimezone(self::$timeZone);
+
+        error_log("Shipper: " . $item->shipper . " ------------------------------------------");
+        error_log("earliest: " . $earliest->toDateTimeString());
+        error_log("latest: " . $latest->toDateTimeString());
+        error_log("created_at: " . $createdAt->toDateTimeString());
+
+        if ($createdAt->lt($earliest)) {
+            return 'Early';
+        } elseif ($createdAt->gt($latest)) {
+            return 'Late';
+        } else {
+            return 'On Time';
+        }
+    }
 
 	private static function getUserData( $item, $key ): array {
 		$user = User::find( $item->$key );

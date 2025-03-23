@@ -18,7 +18,7 @@ import {useForm} from "vee-validate";
 const props = defineProps({
   formData: {
     type: Object,
-    default: {}
+    default: () => ({})
   },
   close: {
     type: Function,
@@ -64,7 +64,7 @@ const initialValues = ref({
   date_end: props.formData['date_end'] ? formatDateForJS(props.formData['date_end']) : new Date()
 });
 
-const {meta, values, errors, handleSubmit, setFieldValue} = useForm({validationSchema, initialValues});
+const {values, handleSubmit, setFieldValue} = useForm({validationSchema, initialValues});
 const {submitToAPI, getDroptions} = useFormAssist();
 
 // <editor-fold desc="Special Fields">-----------------------------------------

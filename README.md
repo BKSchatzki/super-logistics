@@ -8,7 +8,7 @@ The plugin is organized in the following way:
 
 ### Deletion / Archiving
 
-No data is ever deleted from the app. "Deleted" items are marked as _trashed_. 
+No data is ever deleted from the app. "Deleted" items are marked as _trashed_.
 
 In addition, all data can be archived by the appropriate user type.
 
@@ -48,7 +48,7 @@ Some entities require association with one or more users, namely clients, which 
 
 ## User Types / Permissions
 
-There are **4** user types in the app 
+There are **4** user types in the app
 excluding wordpress admin - which is for developers only.
 
 - Internal Admin
