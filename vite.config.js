@@ -38,7 +38,12 @@ export default defineConfig({
           return '[name][hash][extname]';
         },
         chunkFileNames: 'bundle[hash].js',
-      }
+      },
+      external: [
+        /\.test\.[jt]s$/,
+        /\.spec\.[jt]s$/,
+        /\/__tests__\//
+      ]
     },
     assetsInlineLimit: 0, // Ensure fonts are not inlined as base64
   },

@@ -4,9 +4,7 @@ import {useAPI} from "@utils/composables/useAPI.js";
 import {toCapitalCase, toSingular} from '@utils/helpers.js';
 import Col from '@/components/form/Col.vue';
 
-//-------------------------------------
-// Data
-//-------------------------------------
+// <editor-fold desc="Data">-------------------------------------
 
 const props = defineProps({
   subject: Object,
@@ -51,9 +49,9 @@ const subjectStatus = computed(() => {
   return '';
 });
 
-//-------------------------------------
-// Modal Visibility
-//-------------------------------------
+// </editor-fold> ---------------------------------------------------------
+
+// <editor-fold desc="Modal Visibility" > ---------------------------------
 
 const visible = computed(() => {
   return props.subject !== null
@@ -63,9 +61,9 @@ const triggerUnselect = () => {
   emit('close', null)
 }
 
-//-------------------------------------
-// Actions
-//-------------------------------------
+// </editor-fold> ---------------------------------------------------------
+
+// <editor-fold desc="Actions">--------------------------------------------
 
 const {trash, restore, markInactive, markActive} = useAPI(props.topic)
 const status = ref('viewing')
@@ -101,6 +99,8 @@ const markSubjectActive = () => {
   markActive({id: props.subject.id})
       .then(triggerUnselect)
 }
+
+// </editor-fold> ---------------------------------------------------------
 
 </script>
 

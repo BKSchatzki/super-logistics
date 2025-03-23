@@ -6,13 +6,12 @@ export function useFormAssist(staticFormData) {
 
     const {get, post, update} = useAPI();
     const visible = ref(false);
-    const defaultReference = {...staticFormData};
-    const form = reactive(defaultReference);
+    const form = reactive(JSON.parse(JSON.stringify(staticFormData)));
     const store = useStore();
 
     const clearForm = () => {
         for (let key of Object.keys(form)) {
-            form[key] = defaultReference[key];
+            form[key] = staticFormData[key];
         }
     }
 

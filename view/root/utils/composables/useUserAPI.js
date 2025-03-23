@@ -30,7 +30,7 @@ export function useUserAPI() {
         const requestData = {
             type: 'post',
             url: 'users/logout',
-            success: (res) => {
+            success: () => {
                 window.location.href = '/wp-login.php';
                 store.commit('setUser', {});
             },

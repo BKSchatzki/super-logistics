@@ -60,6 +60,7 @@ export function useStatusFilters(topic) {
         } else if (!data.active) {
             return {...defaultStyle, 'background': 'rgba(150, 150, 150, 0.3)'};
         }
+        return defaultStyle;
     }
 
     return { data, statusParams, statusBoxes, statusStyles };
