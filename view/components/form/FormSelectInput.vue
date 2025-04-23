@@ -26,10 +26,6 @@ const props = defineProps({
   editable: Boolean,
   showClear: Boolean,
   filter: Boolean,
-  type: {
-    type: String,
-    default: 'text'
-  }
 })
 
 // Type

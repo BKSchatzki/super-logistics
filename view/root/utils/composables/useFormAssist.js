@@ -2,7 +2,7 @@ import {computed, reactive, ref} from "vue";
 import {useAPI} from "@utils/composables/useAPI.js";
 import {useStore} from "vuex";
 
-export function useFormAssist(staticFormData) {
+export function useFormAssist(staticFormData = {}) {
 
     const {get, post, update} = useAPI();
     const visible = ref(false);

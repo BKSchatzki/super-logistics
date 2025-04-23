@@ -64,7 +64,7 @@ const initialValues = ref({
 });
 
 // Form
-const {meta, values, errors, handleSubmit} = useForm({validationSchema, initialValues});
+const {values, handleSubmit} = useForm({validationSchema, initialValues});
 const {submitToAPI, getRoleDroptions, getDroptions} = useFormAssist();
 
 // Submission
@@ -84,8 +84,6 @@ const roleOptions = getRoleDroptions();
 
 // Client Options
 const clientOptions = getDroptions('clients')
-watch(clientOptions, (newOptions) => {
-});
 const displayClientField = computed(() => {
   return (values['role'] === 'client_employee' || values['role'] === 'client_admin') && user.value['isInternal'];
 });
@@ -109,34 +107,34 @@ watch(() => values['client_id'], (cID) => {
 </script>
 
 <template>
-  <form @submit.prevent="submitForm" novalidate>
+  <form @submit.prevent="submitForm" data-test="form" novalidate>
     <Col>
       <Row v-if="description">
         <span>{{ description }}</span>
       </Row>
       <Row>
-        <FormTextInput name="first_name" label="First Name" placeholder="First Name"/>
-        <FormTextInput name="last_name" label="Last Name" placeholder="Last Name"/>
+        <FormTextInput data-test="fni" name="first_name" label="First Name" placeholder="First Name"/>
+        <FormTextInput data-test="lni" name="last_name" label="Last Name" placeholder="Last Name"/>
       </Row>
       <Row>
-        <FormTextInput label="Username" name="user_login" placeholder="No spaces or special characters please"
+        <FormTextInput data-test="uni" label="Username" name="user_login" placeholder="No spaces or special characters please"
                        :disabled="method === 'update'"/>
       </Row>
       <Row>
-        <FormTextInput label="Email" name="user_email" placeholder="example@domain.com"/>
+        <FormTextInput data-test="emi" label="Email" name="user_email" placeholder="example@domain.com"/>
       </Row>
       <Row>
-        <FormSelectInput type="select" label="Type" :options="roleOptions" name="role" placeholder="Select"/>
-        <FormSelectInput v-if="displayClientField" type="select" label="Client" :options="clientOptions"
+        <FormSelectInput data-test="rli" type="select" label="Type" :options="roleOptions" name="role" placeholder="Select"/>
+        <FormSelectInput data-test="cli" v-if="displayClientField" type="select" label="Client" :options="clientOptions"
                          name="client_id" placeholder="Select"/>
       </Row>
       <Row>
-        <FormSelectInput v-if="displayShowField" type="select" label="Shows" :options="showOptions" name="shows"
+        <FormSelectInput data-test="shi" v-if="displayShowField" type="select" label="Shows" :options="showOptions" name="shows"
                          placeholder="Assign Multiple" multiple/>
       </Row>
       <div class="flex justify-end gap-2">
-        <Button type="button" label="Cancel" severity="secondary" @click="close"></Button>
-        <Button type="submit" :label="props.method === 'post' ? 'Add New' : 'Update'" severity="primary" @click="submitForm"></Button>
+        <Button type="button" label="Cancel" severity="secondary" @click="close" data-test="cancel-button"/>
+        <Button type="submit" :label="props.method === 'post' ? 'Add New' : 'Update'" severity="primary" @click="submitForm" data-test="submit-button"/>
       </div>
     </Col>
   </form>

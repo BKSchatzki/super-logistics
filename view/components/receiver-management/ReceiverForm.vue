@@ -419,8 +419,8 @@ const boothOptions = computed(() => {
                   :label="`${submitButtonText} and Print Receivers`"/>
         </Row>
         <Row>
-          <Button class="w-full" @click="close" severity="secondary" label="Cancel"/>
-          <Button class="w-full" @click="submitOnly" severity="primary" :label="`${submitButtonText}`"/>
+          <Button class="w-full" @click="close" severity="secondary" label="Cancel" data-test="cancel-button"/>
+          <Button class="w-full" @click="submitOnly" severity="primary" :label="`${submitButtonText}`" data-test="submit-button"/>
         </Row>
       </Col>
     </div>

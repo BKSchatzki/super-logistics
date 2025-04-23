@@ -1,0 +1,10 @@
+---
+description: 
+globs: *.php
+alwaysApply: false
+---
+PHP Classes will always be in PascalCase.
+
+PHP Functions and class methods will always be written in camelCase. 
+
+PHP variables will also be written in camelCase.

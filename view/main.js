@@ -10,7 +10,6 @@ import {loadComponents, components} from "@/root/components.js";
 import App from './root/App.vue'
 import router from './router'
 import store from '@/root/stores/store'
-import mixin from '@/root/mixin'
 
 const app = createApp(App)
 
@@ -32,6 +31,5 @@ app.use(PrimeVue, {
 app.use(store)
 app.use(router)
 app.use(ToastService)
-app.mixin(mixin)
 
 app.mount('#super-logistics-app')

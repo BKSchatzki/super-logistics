@@ -1,0 +1,37 @@
+---
+description: WordPress Plugin Testing Standards
+globs: tests/**
+alwaysApply: true
+---
+# WordPress Plugin Backend Testing
+
+## Best Practices
+
+1. WordPress API Mocking
+   - Use BrainMonkey's `Functions\expect()` instead of `Functions\when()` for WordPress function mocking
+   - Mock all WordPress functions that interact with the code being tested
+   - Use `andReturnUsing()` for dynamic responses based on input parameters
+   - Verify function calls with `with()` to ensure correct parameters
+   - Use `once()` or `never()` to verify function call frequency
+
+2. Action and Filter Testing
+   - Use `Actions\expectAdded()` to verify action registration
+   - Use `Filters\expectApplied()` to verify filter application
+   - Test both successful and failure scenarios
+   - Verify callback parameters and priorities
+
+3. WordPress Integration
+   - Mock complete WordPress subsystems (e.g., roles, scripts, styles)
+   - Test edge cases and error conditions
+   - Verify WordPress-specific behaviors
+   - Use realistic WordPress data structures (e.g., WP_Role, WP_User)
+
+4. Test Organization
+   - Group related mocks by functionality
+   - Document mock purposes with comments
+   - Test both happy path and error scenarios
+   - Verify WordPress integration points thoroughly
+
+## Limitations
+
+If limitations are found with the mocking ability of BrainMonkey, or an alternative would be better, the alternative framework or approach is to be suggested. Document any workarounds or alternative approaches in the test file comments. 

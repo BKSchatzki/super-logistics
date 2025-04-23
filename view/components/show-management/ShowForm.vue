@@ -129,8 +129,8 @@ const clientOptions = getDroptions('clients', {active: 1, trashed: 0});
       <ShowTextarea name="booths" label="Booths" placeholder="Enter booths here, separated by commas, no spaces."/>
     </Row>
     <div class="flex justify-end gap-2">
-      <Button type="button" label="Cancel" severity="secondary" @click="props.close"></Button>
-      <Button type="submit" :label="props.method === 'post' ? 'Add New' : 'Update'" severity="primary" @click="submitForm"></Button>
+      <Button type="button" label="Cancel" severity="secondary" @click="props.close" data-test="cancel-button"/>
+      <Button type="submit" :label="props.method === 'post' ? 'Add New' : 'Update'" severity="primary" @click="submitForm" data-test="submit-button"/>
     </div>
   </Col>
 </template>
