@@ -129,8 +129,13 @@ class TransactionTransformer extends TransformerAbstract {
 	}
 
 	private static function calculateBillableWeight( $item ): int {
-		$billableWeight = $item->show->show->min_carat_weight;
-		$increment      = $item->show->show->carat_weight_inc;
+		$billableWeight = $item->show->show->min_carat_weight ?? 0;
+		$increment      = $item->show->show->carat_weight_inc ?? 0;
+
+		// Guard against zero/null increments to prevent non-advancing loops.
+		if ( $increment <= 0 ) {
+			return max( (int) $billableWeight, (int) $item->total_weight );
+		}
 
 		while ( $billableWeight < $item->total_weight ) {
 			$billableWeight += $increment;
