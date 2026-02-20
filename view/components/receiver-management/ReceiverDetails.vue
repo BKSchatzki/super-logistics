@@ -1,4 +1,6 @@
 <script setup>
+import {computed} from "vue";
+import {useStore} from "vuex";
 import {useAPI} from "@utils/composables/useAPI";
 import {frhtOptions} from "@utils/dropdowns";
 import LabeledDetail from "@/components/data/LabeledDetail.vue";
@@ -12,18 +14,53 @@ const props = defineProps({
 })
 
 const {print} = useAPI();
+const store = useStore();
+const user = computed(() => store.state.user ?? {});
+const isInternalUser = computed(() => !!user.value?.isInternal);
+
+const receivingPrintDisabledReason = computed(() => {
+  return isInternalUser.value ? '' : 'Internal users only (receiving print policy).';
+});
+const receivingPrintDisabled = computed(() => !!receivingPrintDisabledReason.value);
+
+const podDisabledReason = computed(() => {
+  if (!isInternalUser.value) {
+    return 'Internal users only (receiving print policy).';
+  }
+  if (!props.subject?.image_path) {
+    return 'POD attachment required.';
+  }
+  return '';
+});
+const podDisabled = computed(() => !!podDisabledReason.value);
 
 const printLabels = () => {
+  if (receivingPrintDisabled.value) {
+    return;
+  }
   print(props.subject, "transactions/receiving/labels", "Advance Warehouse Labels");
 };
 
 const printReceivers = () => {
+  if (receivingPrintDisabled.value) {
+    return;
+  }
   print(props.subject, "transactions/receiving/docs", "Advance Warehouse Receivers");
 };
 
 const printLabelsReceivers = () => {
+  if (receivingPrintDisabled.value) {
+    return;
+  }
   printLabels();
   printReceivers();
+};
+
+const printPOD = () => {
+  if (podDisabled.value) {
+    return;
+  }
+  print({id: props.subject.id}, "transactions/receiving/pod", "Proof of Delivery");
 };
 
 </script>
@@ -80,17 +117,98 @@ const printLabelsReceivers = () => {
       <Panel header="Printing">
         <Col>
           <Row>
-            <Button class="w-full" type="button" severity="contrast" variant="outlined" label="Labels" @click="printLabels"/>
-            <Button class="w-full" type="button" severity="contrast" variant="outlined" label="Receivers" @click="printReceivers"/>
+            <div
+              class="print-action-wrap w-full"
+              :class="{'print-action-disabled': receivingPrintDisabled}"
+              :data-disabled-reason="receivingPrintDisabledReason"
+            >
+              <Button
+                class="w-full"
+                type="button"
+                severity="contrast"
+                variant="outlined"
+                label="Labels"
+                :disabled="receivingPrintDisabled"
+                @click="printLabels"
+              />
+            </div>
+            <div
+              class="print-action-wrap w-full"
+              :class="{'print-action-disabled': receivingPrintDisabled}"
+              :data-disabled-reason="receivingPrintDisabledReason"
+            >
+              <Button
+                class="w-full"
+                type="button"
+                severity="contrast"
+                variant="outlined"
+                label="Receivers"
+                :disabled="receivingPrintDisabled"
+                @click="printReceivers"
+              />
+            </div>
           </Row>
           <Row>
-            <Button class="w-full" type="button" severity="contrast" variant="outlined" label="Print Labels and Receivers" @click="printLabelsReceivers"/>
+            <div
+              class="print-action-wrap w-full"
+              :class="{'print-action-disabled': receivingPrintDisabled}"
+              :data-disabled-reason="receivingPrintDisabledReason"
+            >
+              <Button
+                class="w-full"
+                type="button"
+                severity="contrast"
+                variant="outlined"
+                label="Print Labels and Receivers"
+                :disabled="receivingPrintDisabled"
+                @click="printLabelsReceivers"
+              />
+            </div>
+          </Row>
+          <Row>
+            <div
+              class="print-action-wrap w-full"
+              :class="{'print-action-disabled': podDisabled}"
+              :data-disabled-reason="podDisabledReason"
+            >
+              <Button
+                class="w-full"
+                type="button"
+                severity="contrast"
+                variant="outlined"
+                label="View/Print POD"
+                :disabled="podDisabled"
+                @click="printPOD"
+              />
+            </div>
           </Row>
         </Col>
       </Panel>
     </template>
-    <template #edit-form="{formData, close}">
+    <template #edit-form="{close}">
       <ReceiverForm :labelData="subject" :close method="update"/>
     </template>
   </ManageDetails>
 </template>
+
+<style scoped>
+.print-action-wrap {
+  position: relative;
+}
+
+.print-action-disabled::after {
+  content: attr(data-disabled-reason);
+  position: absolute;
+  top: -0.85rem;
+  right: 0;
+  z-index: 2;
+  font-size: 0.625rem;
+  line-height: 1;
+  color: rgb(107 114 128);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.25rem;
+  pointer-events: none;
+  white-space: nowrap;
+}
+</style>

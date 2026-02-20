@@ -4,6 +4,7 @@ namespace BigTB\SL\API\Transaction\Controllers;
 
 use BigTB\SL\API\Entity\Models\Entity;
 use BigTB\SL\API\Entity\Models\ShowPlace;
+use BigTB\SL\API\PDF\docs\PODDocGenerator;
 use BigTB\SL\API\PDF\docs\ReceiverDocGenerator;
 use BigTB\SL\API\PDF\labels\AWLabelGenerator;
 use BigTB\SL\API\PDF\labels\ShippingLabelGenerator;
@@ -12,8 +13,8 @@ use BigTB\SL\API\Transaction\Models\Transaction;
 use BigTB\SL\API\Transaction\Transformers\TransactionTransformer;
 use BigTB\SL\Setup\Core\Controller;
 use BigTB\SL\Setup\Routing\Permissions;
+use Exception;
 use League\Fractal\Resource\Item;
-use SimplePie\Exception;
 use WP_REST_Request;
 
 class TransactionController extends Controller {
@@ -296,6 +297,34 @@ class TransactionController extends Controller {
 		} catch ( Exception $e ) {
 			self::sendErrorResponse( $e, 500 );
 		}
+		$pdfBase64 = base64_encode( $pdf );
+		$res       = new Item( [ 'pdf' => $pdfBase64 ], new PDFTransformer() );
+
+		return self::prepareArrayResponse( $res );
+	}
+
+	public static function printPOD( WP_REST_Request $request ): array {
+		$params = $request->get_params();
+
+		if ( ! self::checkIfProvided( $params, [ 'id' ] ) ) {
+			self::sendErrorResponse( 'Missing required parameters to print POD document' );
+		}
+
+		$transaction = Transaction::with( [ 'show.show', 'zone' ] )->find( $params['id'] );
+		if ( ! $transaction ) {
+			self::sendErrorResponse( 'Transaction not found', 404 );
+		}
+
+		$docData           = $transaction->toArray();
+		$docData['client'] = Entity::find( $docData['show']['show']['client_id'] );
+
+		$generator = new PODDocGenerator();
+		try {
+			$pdf = $generator->generate( $docData );
+		} catch ( \Throwable $e ) {
+			self::sendErrorResponse( $e->getMessage(), 500 );
+		}
+
 		$pdfBase64 = base64_encode( $pdf );
 		$res       = new Item( [ 'pdf' => $pdfBase64 ], new PDFTransformer() );
 

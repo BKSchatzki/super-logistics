@@ -205,6 +205,16 @@ class RouteConfig {
 						]
 					]
 				],
+				[
+					'path'    => 'receiving/pod',
+					'methods' => [
+						[
+							'methods'             => 'POST',
+							'callback'            => 'printPOD',
+							'permission_callback' => 'isInternal'
+						]
+					]
+				],
 			]
 		];
 	}
