@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 class TrailerManifestGenerator extends ReportGenerator
 {
     protected int $bodyTextSize = 12;
+    protected ?int $lastSubHeaderPage = null;
 
     public function generate(Collection $transactions, $sealNo = ''): string
     {
@@ -61,9 +62,18 @@ class TrailerManifestGenerator extends ReportGenerator
         $sumPcs = 0;
         $sumWeight = 0;
         $palletRowHeight = 12;
+        $subHeaderHeight = 6;
         foreach ($group as $tx) {
             $sumPcs += (int)$tx->total_pcs;
             $sumWeight += (float)$tx->total_weight;
+        }
+
+        // Ensure aggregate row + sub-header fit on current page.
+        $pageHeight = $this->pdf->getPageHeight();
+        $currentY = $this->pdf->GetY();
+        $remainingSpace = $pageHeight - $currentY - $this->pdf->getBreakMargin();
+        if ($remainingSpace <= ($palletRowHeight + $subHeaderHeight + 0.5)) {
+            $this->pdf->AddPage();
         }
 
         $palletLabel = 'Pallet ' . $palletId;
@@ -84,6 +94,7 @@ class TrailerManifestGenerator extends ReportGenerator
      */
     protected function writeSubRowsHeader(): void
     {
+        $this->lastSubHeaderPage = (int) $this->pdf->getPage();
         $this->pdf->SetFont('helvetica', '', $this->bodyTextSize);
 
         $this->pdf->Cell(20, 6, 'Rec. No.', 1, 0, 'C');
@@ -101,6 +112,11 @@ class TrailerManifestGenerator extends ReportGenerator
      */
     protected function writeSubRow(Transaction $tx): void
     {
+        $currentPage = (int) $this->pdf->getPage();
+        if ($this->lastSubHeaderPage !== $currentPage) {
+            $this->writeSubRowsHeader();
+        }
+
         $this->pdf->SetFont('helvetica', '', $this->bodyTextSize);
 
         $zoneName = $tx->zone->name ?? '';
@@ -140,14 +156,12 @@ class TrailerManifestGenerator extends ReportGenerator
 
         $maxHeight = max($heights);
 
-        // Check if there is enough space on the current page
         $pageHeight = $this->pdf->getPageHeight();
         $currentY = $this->pdf->GetY();
         $remainingSpace = $pageHeight - $currentY - $this->pdf->getBreakMargin();
-
-        if ($remainingSpace < $maxHeight) {
-            // Add a new page if not enough space
+        if ($remainingSpace <= ($maxHeight + 0.5)) {
             $this->pdf->AddPage();
+            $this->writeSubRowsHeader();
         }
 
         // Print each cell as MultiCell
