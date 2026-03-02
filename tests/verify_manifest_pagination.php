@@ -11,7 +11,8 @@ use BigTB\SL\API\PDF\reports\TrailerManifestGenerator;
 use BigTB\SL\API\Transaction\Models\Transaction;
 use Illuminate\Support\Collection;
 
-function makeTransaction(int $id, string $pallet, string $trailer, bool $longText = false): Transaction {
+function makeTransaction(int $id, string $pallet, string $trailer, bool $longText = false): Transaction
+{
 	$tx = new Transaction();
 	$tx->timestamps = false;
 	$tx->id = $id;
@@ -30,15 +31,17 @@ function makeTransaction(int $id, string $pallet, string $trailer, bool $longTex
 		? 'Remark ' . $id . ' ' . str_repeat('WRAPTEXT ', 8)
 		: 'Remark ' . $id;
 	$tx->created_at = '2026-02-17 10:' . str_pad((string) ($id % 60), 2, '0', STR_PAD_LEFT) . ':00';
-	$tx->setRelation('zone', (object) [ 'name' => 'Zone ' . (($id % 6) + 1) ]);
+	$tx->setRelation('zone', (object) ['name' => 'Zone ' . (($id % 6) + 1)]);
 
 	return $tx;
 }
 
-class InspectPalletManifestGenerator extends PalletManifestGenerator {
+class InspectPalletManifestGenerator extends PalletManifestGenerator
+{
 	public array $rowTrace = [];
 
-	protected function writeTableRow(Transaction $tx): void {
+	protected function writeTableRow(Transaction $tx): void
+	{
 		$this->rowTrace[] = [
 			'id'          => (int) $tx->id,
 			'before_page' => (int) $this->pdf->getPage(),
@@ -53,12 +56,14 @@ class InspectPalletManifestGenerator extends PalletManifestGenerator {
 	}
 }
 
-class InspectTrailerManifestGenerator extends TrailerManifestGenerator {
+class InspectTrailerManifestGenerator extends TrailerManifestGenerator
+{
 	public array $subRowTrace = [];
 	public array $headerTrace = [];
 	public array $aggregateTrace = [];
 
-	protected function writeSubRowsHeader(): void {
+	protected function writeSubRowsHeader(): void
+	{
 		$this->headerTrace[] = [
 			'page' => (int) $this->pdf->getPage(),
 			'y'    => (float) $this->pdf->GetY(),
@@ -66,7 +71,8 @@ class InspectTrailerManifestGenerator extends TrailerManifestGenerator {
 		parent::writeSubRowsHeader();
 	}
 
-	protected function writeAggregateRow(string $palletId, array $group): void {
+	protected function writeAggregateRow(string $palletId, array $group): void
+	{
 		$this->aggregateTrace[] = [
 			'pallet'      => $palletId,
 			'before_page' => (int) $this->pdf->getPage(),
@@ -78,7 +84,8 @@ class InspectTrailerManifestGenerator extends TrailerManifestGenerator {
 		$this->aggregateTrace[$last]['after_y'] = (float) $this->pdf->GetY();
 	}
 
-	protected function writeSubRow(Transaction $tx): void {
+	protected function writeSubRow(Transaction $tx): void
+	{
 		$this->subRowTrace[] = [
 			'id'          => (int) $tx->id,
 			'before_page' => (int) $this->pdf->getPage(),
@@ -139,9 +146,9 @@ foreach ($palletRowsPerPage as $page => $count) {
 	}
 }
 
-$trailerSubRowPages = array_values(array_unique(array_map(static fn ($r) => (int) $r['before_page'], $trailerGenerator->subRowTrace)));
+$trailerSubRowPages = array_values(array_unique(array_map(static fn($r) => (int) $r['before_page'], $trailerGenerator->subRowTrace)));
 sort($trailerSubRowPages);
-$trailerHeaderPages = array_values(array_unique(array_map(static fn ($r) => (int) $r['page'], $trailerGenerator->headerTrace)));
+$trailerHeaderPages = array_values(array_unique(array_map(static fn($r) => (int) $r['page'], $trailerGenerator->headerTrace)));
 sort($trailerHeaderPages);
 $trailerMissingHeaderPages = array_values(array_diff($trailerSubRowPages, $trailerHeaderPages));
 

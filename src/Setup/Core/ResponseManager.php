@@ -7,16 +7,20 @@ use League\Fractal\Serializer\DataArraySerializer;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 
-trait ResponseManager {
-	public static function prepareArrayResponse( $resource, $extra = [] ): array {
-		return self::prepareResponse( $resource, $extra );
+trait ResponseManager
+{
+	public static function prepareArrayResponse($resource, $extra = []): array
+	{
+		return self::prepareResponse($resource, $extra);
 	}
 
-	public static function prepareJSONResponse( $resource, $extra = [] ): string {
-		return json_encode( self::prepareResponse( $resource, $extra ) );
+	public static function prepareJSONResponse($resource, $extra = []): string
+	{
+		return json_encode(self::prepareResponse($resource, $extra));
 	}
 
-	public static function setCreatedBy( $resource ): object {
+	public static function setCreatedBy($resource): object
+	{
 		$user                 = wp_get_current_user();
 		$resource->created_by = $user->ID;
 		$resource->updated_by = $user->ID;
@@ -24,49 +28,53 @@ trait ResponseManager {
 		return $resource;
 	}
 
-	public static function setUpdatedBy( $resource ): object {
+	public static function setUpdatedBy($resource): object
+	{
 		$user                 = wp_get_current_user();
 		$resource->updated_by = $user->ID;
 
 		return $resource;
 	}
 
-	private static function prepareResponse( $resource, $extra = [] ): array {
+	private static function prepareResponse($resource, $extra = []): array
+	{
 		$manager = new Manager();
-		$manager->setSerializer( new DataArraySerializer() );
+		$manager->setSerializer(new DataArraySerializer());
 
-		if ( isset( $_GET['with'] ) ) {
-			$manager->parseIncludes( sanitize_text_field( wp_unslash( $_GET['with'] ) ) );
+		if (isset($_GET['with'])) {
+			$manager->parseIncludes(sanitize_text_field(wp_unslash($_GET['with'])));
 		}
 
-		if ( $resource ) {
-			$response = $manager->createData( $resource )->toArray();
-
+		if ($resource) {
+			$response = $manager->createData($resource)->toArray();
 		} else {
 			$response = [];
 		}
 
-		return array_merge( $extra, $response );
+		return array_merge($extra, $response);
 	}
 
-	public static function prepareUserNotFoundResponse(): void {
-		self::sendErrorResponse( "User not found", 404 );
+	public static function prepareUserNotFoundResponse(): void
+	{
+		self::sendErrorResponse("User not found", 404);
 	}
 
-	public static function sendErrorResponse( $message = "Resource not found", $status = 400 ): void {
-		wp_send_json_error( $message, $status );
+	public static function sendErrorResponse($message = "Resource not found", $status = 400): void
+	{
+		wp_send_json_error($message, $status);
 	}
 
-	public static function collectionResponse( $data, $transformer ): array {
-		if ( $data->count() === 0 ) {
-			return self::prepareArrayResponse( new Collection( [], $transformer ) );
+	public static function collectionResponse($data, $transformer): array
+	{
+		if ($data->count() === 0) {
+			return self::prepareArrayResponse(new Collection([], $transformer));
 		} else {
-			return self::prepareArrayResponse( new Collection( $data, $transformer ) );
+			return self::prepareArrayResponse(new Collection($data, $transformer));
 		}
 	}
 
-	public static function singleResponse( $data, $transformer ): array {
-		return self::prepareArrayResponse( new Item( $data, $transformer ) );
+	public static function singleResponse($data, $transformer): array
+	{
+		return self::prepareArrayResponse(new Item($data, $transformer));
 	}
-
 }

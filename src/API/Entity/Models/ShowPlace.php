@@ -4,7 +4,8 @@ namespace BigTB\SL\API\Entity\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ShowPlace extends Model {
+class ShowPlace extends Model
+{
 
 	protected $table = 'sl_show_places';
 
@@ -17,7 +18,8 @@ class ShowPlace extends Model {
 
 	public $timestamps = false;
 
-	public function show(): object {
-		return $this->belongsTo( Show::class, 'show_id', 'entity_id' );
+	public function show(): object
+	{
+		return $this->belongsTo(Show::class, 'show_id', 'entity_id');
 	}
 }

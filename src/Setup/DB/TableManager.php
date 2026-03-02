@@ -2,9 +2,11 @@
 
 namespace BigTB\SL\Setup\DB;
 
-class TableManager {
+class TableManager
+{
 
-	public static function init(): void {
+	public static function init(): void
+	{
 
 		include_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		self::createUserStatusTable();
@@ -18,13 +20,15 @@ class TableManager {
 		self::populateUserStatusTable();
 	}
 
-	private static function prefix(): string {
+	private static function prefix(): string
+	{
 		global $wpdb;
 
 		return $wpdb->prefix;
 	}
 
-	private static function createUserStatusTable(): void {
+	private static function createUserStatusTable(): void
+	{
 		$prefix     = self::prefix();
 		$table_name = $prefix . 'sl_user_status';
 
@@ -36,32 +40,34 @@ class TableManager {
 		  FOREIGN KEY (`user_id`) REFERENCES " . $prefix . "users(`ID`) ON DELETE CASCADE
 		) DEFAULT CHARSET=utf8";
 
-		dbDelta( $sql );
+		dbDelta($sql);
 	}
 
-	private static function populateUserStatusTable(): void {
+	private static function populateUserStatusTable(): void
+	{
 		global $wpdb;
 		$prefix             = self::prefix();
 		$users_table        = $prefix . 'users';
 		$active_users_table = $prefix . 'sl_user_status';
 
-		$users = $wpdb->get_results( "SELECT ID FROM $users_table" );
+		$users = $wpdb->get_results("SELECT ID FROM $users_table");
 
-		foreach ( $users as $user ) {
+		foreach ($users as $user) {
 			$user_id = $user->ID;
-			$exists  = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $active_users_table WHERE user_id = %d", $user_id ) );
+			$exists  = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $active_users_table WHERE user_id = %d", $user_id));
 
-			if ( ! $exists ) {
-				$wpdb->insert( $active_users_table, [
+			if (! $exists) {
+				$wpdb->insert($active_users_table, [
 					'user_id' => $user_id,
 					'active'  => 1,
 					'trashed' => 0
-				] );
+				]);
 			}
 		}
 	}
 
-	private static function createEntitiesTable(): void {
+	private static function createEntitiesTable(): void
+	{
 		// This table is used for Clients, Shows, and Carriers
 		// Clients are type 1,
 		// Shows are type 2, and
@@ -84,10 +90,11 @@ class TableManager {
             PRIMARY KEY (`id`)
         ) DEFAULT CHARSET=utf8";
 
-		dbDelta( $sql );
+		dbDelta($sql);
 	}
 
-	private static function createShowsTable(): void {
+	private static function createShowsTable(): void
+	{
 		$prefix     = self::prefix();
 		$table_name = $prefix . 'sl_shows';
 
@@ -105,10 +112,11 @@ class TableManager {
             FOREIGN KEY (`client_id`) REFERENCES " . $prefix . "sl_entities(`id`) ON DELETE CASCADE
         ) DEFAULT CHARSET=utf8";
 
-		dbDelta( $sql );
+		dbDelta($sql);
 	}
 
-	private static function createTransactionsTable(): void {
+	private static function createTransactionsTable(): void
+	{
 		$prefix     = self::prefix();
 		$table_name = $prefix . 'sl_transactions';
 
@@ -143,6 +151,7 @@ class TableManager {
           `trailer` VARCHAR(255) NULL,
           `pallet` VARCHAR(255) NULL,
           `image_path` VARCHAR(255) NULL,
+          `pod_path` VARCHAR(255) NULL,
           `freight_type` VARCHAR(255) NOT NULL,
           PRIMARY KEY (`id`),
           FOREIGN KEY (`created_by`) REFERENCES " . $prefix . "users(`ID`) ON DELETE RESTRICT,
@@ -151,10 +160,11 @@ class TableManager {
           FOREIGN KEY (`zone_id`) REFERENCES " . $prefix . "sl_show_places(`id`) ON DELETE RESTRICT
         ) DEFAULT CHARSET=utf8";
 
-		dbDelta( $sql );
+		dbDelta($sql);
 	}
 
-	private static function createShowPlaceTable(): void {
+	private static function createShowPlaceTable(): void
+	{
 		$prefix     = self::prefix();
 		$table_name = $prefix . 'sl_show_places';
 
@@ -170,10 +180,11 @@ class TableManager {
 		  FOREIGN KEY (`show_id`) REFERENCES " . $prefix . "sl_entities(`id`) ON DELETE CASCADE
 		) DEFAULT CHARSET=utf8";
 
-		dbDelta( $sql );
+		dbDelta($sql);
 	}
 
-	private static function createEntityUsersTable(): void {
+	private static function createEntityUsersTable(): void
+	{
 		$prefix     = self::prefix();
 		$table_name = self::prefix() . 'sl_entity_users';
 
@@ -184,6 +195,6 @@ class TableManager {
           FOREIGN KEY (`user_id`) REFERENCES " . $prefix . "users(`ID`) ON DELETE CASCADE
         ) DEFAULT CHARSET=utf8";
 
-		dbDelta( $sql );
+		dbDelta($sql);
 	}
 }

@@ -2,7 +2,8 @@
 
 namespace BigTB\SL\Setup\Core;
 
-trait Singleton {
+trait Singleton
+{
     /**
      * Returns the *Singleton* instance of this class.
      *
@@ -22,13 +23,14 @@ trait Singleton {
      *
      * @return Singleton The *Singleton* instance.
      */
-    public static function singleton( array $dependencies = [], array $callables = [] ) {
+    public static function singleton(array $dependencies = [], array $callables = [])
+    {
         static $instance = null;
 
-        if ( null === $instance ) {
+        if (null === $instance) {
             $instance = new static;
-            $instance->inject_dependecies( $dependencies );
-            $instance->apply_callables( $callables );
+            $instance->inject_dependecies($dependencies);
+            $instance->apply_callables($callables);
         }
 
         return $instance;
@@ -43,9 +45,10 @@ trait Singleton {
      *
      * @return void
      */
-    protected function inject_dependecies( array $dependencies = [] ) {
-        foreach ( $dependencies as $property => $dependency ) {
-            if ( property_exists( $this, $property ) ) {
+    protected function inject_dependecies(array $dependencies = [])
+    {
+        foreach ($dependencies as $property => $dependency) {
+            if (property_exists($this, $property)) {
                 $this->$property = $dependency;
             }
         }
@@ -66,21 +69,22 @@ trait Singleton {
      *
      * @return void
      */
-    protected function apply_callables( array $callables = [] ) {
-        foreach ( $callables as $callable ) {
+    protected function apply_callables(array $callables = [])
+    {
+        foreach ($callables as $callable) {
             $method   = $callable['method'];
             $params   = $callable['params'];
             $property = $callable['property'];
 
-            if ( method_exists( $this, $method ) ) {
+            if (method_exists($this, $method)) {
 
-                if ( ! empty( $property ) && property_exists( $this, $property ) ) {
+                if (! empty($property) && property_exists($this, $property)) {
                     $this->$property = call_user_func_array(
-                        array( $this, $method ),
+                        array($this, $method),
                         $params
                     );
                 } else {
-                    call_user_func_array( array( $this, $method ), $params );
+                    call_user_func_array(array($this, $method), $params);
                 }
             }
         }
@@ -90,9 +94,7 @@ trait Singleton {
      * Protected constructor to prevent creating a new instance of the
      * *Singleton* via the `new` operator from outside of this class.
      */
-    protected function __construct() {
-
-    }
+    protected function __construct() {}
 
     /**
      * Private clone method to prevent cloning of the instance of the
@@ -100,9 +102,7 @@ trait Singleton {
      *
      * @return void
      */
-    private function __clone() {
-
-    }
+    private function __clone() {}
 }
 
 //Example: singleton() first param

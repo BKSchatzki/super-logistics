@@ -23,7 +23,7 @@ class TrailerManifestGenerator extends ReportGenerator
         $trailerNumber = $transactions->first()->trailer ?? 'N/A';
         $this->pdf->Cell(67, 12, $trailerNumber, 1, 0, 'L');
 
-        // Seal Number
+        $sealNo = ($sealNo && $sealNo !== 'undefined') ? $sealNo : '';
         $sealNoText = $sealNo ? 'Seal No: ' . $sealNo : 'Seal No:';
         $this->pdf->SetFont('helvetica', '', 31);
         $this->pdf->Cell(0, 12, $sealNoText, 0, 1, 'L');
@@ -162,6 +162,11 @@ class TrailerManifestGenerator extends ReportGenerator
         if ($remainingSpace <= ($maxHeight + 0.5)) {
             $this->pdf->AddPage();
             $this->writeSubRowsHeader();
+        }
+
+        $usableHeight = $pageHeight - $this->pdf->GetY() - $this->pdf->getBreakMargin();
+        if ($maxHeight > $usableHeight) {
+            $maxHeight = $usableHeight;
         }
 
         // Print each cell as MultiCell

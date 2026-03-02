@@ -7,9 +7,11 @@ use BigTB\SL\API\Entity\Models\Show;
 use League\Fractal\TransformerAbstract;
 use BigTB\SL\Setup\Routing\Permissions;
 
-class ShowTransformer extends TransformerAbstract {
+class ShowTransformer extends TransformerAbstract
+{
 
-	public function transform( Show $item ): array {
+	public function transform(Show $item): array
+	{
 		$client = [
 			'id'   => $item->client->id,
 			'name' => $item->client->name,
@@ -32,8 +34,8 @@ class ShowTransformer extends TransformerAbstract {
 			'city'             => (string) $item->entity->city ?? '',
 			'state'            => (string) $item->entity->state ?? '',
 			'zip'              => (string) $item->entity->zip ?? '',
-			'active'           => (boolean) $item->entity->active ?? '',
-			'trashed'          => (boolean) $item->entity->trashed ?? '',
+			'active'           => (bool) $item->entity->active ?? '',
+			'trashed'          => (bool) $item->entity->trashed ?? '',
 			'logo_path'        => (string) $item->entity->logo_path ?? '',
 			'floor_plan_path'  => (string) $item->floor_plan_path ?? '',
 		];

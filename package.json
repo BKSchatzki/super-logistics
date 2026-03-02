@@ -1,6 +1,6 @@
 {
   "name": "super-logistics",
-  "version": "3.0.0",
+  "version": "3.1.1",
   "description": "A wordpress plugin used to manage Las Vegas Convention logistics.",
   "scripts": {
     "test": "vitest",

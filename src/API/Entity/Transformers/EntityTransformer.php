@@ -6,8 +6,10 @@ namespace BigTB\SL\API\Entity\Transformers;
 use BigTB\SL\API\Entity\Models\Entity;
 use League\Fractal\TransformerAbstract;
 
-class EntityTransformer extends TransformerAbstract {
-	public function transform( Entity $item ) {
+class EntityTransformer extends TransformerAbstract
+{
+	public function transform(Entity $item)
+	{
 		return [
 			'id'        => (int) $item->id,
 			'name'      => (string) $item->name,
@@ -19,8 +21,8 @@ class EntityTransformer extends TransformerAbstract {
 			'state'     => (string) $item->state,
 			'zip'       => (int) $item->zip,
 			'logo_path' => (string) $item->logo_path,
-			'active'    => (boolean) $item->active,
-			'trashed'   => (boolean) $item->trashed
+			'active'    => (bool) $item->active,
+			'trashed'   => (bool) $item->trashed
 		];
 	}
 }

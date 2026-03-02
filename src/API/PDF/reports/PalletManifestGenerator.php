@@ -146,6 +146,12 @@ class PalletManifestGenerator extends ReportGenerator
 			$this->buildTableHeader();
 			$this->pdf->SetFont('helvetica', '', $this->bodyTextSize);
 		}
+
+		$usableHeight = $pageHeight - $this->pdf->GetY() - $this->pdf->getBreakMargin();
+		if ($maxHeight > $usableHeight) {
+			$maxHeight = $usableHeight;
+		}
+
 		for ($i = 0; $i < count($cells); $i++) {
 			$w = $widths[$i];
 			$lineBreak = count($cells) - 1 === $i ? 1 : 0;

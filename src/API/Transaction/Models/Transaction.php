@@ -6,7 +6,8 @@ use BigTB\SL\API\Entity\Models\Entity;
 use BigTB\SL\API\Entity\Models\ShowPlace;
 use Illuminate\Database\Eloquent\Model;
 
-class Transaction extends Model {
+class Transaction extends Model
+{
 	protected $table = 'sl_transactions';
 	protected $fillable = [
 		'show_id',
@@ -38,16 +39,18 @@ class Transaction extends Model {
 		'shipper_zip',
 		'pallet',
 		'freight_type',
-		'image_path'
+		'image_path',
+		'pod_path'
 	];
 	public $timestamps = true;
 
-	public function show(): object {
-		return $this->belongsTo( Entity::class, 'show_id' )->with( 'show' );
+	public function show(): object
+	{
+		return $this->belongsTo(Entity::class, 'show_id')->with('show');
 	}
 
-	public function zone(): object {
-		return $this->belongsTo( ShowPlace::class, 'zone_id' );
+	public function zone(): object
+	{
+		return $this->belongsTo(ShowPlace::class, 'zone_id');
 	}
-
 }

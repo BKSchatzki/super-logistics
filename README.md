@@ -33,15 +33,19 @@ Deleted / Archived users **do not** have access to the app! They will be _consid
 When checking if a user is logged in, the app checks its own records through the User model, and that has restrictions blocking active and deleted users to all but wordpress admins.
 
 #### Roles
+
 Roles are kept track of the prefix_usermeta table in the columns with the key prefix_capabilities. The roles are stored as a serialized array.
-* this means that the roles must be serialized and deserialized.
-* WordPress also has some handy functions for reading / inserting them.
-* If you are having a hard time gettin role data while writing new code, be wary of not using the table prefix while accessing prefix_capabilities. **the column**.
+
+- this means that the roles must be serialized and deserialized.
+- WordPress also has some handy functions for reading / inserting them.
+- If you are having a hard time gettin role data while writing new code, be wary of not using the table prefix while accessing prefix_capabilities. **the column**.
 
 #### Status
+
 For deletion / archiving, there is a designated table, **sl_user_status**, which keeps track of that information.
 
 #### Entities
+
 Some entities require association with one or more users, namely clients, which users can belong to (IRL), and shows, which users can be responsibly for (client employees). This is recorded in the **sl_users_entities** table.
 
 ### Transactions
@@ -64,4 +68,3 @@ excluding wordpress admin - which is for developers only.
 - [ ] More robust error handling
 - [ ] More branding
 - [ ] Form validation
-

@@ -6,3 +6,5 @@ vendor
 view/dist
 build
 *.DS_Store
+docs/artifacts/*
+!docs/artifacts/.gitkeep

@@ -1,7 +1,7 @@
 <script setup>
-import {v4 as uuid} from 'uuid';
-import {computed} from 'vue';
-import {Select, MultiSelect} from "primevue";
+import { v4 as uuid } from "uuid";
+import { computed } from "vue";
+import { Select, MultiSelect } from "primevue";
 import InputFrame from "@/components/form/InputFrame.vue";
 
 const props = defineProps({
@@ -20,40 +20,39 @@ const props = defineProps({
   filter: Boolean,
   type: {
     type: String,
-    default: 'text'
-  }
-})
+    default: "text",
+  },
+});
 
 // Updating handled by composable
-const emits = defineEmits(['update:modelValue']);
+const emits = defineEmits(["update:modelValue"]);
 const updateValue = (event) => {
   const value = event.target ? event.target.value : event.value;
-  emits('update:modelValue', value);
+  emits("update:modelValue", value);
 };
 
 // Type
-const componentType = computed(() => props.multiple ? MultiSelect : Select);
-
+const componentType = computed(() => (props.multiple ? MultiSelect : Select));
 </script>
 
 <template>
   <InputFrame :id :label="label">
     <component
-        class="flex-auto w-full min-w-24"
-        :is="componentType"
-        :inputId="id"
-        :options
-        :modelValue
-        optionLabel="label"
-        optionValue="value"
-        @change="updateValue"
-        :editable
-        :filter
-        :showClear
-        :placeholder
-        :disabled
-        autocomplete="off"
-        :maxSelectedLabels="2"
+      class="flex-auto w-full min-w-24"
+      :is="componentType"
+      :inputId="id"
+      :options
+      :modelValue
+      optionLabel="label"
+      optionValue="value"
+      @change="updateValue"
+      :editable
+      :filter
+      :showClear
+      :placeholder
+      :disabled
+      autocomplete="off"
+      :maxSelectedLabels="2"
     />
   </InputFrame>
 </template>

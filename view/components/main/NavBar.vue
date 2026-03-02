@@ -1,101 +1,146 @@
 <script setup>
-import {computed, defineProps, ref} from "vue";
-import {useRouter} from "vue-router";
-import {useUserAPI} from "@utils/composables/useUserAPI.js";
+import { computed, defineProps, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useUserAPI } from "@utils/composables/useUserAPI.js";
 import logo from "@/assets/tstg-logo.png";
 
 const router = useRouter();
 const props = defineProps({
   user: {
     type: Object,
-    required: true
-  }
-})
-const {logOut} = useUserAPI();
+    required: true,
+  },
+});
+const { logOut } = useUserAPI();
 
 const items = ref([
   {
-    label: 'Receivers',
-    route: 'transactions',
-    icon: 'pi pi-home',
-    permissions: ['administrator', 'client_admin', 'client_employee', 'internal_admin', 'internal_employee']
+    label: "Receivers",
+    route: "transactions",
+    icon: "pi pi-home",
+    permissions: [
+      "administrator",
+      "client_admin",
+      "client_employee",
+      "internal_admin",
+      "internal_employee",
+    ],
   },
   {
-    label: 'Scanner',
-    route: 'scanner',
-    icon: 'pi pi-qrcode',
-    permissions: ['internal_admin', 'internal_employee']
+    label: "Scanner",
+    route: "scanner",
+    icon: "pi pi-qrcode",
+    permissions: ["internal_admin", "internal_employee"],
   },
   {
-    label: 'Reports',
-    route: 'reports',
-    icon: 'pi pi-file',
-    permissions: ['administrator', 'client_admin', 'client_employee', 'internal_admin']
+    label: "Reports",
+    route: "reports",
+    icon: "pi pi-file",
+    permissions: [
+      "administrator",
+      "client_admin",
+      "client_employee",
+      "internal_admin",
+    ],
   },
   {
-    label: 'Clients',
-    route: 'clients',
-    icon: 'pi pi-address-book',
-    permissions: ['internal_admin']
+    label: "Clients",
+    route: "clients",
+    icon: "pi pi-address-book",
+    permissions: ["internal_admin"],
   },
   {
-    label: 'Users',
-    route: 'users',
-    icon: 'pi pi-users',
-    permissions: ['client_admin', 'internal_admin']
+    label: "Users",
+    route: "users",
+    icon: "pi pi-users",
+    permissions: ["client_admin", "internal_admin"],
   },
   {
-    label: 'Shows',
-    route: 'shows',
-    icon: 'pi pi-home',
-    permissions: ['client_admin', 'client_employee', 'internal_admin', 'internal_employee']
+    label: "Shows",
+    route: "shows",
+    icon: "pi pi-home",
+    permissions: [
+      "client_admin",
+      "client_employee",
+      "internal_admin",
+      "internal_employee",
+    ],
   },
   {
-    label: 'Shipping Labels',
-    route: 'shipper-labels',
-    icon: 'pi pi-home',
-    permissions: ['internal_admin', 'client_admin', 'client_employee', 'public']
-  }
+    label: "Shipping Labels",
+    route: "shipper-labels",
+    icon: "pi pi-home",
+    permissions: [
+      "internal_admin",
+      "client_admin",
+      "client_employee",
+      "public",
+    ],
+  },
 ]);
 const filteredItems = computed(() => {
-  return items.value.filter(item => isAllowed(props.user, item['permissions']));
+  return items.value.filter((item) =>
+    isAllowed(props.user, item["permissions"]),
+  );
 });
 
 const isAllowed = (user, permissions) => {
-  if (!props.user.role && permissions.includes('public')) {
+  if (!props.user.role && permissions.includes("public")) {
     return true;
   }
-  if (props.user.role === 'administrator') {
+  if (props.user.role === "administrator") {
     return true;
   }
 
-  return !props.user.role ? permissions.length === 0 : permissions.includes(props.user.role);
+  return !props.user.role
+    ? permissions.length === 0
+    : permissions.includes(props.user.role);
 };
 
 const logIn = () => {
   window.location.href = localized.loginURL;
-}
-
+};
 </script>
 
 <template>
   <Menubar :model="filteredItems">
     <template #start>
       <router-link to="/">
-        <img :src="logo" alt="TSTG Logo" style="height: 2rem; margin-right: 1rem;">
+        <img
+          :src="logo"
+          alt="TSTG Logo"
+          style="height: 2rem; margin-right: 1rem"
+        />
       </router-link>
     </template>
     <template #item="{ item, props }">
-      <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+      <router-link
+        v-if="item.route"
+        v-slot="{ href, navigate }"
+        :to="item.route"
+        custom
+      >
         <a :href="href" v-bind="props.action" @click="navigate">
           {{ item.label }}
         </a>
       </router-link>
     </template>
     <template #end>
-      <Button v-if="!props.user.id" severity="primary" icon="pi pi-sign-in" @click="logIn" label="Log In"></Button>
-      <Button v-else severity="secondary" variant="outlined" icon="pi pi-sign-out" @click="logOut"
-              label="Log Out"></Button>
+      <Button
+        v-if="!props.user.id"
+        severity="primary"
+        icon="pi pi-sign-in"
+        @click="logIn"
+        label="Log In"
+      ></Button>
+      <Button
+        v-else
+        severity="secondary"
+        variant="outlined"
+        icon="pi pi-sign-out"
+        @click="logOut"
+        label="Log Out"
+      ></Button>
     </template>
   </Menubar>
 </template>

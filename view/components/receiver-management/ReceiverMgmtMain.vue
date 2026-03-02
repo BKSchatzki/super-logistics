@@ -1,30 +1,33 @@
 <script setup>
-import { computed, ref } from 'vue';
-import { useFormAssist } from '@utils/composables/useFormAssist.js';
-import { useStatusFilters } from '@utils/composables/useStatusFilters';
-import { useDetailsModal } from '@utils/composables/useDetailsModal';
-import { DatePicker } from 'primevue';
-import Toast from 'primevue/toast';
-import FormModal from '../form/FormModal.vue';
-import ReceiverForm from '@/components/receiver-management/ReceiverForm.vue';
-import ReceiverDetails from '@/components/receiver-management/ReceiverDetails.vue';
-import StatusFilters from '@/components/data/StatusFilters.vue';
-import SearchBar from '@/components/data/SearchBar.vue';
-import { FilterMatchMode } from '@primevue/core/api';
-import { frhtFilters } from '@utils/dropdowns';
-import PageTitle from '@/components/general-ui/PageTitle.vue';
+import { computed, ref } from "vue";
+import { useFormAssist } from "@utils/composables/useFormAssist.js";
+import { useStatusFilters } from "@utils/composables/useStatusFilters";
+import { useDetailsModal } from "@utils/composables/useDetailsModal";
+import { DatePicker } from "primevue";
+import Toast from "primevue/toast";
+import FormModal from "../form/FormModal.vue";
+import ReceiverForm from "@/components/receiver-management/ReceiverForm.vue";
+import ReceiverDetails from "@/components/receiver-management/ReceiverDetails.vue";
+import StatusFilters from "@/components/data/StatusFilters.vue";
+import SearchBar from "@/components/data/SearchBar.vue";
+import { FilterMatchMode } from "@primevue/core/api";
+import { frhtFilters } from "@utils/dropdowns";
+import PageTitle from "@/components/general-ui/PageTitle.vue";
 
 // <editor-fold desc="Setup">--------------------------------------------
 
-const { data, statusBoxes, statusStyles } = useStatusFilters('transactions');
+const { data, statusBoxes, statusStyles } = useStatusFilters("transactions");
 const table = ref();
 const dateRange = ref();
 const tableData = computed(() => {
   // Date Range Filtering
   const [startRange, endRange] = dateRange.value || [];
   const dateFilteredData = data.value.filter((row) => {
-    const created_at = new Date(row['created_at']);
-    return (!startRange || created_at >= startRange) && (!endRange || created_at <= endRange);
+    const created_at = new Date(row["created_at"]);
+    return (
+      (!startRange || created_at >= startRange) &&
+      (!endRange || created_at <= endRange)
+    );
   });
 
   return dateFilteredData.map((row) => ({
@@ -32,10 +35,10 @@ const tableData = computed(() => {
     show: row.show?.name,
     zone: row.zone?.name,
     client: row.client?.name,
-    created_at: row['created_at'] ? new Date(row['created_at']) : null,
-    updated_at: row['updated_at'] ? new Date(row['updated_at']) : null,
-    created_by: row['created_by_user']?.user_login,
-    updated_by: row['updated_by_user']?.user_login,
+    created_at: row["created_at"] ? new Date(row["created_at"]) : null,
+    updated_at: row["updated_at"] ? new Date(row["updated_at"]) : null,
+    created_by: row["created_by_user"]?.user_login,
+    updated_by: row["updated_by_user"]?.user_login,
   }));
 });
 const { selected, unselect, openDetails } = useDetailsModal();
@@ -86,10 +89,10 @@ const filters = ref({
 const { getDroptions } = useFormAssist();
 
 // Client Options
-const clientOptions = getDroptions('clients', { active: 1, trashed: 0 });
+const clientOptions = getDroptions("clients", { active: 1, trashed: 0 });
 
 // Show Options
-const showOptions = getDroptions('shows', { active: 1, trashed: 0 });
+const showOptions = getDroptions("shows", { active: 1, trashed: 0 });
 const selectedShows = ref([]);
 
 // Zones
@@ -97,7 +100,9 @@ const zoneOptions = computed(() => {
   return selectedShows.value
     ? selectedShows.value.reduce((acc = [], show = null) => {
         if (!show || !show.zones) return acc;
-        acc.push(show.zones.map((zone) => ({ label: zone.name, value: zone.id })));
+        acc.push(
+          show.zones.map((zone) => ({ label: zone.name, value: zone.id })),
+        );
       }, [])
     : [];
 });
@@ -106,38 +111,68 @@ const zoneOptions = computed(() => {
 
 // Columns
 const columns = ref([
-  { label: 'Shipper', value: 'shipper', filter: true },
-  { label: 'Exhibitor', value: 'exhibitor', filter: true },
-  { label: 'Arrival Status', value: 'arrival_status', filter: false },
-  { label: 'Client', value: 'client', filter: true, filterChoices: clientOptions ?? [] },
-  { label: 'Show', value: 'show', filter: true, filterChoices: showOptions ?? [] },
-  { label: 'Zone', value: 'zone', filter: true, filterChoices: zoneOptions.value ?? [] },
-  { label: 'Booth', value: 'booth', filter: true },
-  { label: 'Received by', value: 'created_by', filter: true },
-  { label: 'Received Date/Time', value: 'nice_created_at', filter: false },
-  { label: 'Last Updated by', value: 'updated_by', filter: true },
-  { label: 'Last Updated', value: 'nice_updated_at', filter: false },
-  { label: 'Trailer', value: 'trailer', filter: true },
-  { label: 'Pallet', value: 'pallet', filter: true },
-  { label: 'Carrier', value: 'carrier', filter: true },
-  { label: 'Tracking', value: 'tracking', filter: true },
-  { label: 'Crates', value: 'crate_pcs', filter: false },
-  { label: 'Cartons', value: 'carton_pcs', filter: false },
-  { label: 'Skids', value: 'skid_pcs', filter: false },
-  { label: 'Fiber Cases', value: 'fiber_case_pcs', filter: false },
-  { label: 'Carpets', value: 'carpet_pcs', filter: false },
-  { label: 'Misc', value: 'misc_pcs', filter: false },
-  { label: 'Total Pcs.', value: 'total_pcs', filter: false },
-  { label: 'Freight Type', value: 'nice_freight_type', filter: true, filterChoices: frhtFilters },
-  { label: 'Special Handling', value: 'special_handling', filter: false },
-  { label: 'Total Weight', value: 'total_weight', filter: false, units: ' lbs.' },
-  { label: 'Billable Weight', value: 'billable_weight', filter: false, units: ' lbs.' },
+  { label: "Shipper", value: "shipper", filter: true },
+  { label: "Exhibitor", value: "exhibitor", filter: true },
+  { label: "Arrival Status", value: "arrival_status", filter: false },
+  {
+    label: "Client",
+    value: "client",
+    filter: true,
+    filterChoices: clientOptions ?? [],
+  },
+  {
+    label: "Show",
+    value: "show",
+    filter: true,
+    filterChoices: showOptions ?? [],
+  },
+  {
+    label: "Zone",
+    value: "zone",
+    filter: true,
+    filterChoices: zoneOptions.value ?? [],
+  },
+  { label: "Booth", value: "booth", filter: true },
+  { label: "Received by", value: "created_by", filter: true },
+  { label: "Received Date/Time", value: "nice_created_at", filter: false },
+  { label: "Last Updated by", value: "updated_by", filter: true },
+  { label: "Last Updated", value: "nice_updated_at", filter: false },
+  { label: "Trailer", value: "trailer", filter: true },
+  { label: "Pallet", value: "pallet", filter: true },
+  { label: "Carrier", value: "carrier", filter: true },
+  { label: "Tracking", value: "tracking", filter: true },
+  { label: "Crates", value: "crate_pcs", filter: false },
+  { label: "Cartons", value: "carton_pcs", filter: false },
+  { label: "Skids", value: "skid_pcs", filter: false },
+  { label: "Fiber Cases", value: "fiber_case_pcs", filter: false },
+  { label: "Carpets", value: "carpet_pcs", filter: false },
+  { label: "Misc", value: "misc_pcs", filter: false },
+  { label: "Total Pcs.", value: "total_pcs", filter: false },
+  {
+    label: "Freight Type",
+    value: "nice_freight_type",
+    filter: true,
+    filterChoices: frhtFilters,
+  },
+  { label: "Special Handling", value: "special_handling", filter: false },
+  {
+    label: "Total Weight",
+    value: "total_weight",
+    filter: false,
+    units: " lbs.",
+  },
+  {
+    label: "Billable Weight",
+    value: "billable_weight",
+    filter: false,
+    units: " lbs.",
+  },
 ]);
 const selectedColumns = ref([
-  { label: 'Shipper', value: 'shipper', filter: true },
-  { label: 'Exhibitor', value: 'exhibitor', filter: true },
-  { label: 'Received Date/Time', value: 'nice_created_at', filter: false },
-  { label: 'Tracking', value: 'tracking', filter: true },
+  { label: "Shipper", value: "shipper", filter: true },
+  { label: "Exhibitor", value: "exhibitor", filter: true },
+  { label: "Received Date/Time", value: "nice_created_at", filter: false },
+  { label: "Tracking", value: "tracking", filter: true },
 ]);
 </script>
 
@@ -167,11 +202,7 @@ const selectedColumns = ref([
         </FormModal>
       </div>
     </div>
-    <ReceiverDetails
-      v-if="selected"
-      :subject="selected"
-      @close="unselect"
-    />
+    <ReceiverDetails v-if="selected" :subject="selected" @close="unselect" />
     <Toast />
     <Panel>
       <DataTable
@@ -228,11 +259,7 @@ const selectedColumns = ref([
           </div>
         </template>
         <template #empty>Empty</template>
-        <Column
-          field="id"
-          :sortable
-          :showFilterMatchModes="false"
-        >
+        <Column field="id" :sortable :showFilterMatchModes="false">
           <template #header>
             <span class="text-nowrap">Rec. No.</span>
           </template>
@@ -260,12 +287,11 @@ const selectedColumns = ref([
             <span class="text-nowrap">{{ col.label }}</span>
           </template>
           <template #body="{ data, field }">
-            <span class="text-nowrap">{{ data[field] }}{{ col['units'] ?? '' }}</span>
+            <span class="text-nowrap"
+              >{{ data[field] }}{{ col["units"] ?? "" }}</span
+            >
           </template>
-          <template
-            #filter="{ filterModel, filterCallback }"
-            v-if="col.filter"
-          >
+          <template #filter="{ filterModel, filterCallback }" v-if="col.filter">
             <MultiSelect
               v-if="col['filterChoices'] && col['filterChoices'].length"
               fluid

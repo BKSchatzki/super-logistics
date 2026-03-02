@@ -1,10 +1,10 @@
 <script setup>
-import {computed, ref, watch} from "vue";
-import {useStore} from "vuex";
-import {useForm} from 'vee-validate';
-import * as yup from 'yup';
-import {useFormAssist} from "@utils/composables/useFormAssist";
-import {useAPI} from "@utils/composables/useAPI";
+import { computed, ref, watch } from "vue";
+import { useStore } from "vuex";
+import { useForm } from "vee-validate";
+import * as yup from "yup";
+import { useFormAssist } from "@utils/composables/useFormAssist";
+import { useAPI } from "@utils/composables/useAPI";
 import FormSelectInput from "@/components/form/FormSelectInput.vue";
 import FormTextInput from "@/components/form/FormTextInput.vue";
 import Row from "@/components/form/Row.vue";
@@ -15,13 +15,13 @@ import Col from "@/components/form/Col.vue";
 const user = computed(() => useStore().state.user);
 
 const props = defineProps({
-  formData: {type: Object, default: () => ({})},
-  method: {type: String, default: 'post'},
+  formData: { type: Object, default: () => ({}) },
+  method: { type: String, default: "post" },
   close: {
-    type: Function, default: () => {
-    }
+    type: Function,
+    default: () => {},
   },
-  description: String
+  description: String,
 });
 
 // </editor-fold>-------------------------------------------------------------------
@@ -30,80 +30,91 @@ const props = defineProps({
 
 // Validation Schema
 const validationSchema = yup.object().shape({
-  first_name: yup.string().required().label('First Name'),
-  last_name: yup.string().required().label('Last Name'),
-  user_login: yup.string().required().label('Username'),
-  user_email: yup.string().email().required().label('Email'),
-  role: yup.string().required().label('User Type'),
-  client_id: yup.number().nullable().label('Client ID'),
-  shows: yup.array().of(yup.number()).nullable().label('Shows'),
+  first_name: yup.string().required().label("First Name"),
+  last_name: yup.string().required().label("Last Name"),
+  user_login: yup.string().required().label("Username"),
+  user_email: yup.string().email().required().label("Email"),
+  role: yup.string().required().label("User Type"),
+  client_id: yup.number().nullable().label("Client ID"),
+  shows: yup.array().of(yup.number()).nullable().label("Shows"),
 });
 
 // Initial Values
 const getIDList = (shows) => {
-  return shows.map(show => show['id']);
-}
+  return shows.map((show) => show["id"]);
+};
 const clientID = computed(() => {
-  if (user.value['isClient']) {
-    return user.value['client']['id'];
-  } else if (props.formData['client']) {
-    return props.formData['client']['id'];
+  if (user.value["isClient"]) {
+    return user.value["client"]["id"];
+  } else if (props.formData["client"]) {
+    return props.formData["client"]["id"];
   } else {
     return undefined;
   }
 });
 const initialValues = ref({
-  first_name: '',
-  last_name: '',
-  user_login: '',
-  user_email: '',
-  role: '',
+  first_name: "",
+  last_name: "",
+  user_login: "",
+  user_email: "",
+  role: "",
   ...props.formData,
-  ...(clientID.value ? {client_id: clientID.value} : {}),
-  ...(props.formData['shows'] ? {shows: getIDList(props.formData['shows'])} : {})
+  ...(clientID.value ? { client_id: clientID.value } : {}),
+  ...(props.formData["shows"]
+    ? { shows: getIDList(props.formData["shows"]) }
+    : {}),
 });
 
 // Form
-const {values, handleSubmit} = useForm({validationSchema, initialValues});
-const {submitToAPI, getRoleDroptions, getDroptions} = useFormAssist();
+const { values, handleSubmit } = useForm({ validationSchema, initialValues });
+const { submitToAPI, getRoleDroptions, getDroptions } = useFormAssist();
 
 // Submission
 const submitForm = handleSubmit(async (values) => {
-  await submitToAPI('users', values, props.method);
+  await submitToAPI("users", values, props.method);
   props.close();
-})
+});
 
 // </editor-fold>---------------------------------------------------------------------
 
 // <editor-fold desc="Options">-------------------------------------------------------
 
-const {get} = useAPI();
+const { get } = useAPI();
 
 // Role Options
 const roleOptions = getRoleDroptions();
 
 // Client Options
-const clientOptions = getDroptions('clients')
+const clientOptions = getDroptions("clients");
 const displayClientField = computed(() => {
-  return (values['role'] === 'client_employee' || values['role'] === 'client_admin') && user.value['isInternal'];
+  return (
+    (values["role"] === "client_employee" ||
+      values["role"] === "client_admin") &&
+    user.value["isInternal"]
+  );
 });
-watch(() => values['role'], (newRole) => {
-  if (newRole === 'client_admin' || newRole === 'client_employee') {
-    get({active: 1, trashed: 0}, 'clients');
-  }
-});
+watch(
+  () => values["role"],
+  (newRole) => {
+    if (newRole === "client_admin" || newRole === "client_employee") {
+      get({ active: 1, trashed: 0 }, "clients");
+    }
+  },
+);
 
 // Show Options
-const showOptions = getDroptions('shows', {client_id: values['client_id']});
-const displayShowField = computed(() => values['role'] === 'client_employee');
-watch(() => values['client_id'], (cID) => {
-  if (cID) {
-    get({client_id: cID, active: 1, trashed: 0}, 'shows');
-  }
-});
+const showOptions = getDroptions("shows", { client_id: values["client_id"] });
+const displayShowField = computed(() => values["role"] === "client_employee");
+watch(
+  () => values["client_id"],
+  (cID) => {
+    if (cID) {
+      get({ client_id: cID, active: 1, trashed: 0 }, "shows");
+    }
+  },
+);
 
 // </editor-fold>---------------------------------------------------------------------
-
 </script>
 
 <template>
@@ -113,28 +124,82 @@ watch(() => values['client_id'], (cID) => {
         <span>{{ description }}</span>
       </Row>
       <Row>
-        <FormTextInput data-test="fni" name="first_name" label="First Name" placeholder="First Name"/>
-        <FormTextInput data-test="lni" name="last_name" label="Last Name" placeholder="Last Name"/>
+        <FormTextInput
+          data-test="fni"
+          name="first_name"
+          label="First Name"
+          placeholder="First Name"
+        />
+        <FormTextInput
+          data-test="lni"
+          name="last_name"
+          label="Last Name"
+          placeholder="Last Name"
+        />
       </Row>
       <Row>
-        <FormTextInput data-test="uni" label="Username" name="user_login" placeholder="No spaces or special characters please"
-                       :disabled="method === 'update'"/>
+        <FormTextInput
+          data-test="uni"
+          label="Username"
+          name="user_login"
+          placeholder="No spaces or special characters please"
+          :disabled="method === 'update'"
+        />
       </Row>
       <Row>
-        <FormTextInput data-test="emi" label="Email" name="user_email" placeholder="example@domain.com"/>
+        <FormTextInput
+          data-test="emi"
+          label="Email"
+          name="user_email"
+          placeholder="example@domain.com"
+        />
       </Row>
       <Row>
-        <FormSelectInput data-test="rli" type="select" label="Type" :options="roleOptions" name="role" placeholder="Select"/>
-        <FormSelectInput data-test="cli" v-if="displayClientField" type="select" label="Client" :options="clientOptions"
-                         name="client_id" placeholder="Select"/>
+        <FormSelectInput
+          data-test="rli"
+          type="select"
+          label="Type"
+          :options="roleOptions"
+          name="role"
+          placeholder="Select"
+        />
+        <FormSelectInput
+          data-test="cli"
+          v-if="displayClientField"
+          type="select"
+          label="Client"
+          :options="clientOptions"
+          name="client_id"
+          placeholder="Select"
+        />
       </Row>
       <Row>
-        <FormSelectInput data-test="shi" v-if="displayShowField" type="select" label="Shows" :options="showOptions" name="shows"
-                         placeholder="Assign Multiple" multiple/>
+        <FormSelectInput
+          data-test="shi"
+          v-if="displayShowField"
+          type="select"
+          label="Shows"
+          :options="showOptions"
+          name="shows"
+          placeholder="Assign Multiple"
+          multiple
+        />
       </Row>
       <div class="flex justify-end gap-2">
-        <Button type="button" label="Cancel" severity="secondary" @click="close" data-test="cancel-button"/>
-        <Button type="submit" :label="props.method === 'post' ? 'Add New' : 'Update'" severity="primary" @click="submitForm" data-test="submit-button"/>
+        <Button
+          type="button"
+          label="Cancel"
+          severity="secondary"
+          @click="close"
+          data-test="cancel-button"
+        />
+        <Button
+          type="submit"
+          :label="props.method === 'post' ? 'Add New' : 'Update'"
+          severity="primary"
+          @click="submitForm"
+          data-test="submit-button"
+        />
       </div>
     </Col>
   </form>

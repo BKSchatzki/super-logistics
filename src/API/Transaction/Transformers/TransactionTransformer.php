@@ -8,31 +8,33 @@ use BigTB\SL\API\User\Models\User;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 
-class TransactionTransformer extends TransformerAbstract {
+class TransactionTransformer extends TransformerAbstract
+{
 
-    private static string $timeZone = 'America/Los_Angeles';
-    private static string $timeFormat = 'M/d/y H:i';
+	private static string $timeZone = 'America/Los_Angeles';
+	private static string $timeFormat = 'M/d/y H:i';
 
-	public function transform( Transaction $item ): array {
+	public function transform(Transaction $item): array
+	{
 
 		// The show is an entity, which has a show property.
-		$item->show->show->date_start = Carbon::parse( $item->show->show->date_start )->setTimezone( self::$timeZone );
-		$item->show->show->date_end   = Carbon::parse( $item->show->show->date_end )->setTimezone( self::$timeZone );
-		$niceCreatedAt                = Carbon::parse( $item->created_at )->setTimezone( self::$timeZone )->format( self::$timeFormat );
-		$niceUpdatedAt                = Carbon::parse( $item->updated_at )->setTimezone( self::$timeZone )->format( self::$timeFormat );
+		$item->show->show->date_start = Carbon::parse($item->show->show->date_start)->setTimezone(self::$timeZone);
+		$item->show->show->date_end   = Carbon::parse($item->show->show->date_end)->setTimezone(self::$timeZone);
+		$niceCreatedAt                = Carbon::parse($item->created_at)->setTimezone(self::$timeZone)->format(self::$timeFormat);
+		$niceUpdatedAt                = Carbon::parse($item->updated_at)->setTimezone(self::$timeZone)->format(self::$timeFormat);
 
-		$show   = self::getObjectData( $item->show );
-		$zone   = self::getObjectData( $item->zone );
-		$client = self::getObjectData( $item->show->show->client );
+		$show   = self::getObjectData($item->show);
+		$zone   = self::getObjectData($item->zone);
+		$client = self::getObjectData($item->show->show->client);
 
-		$created_by_user = self::getUserData( $item, 'created_by' );
-		$updated_by_user = self::getUserData( $item, 'updated_by' );
+		$created_by_user = self::getUserData($item, 'created_by');
+		$updated_by_user = self::getUserData($item, 'updated_by');
 
-		$arrivalStatus = self::determineTimeliness( $item );
+		$arrivalStatus = self::determineTimeliness($item);
 
-		$niceFreightType = self::getNiceFreightType( $item->freight_type );
+		$niceFreightType = self::getNiceFreightType($item->freight_type);
 
-		$billable_weight = self::calculateBillableWeight( $item );
+		$billable_weight = self::calculateBillableWeight($item);
 
 		return [
 			'id'                => (int) $item->id,
@@ -63,9 +65,10 @@ class TransactionTransformer extends TransformerAbstract {
 			'billable_weight'   => $billable_weight,
 			'remarks'           => $item->remarks,
 			'special_handling'  => (bool) $item->special_handling,
-			'pallet'            => $item->pallet ? strtoupper( $item->pallet ) : 'Incomplete',
+			'pallet'            => $item->pallet ? strtoupper($item->pallet) : 'Incomplete',
 			'trailer'           => $item->trailer ?? 'Incomplete',
 			'image_path'        => $item->image_path,
+			'pod_path'          => $item->pod_path,
 			'arrival_status'    => $arrivalStatus,
 			'active'            => (bool) $item->active,
 			'trashed'           => (bool) $item->trashed,
@@ -80,29 +83,31 @@ class TransactionTransformer extends TransformerAbstract {
 		];
 	}
 
-    private static function determineTimeliness( $item ): string {
+	private static function determineTimeliness($item): string
+	{
 
-        // Parse all dates to Carbon objects with the same timezone
-        $earliest = Carbon::parse($item->show->show->date_start)->startOfDay()->setTimezone(self::$timeZone);
-        $latest = Carbon::parse($item->show->show->date_end)->endOfDay()->setTimezone(self::$timeZone);
-        $createdAt = Carbon::parse($item->created_at)->setTimezone(self::$timeZone);
+		// Parse all dates to Carbon objects with the same timezone
+		$earliest = Carbon::parse($item->show->show->date_start)->startOfDay()->setTimezone(self::$timeZone);
+		$latest = Carbon::parse($item->show->show->date_end)->endOfDay()->setTimezone(self::$timeZone);
+		$createdAt = Carbon::parse($item->created_at)->setTimezone(self::$timeZone);
 
-        error_log("Shipper: " . $item->shipper . " ------------------------------------------");
-        error_log("earliest: " . $earliest->toDateTimeString());
-        error_log("latest: " . $latest->toDateTimeString());
-        error_log("created_at: " . $createdAt->toDateTimeString());
+		error_log("Shipper: " . $item->shipper . " ------------------------------------------");
+		error_log("earliest: " . $earliest->toDateTimeString());
+		error_log("latest: " . $latest->toDateTimeString());
+		error_log("created_at: " . $createdAt->toDateTimeString());
 
-        if ($createdAt->lt($earliest)) {
-            return 'Early';
-        } elseif ($createdAt->gt($latest)) {
-            return 'Late';
-        } else {
-            return 'On Time';
-        }
-    }
+		if ($createdAt->lt($earliest)) {
+			return 'Early';
+		} elseif ($createdAt->gt($latest)) {
+			return 'Late';
+		} else {
+			return 'On Time';
+		}
+	}
 
-	private static function getUserData( $item, $key ): array {
-		$user = User::find( $item->$key );
+	private static function getUserData($item, $key): array
+	{
+		$user = User::find($item->$key);
 
 		return [
 			'id'         => $user->id,
@@ -111,33 +116,36 @@ class TransactionTransformer extends TransformerAbstract {
 		];
 	}
 
-	private static function getObjectData( $object ): array {
+	private static function getObjectData($object): array
+	{
 		return [
 			'id'   => $object->id,
 			'name' => $object->name,
 		];
 	}
 
-	private static function getNiceFreightType( $freightType ): string {
+	private static function getNiceFreightType($freightType): string
+	{
 		$freightTypes = [
 			1 => 'LTL',
 			2 => 'FTL',
 			3 => 'SmlPk'
 		];
 
-		return $freightTypes[ $freightType ];
+		return $freightTypes[$freightType];
 	}
 
-	private static function calculateBillableWeight( $item ): int {
+	private static function calculateBillableWeight($item): int
+	{
 		$billableWeight = $item->show->show->min_carat_weight ?? 0;
 		$increment      = $item->show->show->carat_weight_inc ?? 0;
 
 		// Guard against zero/null increments to prevent non-advancing loops.
-		if ( $increment <= 0 ) {
-			return max( (int) $billableWeight, (int) $item->total_weight );
+		if ($increment <= 0) {
+			return max((int) $billableWeight, (int) $item->total_weight);
 		}
 
-		while ( $billableWeight < $item->total_weight ) {
+		while ($billableWeight < $item->total_weight) {
 			$billableWeight += $increment;
 		}
 

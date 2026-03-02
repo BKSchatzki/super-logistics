@@ -1,43 +1,48 @@
 <script setup>
-
 const props = defineProps({
   modelValue: {
     type: Number,
-    default: 0
+    default: 0,
   },
   id: {
     type: String,
-    default: ''
+    default: "",
   },
   label: {
     type: String,
-    default: null
-  }
+    default: null,
+  },
 });
 
 // Change Handling defined in composable
-const emits = defineEmits(['update:modelValue']);
+const emits = defineEmits(["update:modelValue"]);
 const updateValue = (event) => {
   const value = event.target ? event.target.value : event.value;
-  emits('update:modelValue', value);
+  emits("update:modelValue", value);
 };
 </script>
 
 <template>
   <div class="flex flex-col gap-2 items-center">
-  <InputNumber :modelValue :inputId="id" showButtons buttonLayout="vertical" style="width: 6rem;"
-               @input="updateValue" :min="0" :max="99">
-    <template #incrementbuttonicon>
-      <span class="pi pi-plus" />
-    </template>
-    <template #decrementbuttonicon>
-      <span class="pi pi-minus" />
-    </template>
-  </InputNumber>
-  <label v-if="label" :for="id">{{ label }}</label>
+    <InputNumber
+      :modelValue
+      :inputId="id"
+      showButtons
+      buttonLayout="vertical"
+      style="width: 6rem"
+      @input="updateValue"
+      :min="0"
+      :max="99"
+    >
+      <template #incrementbuttonicon>
+        <span class="pi pi-plus" />
+      </template>
+      <template #decrementbuttonicon>
+        <span class="pi pi-minus" />
+      </template>
+    </InputNumber>
+    <label v-if="label" :for="id">{{ label }}</label>
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

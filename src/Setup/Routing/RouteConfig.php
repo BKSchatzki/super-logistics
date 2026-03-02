@@ -8,7 +8,8 @@ use BigTB\SL\API\Report\Controllers\ReportsController;
 use BigTB\SL\API\Transaction\Controllers\TransactionController;
 use BigTB\SL\API\User\Controllers\UserController;
 
-class RouteConfig {
+class RouteConfig
+{
 
 	public array $routes = [];
 	public array $entityRoutes = [];
@@ -78,7 +79,8 @@ class RouteConfig {
 		]
 	];
 
-	public function __construct() {
+	public function __construct()
+	{
 
 		$this->writeEntityRoutes();
 		$this->writeClientRoutes();
@@ -94,14 +96,15 @@ class RouteConfig {
 			$this->userRoutes,
 			$this->reportRoutes
 		];
-
 	}
 
-	protected function writeEntityRoutes(): void {
-		$this->entityRoutes = [ ...$this->basicRoutes, ...$this->statusRoutes ];
+	protected function writeEntityRoutes(): void
+	{
+		$this->entityRoutes = [...$this->basicRoutes, ...$this->statusRoutes];
 	}
 
-	protected function writeClientRoutes(): void {
+	protected function writeClientRoutes(): void
+	{
 		$this->clientRoutes = [
 			'handlerClass' => ClientController::class,
 			'base'         => 'clients',
@@ -109,7 +112,8 @@ class RouteConfig {
 		];
 	}
 
-	protected function writeShowRoutes(): void {
+	protected function writeShowRoutes(): void
+	{
 		$this->showRoutes = [
 			'handlerClass' => ShowController::class,
 			'base'         => 'shows',
@@ -139,7 +143,8 @@ class RouteConfig {
 		];
 	}
 
-	protected function writeTxnRoutes(): void {
+	protected function writeTxnRoutes(): void
+	{
 		$this->txnRoutes = [
 			'handlerClass' => TransactionController::class,
 			'base'         => 'transactions',
@@ -211,6 +216,26 @@ class RouteConfig {
 						[
 							'methods'             => 'POST',
 							'callback'            => 'printPOD',
+							'permission_callback' => 'isLoggedIn'
+						]
+					]
+				],
+				[
+					'path'    => 'receiving/pod/upload',
+					'methods' => [
+						[
+							'methods'             => 'POST',
+							'callback'            => 'uploadPOD',
+							'permission_callback' => 'isInternal'
+						]
+					]
+				],
+				[
+					'path'    => 'receiving/pod/delete',
+					'methods' => [
+						[
+							'methods'             => 'POST',
+							'callback'            => 'deletePOD',
 							'permission_callback' => 'isInternal'
 						]
 					]
@@ -219,7 +244,8 @@ class RouteConfig {
 		];
 	}
 
-	protected function writeUserRoutes(): void {
+	protected function writeUserRoutes(): void
+	{
 		$this->userRoutes = [
 			'handlerClass' => UserController::class,
 			'base'         => 'users',
@@ -274,7 +300,8 @@ class RouteConfig {
 		];
 	}
 
-	protected function writeReportRoutes(): void {
+	protected function writeReportRoutes(): void
+	{
 		$this->reportRoutes = [
 			'handlerClass' => ReportsController::class,
 			'base'         => 'reports',

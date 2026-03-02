@@ -6,10 +6,10 @@ use Exception;
 
 class ClassNotFound extends Exception
 {
-    public function __construct( $message )
+    public function __construct($message)
     {
         $message = $message . ' is not found';
 
-        parent::__construct( $message );
+        parent::__construct($message);
     }
 }

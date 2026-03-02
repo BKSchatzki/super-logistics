@@ -1,14 +1,13 @@
 <script>
-import Main from '@/components/main/Main.vue';
+import Main from "@/components/main/Main.vue";
 
 export default {
   components: {
-    Main
-  }
-}
+    Main,
+  },
+};
 </script>
 
 <template>
-  <Main/>
+  <Main />
 </template>
-
