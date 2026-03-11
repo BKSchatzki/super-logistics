@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Super Logistics
  * Description: A plugin for managing logistics, providing tools for managing shipments, tracking, and inventory.
- * Version: 3.1.1
+ * Version: 3.1.2
  * Author: BigTB
  * Author URI: https://bigtb.com
  * License: Proprietary

@@ -4,6 +4,11 @@ namespace BigTB\SL\Setup\DB;
 
 class TableManager
 {
+	private const TRANSACTIONS_TABLE = 'sl_transactions';
+
+	private const TRANSACTION_COLUMN_UPGRADES = [
+		'pod_path' => 'ADD COLUMN `pod_path` VARCHAR(255) NULL AFTER `image_path`',
+	];
 
 	public static function init(): void
 	{
@@ -13,6 +18,7 @@ class TableManager
 		self::createEntitiesTable();
 		self::createShowsTable();
 		self::createTransactionsTable();
+		self::ensureTransactionColumnUpgrades();
 		self::createShowPlaceTable();
 		self::createEntityUsersTable();
 
@@ -118,7 +124,7 @@ class TableManager
 	private static function createTransactionsTable(): void
 	{
 		$prefix     = self::prefix();
-		$table_name = $prefix . 'sl_transactions';
+		$table_name = $prefix . self::TRANSACTIONS_TABLE;
 
 		$sql = "CREATE TABLE IF NOT EXISTS $table_name (
           `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -161,6 +167,48 @@ class TableManager
         ) DEFAULT CHARSET=utf8";
 
 		dbDelta($sql);
+	}
+
+	private static function ensureTransactionColumnUpgrades(): void
+	{
+		global $wpdb;
+
+		$table_name = self::prefix() . self::TRANSACTIONS_TABLE;
+		$table      = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table_name));
+
+		if ($table !== $table_name) {
+			error_log(sprintf('Super Logistics schema upgrade skipped: table %s not found.', $table_name));
+			return;
+		}
+
+		foreach (self::TRANSACTION_COLUMN_UPGRADES as $column_name => $alter_clause) {
+			if (self::tableColumnExists($table_name, $column_name)) {
+				continue;
+			}
+
+			$result = $wpdb->query(sprintf('ALTER TABLE `%s` %s', $table_name, $alter_clause));
+
+			if ($result === false) {
+				error_log(sprintf(
+					'Super Logistics schema upgrade failed adding %s to %s: %s',
+					$column_name,
+					$table_name,
+					$wpdb->last_error
+				));
+				continue;
+			}
+
+			error_log(sprintf('Super Logistics schema upgrade added %s to %s.', $column_name, $table_name));
+		}
+	}
+
+	private static function tableColumnExists(string $table_name, string $column_name): bool
+	{
+		global $wpdb;
+
+		$column = $wpdb->get_var($wpdb->prepare("SHOW COLUMNS FROM `$table_name` LIKE %s", $column_name));
+
+		return $column === $column_name;
 	}
 
 	private static function createShowPlaceTable(): void
