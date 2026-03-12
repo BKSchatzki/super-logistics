@@ -37,6 +37,8 @@ const mockToast = {
 describe("useAPI Composable", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    global.URL.createObjectURL = vi.fn(() => "blob:mock-pdf");
+    global.URL.revokeObjectURL = vi.fn();
   });
 
   describe("get method", () => {
@@ -129,6 +131,32 @@ describe("useAPI Composable", () => {
         }),
       );
       expect(result).toEqual(mockResponse.data);
+    });
+
+    it("should surface warning metadata from successful responses", async () => {
+      const api = useAPI("users");
+      const formData = { name: "New User" };
+      const mockResponse = {
+        data: {
+          data: { id: 1 },
+          meta: { warning: "Invite delivery could not be confirmed." },
+        },
+      };
+
+      RequestUtility.sendRequest.mockImplementation(({ success }) => {
+        success(mockResponse);
+      });
+
+      await api.post(formData);
+
+      expect(mockToast.add).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          severity: "warn",
+          summary: "Warning",
+          detail: "Invite delivery could not be confirmed.",
+        }),
+      );
     });
 
     it("should handle errors when posting data", async () => {
@@ -376,7 +404,7 @@ describe("useAPI Composable", () => {
       );
       expect(global.window.open).toHaveBeenCalled();
       expect(mockWindow.document.write).toHaveBeenCalledWith(
-        `<iframe width='100%' height='100%' src='data:application/pdf;base64,base64encodedpdf'></iframe>`,
+        `<iframe width='100%' height='100%' title='Report' src='data:application/pdf;base64,base64encodedpdf'></iframe>`,
       );
       expect(mockToast.add).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -385,6 +413,49 @@ describe("useAPI Composable", () => {
         }),
       );
       expect(result).toEqual(mockResponse.data);
+    });
+
+    it("should request a blob PDF document and open it", async () => {
+      const api = useAPI("reports");
+      const data = { id: 1727 };
+      const mockBlob = new Blob(["pdfbytes"], { type: "application/pdf" });
+      const mockWindow = {
+        document: {
+          write: vi.fn(),
+          title: "",
+        },
+        onbeforeunload: null,
+      };
+
+      global.window.open = vi.fn(() => mockWindow);
+
+      RequestUtility.sendRequest.mockImplementation(({ success }) => {
+        success({ data: mockBlob });
+      });
+
+      const result = await api.print(data, "transactions/receiving/pod", "Proof of Delivery", {
+        responseType: "blob",
+      });
+
+      expect(RequestUtility.sendRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "post",
+          data,
+          url: "transactions/receiving/pod",
+          responseType: "blob",
+          headers: expect.objectContaining({
+            Accept: "application/pdf",
+          }),
+        }),
+      );
+      expect(global.URL.createObjectURL).toHaveBeenCalledWith(mockBlob);
+      expect(mockWindow.document.write).toHaveBeenCalledWith(
+        `<iframe width='100%' height='100%' title='Proof of Delivery' src='blob:mock-pdf'></iframe>`,
+      );
+      expect(typeof mockWindow.onbeforeunload).toBe("function");
+      mockWindow.onbeforeunload();
+      expect(global.URL.revokeObjectURL).toHaveBeenCalledWith("blob:mock-pdf");
+      expect(result).toEqual({ data: mockBlob });
     });
 
     it("should handle errors when printing document", async () => {

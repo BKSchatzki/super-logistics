@@ -48,6 +48,7 @@ class RequestUtility {
       headers: requestInfo.headers,
       data: requestInfo.data,
       params: requestInfo.params || {},
+      responseType: requestInfo.responseType,
     };
 
     // Create Axios request

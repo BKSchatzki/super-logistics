@@ -67,6 +67,7 @@ const printPOD = () => {
     { id: props.subject.id },
     "transactions/receiving/pod",
     "Proof of Delivery",
+    { responseType: "blob" },
   );
 };
 

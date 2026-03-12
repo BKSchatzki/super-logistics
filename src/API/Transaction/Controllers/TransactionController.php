@@ -312,7 +312,7 @@ class TransactionController extends Controller
 		return self::prepareArrayResponse($res);
 	}
 
-	public static function printPOD(WP_REST_Request $request): array
+	public static function printPOD(WP_REST_Request $request): void
 	{
 		$params = $request->get_params();
 
@@ -338,10 +338,10 @@ class TransactionController extends Controller
 			self::sendErrorResponse($e->getMessage(), 500);
 		}
 
-		$pdfBase64 = base64_encode($pdf);
-		$res       = new Item(['pdf' => $pdfBase64], new PDFTransformer());
-
-		return self::prepareArrayResponse($res);
+		self::streamPdfResponse(
+			$pdf,
+			sprintf('proof-of-delivery-%d.pdf', $transaction->id)
+		);
 	}
 
 	private static array $podMimes = [
@@ -424,6 +424,23 @@ class TransactionController extends Controller
 				unlink($filePath);
 			}
 		}
+	}
+
+	private static function streamPdfResponse(string $pdf, string $filename): void
+	{
+		while (ob_get_level() > 0) {
+			ob_end_clean();
+		}
+
+		status_header(200);
+		nocache_headers();
+		header('Content-Type: application/pdf');
+		header('Content-Disposition: inline; filename="' . sanitize_file_name($filename) . '"');
+		header('Content-Length: ' . strlen($pdf));
+		header('X-Content-Type-Options: nosniff');
+
+		echo $pdf;
+		exit;
 	}
 
 	private static function getRemainingPrintData($params)

@@ -1,13 +1,14 @@
 # Super Logistics Audit Digest
 
-This digest was originally a comparative audit across `source/`, `build/`, `downloaded/`, and `repo/`. Those auxiliary directories have been retired; `repo/` (now the workspace root) is the sole source of truth at **v3.1.2**.
+This digest was originally a comparative audit across `source/`, `build/`, `downloaded/`, and `repo/`. Those auxiliary directories have been retired; `repo/` (now the workspace root) is the sole source of truth at **v3.1.3**.
 
 ## Quick Conclusions
 
-- **Source of truth**: `repo/` (v3.1.2). The `source/`, `build/`, and `downloaded/` directories were confirmed redundant and removed.
+- **Source of truth**: `repo/` (v3.1.3). The `source/`, `build/`, and `downloaded/` directories were confirmed redundant and removed.
 - **Client UAT (Feb 2026)**: D. Jones confirmed tracking export and manifest pagination working. POD feature was reworked per client feedback (see doc 15).
 - **v3.1.1 delivers**: carrier POD upload system, "Seal No: undefined" fix, intra-row overflow hardening, printPOD access-control fix, gruntfile packaging fix.
 - **v3.1.2 hotfix**: explicit transactions-table schema upgrade guard ensures `pod_path` is added when older environments missed the original table alteration (see doc 16).
+- **v3.1.3 follow-up**: POD viewing now streams PDFs instead of returning large base64 payloads, and user creation now adds invite-email observability plus immediate `sl_user_status` initialization (see doc 17).
 - **All original audit findings** (docs 01-10) remain valid for historical context but reference directories that no longer exist in the workspace.
 
 ## Document Map
@@ -60,12 +61,16 @@ This digest was originally a comparative audit across `source/`, `build/`, `down
 - [`16-v3.1.2-pod-schema-hotfix.md`](./16-v3.1.2-pod-schema-hotfix.md)
   v3.1.2 release notes: `pod_path` schema self-heal for older environments where the transactions table missed the original POD column addition.
 
+- [`17-v3.1.3-pod-streaming-and-invite-observability.md`](./17-v3.1.3-pod-streaming-and-invite-observability.md)
+  v3.1.3 release notes: streamed POD delivery for large PDFs and repo-side invite-email logging/status hardening.
+
 ## Scope Notes
 
 - The billable-weight infinite-loop guard has been applied (see doc 05).
 - Report pagination fixes have been applied to pallet and trailer manifest generators (see doc 11), with intra-row overflow hardening added in v3.1.1.
 - Carrier POD system has been fully reworked in v3.1.1 per client feedback: separate `pod_path` field, file upload for PDF/JPEG, client view access with authorization scoping (see doc 15).
 - v3.1.2 adds an explicit runtime schema upgrade guard so environments missing `sl_transactions.pod_path` can self-heal on load (see doc 16).
+- v3.1.3 changes POD delivery from base64-in-JSON to streamed PDF bytes for the POD route and adds invite-email diagnostics to the user-creation flow (see doc 17).
 - Runtime PHP dependencies are present in `vendor/` for local execution and verification.
 - Verification harness is in `tests/verify_manifest_pagination.php`.
 - The `source/`, `build/`, and `downloaded/` directories have been removed from the workspace. Audit docs (01-10) remain for historical reference.

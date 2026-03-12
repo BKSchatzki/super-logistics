@@ -14,6 +14,38 @@ export function useAPI(dataTopic = "") {
     life: 3000,
   };
 
+  const showWarningToast = (warningMessage) => {
+    if (!warningMessage) return;
+
+    toast.add({
+      ...defaultToast,
+      severity: "warn",
+      summary: "Warning",
+      detail: warningMessage,
+    });
+  };
+
+  const openPdfWindow = (pdfSrc, documentName, revokeUrl) => {
+    const pdfWindow = window.open("");
+    if (!pdfWindow) {
+      if (revokeUrl) {
+        revokeUrl();
+      }
+      throw new Error("Unable to open document window.");
+    }
+
+    pdfWindow.document.title = documentName;
+    pdfWindow.document.write(
+      `<iframe width='100%' height='100%' title='${documentName}' src='${pdfSrc}'></iframe>`,
+    );
+
+    if (revokeUrl) {
+      pdfWindow.onbeforeunload = revokeUrl;
+    }
+
+    return pdfWindow;
+  };
+
   const get = (params = {}, topic = dataTopic) => {
     const stateSetter = "set" + toCapitalCase(topic);
     const requestData = {
@@ -55,6 +87,7 @@ export function useAPI(dataTopic = "") {
             summary: "Success",
             detail: successMessage,
           });
+          showWarningToast(res.data?.meta?.warning);
           resolve(res.data);
         },
         error: (res) => {
@@ -157,24 +190,46 @@ export function useAPI(dataTopic = "") {
     return patch(data, topic, "restore", " Restored", "Archived");
   };
 
-  const print = (data, endpoint = dataTopic, documentName = "Document") => {
+  const print = (
+    data,
+    endpoint = dataTopic,
+    documentName = "Document",
+    options = {},
+  ) => {
     return new Promise((resolve, reject) => {
+      const useBlobResponse = options.responseType === "blob";
       RequestUtility.sendRequest({
         type: "post",
         data: data, // converted to FormData object in sendRequest
         url: endpoint,
+        headers: {
+          ...(options.headers || {}),
+          ...(useBlobResponse ? { Accept: "application/pdf" } : {}),
+        },
+        responseType: options.responseType,
         success: (res) => {
-          const pdfWindow = window.open("");
-          pdfWindow.document.write(
-            `<iframe width='100%' height='100%' src='data:application/pdf;base64,${res.data.data.pdf}'></iframe>`,
-          );
+          let revokeUrl = null;
+          let pdfSrc;
+
+          if (useBlobResponse) {
+            const pdfBlob =
+              res.data instanceof Blob
+                ? res.data
+                : new Blob([res.data], { type: "application/pdf" });
+            pdfSrc = URL.createObjectURL(pdfBlob);
+            revokeUrl = () => URL.revokeObjectURL(pdfSrc);
+          } else {
+            pdfSrc = `data:application/pdf;base64,${res.data.data.pdf}`;
+          }
+
+          openPdfWindow(pdfSrc, documentName, revokeUrl);
           toast.add({
             severity: "success",
             summary: "Success",
             detail: `${documentName} printed successfully.`,
             life: 3000,
           });
-          resolve(res.data);
+          resolve(useBlobResponse ? res : res.data);
         },
         error: (res) => {
           console.error(`Failed to print ${documentName}:`, res);

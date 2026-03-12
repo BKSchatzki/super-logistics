@@ -3,6 +3,7 @@
 namespace BigTB\SL\API\User\Controllers;
 
 use BigTB\SL\API\User\Models\User;
+use BigTB\SL\API\User\Models\UserStatus;
 use BigTB\SL\API\User\Transformers\UserTransformer;
 use BigTB\SL\Setup\Core\Controller;
 use BigTB\SL\Setup\Routing\Permissions;
@@ -62,18 +63,33 @@ class UserController extends Controller
 		// can take first_name, last_name, email, user_login, role, and roles
 		$params = $request->get_params();
 
-		$userData = self::createWPUser($params);
+		$creationResult = self::createWPUser($params);
 
-		if (! isset($userData->ID)) {
-			self::sendErrorResponse($userData);
+		if (is_wp_error($creationResult)) {
+			self::sendErrorResponse($creationResult->get_error_message());
 		}
-		$user = User::find($userData->ID);
+
+		$user = User::find($creationResult['user_id']);
+		if (! $user) {
+			self::sendErrorResponse('User created but could not be loaded', 500);
+		}
 
 		if (str_contains($params['role'], 'client')) {
 			$user = self::associateEntities($user, $params);
 		}
 
-		return self::singleResponse($user, new UserTransformer);
+		$user->loadMissing(['status', 'roles', 'first_name', 'last_name', 'entities', 'entities.show']);
+
+		$response = self::prepareArrayResponse(new Item($user, new UserTransformer));
+		if ($creationResult['invite_notification']['status'] !== 'sent') {
+			$response['meta'] = [
+				'warning'                  => $creationResult['invite_notification']['message'],
+				'invite_notification'      => $creationResult['invite_notification']['status'],
+				'invite_notification_user' => $creationResult['user_id']
+			];
+		}
+
+		return $response;
 	}
 
 	public static function update(WP_REST_Request $request): array
@@ -83,7 +99,7 @@ class UserController extends Controller
 
 		$user = User::find($userId);
 		if (! $user) {
-			return self::prepareUserNotFoundResponse();
+			self::prepareUserNotFoundResponse();
 		}
 
 		// Update Roles
@@ -139,7 +155,7 @@ class UserController extends Controller
 
 		$user = User::find($userId);
 		if (! $user) {
-			return self::prepareUserNotFoundResponse();
+			self::prepareUserNotFoundResponse();
 		}
 
 		$user->status->trashed = 1;
@@ -155,7 +171,7 @@ class UserController extends Controller
 
 		$user = User::find($userId);
 		if (! $user) {
-			return self::prepareUserNotFoundResponse();
+			self::prepareUserNotFoundResponse();
 		}
 
 		$user->status->trashed = 0;
@@ -171,7 +187,7 @@ class UserController extends Controller
 
 		$user = User::find($userId);
 		if (! $user) {
-			return self::prepareUserNotFoundResponse();
+			self::prepareUserNotFoundResponse();
 		}
 
 		$user->status->active = 0;
@@ -187,7 +203,7 @@ class UserController extends Controller
 
 		$user = User::find($userId);
 		if (! $user) {
-			return self::prepareUserNotFoundResponse();
+			self::prepareUserNotFoundResponse();
 		}
 
 		$user->status->active = 1;
@@ -260,7 +276,7 @@ class UserController extends Controller
 		return $query->get();
 	}
 
-	public static function createWPUser($userData): object
+	public static function createWPUser($userData): array | \WP_Error
 	{
 		// Set default values for user data if not provided
 		$defaults = [
@@ -285,6 +301,14 @@ class UserController extends Controller
 			return $userId; // Return the error
 		}
 
+		error_log(sprintf(
+			'Super Logistics: created WordPress user %d for %s.',
+			$userId,
+			$userData['user_email'] ?: $userData['user_login']
+		));
+
+		self::ensureUserStatusRow($userId);
+
 		// Assign multiple roles
 		foreach ($roles as $role) {
 			add_user_meta($userId, 'wp_capabilities', [$role => true], true);
@@ -295,11 +319,109 @@ class UserController extends Controller
 			return $userId; // Return the error
 		}
 
-		// Optionally, send a notification to the new user
-		wp_send_new_user_notifications($userId);
+		return [
+			'user_id'             => $userId,
+			'invite_notification' => self::sendInviteNotification($userId)
+		];
+	}
 
-		// Return the created user object
-		return get_userdata($userId);
+	private static function ensureUserStatusRow(int $userId): void
+	{
+		try {
+			UserStatus::firstOrCreate(
+				['user_id' => $userId],
+				['active' => 1, 'trashed' => 0]
+			);
+		} catch (\Throwable $e) {
+			error_log(sprintf(
+				'Super Logistics: failed to initialize sl_user_status for user %d: %s',
+				$userId,
+				$e->getMessage()
+			));
+		}
+	}
+
+	private static function sendInviteNotification(int $userId): array
+	{
+		$mailFailed    = null;
+		$mailSucceeded = false;
+
+		$mailFailedHandler = static function ($wpError) use (&$mailFailed): void {
+			$mailFailed = $wpError;
+		};
+
+		$mailSucceededHandler = static function () use (&$mailSucceeded): void {
+			$mailSucceeded = true;
+		};
+
+		error_log(sprintf('Super Logistics: sending new user notification for user %d.', $userId));
+
+		add_action('wp_mail_failed', $mailFailedHandler, 10, 1);
+		add_action('wp_mail_succeeded', $mailSucceededHandler, 10, 1);
+
+		try {
+			wp_send_new_user_notifications($userId);
+		} catch (\Throwable $e) {
+			error_log(sprintf(
+				'Super Logistics: wp_send_new_user_notifications threw for user %d: %s',
+				$userId,
+				$e->getMessage()
+			));
+
+			return [
+				'status'  => 'failed',
+				'message' => 'User created, but the invite email call failed. Check the WordPress debug log.'
+			];
+		} finally {
+			remove_action('wp_mail_failed', $mailFailedHandler, 10);
+			remove_action('wp_mail_succeeded', $mailSucceededHandler, 10);
+		}
+
+		$user              = get_userdata($userId);
+		$hasActivationKey  = ! empty($user?->user_activation_key);
+		$activationKeyNote = $hasActivationKey ? 'present' : 'missing';
+
+		if (is_wp_error($mailFailed)) {
+			$mailFailedMessage = $mailFailed instanceof \WP_Error
+				? $mailFailed->get_error_message()
+				: 'Unknown wp_mail failure.';
+
+			error_log(sprintf(
+				'Super Logistics: invite notification failed for user %d (%s activation key): %s',
+				$userId,
+				$activationKeyNote,
+				$mailFailedMessage
+			));
+
+			return [
+				'status'  => 'failed',
+				'message' => 'User created, but the invite email failed to send. Check the WordPress debug log.'
+			];
+		}
+
+		if (! $mailSucceeded) {
+			error_log(sprintf(
+				'Super Logistics: invite notification finished without a wp_mail success/failure hook for user %d (%s activation key).',
+				$userId,
+				$activationKeyNote
+			));
+
+			return [
+				'status'  => 'unknown',
+				'message' => 'User created, but invite delivery could not be confirmed. Check the WordPress debug log and mail configuration.'
+			];
+		}
+
+		error_log(sprintf(
+			'Super Logistics: invite notification completed for user %d (%s activation key).',
+			$userId,
+			$activationKeyNote
+		));
+
+		return [
+			'status'  => 'sent',
+			'message' => ''
+		];
 	}
 
 	private static function clearEntities($user): User
