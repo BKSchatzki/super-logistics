@@ -9,6 +9,7 @@ This digest was originally a comparative audit across `source/`, `build/`, `down
 - **v3.1.1 delivers**: carrier POD upload system, "Seal No: undefined" fix, intra-row overflow hardening, printPOD access-control fix, gruntfile packaging fix.
 - **v3.1.2 hotfix**: explicit transactions-table schema upgrade guard ensures `pod_path` is added when older environments missed the original table alteration (see doc 16).
 - **v3.1.3 follow-up**: POD viewing now streams PDFs instead of returning large base64 payloads, and user creation now adds invite-email observability plus immediate `sl_user_status` initialization (see doc 17).
+- **v3.1.4 readiness**: current invite remediation is operational first: authenticated SMTP, sender identity alignment, and deliverability verification on `tstg.bigtbx.com` (see doc 18).
 - **All original audit findings** (docs 01-10) remain valid for historical context but reference directories that no longer exist in the workspace.
 
 ## Document Map
@@ -64,6 +65,9 @@ This digest was originally a comparative audit across `source/`, `build/`, `down
 - [`17-v3.1.3-pod-streaming-and-invite-observability.md`](./17-v3.1.3-pod-streaming-and-invite-observability.md)
   v3.1.3 release notes: streamed POD delivery for large PDFs and repo-side invite-email logging/status hardening.
 
+- [`18-v3.1.4-readiness-operational-sop.md`](./18-v3.1.4-readiness-operational-sop.md)
+  v3.1.4 readiness note: operational SOP for invite deliverability, sender alignment, and SMTP/mail-routing verification.
+
 ## Scope Notes
 
 - The billable-weight infinite-loop guard has been applied (see doc 05).
@@ -71,6 +75,7 @@ This digest was originally a comparative audit across `source/`, `build/`, `down
 - Carrier POD system has been fully reworked in v3.1.1 per client feedback: separate `pod_path` field, file upload for PDF/JPEG, client view access with authorization scoping (see doc 15).
 - v3.1.2 adds an explicit runtime schema upgrade guard so environments missing `sl_transactions.pod_path` can self-heal on load (see doc 16).
 - v3.1.3 changes POD delivery from base64-in-JSON to streamed PDF bytes for the POD route and adds invite-email diagnostics to the user-creation flow (see doc 17).
+- The next readiness step is operational rather than repo-side: authenticated SMTP, sender alignment, and live invite verification on `tstg.bigtbx.com` (see doc 18).
 - Runtime PHP dependencies are present in `vendor/` for local execution and verification.
 - Verification harness is in `tests/verify_manifest_pagination.php`.
 - The `source/`, `build/`, and `downloaded/` directories have been removed from the workspace. Audit docs (01-10) remain for historical reference.
